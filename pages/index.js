@@ -20,7 +20,13 @@ export default function Home() {
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
         </p>
-
+        
+        <button type="button" onClick={() => {
+          throw new Error("Sentry Frontend Error");
+        }}>
+          Throw error
+        </button>
+        
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h2>Documentation &rarr;</h2>
