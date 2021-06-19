@@ -22,6 +22,9 @@
     .group_txt{
         margin-bottom: 1.3em;
     }
+    .introduct_sec .group_txt{
+        margin-bottom: 2em;
+    }
     .justify-content-center.mtop2{
         margin-top: 0;
     }
@@ -31,6 +34,11 @@
     .btn_label.color_yellow,
     .btn_label.color_green{
         margin-top: 1.5em;
+    }
+    .prod_gr .prod_thumbnail img {
+        width: 100%;
+        object-fit: cover;
+        max-height: 100%;
     }
 }
 
