@@ -29,6 +29,12 @@
 .color_green{
     background-color: #13BA97;
 }
+.bg_grey{
+    background-color: #8A8A8A;
+}
+.btn_default{
+
+}
 
 
 /* Header style */
@@ -257,6 +263,62 @@
 
 .user_first .action_sec{
     margin-top: 1.5em;
+}
+.prod_gr{
+    height: 24em;
+    position: relative;
+    background-color: #fff;
+    margin-bottom: 1.5em;
+    border-radius: 3px 3px;
+}
+.prod_gr .prod_thumbnail{
+    height: 10em;
+}
+.prod_gr .prod_thumbnail img{
+    width: 100%;
+}
+.prod_gr .prod_info{
+    height: 9em;
+    padding: 0.5em 1em 1em;
+    border-bottom: 1px solid #DBDBDB;
+}
+.prod_gr .prod_info .prod_name a{
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.4em;
+}
+.prod_gr .prod_lable{
+    display: flex;
+    padding: 0.6em 0;
+}
+.prod_gr .prod_lable .btn_default{
+    flex: 0 0 auto;
+    margin-right: 6px;
+    padding: 3px 8px;
+    border-radius: 3px 3px;
+    font-size: 10px;
+    color: #fff;
+}
+.prod_gr .prod_lable .btn_default:last-child{
+    margin-right: 0px;
+}
+.prod_gr .prod_price{
+    padding-top: 5px;
+    font-size: 1.3em;
+}
+.prod_gr .prod_user{
+    display: flex;
+    height: 5em;
+    padding: 1em;
+}
+.prod_gr .prod_user .user_avt{
+    flex-basis: 46px;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+.prod_gr .prod_user .user_info{
+    padding-top: 5px;
+    font-size: 11px;
 }
 
 
