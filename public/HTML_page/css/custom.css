@@ -1,0 +1,197 @@
+/* body  */
+.body_wrap{
+    position: relative; width: 100%;
+    color: #444;
+}
+.btn_style{
+    position: relative; padding: 12px 50px 12px 40px;
+    text-align: center; color: #fff; border-radius: 15px 15px;
+}
+.btn_style:after{
+    content: ''; position: absolute;
+    top: 12px;right: 25px;
+    width: 20px; height: 20px;
+    background: url('../images/icon_main.png') no-repeat;
+    background-position: -89px -3px;
+    background-size: 250px auto;
+}
+.btn_label{
+    position: relative; width: 100%;
+    text-align: center; border-radius: 3px 3px;
+    padding: 0.8em 1em; text-transform: uppercase;
+    color: #fff;
+}
+.color_red{
+    background-color: #BA2636;
+}
+.color_yellow{
+    background-color: #E6B422;
+}
+.color_green{
+    background-color: #13BA97;
+}
+
+
+/* Header style */
+.header_fix{
+    display: flex;
+    padding: 16px 25px;
+}
+.header_logo{
+    -ms-flex: 0 0 50%;
+      flex: 0 0 50%;
+      max-width: 50%;
+}
+.choice_lang{
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    text-align: right;
+}
+.choice_lang select{
+    padding: 8px 15px; border-radius: 3px 3px;
+    border: 1px solid #8A8A8A;
+}
+
+.banner_top img{
+    width: 100%;
+}
+
+/* content style */
+.content_wrap{
+    position: relative; width: 100%;
+}
+.sections{
+    padding: 2em 0 2.5em; overflow: hidden;
+}
+.sections p{
+    line-height: 1.5em;
+}
+/* seller page*/
+.title_style{
+    position: relative;
+    text-align: center;
+    color: #111; margin-bottom: 0.3em;
+    font-size: 1.8em;
+}
+.title_style:after{
+    content: ''; position: absolute; bottom: 0; left: calc(50% - 1em);
+    width: 2em; height: 2px; background-color: #BA2636;
+}
+.title_link{
+    width: 100%; display: table;
+    font-size: 1.2em;
+    text-align: center;
+}
+.sec_store .txt_sec{
+    position: relative; padding: 1.2em 1.5em;
+    text-align: center;
+}
+.sec_store .txt_sec:before{
+    content: ''; position: absolute; top: 1.2em; left: 0;
+    width: 30px; height: 30px;
+    background: url('../images/icon_main.png') no-repeat;
+    background-position: -4px -3px;
+    background-size: 250px auto;
+}
+.sec_store .txt_sec:after{
+    content: ''; position: absolute;
+    width: 30px; height: 30px; bottom: 1.2em; right: 0;
+    background: url('../images/icon_main.png') no-repeat;
+    background-position: -35px -3px;
+    background-size: 250px auto;
+}
+.sec_store .txt_sec p{ 
+    font-size: 1.2em; padding-bottom: 0.3em;
+}
+.action_sec{
+    display: table; width: 100%; 
+    margin-bottom: 0.5em; font-size: 1.2em;
+}
+.action_sec img{
+    width: 100%; margin-bottom: 2em;
+}
+
+.features, 
+.listing_fee,
+.store_criteria,
+.suppor_system{
+    background: url('../images/noise.jpg') repeat;
+}
+.group_txt{
+    background-color: #fff; 
+    border-radius: 8px 8px;
+}
+.group_txt h3{
+    background-color: #333; padding: 1em 0.5em;
+    color: #fff; border: 1px solid #333; text-align: center;
+    font-size: 1.3em; border-radius: 8px 8px 0 0;
+    line-height: 1.6em;
+}
+.group_txt .txt_sec{
+    min-height: 12em; padding: 1em;
+    text-align: center; font-size: 1.1em;
+    border: 1px solid #E6B422; 
+    border-radius: 0 0 8px 8px;
+}
+.group_txt .txt_sec_fee{
+    
+}
+.group_txt .txt_sec_fee img{
+    width: 100%;
+}
+.txt_community{
+    width: 100%; margin: 1em 0 2.5em;
+    text-align: center;
+}
+.group_store, .step_list{
+    background: url('../images/noise_bg.jpg') repeat;
+}
+
+.step_list label{
+    width: 100%; display: table;
+    margin-bottom: 1em; font-size: 1.3em;
+}
+.step_list .step_img img{
+    width: 100%;
+}
+.detai_criteria{
+    background-color: #fff;
+    border-radius: 3px 3px;
+    border: 1px solid #E6B422;
+    margin-bottom: 2.5em;
+    padding: 1.5em 1.2em;
+}
+.detai_criteria li{
+    list-style: inside;
+    padding-bottom: 0.8em;
+    font-size: 1.1em;
+}
+/* about page */
+
+
+
+/* Footer style */
+.footer_wrap{
+    border-top: 1px solid #DBDBDB;
+}
+.social_logo{
+    margin: 2.5em 0;
+}
+.social_logo .logo_footer{
+    width: 100%; display: table;
+    text-align: center;
+}
+.social_icon{
+    margin-top: 1.2em; text-align: center;
+}
+.social_icon li{
+    display: inline-flex; padding-right: 0.4em;
+}
+.social_icon li:last-child{
+    padding-right: 0;
+}
+.footer_wrap .txt_copy{
+    padding: 15px; border-top: 1px solid #DBDBDB;
+    text-align: center;
+}
