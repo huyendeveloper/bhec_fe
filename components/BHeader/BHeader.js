@@ -10,7 +10,6 @@ Header
 }
 
 BHeader.propTypes = {
-
 }
 
 export default BHeader

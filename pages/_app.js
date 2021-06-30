@@ -36,4 +36,5 @@ MyApp.propTypes = {
   pageProps: PropTypes.object.isRequired,
 };
 
+
 export default MyApp;
