@@ -1,8 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
+
 import theme from '../../theme';
 
 const useStyles = makeStyles(() => ({
@@ -21,32 +22,36 @@ const useStyles = makeStyles(() => ({
   },
   pill: {
     borderRadius: 45,
-  }
+  },
 }));
 
 const BButton = ({variant, pill, color, children}) => {
   const classes = useStyles();
 
   const className = clsx(classes.root, classes[color], {
-    [classes.pill]: pill
-  })
+    [classes.pill]: pill,
+  });
 
   return (
-    <Button className={className}>
+    <Button
+      variant={variant}
+      className={className}
+    >
       {children}
     </Button>
-  )
-}
+  );
+};
 
 BButton.propTypes = {
   variant: PropTypes.oneOf(['contained']),
   pill: PropTypes.bool,
+  children: PropTypes.element,
   color: PropTypes.oneOf(['red', 'yellow', 'default']),
-}
+};
 
 BButton.defaultProps = {
   variant: 'contained',
   color: 'red',
-}
+};
 
-export default BButton
+export default BButton;

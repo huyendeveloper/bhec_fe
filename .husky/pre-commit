@@ -10,7 +10,7 @@ echo "🏗️👷 ${green}Styling, testing and building your project before comm
 echo "${green}=========================${reset}"
 
 # Check ESLint Standards
-yarn lint ||
+yarn lint && yarn lint:css ||
 (
         echo "${red}=========================${reset}"
         echo "😤🏀👋😤 ${red}Get that weak s**t out of here! 😤🏀👋😤\nESLint Check Failed. Make the required changes listed above, add changes and try to commit again.${reset}"
