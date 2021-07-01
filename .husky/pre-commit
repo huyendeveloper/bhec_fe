@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+reset=$(tput sgr0)
+
+echo "${green}=========================${reset}"
+echo "🏗️👷 ${green}Styling, testing and building your project before committing${reset}"
+echo "${green}=========================${reset}"
+
+# Check ESLint Standards
+yarn lint && yarn lint:css ||
+(
+        echo "${red}=========================${reset}"
+        echo "😤🏀👋😤 ${red}Get that weak s**t out of here! 😤🏀👋😤\nESLint Check Failed. Make the required changes listed above, add changes and try to commit again.${reset}"
+        echo "${red}=========================${reset}"
+        false;
+)
+
+# If everything passes... Now we can commit
+echo "${green}=========================${reset}"
+echo "✅✅✅✅ ${green}You win this time... I am committing this now. ${reset}✅✅✅✅"
+echo "${green}=========================${reset}"
