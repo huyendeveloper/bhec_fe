@@ -1,12 +1,13 @@
-import React from 'react'
-import { Header } from '../components/BHeader'
+import React from 'react';
+
+import {Header} from '../components/BHeader';
 
 const About = () => {
   return (
     <>
-      <Header></Header>
+      <Header/>
     </>
-  )
-}
+  );
+};
 
-export default About
+export default About;
