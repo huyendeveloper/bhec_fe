@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const classes = useStyles();
+  const {showMainMenu} = props;
   return (
     <>
       <div id='back-to-top-anchor'/>
@@ -86,15 +87,17 @@ const Header = (props) => {
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
-              <Hidden lgUp={true}>
-                <IconButton
-                  edge='start'
-                  color='inherit'
-                  aria-label='menu'
-                >
-                  <MenuIcon/>
-                </IconButton>
-              </Hidden>
+              {showMainMenu ? (
+                <Hidden lgUp={true}>
+                  <IconButton
+                    edge='start'
+                    color='inherit'
+                    aria-label='menu'
+                  >
+                    <MenuIcon/>
+                  </IconButton>
+                </Hidden>
+              ) : null}
               <Link
                 href={'/'}
               >
@@ -124,6 +127,14 @@ const Header = (props) => {
       <Toolbar/>
     </>
   );
+};
+
+Header.propTypes = {
+  showMainMenu: PropTypes.bool.isRequired,
+};
+
+Header.defaultProps = {
+  showMainMenu: true,
 };
 
 export default Header;

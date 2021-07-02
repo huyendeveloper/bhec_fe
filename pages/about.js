@@ -1,9 +1,12 @@
 import Head from 'next/head';
+import Image from 'next/image';
 
-import {Container} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
+import {ContentBlock} from '../components/ContentBlock';
+import {Feature} from '../components/Widgets/Feature';
 
 export default function About() {
   return (
@@ -16,20 +19,85 @@ export default function About() {
         />
       </Head>
 
-      <Header/>
+      <Header showMainMenu={false}/>
 
-      <Container>
-        <div style={{padding: '15px 0'}}>
-          {[...new Array(85)].
-            map(
-              () => `Cras mattis consectetur purus sit amet fermentum.
-                      Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-                      Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                      Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-            ).
-            join('\n')}
+      <div className='content'>
+        <div id={'top-banner'}>
+          <Image
+            src={'/img/video-banner.png'}
+            layout='responsive'
+            width={1366}
+            height={640}
+            alt={'Video banner'}
+          />
         </div>
-      </Container>
+
+        <ContentBlock
+          title={'おしながきの特徴'}
+          description={'生産者から直送！新鮮で厳選された商品をお届けするのは今や当たり前！\n' +
+          'おしながきではこんな特徴があります'}
+        >
+          <Grid
+            container={true}
+            justify={'center'}
+            spacing={3}
+          >
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <Feature
+                title={'見つかる'}
+              >
+                {'自分だけの'} <br/>
+                {'こだわり商品を簡単に'} <br/>
+                {'見つけることができる！'}
+              </Feature>
+            </Grid>
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <Feature
+                title={'知る'}
+                type={'know'}
+              >
+                {'生産者やつくられ方'} <br/>
+                {'歴史や文化まで'} <br/>
+                {'知ることができる！'}
+              </Feature>
+            </Grid>
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <Feature
+                title={'応援する'}
+                type={'support'}
+              >
+                {'商品を購入することで'} <br/>
+                {'ふるさとや好きな地域を'} <br/>
+                {'応援することができる！'} <br/>
+                <span
+                  style={{
+                    fontSize: '0.875rem',
+                    lineHeight: '1.375rem',
+                    color: '#444',
+                    marginTop: '1rem',
+                    display: 'inline-block',
+                  }}
+                >{'*利益の2%を地方へ還元'}</span>
+              </Feature>
+            </Grid>
+          </Grid>
+        </ContentBlock>
+      </div>
 
       <Footer/>
     </div>
