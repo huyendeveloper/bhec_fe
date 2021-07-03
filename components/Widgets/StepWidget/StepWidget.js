@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: '2rem 1.5rem',
   },
-}), {name: 'StepWidget'});
+}));
 
 const StepWidget = ({title, children}) => {
   const classes = useStyles();

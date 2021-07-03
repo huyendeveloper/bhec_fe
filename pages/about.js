@@ -8,8 +8,115 @@ import {Footer} from '../components/Layout/Footer';
 import {ContentBlock} from '../components/ContentBlock';
 import {Feature} from '../components/Widgets/Feature';
 import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
+import ProductWidget from '../components/Widgets/ProductWidget/ProductWidget';
 
 export default function About() {
+  const recommendProducts = [
+    {
+      productId: 1,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 2,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 3,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 4,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 5,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 6,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 7,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+    {
+      productId: 8,
+      productName: '『大好評』小田原漆器についてご紹介しています。',
+      productThumb: '/img/products/product-01.png',
+      productUrl: '#',
+      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+      productPrice: 26600,
+      productOwner: {
+        name: '小田原漆器',
+        avatar: '/img/sellers/seller-01.png',
+        introduction: '木地部門　伝統工芸士',
+      },
+    },
+  ];
   return (
     <div className={'page page-about'}>
       <Head>
@@ -217,6 +324,32 @@ export default function About() {
                 </Box>
               </ProductArrivalStep>
             </Grid>
+          </Grid>
+        </ContentBlock>
+
+        <ContentBlock
+          title={'初めての方にオススメ！'}
+          bgColor={'#FAF6EF'}
+          bgImage={'/img/noise.png'}
+          bgRepeat={'repeat'}
+          mixBlendMode={'multiply'}
+        >
+          <Grid
+            container={true}
+            justify={'center'}
+            spacing={3}
+          >
+            {recommendProducts.map((product) => (
+              <Grid
+                key={product.id}
+                item={true}
+                xs={12}
+                sm={4}
+                md={3}
+              >
+                <ProductWidget data={product}/>
+              </Grid>
+            ))}
           </Grid>
         </ContentBlock>
 
