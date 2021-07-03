@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     '& span': {
       fontSize: 'inherit',
       fontWeight: 'bold',
+      textTransform: 'uppercase',
     },
     '& div[class$="-avatar"]': {
       position: 'absolute',
