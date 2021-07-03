@@ -3,13 +3,15 @@
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-const { withSentryConfig } = require('@sentry/nextjs');
+// eslint-disable-next-line no-undef
+const {withSentryConfig} = require('@sentry/nextjs');
 
 const moduleExports = {
   reactStrictMode: true,
 };
 
 const SentryWebpackPluginOptions = {
+
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
   // the following options are set automatically, and overriding them is not
   // recommended:
@@ -21,4 +23,5 @@ const SentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
+// eslint-disable-next-line no-undef
 module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions);

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
-}));
+}), {name: 'MuiScrollBar_InFooter'});
 
 function ScrollTop(props) {
   const {children, window} = props;

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ContentBlock = ({title, description, bgColor, children}) => {
+const ContentBlock = ({title, description, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
   const classes = useStyles();
   const newDesc = description ? description.split('\n').
     map((str, index) => (
@@ -48,7 +48,12 @@ const ContentBlock = ({title, description, bgColor, children}) => {
   return (
     <section
       className={classes.root}
-      style={{backgroundColor: bgColor || '#fff'}}
+      style={{
+        backgroundColor: bgColor || '#fff',
+        backgroundRepeat: bgRepeat || 'no-repeat',
+        backgroundImage: bgImage && bgImage !== '' ? `url("${bgImage}")` : 'none',
+        mixBlendMode: mixBlendMode || 'unset',
+      }}
     >
       <Container>
         {title && title !== '' ? (
@@ -73,6 +78,9 @@ const ContentBlock = ({title, description, bgColor, children}) => {
 
 ContentBlock.propTypes = {
   bgColor: PropTypes.string,
+  bgImage: PropTypes.string,
+  bgRepeat: PropTypes.string,
+  mixBlendMode: PropTypes.string,
   title: PropTypes.string,
   description: PropTypes.string,
   children: PropTypes.element,

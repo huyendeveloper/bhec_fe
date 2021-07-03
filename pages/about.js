@@ -1,12 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Grid} from '@material-ui/core';
+import {Box, Container, Grid} from '@material-ui/core';
 
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
 import {ContentBlock} from '../components/ContentBlock';
 import {Feature} from '../components/Widgets/Feature';
+import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
 
 export default function About() {
   return (
@@ -97,6 +98,128 @@ export default function About() {
             </Grid>
           </Grid>
         </ContentBlock>
+
+        <ContentBlock
+          title={'充実のサポート体制'}
+          bgColor={'#FAF6EF'}
+          bgImage={'/img/noise.png'}
+          bgRepeat={'repeat'}
+          mixBlendMode={'multiply'}
+        >
+          <Container>
+            <Grid
+              container={true}
+              justify={'center'}
+              alignItems={'center'}
+            >
+              <Box py={4}>
+                <Image
+                  src={'/img/support-system-lifecycle.png'}
+                  width={692}
+                  height={692}
+                  alt={'Support system lifecycle'}
+                />
+              </Box>
+            </Grid>
+          </Container>
+        </ContentBlock>
+
+        <ContentBlock title={'簡単３ステップで商品到着'}>
+          <Grid
+            container={true}
+            justify={'center'}
+            spacing={3}
+          >
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <ProductArrivalStep
+                title={'Step1'}
+              >
+                <Box fontWeight={'bold'}>
+                  {'スマホやPCから'} <br/>
+                  {'商品を選択して簡単注文！'}
+                </Box>
+                <Box
+                  textAlign={'center'}
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={217}
+                    height={207}
+                    alt={'簡単３ステップで商品到着 - STEP1'}
+                    src={'/img/product-arrival-step-1.png'}
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <ProductArrivalStep
+                title={'Step2'}
+              >
+                <Box
+                  lineHeight={'4rem'}
+                  fontWeight={'bold'}
+                >
+                  {'発送を待つだけ'}
+                </Box>
+                <Box
+                  textAlign={'center'}
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={217}
+                    height={207}
+                    alt={'簡単３ステップで商品到着 - STEP2'}
+                    src={'/img/product-arrival-step-2.png'}
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+
+            <Grid
+              item={true}
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <ProductArrivalStep
+                title={'Step3'}
+              >
+                <Box
+                  lineHeight={'4rem'}
+                  fontWeight={'bold'}
+                >
+                  {'お家で受け取り'}
+                </Box>
+                <Box
+                  textAlign={'center'}
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={217}
+                    height={207}
+                    alt={'簡単３ステップで商品到着 - STEP3'}
+                    src={'/img/product-arrival-step-3.png'}
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+          </Grid>
+        </ContentBlock>
+
       </div>
 
       <Footer/>

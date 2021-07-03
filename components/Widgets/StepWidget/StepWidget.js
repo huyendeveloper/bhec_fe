@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import {Card, CardContent, CardHeader} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -8,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     borderColor: theme.palette.yellow.light,
     overflow: 'unset',
-    height: '100%',
+    marginTop: '5rem',
   },
   cardHeader: {
     fontSize: '1.5rem',
@@ -17,8 +16,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
-    margin: '-1px -1px 0 -1px',
-    borderRadius: '4px 4px 0 0',
+    borderRadius: '4px',
     padding: '15px',
     '& span': {
       fontSize: 'inherit',
@@ -29,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
       top: '-1rem',
       left: '-1rem',
     },
+    position: 'absolute',
+    top: '-5rem',
+    width: '100%',
   },
   cardContent: {
     fontSize: '1.2rem',
@@ -36,22 +37,10 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: '2rem 1.5rem',
   },
-}));
+}), {name: 'StepWidget'});
 
-const Feature = ({type, title, children}) => {
+const StepWidget = ({title, children}) => {
   const classes = useStyles();
-  let iconPath;
-  switch (type) {
-  case 'support':
-    iconPath = '/img/support.png';
-    break;
-  case 'know':
-    iconPath = '/img/know.png';
-    break;
-  default:
-    iconPath = '/img/found.png';
-    break;
-  }
   return (
     <Card
       className={classes.root}
@@ -59,15 +48,6 @@ const Feature = ({type, title, children}) => {
     >
       <CardHeader
         className={classes.cardHeader}
-        avatar={
-          <Image
-            className={classes.cardIcon}
-            width={62}
-            height={62}
-            src={iconPath}
-            alt={title}
-          />
-        }
         title={title}
       />
 
@@ -78,15 +58,13 @@ const Feature = ({type, title, children}) => {
   );
 };
 
-Feature.propTypes = {
-  type: PropTypes.string.isRequired,
+StepWidget.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.any,
 };
 
-Feature.defaultProps = {
-  type: 'found',
-  title: 'New Feature',
+StepWidget.defaultProps = {
+  title: 'New Step',
 };
 
-export default Feature;
+export default StepWidget;
