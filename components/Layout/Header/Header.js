@@ -5,15 +5,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
 import {
-  FormControl,
   Hidden,
   IconButton,
   Link,
-  NativeSelect,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
+
+import {SelectBox} from '../../SelectBox';
 
 function HideOnScroll(props) {
   const {children, window} = props;
@@ -64,17 +64,6 @@ const useStyles = makeStyles((theme) => ({
       marginRight: '0.5rem',
     },
   },
-  nativeSelect: {
-    '&::before, &::after': {
-      display: 'none',
-    },
-    '& select': {
-      border: '1px solid #444',
-      borderRadius: '4px !important',
-      padding: '10px 32px 9px 18px',
-      color: '#333',
-    },
-  },
 }));
 
 const Header = (props) => {
@@ -110,16 +99,12 @@ const Header = (props) => {
               </Link>
             </div>
             <div className={classes.languageSwitcher}>
-              <FormControl>
-                <NativeSelect
-                  name='siteLanguage'
-                  className={classes.nativeSelect}
-                  inputProps={{'aria-label': 'siteLanguage'}}
-                >
-                  <option value={'jp'}>{'日本語'}</option>
-                  <option value={'en'}>{'ENG'}</option>
-                </NativeSelect>
-              </FormControl>
+              <SelectBox
+                options={[
+                  {name: '日本語', value: 'jp'},
+                  {name: 'ENG', value: 'en'},
+                ]}
+              />
             </div>
           </Toolbar>
         </AppBar>
