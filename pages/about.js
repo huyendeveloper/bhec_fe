@@ -10,6 +10,7 @@ import {Feature} from '../components/Widgets/Feature';
 import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
 import {ProductWidget} from '../components/Widgets/ProductWidget';
 import {Button} from '../components/Button';
+import {FaqsWidget} from '../components/Widgets/FaqsWidget';
 
 export default function About() {
   const recommendProducts = [
@@ -116,6 +117,28 @@ export default function About() {
         avatar: '/img/sellers/seller-08.png',
         introduction: '竿中',
       },
+    },
+  ];
+  const faqsData = [
+    {
+      id: 1,
+      question: '利用料金はかかりますか？',
+      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+    },
+    {
+      id: 2,
+      question: 'どんな生産者さんが登録していますか？',
+      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+    },
+    {
+      id: 3,
+      question: '従来の直送サービとの違いはなんですか？',
+      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+    },
+    {
+      id: 4,
+      question: 'よくある質問？',
+      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
     },
   ];
   return (
@@ -366,6 +389,12 @@ export default function About() {
               {'オススメ商品をもっと見る'}
             </Button>
           </Box>
+        </ContentBlock>
+
+        <ContentBlock
+          title={'よくある質問'}
+        >
+          <FaqsWidget data={faqsData}/>
         </ContentBlock>
 
       </div>
