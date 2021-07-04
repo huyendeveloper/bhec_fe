@@ -63,12 +63,14 @@ const useStyles = makeStyles({
     width: '3rem',
     height: '3rem',
   },
-  productSellerInfo: {
+  sellerInfo: {
     fontSize: '0.6875rem',
     lineHeight: '1rem',
-  },
-  sellerName: {
     fontWeight: 'bold',
+  },
+  sellerInfoIntro: {
+    marginTop: '3px',
+    fontWeight: 'normal',
   },
 });
 
@@ -81,6 +83,8 @@ const ProductWidget = ({variant, data}) => {
 
   const tags = data.productTags;
   const owner = data.productOwner;
+
+  const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   return (
     <Card className={classes.root}>
@@ -116,7 +120,7 @@ const ProductWidget = ({variant, data}) => {
           </div>
 
           <div className={classes.productPrice}>
-            <span>{'¥'}</span>{data.productPrice}
+            {currency.format(data.productPrice)}
           </div>
         </CardContent>
       </CardActionArea>
@@ -134,11 +138,11 @@ const ProductWidget = ({variant, data}) => {
           <div className={classes.productSellerInfo}>
             <Typography
               component={'h5'}
-              className={classes.sellerName}
+              className={classes.sellerInfo}
             >{owner.name}</Typography>
             <Typography
               component={'p'}
-              className={classes.intro}
+              className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
             >{owner.introduction}</Typography>
           </div>
         </Link>
@@ -151,6 +155,7 @@ ProductWidget.propTypes = {
   variant: PropTypes.string.isRequired,
   data: PropTypes.objectOf(
     PropTypes.shape({
+      productId: PropTypes.number.isRequired,
       productName: PropTypes.string.isRequired,
       productThumb: PropTypes.string.isRequired,
       productUrl: PropTypes.string.isRequired,
