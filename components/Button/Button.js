@@ -37,17 +37,16 @@ const useStyles = makeStyles(() => ({
 
 const Button = (props) => {
   const classes = useStyles();
-  const {color, pill, variant, size, children} = props;
+  const {custom_color, pill, variant, custom_size, children} = props;
 
-  const className = clsx(classes.root, classes[color], {
+  const className = clsx(classes.root, classes[custom_color], {
     [classes.pill]: pill,
-  }, classes[size]);
+  }, classes[custom_size]);
 
   return (
     <MuiButton
       variant={variant}
       className={className}
-      size={'extra'}
       {...props}
     >
       {children}
@@ -58,14 +57,14 @@ const Button = (props) => {
 Button.propTypes = {
   variant: PropTypes.oneOf(['contained']),
   pill: PropTypes.bool,
-  size: PropTypes.string,
-  children: PropTypes.element,
-  color: PropTypes.oneOf(['red', 'yellow', 'default']),
+  custom_size: PropTypes.string,
+  children: PropTypes.any,
+  custom_color: PropTypes.oneOf(['red', 'yellow', 'default']),
 };
 
 Button.defaultProps = {
   variant: 'contained',
-  color: 'red',
+  custom_color: 'red',
   size: 'medium',
 };
 

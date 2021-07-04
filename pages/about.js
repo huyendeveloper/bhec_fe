@@ -363,9 +363,9 @@ export default function About() {
             justify={'center'}
             spacing={3}
           >
-            {recommendProducts.map((product) => (
+            {recommendProducts.map((product, index) => (
               <Grid
-                key={product.id}
+                key={index}
                 item={true}
                 xs={12}
                 sm={4}
@@ -382,8 +382,8 @@ export default function About() {
           >
             <Button
               pill={true}
-              color={'red'}
-              size={'extraLarge'}
+              custom_color={'red'}
+              custom_size={'extraLarge'}
               endIcon={<Icon>{'chevron_right'}</Icon>}
             >
               {'オススメ商品をもっと見る'}

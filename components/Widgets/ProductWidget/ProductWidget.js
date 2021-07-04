@@ -153,17 +153,7 @@ const ProductWidget = ({variant, data}) => {
 
 ProductWidget.propTypes = {
   variant: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(
-    PropTypes.shape({
-      productId: PropTypes.number.isRequired,
-      productName: PropTypes.string.isRequired,
-      productThumb: PropTypes.string.isRequired,
-      productUrl: PropTypes.string.isRequired,
-      productTags: PropTypes.array.isRequired,
-      productPrice: PropTypes.number.isRequired,
-      productOwner: PropTypes.object.isRequired,
-    }),
-  ),
+  data: PropTypes.object.isRequired,
 };
 
 ProductWidget.defaultProps = {

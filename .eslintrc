@@ -460,10 +460,10 @@
       "never"
     ],
     "react/jsx-filename-extension": [
-      2, 
+      2,
       { "extensions": [".js", ".jsx"]
       }
-      
+
     ],
     "react/jsx-first-prop-new-line": [
       2,

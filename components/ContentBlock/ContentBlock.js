@@ -83,7 +83,7 @@ ContentBlock.propTypes = {
   mixBlendMode: PropTypes.string,
   title: PropTypes.string,
   description: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.any,
 };
 
 export default ContentBlock;
