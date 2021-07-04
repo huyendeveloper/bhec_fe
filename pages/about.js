@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Box, Container, Grid} from '@material-ui/core';
+import {Box, Container, Grid, Icon} from '@material-ui/core';
 
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
@@ -9,6 +9,7 @@ import {ContentBlock} from '../components/ContentBlock';
 import {Feature} from '../components/Widgets/Feature';
 import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
 import {ProductWidget} from '../components/Widgets/ProductWidget';
+import {Button} from '../components/Button';
 
 export default function About() {
   const recommendProducts = [
@@ -351,6 +352,20 @@ export default function About() {
               </Grid>
             ))}
           </Grid>
+
+          <Box
+            mt={6}
+            textAlign={'center'}
+          >
+            <Button
+              pill={true}
+              color={'red'}
+              size={'extraLarge'}
+              endIcon={<Icon>{'chevron_right'}</Icon>}
+            >
+              {'オススメ商品をもっと見る'}
+            </Button>
+          </Box>
         </ContentBlock>
 
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import {Button as MuiButton} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 
@@ -23,35 +23,50 @@ const useStyles = makeStyles(() => ({
   pill: {
     borderRadius: 45,
   },
+  extraLarge: {
+    fontSize: '1.25rem',
+    lineHeight: '1.125rem',
+    fontWeight: 'bold',
+    padding: '0.875rem 2.3125rem',
+
+    '& .material-icons': {
+      fontSize: '2.25rem',
+    },
+  },
 }));
 
-const BButton = ({variant, pill, color, children}) => {
+const Button = (props) => {
   const classes = useStyles();
+  const {color, pill, variant, size, children} = props;
 
   const className = clsx(classes.root, classes[color], {
     [classes.pill]: pill,
-  });
+  }, classes[size]);
 
   return (
-    <Button
+    <MuiButton
       variant={variant}
       className={className}
+      size={'extra'}
+      {...props}
     >
       {children}
-    </Button>
+    </MuiButton>
   );
 };
 
-BButton.propTypes = {
+Button.propTypes = {
   variant: PropTypes.oneOf(['contained']),
   pill: PropTypes.bool,
+  size: PropTypes.string,
   children: PropTypes.element,
   color: PropTypes.oneOf(['red', 'yellow', 'default']),
 };
 
-BButton.defaultProps = {
+Button.defaultProps = {
   variant: 'contained',
   color: 'red',
+  size: 'medium',
 };
 
-export default BButton;
+export default Button;

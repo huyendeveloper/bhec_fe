@@ -1,6 +1,8 @@
 import React from 'react';
 
-import {Button} from '../components/BButton';
+import {Icon} from '@material-ui/core';
+
+import {Button} from '../components/Button';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -14,3 +16,12 @@ export const PillStyle = () => (
     color='red'
   >{'オススメ商品をもっと見る'}</Button>
 );
+
+export const ExtraLargeButton = () => (
+  <Button
+    pill={true}
+    color='red'
+    size={'extraLarge'}
+  >{'オススメ商品をもっと見る'}</Button>
+);
+

@@ -29,6 +29,10 @@ const MyApp = (props) => {
           rel='icon'
           href='/favicon.ico'
         />
+        <link
+          href='https://fonts.googleapis.com/icon?family=Material+Icons'
+          rel='stylesheet'
+        />
       </Head>
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}

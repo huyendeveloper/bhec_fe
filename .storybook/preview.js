@@ -2,7 +2,7 @@ import * as nextImage from 'next/image';
 import theme from '../theme';
 import {ThemeProvider} from '@material-ui/core'
 import {StylesProvider} from "@material-ui/core";
-
+import React from 'react';
 
 Object.defineProperty(nextImage, 'default', {
   configurable: true,
