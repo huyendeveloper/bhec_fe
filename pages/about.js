@@ -381,9 +381,9 @@ export default function About() {
             textAlign={'center'}
           >
             <Button
-              pill={true}
-              custom_color={'red'}
-              custom_size={'extraLarge'}
+              variant={'pill'}
+              customColor={'red'}
+              customSize={'extraLarge'}
               endIcon={<Icon>{'chevron_right'}</Icon>}
             >
               {'オススメ商品をもっと見る'}

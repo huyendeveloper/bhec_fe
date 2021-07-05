@@ -10,16 +10,16 @@ export default {
 
 export const PillStyle = () => (
   <Button
-    pill={true}
-    custom_color='red'
+    variant={'pill'}
+    customColor='red'
   >{'オススメ商品をもっと見る'}</Button>
 );
 
 export const ExtraLargeButton = () => (
   <Button
-    pill={true}
-    custom_color='red'
-    custom_size={'extraLarge'}
+    variant={'pill'}
+    customColor='red'
+    customSize={'extraLarge'}
   >{'オススメ商品をもっと見る'}</Button>
 );
 

@@ -4,9 +4,7 @@ import {Button as MuiButton} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import theme from '../../theme';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     textTransform: 'none',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
@@ -35,37 +33,75 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Button = (props) => {
+function Button(props) {
   const classes = useStyles();
-  const {custom_color, pill, variant, custom_size, children} = props;
 
-  const className = clsx(classes.root, classes[custom_color], {
-    [classes.pill]: pill,
-  }, classes[custom_size]);
+  /*
+  * ==== WARNING IN CONSOLE ====
+  *
+  * Warning: React does not recognize the customColor prop on a DOM element.
+  * If you intentionally want it to appear in the DOM as a custom attribute,
+  * spell it as lowercase customcolor instead. If you accidentally passed it from a parent
+  * component, remove it from the DOM element.
+  *
+  * ==== SOLUTION ===
+  *
+  * https://stackoverflow.com/a/49358913
+  * */
+  const {children, variant, customColor, customSize, ...rest} = props;
+  const className = clsx(classes.root, classes[variant], classes[customColor], classes[customSize]);
 
   return (
     <MuiButton
-      variant={variant}
       className={className}
-      {...props}
+      {...rest}
     >
       {children}
     </MuiButton>
   );
-};
+}
 
 Button.propTypes = {
-  variant: PropTypes.oneOf(['contained']),
-  pill: PropTypes.bool,
-  custom_size: PropTypes.string,
-  children: PropTypes.any,
-  custom_color: PropTypes.oneOf(['red', 'yellow', 'default']),
-};
-
-Button.defaultProps = {
-  variant: 'contained',
-  custom_color: 'red',
-  size: 'medium',
+  variant: PropTypes.oneOf(['contained', 'pill']),
+  customColor: PropTypes.oneOf(['red', 'yellow', 'default']),
+  customSize: PropTypes.oneOf(['extraLarge']),
+  children: PropTypes.any.isRequired,
 };
 
 export default Button;
+
+//
+// const Button = (props) => {
+//   const classes = useStyles();
+//   const {custom_color, pill, variant, custom_size, children} = props;
+//
+//   const className = clsx(classes.root, classes[custom_color], {
+//     [classes.pill]: pill,
+//   }, classes[custom_size]);
+//
+//   return (
+//     <MuiButton
+//       variant={variant}
+//       className={className}
+//       {...props}
+//     >
+//       {children}
+//     </MuiButton>
+//   );
+// };
+//
+// Button.propTypes = {
+//   variant: PropTypes.oneOf(['contained']),
+//   pill: PropTypes.bool,
+//   custom_size: PropTypes.string,
+//   children: PropTypes.any,
+//   custom_color: PropTypes.oneOf(['red', 'yellow', 'default']),
+// };
+//
+// Button.defaultProps = {
+//   variant: 'contained',
+//   custom_color: 'red',
+//   size: 'medium',
+// };
+//
+// export default Button;
