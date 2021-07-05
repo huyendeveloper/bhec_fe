@@ -10,7 +10,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Avatar, Chip, Link} from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     marginBottom: '1rem',
@@ -26,12 +26,12 @@ const useStyles = makeStyles({
     '& > div': {
       height: '16px',
       borderRadius: '4px',
-      backgroundColor: '#8A8A8A',
+      backgroundColor: theme.productWidget.tag.backgroundColor,
 
       '& span': {
         fontSize: '10px',
         fontWeight: 'bold',
-        color: '#f1f1f1',
+        color: theme.productWidget.tag.textColor,
       },
       '&:not(:last-child)': {
         marginRight: '0.5rem',
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     },
   },
   productTagHighlight: {
-    backgroundColor: '#54C0C0 !important',
+    backgroundColor: `${theme.productWidget.tag.highlightColor} !important`,
   },
   productPrice: {
     fontSize: '1.25rem',
@@ -47,13 +47,13 @@ const useStyles = makeStyles({
     lineHeight: '1.875rem',
   },
   productSellerAction: {
-    borderTop: '1px solid #F1EBDF',
+    borderTop: `1px solid ${theme.productWidget.seller.sepColor}`,
   },
   productSeller: {
     display: 'flex',
     alignItems: 'center',
     padding: '0.5rem',
-    color: '#000',
+    color: theme.productWidget.seller.textColor,
     '&:hover': {
       textDecoration: 'none',
     },
@@ -72,7 +72,7 @@ const useStyles = makeStyles({
     marginTop: '3px',
     fontWeight: 'normal',
   },
-});
+}));
 
 // eslint-disable-next-line no-unused-vars
 const ProductWidget = ({variant, data}) => {

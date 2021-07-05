@@ -3,17 +3,17 @@ import {FormControl, NativeSelect} from '@material-ui/core';
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-const useStyles = makeStyles(({
+const useStyles = makeStyles((theme) => ({
   bordered: {
     '& .native-select': {
       '&::before, &::after': {
         display: 'none',
       },
       '& select': {
-        border: '1px solid #444',
+        border: `1px solid ${theme.selectBox.borderColor}`,
         borderRadius: '4px !important',
         padding: '10px 32px 9px 18px',
-        color: '#333',
+        color: theme.selectBox.textColor,
       },
     },
   },

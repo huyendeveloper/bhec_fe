@@ -6,6 +6,12 @@
 // eslint-disable-next-line no-undef
 const {withSentryConfig} = require('@sentry/nextjs');
 
+/*
+* "reactStrictMode: true" is reason that make styled component lost styles when refresh page.
+* It shows a warning in client likes: "Warning: Prop `className` did not match. Server: "MuiBox-root MuiBox-root-12" Client: "MuiBox-root MuiBox-root-13""
+* and make all components render below it - with no styles
+* */
+
 const moduleExports = {
   reactStrictMode: false,
 };
