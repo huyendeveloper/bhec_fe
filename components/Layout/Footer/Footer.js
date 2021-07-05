@@ -5,9 +5,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
-import {Box, Link} from '@material-ui/core';
+import {Box, Icon, Link} from '@material-ui/core';
 
 import {SnsWidget} from '../../Widgets/SnsWidget';
 
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
   },
   mainContent: {
-    borderTop: '1px solid #e3e3e3',
+    borderTop: `1px solid ${theme.footer.borderTopColor}`,
     padding: theme.spacing(8),
   },
   footerLogo: {
@@ -27,8 +26,11 @@ const useStyles = makeStyles((theme) => ({
   },
   copyRight: {
     padding: theme.spacing(3, 0),
-    borderTop: '1px solid #e3e3e3',
+    borderTop: `1px solid ${theme.footer.borderTopColor}`,
     fontSize: '0.75rem',
+  },
+  scrollToTopIcon: {
+    backgroundColor: theme.palette.yellow.main,
   },
 }), {name: 'MuiScrollBar_InFooter'});
 
@@ -115,11 +117,12 @@ const Footer = (props) => {
 
       <ScrollTop {...props}>
         <Fab
+          className={classes.scrollToTopIcon}
           color='secondary'
           size='small'
           aria-label='scroll back to top'
         >
-          <KeyboardArrowUpIcon/>
+          <Icon>{'north'}</Icon>
         </Fab>
       </ScrollTop>
     </>

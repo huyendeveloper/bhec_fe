@@ -32,6 +32,9 @@ const theme = createMuiTheme({
       textColor: '#000',
     },
   },
+  footer: {
+    borderTopColor: '#e3e3e3',
+  },
 });
 
 export default theme;
