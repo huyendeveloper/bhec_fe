@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Button(props) {
+const Button = (props) => {
   const classes = useStyles();
 
   /*
@@ -59,7 +59,7 @@ function Button(props) {
       {children}
     </MuiButton>
   );
-}
+};
 
 Button.propTypes = {
   variant: PropTypes.oneOf(['contained', 'pill']),
@@ -69,39 +69,3 @@ Button.propTypes = {
 };
 
 export default Button;
-
-//
-// const Button = (props) => {
-//   const classes = useStyles();
-//   const {custom_color, pill, variant, custom_size, children} = props;
-//
-//   const className = clsx(classes.root, classes[custom_color], {
-//     [classes.pill]: pill,
-//   }, classes[custom_size]);
-//
-//   return (
-//     <MuiButton
-//       variant={variant}
-//       className={className}
-//       {...props}
-//     >
-//       {children}
-//     </MuiButton>
-//   );
-// };
-//
-// Button.propTypes = {
-//   variant: PropTypes.oneOf(['contained']),
-//   pill: PropTypes.bool,
-//   custom_size: PropTypes.string,
-//   children: PropTypes.any,
-//   custom_color: PropTypes.oneOf(['red', 'yellow', 'default']),
-// };
-//
-// Button.defaultProps = {
-//   variant: 'contained',
-//   custom_color: 'red',
-//   size: 'medium',
-// };
-//
-// export default Button;

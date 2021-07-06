@@ -10,7 +10,7 @@ export default {
 
 export const SelectBoxWithBorder = () => (
   <SelectBox
-    variant={'bordered'}
+    variant='bordered'
     options={[
       {name: '日本語', value: 'jp'},
       {name: 'ENG', value: 'en'},
