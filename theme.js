@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 
 // Create a theme instance.
 const theme = createMuiTheme({
@@ -16,6 +16,24 @@ const theme = createMuiTheme({
     background: {
       default: '#fff',
     },
+  },
+  selectBox: {
+    borderColor: '#444',
+    textColor: '#333',
+  },
+  productWidget: {
+    tag: {
+      backgroundColor: '#8a8a8a',
+      textColor: '#f1f1f1',
+      highlightColor: '#54c0c0',
+    },
+    seller: {
+      sepColor: '#f1ebdf',
+      textColor: '#000',
+    },
+  },
+  footer: {
+    borderTopColor: '#e3e3e3',
   },
 });
 

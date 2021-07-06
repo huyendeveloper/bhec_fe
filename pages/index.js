@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
+import {Box} from '@material-ui/core';
+
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -20,7 +22,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          {'Welcome to' }<a href='https://nextjs.org'>{'Next.js!'}</a>
+          {'Welcome to '}<a href='https://nextjs.org'>{'Next.js!'}</a>
         </h1>
 
         <p className={styles.description}>
@@ -28,14 +30,16 @@ export default function Home() {
           <code className={styles.code}>{'pages/index.js'}</code>
         </p>
 
-        <button
-          type='button'
-          onClick={() => {
-            throw new Error('Sentry Frontend Error');
-          }}
-        >
-          {'Throw error'}
-        </button>
+        <Box mt={2}>
+          <button
+            type='button'
+            onClick={() => {
+              throw new Error('Sentry Frontend Error');
+            }}
+          >
+            {'Throw error'}
+          </button>
+        </Box>
 
         <div className={styles.grid}>
           <a
