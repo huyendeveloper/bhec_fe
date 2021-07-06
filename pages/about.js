@@ -170,6 +170,7 @@ const About = () => {
     },
   ];
 
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles();
@@ -221,9 +222,7 @@ const About = () => {
               xs={12}
               sm={4}
             >
-              <Feature
-                title='見つかる'
-              >
+              <Feature title='見つかる'>
                 {'自分だけの'} <br/>
                 {'こだわり商品を簡単に'} <br/>
                 {'見つけることができる！'}
@@ -462,5 +461,3 @@ const About = () => {
     </div>
   );
 };
-
-export default About;
