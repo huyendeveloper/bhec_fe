@@ -3,9 +3,7 @@ import Image from 'next/image';
 
 import {Box, Container, Grid, Icon, useMediaQuery} from '@material-ui/core';
 
-import {makeStyles} from '@material-ui/core/styles';
-
-import {useTheme} from '@material-ui/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -40,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const About = () => {
+export default function About() {
   const recommendProducts = [
     {
       productId: 1,
@@ -169,7 +167,6 @@ const About = () => {
       answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
     },
   ];
-
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -460,4 +457,4 @@ const About = () => {
       <Footer/>
     </div>
   );
-};
+}
