@@ -8,6 +8,11 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.yellow.light,
     overflow: 'unset',
     marginTop: '5rem',
+
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '4.5rem',
+      height: 'calc(100% - 4.5rem)',
+    },
   },
   cardHeader: {
     fontSize: '1.5rem',
@@ -31,12 +36,33 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '-5rem',
     width: '100%',
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      padding: '0.875rem',
+      top: '-4.5rem',
+    },
   },
   cardContent: {
     fontSize: '1.2rem',
     lineHeight: '2rem',
     textAlign: 'center',
     padding: '2rem 1.5rem',
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      padding: '1.5rem 2rem',
+
+      '& > div': {
+        marginLeft: '-1rem',
+        marginRight: '-1rem',
+      },
+    },
+
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.2rem',
+    },
   },
 }));
 

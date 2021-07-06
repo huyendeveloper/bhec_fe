@@ -6,14 +6,19 @@ import {Typography} from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '3rem 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: '2.5rem 0',
+    },
   },
   title: {
-    fontSize: '2rem',
-    lineHeight: '3rem',
     textAlign: 'center',
-    fontWeight: 'bold',
     marginBottom: '3rem',
     position: 'relative',
+    '& h2': {
+      fontSize: '2rem',
+      lineHeight: '3rem',
+      fontWeight: 'bold',
+    },
     '&::after': {
       position: 'absolute',
       content: '""',
@@ -25,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.red.main,
       bottom: '-0.875rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      '& h2': {
+        fontSize: '1.5rem',
+        lineHeight: '2.5rem',
+      },
+    },
   },
   description: {
     fontSize: '1.5rem',
@@ -33,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '2rem',
     '& p': {
       margin: 0,
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      lineHeight: '1.75rem',
     },
   },
 }));

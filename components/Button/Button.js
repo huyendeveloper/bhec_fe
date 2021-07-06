@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
     '& .material-icons': {
       fontSize: '2.25rem',
     },
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      padding: '0.375rem 0.75rem 0.375rem 1.25rem',
+    },
   },
 }));
 

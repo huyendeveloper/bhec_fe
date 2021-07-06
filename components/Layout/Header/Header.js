@@ -58,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  logoLink: {
+    display: 'flex',
+  },
   iconWrapper: {
     display: 'flex',
     '& button': {
@@ -89,6 +92,7 @@ const Header = (props) => {
               ) : null}
               <Link
                 href={'/'}
+                className={classes.logoLink}
               >
                 <Image
                   src='/logo.png'

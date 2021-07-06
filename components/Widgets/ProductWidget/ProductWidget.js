@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
       '&:not(:last-child)': {
         marginRight: '0.5rem',
       },
+
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: '5px',
+      },
     },
   },
   productTagHighlight: {

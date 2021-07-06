@@ -1,7 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Box, Container, Grid, Icon} from '@material-ui/core';
+import {Box, Container, Grid, Icon, useMediaQuery} from '@material-ui/core';
+
+import {makeStyles} from '@material-ui/core/styles';
+
+import {useTheme} from '@material-ui/styles';
+
+import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
@@ -12,7 +18,29 @@ import {ProductWidget} from '../components/Widgets/ProductWidget';
 import {Button} from '../components/Button';
 import {FaqsWidget} from '../components/Widgets/FaqsWidget';
 
-export default function About() {
+// Import Swiper styles
+import 'swiper/swiper.min.css';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'relative',
+  },
+  supportSystemWrapper: {
+    [theme.breakpoints.down('sm')]: {
+      width: '26.75rem',
+      padding: '0',
+    },
+  },
+  topBanner: {
+    [theme.breakpoints.down('xs')]: {
+      height: '65vh',
+      width: '100%',
+      position: 'relative',
+    },
+  },
+}));
+
+const About = () => {
   const recommendProducts = [
     {
       productId: 1,
@@ -141,8 +169,13 @@ export default function About() {
       answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
     },
   ];
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const classes = useStyles();
+
   return (
-    <div className={'page page-about'}>
+    <div className={classes.root}>
       <Head>
         <title>{'About - BH_EC'}</title>
         <meta
@@ -154,34 +187,42 @@ export default function About() {
       <Header showMainMenu={false}/>
 
       <div className='content'>
-        <div id={'top-banner'}>
-          <Image
-            src={'/img/video-banner.png'}
-            layout='responsive'
-            width={1366}
-            height={640}
-            alt={'Video banner'}
-          />
+        <div className={classes.topBanner}>
+          {isMobile ? (
+            <Image
+              src='/img/video-banner.png'
+              layout={'fill'}
+              objectFit={'cover'}
+              alt='Video banner'
+            />
+          ) : (
+            <Image
+              src='/img/video-banner.png'
+              layout='responsive'
+              width={1366}
+              height={640}
+              alt='Video banner'
+            />
+          )}
         </div>
 
         <ContentBlock
-          title={'おしながきの特徴'}
+          title='おしながきの特徴'
           description={'生産者から直送！新鮮で厳選された商品をお届けするのは今や当たり前！\n' +
           'おしながきではこんな特徴があります'}
         >
           <Grid
             container={true}
-            justify={'center'}
+            justify='center'
             spacing={3}
           >
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <Feature
-                title={'見つかる'}
+                title='見つかる'
               >
                 {'自分だけの'} <br/>
                 {'こだわり商品を簡単に'} <br/>
@@ -191,12 +232,11 @@ export default function About() {
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <Feature
-                title={'知る'}
-                type={'know'}
+                title='知る'
+                type='know'
               >
                 {'生産者やつくられ方'} <br/>
                 {'歴史や文化まで'} <br/>
@@ -206,12 +246,11 @@ export default function About() {
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <Feature
-                title={'応援する'}
-                type={'support'}
+                title='応援する'
+                type='support'
               >
                 {'商品を購入することで'} <br/>
                 {'ふるさとや好きな地域を'} <br/>
@@ -231,59 +270,61 @@ export default function About() {
         </ContentBlock>
 
         <ContentBlock
-          title={'充実のサポート体制'}
-          bgColor={'#FAF6EF'}
-          bgImage={'/img/noise.png'}
-          bgRepeat={'repeat'}
-          mixBlendMode={'multiply'}
+          title='充実のサポート体制'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
         >
           <Container>
             <Grid
               container={true}
-              justify={'center'}
-              alignItems={'center'}
+              justify='center'
+              alignItems='center'
             >
-              <Box py={4}>
+              <Box
+                py={4}
+                className={classes.supportSystemWrapper}
+              >
                 <Image
-                  src={'/img/support-system-lifecycle.png'}
+                  src='/img/support-system-lifecycle.png'
                   width={692}
                   height={692}
-                  alt={'Support system lifecycle'}
+                  alt='Support system lifecycle'
                 />
               </Box>
             </Grid>
           </Container>
         </ContentBlock>
 
-        <ContentBlock title={'簡単３ステップで商品到着'}>
+        <ContentBlock title='簡単３ステップで商品到着'>
           <Grid
             container={true}
-            justify={'center'}
+            justify='center'
             spacing={3}
           >
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <ProductArrivalStep
-                title={'Step1'}
+                title='Step1'
               >
-                <Box fontWeight={'bold'}>
+                <Box fontWeight='bold'>
                   {'スマホやPCから'} <br/>
                   {'商品を選択して簡単注文！'}
                 </Box>
                 <Box
-                  textAlign={'center'}
+                  textAlign='center'
                   mt={2}
                   mb={-4}
                 >
                   <Image
                     width={217}
                     height={207}
-                    alt={'簡単３ステップで商品到着 - STEP1'}
-                    src={'/img/product-arrival-step-1.png'}
+                    alt='簡単３ステップで商品到着 - STEP1'
+                    src='/img/product-arrival-step-1.png'
                   />
                 </Box>
               </ProductArrivalStep>
@@ -292,28 +333,27 @@ export default function About() {
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <ProductArrivalStep
-                title={'Step2'}
+                title='Step2'
               >
                 <Box
-                  lineHeight={'4rem'}
-                  fontWeight={'bold'}
+                  lineHeight='4rem'
+                  fontWeight='bold'
                 >
                   {'発送を待つだけ'}
                 </Box>
                 <Box
-                  textAlign={'center'}
+                  textAlign='center'
                   mt={2}
                   mb={-4}
                 >
                   <Image
                     width={217}
                     height={207}
-                    alt={'簡単３ステップで商品到着 - STEP2'}
-                    src={'/img/product-arrival-step-2.png'}
+                    alt='簡単３ステップで商品到着 - STEP2'
+                    src='/img/product-arrival-step-2.png'
                   />
                 </Box>
               </ProductArrivalStep>
@@ -322,28 +362,27 @@ export default function About() {
             <Grid
               item={true}
               xs={12}
-              sm={6}
-              md={4}
+              sm={4}
             >
               <ProductArrivalStep
-                title={'Step3'}
+                title='Step3'
               >
                 <Box
-                  lineHeight={'4rem'}
-                  fontWeight={'bold'}
+                  lineHeight='4rem'
+                  fontWeight='bold'
                 >
                   {'お家で受け取り'}
                 </Box>
                 <Box
-                  textAlign={'center'}
+                  textAlign='center'
                   mt={2}
                   mb={-4}
                 >
                   <Image
                     width={217}
                     height={207}
-                    alt={'簡単３ステップで商品到着 - STEP3'}
-                    src={'/img/product-arrival-step-3.png'}
+                    alt='簡単３ステップで商品到着 - STEP3'
+                    src='/img/product-arrival-step-3.png'
                   />
                 </Box>
               </ProductArrivalStep>
@@ -352,38 +391,58 @@ export default function About() {
         </ContentBlock>
 
         <ContentBlock
-          title={'初めての方にオススメ！'}
-          bgColor={'#FAF6EF'}
-          bgImage={'/img/noise.png'}
-          bgRepeat={'repeat'}
-          mixBlendMode={'multiply'}
+          title='初めての方にオススメ！'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
         >
-          <Grid
-            container={true}
-            justify={'center'}
-            spacing={3}
-          >
-            {recommendProducts.map((product, index) => (
-              <Grid
-                key={index}
-                item={true}
-                xs={12}
-                sm={4}
-                md={3}
-              >
-                <ProductWidget data={product}/>
-              </Grid>
-            ))}
-          </Grid>
+          {isMobile ? (
+            <Swiper
+              slidesPerView={'auto'}
+              spaceBetween={24}
+              pagination={{
+                clickable: true,
+              }}
+              className='productSwiper'
+            >
+              {recommendProducts.map((product, index) => (
+                <SwiperSlide
+                  style={{width: '70%'}}
+                  key={index}
+                >
+                  <ProductWidget data={product}/>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <Grid
+              container={true}
+              justify='center'
+              spacing={3}
+            >
+              {recommendProducts.map((product, index) => (
+                <Grid
+                  key={index}
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={3}
+                >
+                  <ProductWidget data={product}/>
+                </Grid>
+              ))}
+            </Grid>
+          )}
 
           <Box
-            mt={6}
-            textAlign={'center'}
+            mt={isMobile ? 3 : 6}
+            textAlign='center'
           >
             <Button
-              variant={'pill'}
-              customColor={'red'}
-              customSize={'extraLarge'}
+              variant='pill'
+              customColor='red'
+              customSize='extraLarge'
               endIcon={<Icon>{'chevron_right'}</Icon>}
             >
               {'オススメ商品をもっと見る'}
@@ -392,7 +451,7 @@ export default function About() {
         </ContentBlock>
 
         <ContentBlock
-          title={'よくある質問'}
+          title='よくある質問'
         >
           <FaqsWidget data={faqsData}/>
         </ContentBlock>
@@ -402,4 +461,6 @@ export default function About() {
       <Footer/>
     </div>
   );
-}
+};
+
+export default About;
