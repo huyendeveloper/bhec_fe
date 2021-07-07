@@ -1,14 +1,14 @@
 import React from 'react';
 
-import {Feature} from '../components/Widgets/Feature';
+import {FeatureWidget} from '../components/Widgets/FeatureWidget';
 import {ProductWidget} from '../components/Widgets/ProductWidget';
 
 export const FeatureDefault = () => (
-  <Feature title='見つかる'>
+  <FeatureWidget title='見つかる'>
     {'自分だけの'} <br/>
     {'こだわり商品を簡単に'} <br/>
     {'見つけることができる！'}
-  </Feature>
+  </FeatureWidget>
 );
 
 export const ProductListItem = () => (

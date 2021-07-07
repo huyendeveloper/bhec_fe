@@ -52,20 +52,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Feature = ({type, title, children}) => {
+const FeatureWidget = ({iconSrc, title, children}) => {
   const classes = useStyles();
-  let iconPath;
-  switch (type) {
-  case 'support':
-    iconPath = '/img/support.png';
-    break;
-  case 'know':
-    iconPath = '/img/know.png';
-    break;
-  default:
-    iconPath = '/img/found.png';
-    break;
-  }
+
   return (
     <Card
       className={classes.root}
@@ -73,15 +62,15 @@ const Feature = ({type, title, children}) => {
     >
       <CardHeader
         className={classes.cardHeader}
-        avatar={
+        avatar={iconSrc === '' ? null : (
           <Image
             className={classes.cardIcon}
             width={62}
             height={62}
-            src={iconPath}
+            src={iconSrc}
             alt={title}
           />
-        }
+        )}
         title={title}
       />
 
@@ -92,15 +81,15 @@ const Feature = ({type, title, children}) => {
   );
 };
 
-Feature.propTypes = {
-  type: PropTypes.string.isRequired,
+FeatureWidget.propTypes = {
+  iconSrc: PropTypes.string,
   title: PropTypes.string.isRequired,
   children: PropTypes.any,
 };
 
-Feature.defaultProps = {
-  type: 'found',
+FeatureWidget.defaultProps = {
+  iconSrc: '',
   title: 'New Feature',
 };
 
-export default Feature;
+export default FeatureWidget;
