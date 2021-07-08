@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import Head from 'next/head';
 import Image from 'next/image';
 
@@ -11,6 +12,8 @@ import TopBannerWidget from '../../components/Widgets/TopBannerWidget/TopBannerW
 import {ContentBlock} from '../../components/ContentBlock';
 import {Button} from '../../components/Button';
 import {FeatureWidget} from '../../components/Widgets/FeatureWidget';
+import {StepWidget as ProductArrivalStep} from '../../components/Widgets/StepWidget';
+import {SpecificationsWidget} from '../../components/Widgets/SpecificationsWidget';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -20,6 +23,7 @@ const useStyles = makeStyles(() => ({
 
 export default function Seller() {
   const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles();
 
@@ -231,6 +235,138 @@ export default function Seller() {
             </Grid>
 
           </Grid>
+        </ContentBlock>
+
+        <ContentBlock
+          title='簡単！出品までのステップ'
+        >
+          <Grid
+            container={true}
+            justify='center'
+            spacing={3}
+          >
+            <Grid
+              item={true}
+              xs={12}
+              sm={4}
+            >
+              <ProductArrivalStep
+                title='Step1'
+              >
+                <Box
+                  fontWeight='bold'
+                  lineHeight={5}
+                >
+                  {'まずは出品者登録の申請！'}
+                </Box>
+                <Box
+                  textAlign='center'
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={115}
+                    height={192}
+                    alt='簡単３ステップで商品到着 - STEP1'
+                    src='/img/seller-step-1.png'
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+
+            <Grid
+              item={true}
+              xs={12}
+              sm={4}
+            >
+              <ProductArrivalStep
+                title='Step2'
+              >
+                <Box
+                  fontWeight='bold'
+                  my={isTablet ? 1 : 3}
+                  px={3}
+                >
+                  {'３営業日以内に審査結果のご連絡をします。'}
+                </Box>
+                <Box
+                  textAlign='center'
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={114}
+                    height={192}
+                    alt='簡単３ステップで商品到着 - STEP2'
+                    src='/img/seller-step-2.png'
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+
+            <Grid
+              item={true}
+              xs={12}
+              sm={4}
+            >
+              <ProductArrivalStep
+                title='Step3'
+              >
+                <Box
+                  fontWeight='bold'
+                  fontSize={isMobile ? '1.25rem' : (isTablet ? '0.75rem' : 'inherit')}
+                >
+                  {'審査に通過したら出品準備完了！'} <br/>
+                  {'ページを作成し商品を出品しま'} <br/>
+                  {'しょう！'}
+                </Box>
+                <Box
+                  textAlign='center'
+                  mt={2}
+                  mb={-4}
+                >
+                  <Image
+                    width={201}
+                    height={192}
+                    alt='簡単３ステップで商品到着 - STEP3'
+                    src='/img/seller-step-3.png'
+                  />
+                </Box>
+              </ProductArrivalStep>
+            </Grid>
+          </Grid>
+        </ContentBlock>
+
+        <ContentBlock
+          title='おしながきストアの出品基準'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
+        >
+          <SpecificationsWidget
+            specs={[
+              '国内で生産されている商品であること',
+              '商品情報をできる限り多く記載できること',
+              '責任を持って商品を出品できる生産者であること',
+              '各生産品ごとの基準は出品者登録のページからご確認ください。',
+            ]}
+          />
+
+          <Box
+            mt={isMobile ? 5 : 6}
+            textAlign='center'
+          >
+            <Button
+              variant='pill'
+              customColor='red'
+              customSize='extraLarge'
+              endIcon={<Icon>{'chevron_right'}</Icon>}
+              href='/lp/seller-form'
+            >
+              {'出品者登録はこちら'}
+            </Button>
+          </Box>
         </ContentBlock>
 
       </div>
