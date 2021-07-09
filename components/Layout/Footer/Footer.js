@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   mainContent: {
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
     padding: theme.spacing(8),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(6, 0, 4, 0),
+    },
   },
   footerLogo: {
     marginBottom: '1.5rem',
@@ -28,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 0),
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
     fontSize: '0.75rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2, 0),
+    },
   },
   scrollToTopIcon: {
     backgroundColor: theme.palette.yellow.main,

@@ -30,12 +30,25 @@ const useStyles = makeStyles((theme) => ({
       top: '-1rem',
       left: '-1rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      padding: '13px',
+
+      '& div[class$="-avatar"]': {
+        top: '-1.25rem',
+      },
+    },
   },
   cardContent: {
     fontSize: '1.2rem',
     lineHeight: '2rem',
     textAlign: 'center',
     padding: '2rem 1.5rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.375rem',
+    },
   },
 }));
 
