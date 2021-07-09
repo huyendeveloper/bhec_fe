@@ -181,7 +181,6 @@ export default function About() {
       <div className='content'>
 
         <TopBannerWidget
-          isMobile={isMobile}
           imgSrc='/img/video-banner.png'
           imgAlt='Oshinagaki Store'
           imgWidth={1366}

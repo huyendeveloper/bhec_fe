@@ -46,7 +46,6 @@ export default function Seller() {
       <div className='content'>
 
         <TopBannerWidget
-          isMobile={isMobile}
           imgSrc='/img/banner-seller.png'
           imgAlt='Oshinagaki Store'
           imgWidth={1366}

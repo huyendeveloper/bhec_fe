@@ -17,6 +17,9 @@ const theme = createMuiTheme({
       default: '#fff',
     },
   },
+  topBanner: {
+    textColor: '#fff',
+  },
   selectBox: {
     borderColor: '#444',
     textColor: '#333',
