@@ -35,6 +35,14 @@ const theme = createMuiTheme({
       textColor: '#000',
     },
   },
+  styledForm: {
+    formControl: {
+      borderColor: '#bebebe',
+      hoveredBorderColor: '#444',
+      focusedBorderColor: '#4050b5',
+      errorTextColor: '#f44336',
+    },
+  },
   footer: {
     borderTopColor: '#e3e3e3',
   },

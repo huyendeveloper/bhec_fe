@@ -426,6 +426,7 @@ export default function About() {
               customColor='red'
               customSize='extraLarge'
               endIcon={<Icon>{'chevron_right'}</Icon>}
+              href='/lp/seller'
             >
               {'オススメ商品をもっと見る'}
             </Button>

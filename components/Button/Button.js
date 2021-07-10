@@ -23,9 +23,10 @@ const useStyles = makeStyles((theme) => ({
   },
   extraLarge: {
     fontSize: '1.25rem',
-    lineHeight: '1.125rem',
+    lineHeight: '2.25rem',
     fontWeight: 'bold',
     padding: '0.875rem 2.3125rem',
+    minWidth: '22.75rem',
 
     '& .material-icons': {
       fontSize: '2.25rem',
