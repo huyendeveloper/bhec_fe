@@ -156,14 +156,17 @@ export default function SellerForm() {
               message: '無効な電話番号。',
             },
           }}
-          render={({field}) => (
+          render={({field: {name, value, ref, onChange}}) => (
             <TextField
               id='deputyPhoneNumber'
               variant='outlined'
               label={'0000 - 000 - 0000'}
               error={Boolean(errors.deputyPhoneNumber)}
               InputLabelProps={{shrink: false}}
-              {...field}
+              name={name}
+              value={value}
+              inputRef={ref}
+              onChange={onChange}
             />
           )}
         />
@@ -206,13 +209,16 @@ export default function SellerForm() {
               message: 'メールアドレスが無効です。',
             },
           }}
-          render={({field}) => (
+          render={({field: {name, value, ref, onChange}}) => (
             <TextField
               id='deputyEmail'
               variant='outlined'
               error={Boolean(errors.deputyEmail)}
               InputLabelProps={{shrink: false}}
-              {...field}
+              name={name}
+              value={value}
+              inputRef={ref}
+              onChange={onChange}
             />
           )}
         />
@@ -312,14 +318,17 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name'
                               label='⽒名を入力してください'
                               variant='outlined'
                               error={Boolean(errors.name)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              onChange={onChange}
+                              inputRef={ref}
                             />
                           )}
                         />
@@ -356,14 +365,17 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='nameKana'
                               label='⽒名カナを入力してください'
                               variant='outlined'
                               error={Boolean(errors.nameKana)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              onChange={onChange}
+                              inputRef={ref}
                             />
                           )}
                         />
@@ -517,13 +529,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='storeName'
                               variant='outlined'
                               error={Boolean(errors.storeName)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -559,13 +574,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='storeAddress'
                               variant='outlined'
                               error={Boolean(errors.storeAddress)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -602,13 +620,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue='10000'
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='postalCode'
                               variant='outlined'
                               error={Boolean(errors.postalCode)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -652,13 +673,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='province'
                               variant='outlined'
                               error={Boolean(errors.province)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -695,13 +719,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='district'
                               variant='outlined'
                               error={Boolean(errors.district)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -737,13 +764,16 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='town'
                               variant='outlined'
                               error={Boolean(errors.town)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -814,14 +844,17 @@ export default function SellerForm() {
                               message: '無効な電話番号。',
                             },
                           }}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='phoneNumber'
                               variant='outlined'
                               label={'0000 - 000 - 0000'}
                               error={Boolean(errors.phoneNumber)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -864,13 +897,16 @@ export default function SellerForm() {
                               message: 'メールアドレスが無効です。',
                             },
                           }}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='email'
                               variant='outlined'
                               error={Boolean(errors.email)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -911,13 +947,16 @@ export default function SellerForm() {
                               message: '無効なURL。',
                             },
                           }}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='websiteUrl'
                               variant='outlined'
                               error={Boolean(errors.websiteUrl)}
                               InputLabelProps={{shrink: false}}
-                              {...field}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              onChange={onChange}
                             />
                           )}
                         />
@@ -1165,6 +1204,28 @@ export default function SellerForm() {
                   </div>
                 </div>
                 {/* END THIRD BLOCK */}
+
+                {/* FOURTH BLOCK*/}
+                <div className='formBlock'>
+                  <div className='formBlockHeader'>
+                    <Typography
+                      component='h3'
+                      className='formBlockTitle'
+                    >
+                      {'画像アップロード (Max 3枚)'}
+                    </Typography>
+                    <Typography
+                      component='p'
+                      className='formBlockDesc'
+                    >
+                      {'⽣産現場や事業所の様⼦がわかる写真を添付してください。'} <br/>
+                      {'(例)畑の様⼦・主な作業場の様⼦・⽣産に使⽤する機器類'}
+                    </Typography>
+                  </div>
+
+                  <div className='formBlockControls'/>
+                </div>
+                {/* END FOURTH BLOCK*/}
 
                 <Box
                   textAlign='center'

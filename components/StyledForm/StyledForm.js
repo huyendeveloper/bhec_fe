@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiFormControl-root': {
       width: '100%',
     },
+    '& fieldset': {
+      width: 'auto !important',
+    },
     '& .MuiInputLabel-root': {
       fontSize: '0.875rem',
       transform: 'translate(1rem, 1.125rem) scale(1)',
