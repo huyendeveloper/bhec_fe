@@ -34,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
-      lineHeight: '1.5rem',
-      padding: '0.375rem 0.75rem 0.375rem 1.25rem',
+      padding: '0.375rem 1.25rem',
+      minWidth: '18rem',
     },
     [theme.breakpoints.down('xs')]: {
-      padding: '0.375rem 1rem 0.375rem 2.75rem',
+      padding: '0.5rem 2.75rem',
     },
   },
 }));
