@@ -3,10 +3,11 @@
 import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
+import Image from 'next/image';
 import {
   Box, Checkbox, FormControl,
   FormControlLabel, FormGroup,
-  Grid, NativeSelect,
+  Grid, Icon, NativeSelect,
   Radio,
   RadioGroup,
   TextField,
@@ -17,6 +18,8 @@ import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
 import DateFnsUtils from '@date-io/date-fns';
 import jaLocale from 'date-fns/locale/ja';
+
+import ImageUploading from 'react-images-uploading';
 
 import {
   MuiPickersUtilsProvider,
@@ -47,6 +50,19 @@ export default function SellerForm() {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [iamDeputy, setIamDeputy] = useState(false);
+  const [productImages, setProductImages] = React.useState([]);
+  const maxNumber = 3;
+
+  const onProductImagesChange = (imageList) => {
+    const imageDataUrls = [];
+    imageList.forEach((image) => {
+      if (image) {
+        imageDataUrls.push(image.data_url);
+      }
+    });
+    setProductImages(imageList);
+    setValue('images', imageDataUrls);
+  };
 
   const considerList = [
     '農作物（野菜/果物/⽶/穀類/お茶',
@@ -59,13 +75,13 @@ export default function SellerForm() {
   ];
 
   const handleConsiderListChange = (evt) => {
-    let productTypes = getValues('product_type') || [];
+    let productTypes = getValues('product_types') || [];
     if (evt.target.checked) {
       productTypes.push(evt.target.value);
     } else {
       productTypes = productTypes.filter((type) => type !== evt.target.value);
     }
-    setValue('product_type', productTypes);
+    setValue('product_types', productTypes);
   };
 
   // eslint-disable-next-line no-console
@@ -1178,7 +1194,7 @@ export default function SellerForm() {
                         </Box>
 
                         <Controller
-                          name='product_type'
+                          name='product_types'
                           control={control}
                           render={() => (
                             <FormControl component='fieldset'>
@@ -1228,7 +1244,64 @@ export default function SellerForm() {
                     </Typography>
                   </div>
 
-                  <div className='formBlockControls'/>
+                  <div className='formBlockControls'>
+                    <ImageUploading
+                      multiple={true}
+                      value={productImages}
+                      onChange={onProductImagesChange}
+                      maxNumber={maxNumber}
+                      dataURLKey='data_url'
+                    >
+                      {({
+                        imageList,
+                        onImageUpload,
+                        onImageUpdate,
+                        onImageRemove,
+
+                        // isDragging,
+                        dragProps,
+                      }) => {
+                        return (
+                          <div className={classes.imageUploadWrapper}>
+                            {Array.from({length: maxNumber}, (x, i) => i).map((index) => {
+                              const uploadedImage = imageList[index];
+                              if (uploadedImage) {
+                                return (
+                                  <div
+                                    key={`imageUploadItem_${index}`}
+                                    className={classes.imageUploadItem}
+                                  >
+                                    <Image
+                                      onClick={() => onImageUpdate(index)}
+                                      src={uploadedImage.data_url}
+                                      width={80}
+                                      height={80}
+                                      alt={`Image upload ${index + 1}`}
+                                    />
+                                    <button
+                                      type='button'
+                                      className={classes.imageUploadRemove}
+                                      onClick={() => onImageRemove(index)}
+                                    ><Icon>{'close'}</Icon></button>
+                                  </div>
+                                );
+                              }
+                              return (
+                                <button
+                                  key={`imgUploadBtn_${index}`}
+                                  type='button'
+                                  onClick={onImageUpload}
+                                  {...dragProps}
+                                >
+                                  <Icon>{'add'}</Icon>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      }}
+                    </ImageUploading>
+                  </div>
                 </div>
                 {/* END FOURTH BLOCK*/}
 
