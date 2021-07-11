@@ -25,6 +25,8 @@ import {
 
 import React, {useState} from 'react';
 
+import moment from 'moment';
+
 import {Header} from '../../components/Layout/Header';
 import {Footer} from '../../components/Layout/Footer';
 import {TopBannerWidget} from '../../components/Widgets/TopBannerWidget';
@@ -409,7 +411,7 @@ export default function SellerForm() {
                           control={control}
                           defaultValue={null}
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {value, onChange}}) => (
                             <KeyboardDatePicker
                               disableToolbar={true}
                               variant='inline'
@@ -417,8 +419,11 @@ export default function SellerForm() {
                               id='dbo'
                               label='YYYY/MM/DD'
                               InputLabelProps={{shrink: false}}
-                              value={field.value}
-                              onChange={field.onChange}
+                              value={value}
+                              onChange={(date) => {
+                                const formatedDate = moment(date).format('YYYY/MM/DD');
+                                onChange(formatedDate);
+                              }}
                               autoOk={true}
                               error={Boolean(errors.dbo)}
                               KeyboardButtonProps={{
@@ -1123,7 +1128,7 @@ export default function SellerForm() {
                           control={control}
                           defaultValue={null}
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {value, onChange}}) => (
                             <KeyboardDatePicker
                               disableToolbar={true}
                               variant='inline'
@@ -1131,8 +1136,11 @@ export default function SellerForm() {
                               id='time_sell'
                               label='YYYY/MM/DD'
                               InputLabelProps={{shrink: false}}
-                              value={field.value}
-                              onChange={field.onChange}
+                              value={value}
+                              onChange={(date) => {
+                                const formatedDate = moment(date).format('YYYY/MM/DD');
+                                onChange(formatedDate);
+                              }}
                               autoOk={true}
                               error={Boolean(errors.time_sell)}
                               KeyboardButtonProps={{
