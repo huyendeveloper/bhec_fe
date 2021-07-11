@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-useless-escape */
 import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
@@ -22,7 +23,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {Header} from '../../components/Layout/Header';
 import {Footer} from '../../components/Layout/Footer';
@@ -55,18 +56,14 @@ export default function SellerForm() {
     'ライフスタイル⽤品',
   ];
 
-  useEffect(() => {
-    const defaultConsiderList = {};
-    considerList.forEach((value, index) => {
-      defaultConsiderList[index + 1] = false;
-    });
-    setValue('considerList', defaultConsiderList);
-  }, []);
-
   const handleConsiderListChange = (evt) => {
-    const considerListValues = getValues('considerList');
-    considerListValues[evt.target.name] = evt.target.checked ? evt.target.value : false;
-    setValue('considerList', considerListValues);
+    let productTypes = getValues('product_type') || [];
+    if (evt.target.checked) {
+      productTypes.push(evt.target.value);
+    } else {
+      productTypes = productTypes.filter((type) => type !== evt.target.value);
+    }
+    setValue('product_type', productTypes);
   };
 
   // eslint-disable-next-line no-console
@@ -81,18 +78,18 @@ export default function SellerForm() {
         md={6}
       >
         <label
-          htmlFor='deputyName'
+          htmlFor='other_name'
           className='formControlLabel'
         >
           {'⽒名（代表者と異なる場合）'}
         </label>
         <Controller
-          name='deputyName'
+          name='other_name'
           control={control}
           defaultValue=''
           render={({field}) => (
             <TextField
-              id='deputyName'
+              id='other_name'
               label='⽒⽒名を入力してください'
               variant='outlined'
               InputLabelProps={{shrink: false}}
@@ -116,12 +113,12 @@ export default function SellerForm() {
           {'⽒名カナ（代表者と異なる場合）'}
         </label>
         <Controller
-          name='deputyNameKana'
+          name='other_name_kana'
           control={control}
           defaultValue=''
           render={({field}) => (
             <TextField
-              id='deputyNameKana'
+              id='other_name_kana'
               label='⽒⽒⽒名カナを入力してください'
               variant='outlined'
               InputLabelProps={{shrink: false}}
@@ -139,14 +136,14 @@ export default function SellerForm() {
         md={6}
       >
         <label
-          htmlFor='deputyPhoneNumber'
+          htmlFor='other_phone'
           className='formControlLabel'
         >
           {'電話番号 （代表者と異なる場合）'}
           <span className='formControlRequired'>{'*'}</span>
         </label>
         <Controller
-          name='deputyPhoneNumber'
+          name='other_phone'
           control={control}
           defaultValue=''
           rules={{
@@ -158,10 +155,10 @@ export default function SellerForm() {
           }}
           render={({field: {name, value, ref, onChange}}) => (
             <TextField
-              id='deputyPhoneNumber'
+              id='other_phone'
               variant='outlined'
               label={'0000 - 000 - 0000'}
-              error={Boolean(errors.deputyPhoneNumber)}
+              error={Boolean(errors.other_phone)}
               InputLabelProps={{shrink: false}}
               name={name}
               value={value}
@@ -172,7 +169,7 @@ export default function SellerForm() {
         />
         <ErrorMessage
           errors={errors}
-          name='deputyPhoneNumber'
+          name='other_phone'
           render={({messages}) => {
             return messages ? Object.entries(messages).map(([type, message]) => (
               <p
@@ -192,14 +189,14 @@ export default function SellerForm() {
         md={6}
       >
         <label
-          htmlFor='deputyEmail'
+          htmlFor='other_email'
           className='formControlLabel'
         >
           {'メールアドレス '}
           <span className='formControlRequired'>{'*'}</span>
         </label>
         <Controller
-          name='deputyEmail'
+          name='other_email'
           control={control}
           defaultValue=''
           rules={{
@@ -211,9 +208,9 @@ export default function SellerForm() {
           }}
           render={({field: {name, value, ref, onChange}}) => (
             <TextField
-              id='deputyEmail'
+              id='other_email'
               variant='outlined'
-              error={Boolean(errors.deputyEmail)}
+              error={Boolean(errors.other_email)}
               InputLabelProps={{shrink: false}}
               name={name}
               value={value}
@@ -224,7 +221,7 @@ export default function SellerForm() {
         />
         <ErrorMessage
           errors={errors}
-          name='deputyEmail'
+          name='other_email'
           render={({messages}) => {
             return messages ? Object.entries(messages).map(([type, message]) => (
               <p
@@ -354,23 +351,23 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='nameKana'
+                          htmlFor='name_kana'
                           className='formControlLabel'
                         >
                           {'⽒名カナ '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='nameKana'
+                          name='name_kana'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='nameKana'
+                              id='name_kana'
                               label='⽒名カナを入力してください'
                               variant='outlined'
-                              error={Boolean(errors.nameKana)}
+                              error={Boolean(errors.name_kana)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -381,7 +378,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='nameKana'
+                          name='name_kana'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -401,14 +398,14 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='birthday'
+                          htmlFor='dbo'
                           className='formControlLabel'
                         >
                           {'⽣年⽉⽇ '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='birthday'
+                          name='dbo'
                           control={control}
                           defaultValue={null}
                           rules={{required: 'この入力は必須です。'}}
@@ -417,13 +414,13 @@ export default function SellerForm() {
                               disableToolbar={true}
                               variant='inline'
                               format='yyyy/MM/dd'
-                              id='birthday'
+                              id='dbo'
                               label='YYYY/MM/DD'
                               InputLabelProps={{shrink: false}}
                               value={field.value}
                               onChange={field.onChange}
                               autoOk={true}
-                              error={Boolean(errors.birthday)}
+                              error={Boolean(errors.dbo)}
                               KeyboardButtonProps={{
                                 'aria-label': 'change date',
                               }}
@@ -432,7 +429,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='birthday'
+                          name='dbo'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -518,22 +515,22 @@ export default function SellerForm() {
                         xs={12}
                       >
                         <label
-                          htmlFor='storeName'
+                          htmlFor='company_name'
                           className='formControlLabel'
                         >
                           {'事業者名 (屋号/法⼈名) '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='storeName'
+                          name='company_name'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='storeName'
+                              id='company_name'
                               variant='outlined'
-                              error={Boolean(errors.storeName)}
+                              error={Boolean(errors.company_name)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -544,7 +541,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='storeName'
+                          name='company_name'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -563,22 +560,22 @@ export default function SellerForm() {
                         xs={12}
                       >
                         <label
-                          htmlFor='storeAddress'
+                          htmlFor='company_address'
                           className='formControlLabel'
                         >
                           {'事業者住所 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='storeAddress'
+                          name='company_address'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='storeAddress'
+                              id='company_address'
                               variant='outlined'
-                              error={Boolean(errors.storeAddress)}
+                              error={Boolean(errors.company_address)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -589,7 +586,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='storeAddress'
+                          name='company_address'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -609,22 +606,22 @@ export default function SellerForm() {
                         sm={3}
                       >
                         <label
-                          htmlFor='postalCode'
+                          htmlFor='zipcode'
                           className='formControlLabel'
                         >
                           {'郵便番号 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='postalCode'
+                          name='zipcode'
                           control={control}
                           defaultValue='10000'
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='postalCode'
+                              id='zipcode'
                               variant='outlined'
-                              error={Boolean(errors.postalCode)}
+                              error={Boolean(errors.zipcode)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -635,7 +632,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='postalCode'
+                          name='zipcode'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -662,22 +659,22 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='province'
+                          htmlFor='city'
                           className='formControlLabel'
                         >
                           {'都道府県 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='province'
+                          name='city'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='province'
+                              id='city'
                               variant='outlined'
-                              error={Boolean(errors.province)}
+                              error={Boolean(errors.city)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -688,7 +685,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='province'
+                          name='city'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -753,22 +750,22 @@ export default function SellerForm() {
                         xs={12}
                       >
                         <label
-                          htmlFor='town'
+                          htmlFor='ward'
                           className='formControlLabel'
                         >
                           {'町村番地 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='town'
+                          name='ward'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='town'
+                              id='ward'
                               variant='outlined'
-                              error={Boolean(errors.town)}
+                              error={Boolean(errors.ward)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -779,7 +776,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='town'
+                          name='ward'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -799,18 +796,18 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='addressDetail'
+                          htmlFor='office_room'
                           className='formControlLabel'
                         >
                           {'建物名・部屋番号'}
                         </label>
                         <Controller
-                          name='addressDetail'
+                          name='office_room'
                           control={control}
                           defaultValue=''
                           render={({field}) => (
                             <TextField
-                              id='addressDetail'
+                              id='office_room'
                               variant='outlined'
                               InputLabelProps={{shrink: false}}
                               {...field}
@@ -827,14 +824,14 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='phoneNumber'
+                          htmlFor='phone_no'
                           className='formControlLabel'
                         >
                           {'電話番号 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='phoneNumber'
+                          name='phone_no'
                           control={control}
                           defaultValue=''
                           rules={{
@@ -846,10 +843,10 @@ export default function SellerForm() {
                           }}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='phoneNumber'
+                              id='phone_no'
                               variant='outlined'
                               label={'0000 - 000 - 0000'}
-                              error={Boolean(errors.phoneNumber)}
+                              error={Boolean(errors.phone_no)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -860,7 +857,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='phoneNumber'
+                          name='phone_no'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -932,13 +929,13 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='websiteUrl'
+                          htmlFor='url_homepage'
                           className='formControlLabel'
                         >
                           {'⽣産者ホームページURL'}
                         </label>
                         <Controller
-                          name='websiteUrl'
+                          name='url_homepage'
                           control={control}
                           defaultValue=''
                           rules={{
@@ -949,9 +946,9 @@ export default function SellerForm() {
                           }}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='websiteUrl'
+                              id='url_homepage'
                               variant='outlined'
-                              error={Boolean(errors.websiteUrl)}
+                              error={Boolean(errors.url_homepage)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -962,7 +959,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='websiteUrl'
+                          name='url_homepage'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -982,18 +979,18 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='shippingProvider'
+                          htmlFor='express_delivery'
                           className='formControlLabel'
                         >
                           {'ご利⽤予定の運送会社 (希望がある場合)'}
                         </label>
                         <Controller
-                          name='shippingProvider'
+                          name='express_delivery'
                           control={control}
                           defaultValue=''
                           render={({field}) => (
                             <TextField
-                              id='shippingProvider'
+                              id='express_delivery'
                               variant='outlined'
                               InputLabelProps={{shrink: false}}
                               {...field}
@@ -1036,7 +1033,7 @@ export default function SellerForm() {
                         xs={12}
                       >
                         <Controller
-                          name='isDeputy'
+                          name='representative'
                           control={control}
                           defaultValue={iamDeputy}
                           render={({field: {onChange, value}}) => (
@@ -1049,7 +1046,7 @@ export default function SellerForm() {
                                     setIamDeputy(checked);
                                     onChange(checked);
                                   }}
-                                  name='isDeputy'
+                                  name='representative'
                                 />
                               }
                               label='代表者と同じ'
@@ -1070,14 +1067,14 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='exhibitedProducts'
+                          htmlFor='product_sell'
                           className='formControlLabel'
                         >
                           {'出品予定の商品（※具体的な品⽬をお答え下さい）'}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='exhibitedProducts'
+                          name='product_sell'
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
@@ -1087,15 +1084,15 @@ export default function SellerForm() {
                                 {...field}
                               >
                                 <option value=''>{'出品するアイテムをお選びください'}</option>
-                                <option value='1'>{'ITEM 01'}</option>
-                                <option value='2'>{'ITEM 02'}</option>
+                                <option value='ITEM 01'>{'ITEM 01'}</option>
+                                <option value='ITEM 02'>{'ITEM 02'}</option>
                               </NativeSelect>
                             </FormControl>
                           )}
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='exhibitedProducts'
+                          name='product_sell'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -1115,14 +1112,14 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='exhibitedDate'
+                          htmlFor='time_sell'
                           className='formControlLabel'
                         >
                           {'⽣年出品予定の時期 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='exhibitedDate'
+                          name='time_sell'
                           control={control}
                           defaultValue={null}
                           rules={{required: 'この入力は必須です。'}}
@@ -1131,13 +1128,13 @@ export default function SellerForm() {
                               disableToolbar={true}
                               variant='inline'
                               format='yyyy/MM/dd'
-                              id='exhibitedDate'
+                              id='time_sell'
                               label='YYYY/MM/DD'
                               InputLabelProps={{shrink: false}}
                               value={field.value}
                               onChange={field.onChange}
                               autoOk={true}
-                              error={Boolean(errors.exhibitedDate)}
+                              error={Boolean(errors.time_sell)}
                               KeyboardButtonProps={{
                                 'aria-label': 'change date',
                               }}
@@ -1146,7 +1143,7 @@ export default function SellerForm() {
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='exhibitedDate'
+                          name='time_sell'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -1173,7 +1170,7 @@ export default function SellerForm() {
                         </Box>
 
                         <Controller
-                          name='considerList'
+                          name='product_type'
                           control={control}
                           render={() => (
                             <FormControl component='fieldset'>
