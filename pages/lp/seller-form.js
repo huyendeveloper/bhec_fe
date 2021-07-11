@@ -286,7 +286,7 @@ export default function SellerForm() {
 
           <Box
             m={'0 auto'}
-            width={isTablet ? '100%' : '47rem'}
+            width={isTablet ? '100%' : '48rem'}
           >
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <MuiPickersUtilsProvider
@@ -1099,10 +1099,13 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
-                          render={({field}) => (
+                          render={({field: {name, value, ref, onChange}}) => (
                             <FormControl>
                               <NativeSelect
-                                {...field}
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
                               >
                                 <option value=''>{'出品するアイテムをお選びください'}</option>
                                 <option value='ITEM 01'>{'ITEM 01'}</option>
@@ -1257,30 +1260,28 @@ export default function SellerForm() {
                         onImageUpload,
                         onImageUpdate,
                         onImageRemove,
-
-                        // isDragging,
                         dragProps,
                       }) => {
                         return (
-                          <div className={classes.imageUploadWrapper}>
+                          <div className='imageUploadWrapper'>
                             {Array.from({length: maxNumber}, (x, i) => i).map((index) => {
                               const uploadedImage = imageList[index];
                               if (uploadedImage) {
                                 return (
                                   <div
                                     key={`imageUploadItem_${index}`}
-                                    className={classes.imageUploadItem}
+                                    className={'imageUploadItem'}
                                   >
                                     <Image
                                       onClick={() => onImageUpdate(index)}
                                       src={uploadedImage.data_url}
-                                      width={80}
+                                      width={78}
                                       height={80}
                                       alt={`Image upload ${index + 1}`}
                                     />
                                     <button
                                       type='button'
-                                      className={classes.imageUploadRemove}
+                                      className='imageUploadRemove'
                                       onClick={() => onImageRemove(index)}
                                     ><Icon>{'close'}</Icon></button>
                                   </div>
@@ -1291,9 +1292,15 @@ export default function SellerForm() {
                                   key={`imgUploadBtn_${index}`}
                                   type='button'
                                   onClick={onImageUpload}
+                                  className='imageUploadBtn'
                                   {...dragProps}
                                 >
-                                  <Icon>{'add'}</Icon>
+                                  <Image
+                                    src='/img/btn-upload.png'
+                                    width={80}
+                                    height={80}
+                                    alt='Image upload'
+                                  />
                                 </button>
                               );
                             })}
@@ -1301,7 +1308,80 @@ export default function SellerForm() {
                         );
                       }}
                     </ImageUploading>
+
+                    <div
+                      className='termsAndPolicy'
+                    >
+                      <Box
+                        mt='2rem'
+                        mb='0.5rem'
+                      >
+                        <Typography component='h5'>
+                          {'出店にあたっての同意事項 '} <span className='formControlRequired'>{'*'}</span>
+                        </Typography>
+                      </Box>
+
+                      <Controller
+                        name='term'
+                        defaultValue={false}
+                        control={control}
+                        rules={{required: true}}
+                        render={({field: {name, value, ref, onChange}}) => (
+                          <FormControlLabel
+                            className={errors.term ? 'checkboxRequiredError' : ''}
+                            control={
+                              <Checkbox
+                                name={name}
+                                checked={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              />
+                            }
+                            label='「出品者利⽤規約」に同意します'
+                          />
+                        )}
+                      />
+
+                      <br/>
+
+                      <Controller
+                        name='policy'
+                        defaultValue={false}
+                        control={control}
+                        rules={{required: true}}
+                        render={({field: {name, value, onChange, ref}}) => (
+                          <FormControlLabel
+                            className={errors.policy ? 'checkboxRequiredError' : ''}
+                            control={
+                              <Checkbox
+                                name={name}
+                                checked={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              />
+                            }
+                            label='「おしながき基準」に同意します'
+                          />
+                        )}
+                      />
+
+                      {errors.term || errors.policy ? (
+                        <p
+                          className='inputErrorText'
+                          key='need-agree'
+                        >{'⚠ 出店にあたっての同意事項'}</p>
+                      ) : null}
+                    </div>
                   </div>
+
+                  <Box
+                    mt='1.75rem'
+                    lineHeight={1.75}
+                  >
+                    {'本フォームの送信後、弊社にて出品審査を⾏います。'} <br/>
+                    {'本フォームの送信後、3営業⽇以内（⼟⽇祝⽇除く）に、⼊⼒頂いたメールアドレスに審査結果のご連絡をいたします。'} <br/>
+                    {'審査を通過された出品者様には、出品者に必要な情報をお送りいたします。'}
+                  </Box>
                 </div>
                 {/* END FOURTH BLOCK*/}
 
