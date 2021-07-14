@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '1.5rem',
       padding: '0.375rem 0.75rem 0.375rem 1.25rem',
     },
+    [theme.breakpoints.down('xs')]: {
+      padding: '0.375rem 1rem 0.375rem 2.75rem',
+    },
   },
 }));
 

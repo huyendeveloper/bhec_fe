@@ -1,7 +1,9 @@
+import Image from 'next/image';
 import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Container from '@material-ui/core/Container';
-import {Typography} from '@material-ui/core';
+import {Box, Typography} from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,15 +52,32 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '1.75rem',
     },
   },
+  blockquote: {
+    position: 'relative',
+    padding: theme.spacing(0, 6),
+  },
+  quoteLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  quoteRight: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    transform: 'rotate(180deg)',
+  },
 }));
 
-const ContentBlock = ({title, description, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
+const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
   const classes = useStyles();
   const newDesc = description ? description.split('\n').
     map((str, index) => (
       <p
         key={index}
       >{str}</p>)) : null;
+
+  const descClass = clsx(classes.description, classes[descriptionType]);
 
   return (
     <section
@@ -78,8 +97,29 @@ const ContentBlock = ({title, description, bgColor, bgImage, bgRepeat, mixBlendM
         ) : null}
 
         {description && description !== '' ? (
-          <div className={classes.description}>
+          <div className={descClass}>
             {newDesc}
+
+            {descriptionType === 'blockquote' ? (
+              <>
+                <Box className={classes.quoteLeft}>
+                  <Image
+                    src='/img/icons/quote.png'
+                    width={28}
+                    height={24}
+                    alt='blockquote'
+                  />
+                </Box>
+                <Box className={classes.quoteRight}>
+                  <Image
+                    src='/img/icons/quote.png'
+                    width={28}
+                    height={24}
+                    alt='blockquote'
+                  />
+                </Box>
+              </>
+            ) : null}
           </div>
         ) : null}
 
@@ -98,6 +138,7 @@ ContentBlock.propTypes = {
   mixBlendMode: PropTypes.string,
   title: PropTypes.string,
   description: PropTypes.string,
+  descriptionType: PropTypes.string,
   children: PropTypes.any,
 };
 
