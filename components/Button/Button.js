@@ -17,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.red.dark,
       color: theme.palette.common.white,
     },
+
+    '&.Mui-disabled': {
+      color: theme.palette.common.white,
+      backgroundColor: theme.palette.red.light,
+    },
   },
   pill: {
     borderRadius: 45,
@@ -30,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
 
     '& .material-icons': {
       fontSize: '2.25rem',
+    },
+
+    '& .MuiCircularProgress-root': {
+      marginLeft: '1rem',
+      color: theme.palette.common.white,
     },
 
     [theme.breakpoints.down('sm')]: {
