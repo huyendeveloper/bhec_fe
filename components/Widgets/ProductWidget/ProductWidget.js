@@ -114,7 +114,7 @@ const ProductWidget = ({variant, data}) => {
             {tags && tags.length > 0 ? tags.map((tag, index) => {
               return (
                 <Chip
-                  key={index}
+                  key={String(index)}
                   size='small'
                   label={tag.name}
                   className={tag.isFeatured ? classes.productTagHighlight : ''}

@@ -17,6 +17,9 @@ const theme = createMuiTheme({
       default: '#fff',
     },
   },
+  topBanner: {
+    textColor: '#fff',
+  },
   selectBox: {
     borderColor: '#444',
     textColor: '#333',
@@ -30,6 +33,14 @@ const theme = createMuiTheme({
     seller: {
       sepColor: '#f1ebdf',
       textColor: '#000',
+    },
+  },
+  styledForm: {
+    formControl: {
+      borderColor: '#bebebe',
+      hoveredBorderColor: '#444',
+      focusedBorderColor: '#4050b5',
+      errorTextColor: '#f44336',
     },
   },
   footer: {

@@ -74,7 +74,7 @@ const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bg
   const newDesc = description ? description.split('\n').
     map((str, index) => (
       <p
-        key={index}
+        key={String(index)}
       >{str}</p>)) : null;
 
   const descClass = clsx(classes.description, classes[descriptionType]);

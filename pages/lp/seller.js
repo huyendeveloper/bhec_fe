@@ -46,7 +46,6 @@ export default function Seller() {
       <div className='content'>
 
         <TopBannerWidget
-          isMobile={isMobile}
           imgSrc='/img/banner-seller.png'
           imgAlt='Oshinagaki Store'
           imgWidth={1366}
@@ -61,6 +60,7 @@ export default function Seller() {
           descriptionType='blockquote'
         >
           <Image
+            alt='おしながきストアとは'
             src='/img/about-us.png'
             width={1140}
             height={480}

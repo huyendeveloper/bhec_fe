@@ -181,7 +181,6 @@ export default function About() {
       <div className='content'>
 
         <TopBannerWidget
-          isMobile={isMobile}
           imgSrc='/img/video-banner.png'
           imgAlt='Oshinagaki Store'
           imgWidth={1366}
@@ -389,10 +388,10 @@ export default function About() {
               }}
               className='productSwiper'
             >
-              {recommendProducts.map((product, index) => (
+              {recommendProducts.map((product) => (
                 <SwiperSlide
                   style={{width: '70%'}}
-                  key={index}
+                  key={`product-${product.productID}`}
                 >
                   <ProductWidget data={product}/>
                 </SwiperSlide>
@@ -404,9 +403,9 @@ export default function About() {
               justify='center'
               spacing={3}
             >
-              {recommendProducts.map((product, index) => (
+              {recommendProducts.map((product) => (
                 <Grid
-                  key={index}
+                  key={`product-${product.productID}`}
                   item={true}
                   xs={12}
                   sm={4}
@@ -427,6 +426,7 @@ export default function About() {
               customColor='red'
               customSize='extraLarge'
               endIcon={<Icon>{'chevron_right'}</Icon>}
+              href='/lp/seller'
             >
               {'オススメ商品をもっと見る'}
             </Button>
