@@ -117,6 +117,16 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.red.light,
       },
     },
+    '& .linkLabel': {
+      textUnderlineOffset: '2px',
+      color: theme.palette.body.textColor,
+    },
+    '& .selectBoxError': {
+      borderColor: `${theme.palette.red.light} !important`,
+      '& .MuiInputBase-input': {
+        color: theme.palette.red.light,
+      },
+    },
   },
 }));
 
