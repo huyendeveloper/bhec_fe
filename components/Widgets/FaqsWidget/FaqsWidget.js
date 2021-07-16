@@ -78,10 +78,10 @@ const FaqsWidget = ({data}) => {
   return (
     <div className={classes.root}>
       {data && data.length > 0 ? data.map((faq) => {
-        const formatterdAnswer = faq.answer ? faq.answer.split('\n').
+        const formattedAnswer = faq.answer ? faq.answer.split('\n').
           map((str, index) => (
             <p
-              key={index}
+              key={String(index)}
             >{index === 0 ? 'A.' + str : str}</p>)) : null;
 
         return (
@@ -100,7 +100,7 @@ const FaqsWidget = ({data}) => {
             </AccordionSummary>
             <AccordionDetails>
               <Box className='faq-answer'>
-                {formatterdAnswer}
+                {formattedAnswer}
               </Box>
             </AccordionDetails>
           </Accordion>
