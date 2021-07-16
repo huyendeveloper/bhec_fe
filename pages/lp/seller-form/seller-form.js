@@ -38,6 +38,8 @@ import {ContentBlock} from '../../../components/ContentBlock';
 import {Button} from '../../../components/Button';
 import {StyledForm} from '../../../components/StyledForm';
 
+import {prefectures} from '../../../constants';
+
 import {registerSeller} from './index';
 
 const useStyles = makeStyles(() => ({
@@ -688,16 +690,22 @@ export default function SellerForm() {
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <TextField
-                              id='city'
-                              variant='outlined'
-                              error={Boolean(errors.city)}
-                              InputLabelProps={{shrink: false}}
-                              name={name}
-                              value={value}
-                              inputRef={ref}
-                              onChange={onChange}
-                            />
+                            <FormControl>
+                              <NativeSelect
+                                className={errors.city ? 'selectBoxError' : ''}
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              >
+                                {prefectures.map((pref, index) => (
+                                  <option
+                                    key={String(index)}
+                                    value={pref.value}
+                                  >{pref.label}</option>
+                                ))}
+                              </NativeSelect>
+                            </FormControl>
                           )}
                         />
                         <ErrorMessage

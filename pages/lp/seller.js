@@ -258,7 +258,6 @@ export default function Seller() {
               {'出品者登録はこちら'}
             </Button>
           </Box>
-
         </ContentBlock>
 
         <ContentBlock
