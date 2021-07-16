@@ -235,6 +235,30 @@ export default function Seller() {
             </Grid>
 
           </Grid>
+
+          <Box
+            mt={2}
+            textAlign='center'
+            fontWeight={700}
+          >
+            {'＊うち2%を地域へ還元'}
+          </Box>
+
+          <Box
+            mt={isMobile ? 3 : 5}
+            textAlign='center'
+          >
+            <Button
+              variant='pill'
+              customColor='red'
+              customSize='extraLarge'
+              endIcon={<Icon>{'chevron_right'}</Icon>}
+              href='/lp/seller-form'
+            >
+              {'出品者登録はこちら'}
+            </Button>
+          </Box>
+
         </ContentBlock>
 
         <ContentBlock
