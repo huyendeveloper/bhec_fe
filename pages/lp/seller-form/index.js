@@ -8,7 +8,7 @@ const API_ENDPOINT = process.env.API_ENDPOINT;
 
 export const registerSeller = async (sellerData) => {
   return axios.post(
-    `${API_ENDPOINT}/send_mail_shop_owner`,
+    `${API_ENDPOINT}/seller_register`,
     {...sellerData},
   );
 };
