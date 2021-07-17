@@ -1,24 +1,44 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-useless-escape */
 import 'date-fns';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 
 import React from 'react';
+
+import Image from 'next/image';
+
+import {Box, useMediaQuery} from '@material-ui/core';
+
+import Typography from '@material-ui/core/Typography';
 
 import {Header} from '../../../components/Layout/Header';
 import {Footer} from '../../../components/Layout/Footer';
 import {TopBannerWidget} from '../../../components/Widgets/TopBannerWidget';
 import {ContentBlock} from '../../../components/ContentBlock';
+import {AlertBox} from '../../../components/AlertBox';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
+  },
+  title: {
+    fontSize: '1.5rem',
+    fontWeight: 700,
+    lineHeight: '2.25rem',
+    color: theme.palette.green.main,
+    margin: '2rem 0 1.75rem',
+  },
+  description: {
+    fontSize: '0.875rem',
+    lineHeight: '1.3125rem',
   },
 }));
 
 export default function Thanks() {
   const classes = useStyles();
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <div className={classes.root}>
@@ -43,11 +63,40 @@ export default function Thanks() {
           imgAlt='Seller Form'
         />
         <ContentBlock
-          title='Thank you !!!'
           bgImage='/img/noise.png'
           bgRepeat='repeat'
           mixBlendMode='multiply'
-        />
+        >
+          <Box
+            px={isTablet ? 0 : '17%'}
+            my={2}
+            textAlign='center'
+          >
+            <AlertBox>
+              <Image
+                src='/img/seller-thanks.png'
+                width={268}
+                height={223}
+                alt='出品者登録⼊⼒項⽬'
+              />
+
+              <Typography
+                component='h1'
+                variant='h5'
+                className={classes.title}
+              >
+                {'送信が完了いたしました。'}
+              </Typography>
+
+              <Typography
+                component='p'
+                className={classes.description}
+              >
+                {'この度はご登録を頂き、誠にありがとうございます。折り返しご連絡させて頂きますので、今しばらくお待ちくださいますよう、お願いいたします。'}
+              </Typography>
+            </AlertBox>
+          </Box>
+        </ContentBlock>
       </div>
 
       <Footer/>

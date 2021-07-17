@@ -22,15 +22,15 @@ const theme = createMuiTheme({
       main: '#e6b422',
       dark: '#b18914',
     },
+    green: {
+      main: '#54c0c0',
+    },
     background: {
       default: '#fff',
     },
     body: {
       textColor: '#2e2e2e',
     },
-  },
-  topBanner: {
-    textColor: '#fff',
   },
   topBanner: {
     textColor: '#fff',
