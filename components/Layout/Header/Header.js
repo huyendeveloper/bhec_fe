@@ -106,7 +106,8 @@ const Header = (props) => {
               <SelectBox
                 options={[
                   {name: '日本語', value: 'jp'},
-                  {name: 'ENG', value: 'en'},
+
+                  // {name: 'ENG', value: 'en'},
                 ]}
               />
             </div>
