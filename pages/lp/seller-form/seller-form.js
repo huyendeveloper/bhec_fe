@@ -1104,19 +1104,17 @@ export default function SellerForm() {
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <FormControl>
-                              <NativeSelect
-                                className={errors.product_sell ? 'selectBoxError' : ''}
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              >
-                                <option value=''>{'出品するアイテムをお選びください'}</option>
-                                <option value='ITEM 01'>{'ITEM 01'}</option>
-                                <option value='ITEM 02'>{'ITEM 02'}</option>
-                              </NativeSelect>
-                            </FormControl>
+                            <TextField
+                              id='product_sell'
+                              label='農作物（野菜/果物/⽶/穀類/お茶）'
+                              variant='outlined'
+                              error={Boolean(errors.product_sell)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              onChange={onChange}
+                              inputRef={ref}
+                            />
                           )}
                         />
                         <ErrorMessage
@@ -1187,48 +1185,6 @@ export default function SellerForm() {
                         />
                       </Grid>
                       {/* END EXHIBITED DATE */}
-
-                      {/* PRODUCT TYPES */}
-                      <Grid
-                        item={true}
-                        xs={12}
-                      >
-                        <Box
-                          mt={3}
-                          mb={-1}
-                        >
-                          <Typography component='h5'>{'出品を検討している時期 (選択式)'}</Typography>
-                          <Typography
-                            component='p'
-                            style={{marginTop: '0.5rem'}}
-                          >{'取り扱い商品（ご出品予定の全ての商材） * 商品によって審査基準が異なるため、出品予定商材全てを選択してください。'}</Typography>
-                        </Box>
-                      </Grid>
-
-                      <Grid
-                        item={true}
-                        xs={12}
-                        sm={6}
-                      >
-                        <Controller
-                          name='product_type'
-                          control={control}
-                          render={({field: {name, value, ref, onChange}}) => (
-                            <TextField
-                              id='product_type'
-                              label='農作物（野菜/果物/⽶/穀類/お茶）'
-                              variant='outlined'
-                              InputLabelProps={{shrink: false}}
-                              name={name}
-                              value={value}
-                              onChange={onChange}
-                              inputRef={ref}
-                            />
-                          )}
-                        />
-                      </Grid>
-                      {/* END PRODUCT TYPES*/}
-
                     </Grid>
                   </div>
                 </div>
