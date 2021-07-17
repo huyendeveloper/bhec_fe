@@ -4,7 +4,8 @@ import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useRouter} from 'next/router';
+
+// import {useRouter} from 'next/router';
 import {
   Box, Checkbox, CircularProgress, FormControl,
   FormControlLabel,
@@ -40,7 +41,9 @@ import {StyledForm} from '../../../components/StyledForm';
 
 import {prefectures} from '../../../constants';
 
-import {registerSeller} from './index';
+import {StyledSteppers} from '../../../components/StyledSteppers';
+
+// import {registerSeller} from './index';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -48,10 +51,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const REGISTER_STEPS = [
+  '内容を入力',
+  '内容を確認',
+  '送信完了',
+];
+
 export default function SellerForm() {
   const theme = useTheme();
   const classes = useStyles();
-  const router = useRouter();
+
+  // const router = useRouter();
 
   const {control, handleSubmit, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -60,7 +70,8 @@ export default function SellerForm() {
   const [productImages, setProductImages] = useState([]);
   const [isViewedTerms, setIsViewedTerms] = useState(false);
   const [isViewedPolicy, setIsViewedPolicy] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
+  const [activeStep, setActiveStep] = React.useState(0);
 
   const maxNumber = 3;
 
@@ -75,14 +86,26 @@ export default function SellerForm() {
     setValue('images', imageDataUrls);
   };
 
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  // };
+
   // eslint-disable-next-line no-console
   const onSubmit = async (data) => {
-    setLoading(true);
-    const res = await registerSeller(data);
-    if (res && !res.errors) {
-      setLoading(false);
-      await router.push('/lp/seller-form/thanks');
-    }
+    handleNext();
+    // eslint-disable-next-line no-console
+    console.log(data);
+
+    // setLoading(true);
+    // const res = await registerSeller(data);
+    // if (res && !res.errors) {
+    //   setLoading(false);
+    //   await router.push('/lp/seller-form/thanks');
+    // }
   };
 
   const DeputyInputRender = (
@@ -286,12 +309,17 @@ export default function SellerForm() {
             m={'0 auto'}
             width={isTablet ? '100%' : '48rem'}
           >
+            <StyledSteppers
+              activeStep={activeStep}
+              steps={REGISTER_STEPS}
+            />
+
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <MuiPickersUtilsProvider
                 utils={DateFnsUtils}
                 locale={jaLocale}
               >
-                {/* FIRST BLOCK */}
+                {/*FIRST BLOCK*/}
                 <div className='formBlock'>
                   <div className='formBlockHeader'>
                     <Typography
@@ -313,7 +341,7 @@ export default function SellerForm() {
                       container={true}
                       spacing={3}
                     >
-                      {/* NAME */}
+                      {/*NAME*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -358,9 +386,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END NAME */}
+                      {/*END NAME*/}
 
-                      {/* NAME KANA */}
+                      {/*NAME KANA*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -405,9 +433,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END NAME KANA */}
+                      {/*END NAME KANA*/}
 
-                      {/* BIRTHDAY */}
+                      {/*BIRTHDAY*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -459,9 +487,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END BIRTHDAY */}
+                      {/*END BIRTHDAY*/}
 
-                      {/* GENDER */}
+                      {/*GENDER*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -506,13 +534,13 @@ export default function SellerForm() {
                           )}
                         />
                       </Grid>
-                      {/* END GENDER */}
+                      {/*END GENDER*/}
                     </Grid>
                   </div>
                 </div>
-                {/* END FIRST BLOCK */}
+                {/*END FIRST BLOCK*/}
 
-                {/* SECOND BLOCK */}
+                {/*SECOND BLOCK*/}
                 <div className='formBlock'>
                   <div className='formBlockHeader'>
                     <Typography
@@ -528,7 +556,7 @@ export default function SellerForm() {
                       container={true}
                       spacing={3}
                     >
-                      {/* STORE NAME */}
+                      {/*STORE NAME*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -571,9 +599,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END STORE NAME */}
+                      {/*END STORE NAME*/}
 
-                      {/* STORE ADDRESS */}
+                      {/*STORE ADDRESS*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -616,9 +644,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END STORE ADDRESS */}
+                      {/*END STORE ADDRESS*/}
 
-                      {/* POSTAL CODE */}
+                      {/*POSTAL CODE*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -662,7 +690,7 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END POSTAL CODE */}
+                      {/*END POSTAL CODE*/}
 
                       <Grid
                         item={true}
@@ -671,7 +699,7 @@ export default function SellerForm() {
                         style={{padding: 0}}
                       />
 
-                      {/* PROVINCE */}
+                      {/*PROVINCE*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -721,9 +749,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END PROVINCE*/}
+                      {/*END PROVINCE*/}
 
-                      {/* DISTRICT */}
+                      {/*DISTRICT*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -767,9 +795,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END DISTRICT */}
+                      {/*END DISTRICT*/}
 
-                      {/* TOWN */}
+                      {/*TOWN*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -812,9 +840,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END TOWN */}
+                      {/*END TOWN*/}
 
-                      {/* ADDRESS DETAIL */}
+                      {/*ADDRESS DETAIL*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -840,9 +868,9 @@ export default function SellerForm() {
                           )}
                         />
                       </Grid>
-                      {/* END ADDRESS DETAIL */}
+                      {/*END ADDRESS DETAIL*/}
 
-                      {/* PHONE NUMBER */}
+                      {/*PHONE NUMBER*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -893,9 +921,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END PHONE NUMBER */}
+                      {/*END PHONE NUMBER*/}
 
-                      {/* EMAIL */}
+                      {/*EMAIL*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -945,9 +973,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END EMAIL */}
+                      {/*END EMAIL*/}
 
-                      {/* WEB URL */}
+                      {/*WEB URL*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -995,9 +1023,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END WEB URL */}
+                      {/*END WEB URL*/}
 
-                      {/* SHIPPING PROVIDER */}
+                      {/*SHIPPING PROVIDER*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -1023,14 +1051,14 @@ export default function SellerForm() {
                           )}
                         />
                       </Grid>
-                      {/* END SHIPPING PROVIDER */}
+                      {/*END SHIPPING PROVIDER*/}
 
                     </Grid>
                   </div>
                 </div>
-                {/* END SECOND BLOCK */}
+                {/*END SECOND BLOCK*/}
 
-                {/* THIRD BLOCK */}
+                {/*THIRD BLOCK*/}
                 <div className='formBlock'>
                   <div className='formBlockHeader'>
                     <Typography
@@ -1052,7 +1080,7 @@ export default function SellerForm() {
                       container={true}
                       spacing={3}
                     >
-                      {/* IS DEPUTY */}
+                      {/*IS DEPUTY*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -1079,13 +1107,13 @@ export default function SellerForm() {
                           )}
                         />
                       </Grid>
-                      {/* END IS DEPUTY */}
+                      {/*END IS DEPUTY*/}
 
-                      {/* IF USER ABOVE IS NOT DEPUTY */}
+                      {/*IF USER ABOVE IS NOT DEPUTY*/}
                       {iamDeputy ? null : DeputyInputRender}
-                      {/* END IF USER ABOVE IS NOT DEPUTY */}
+                      {/*END IF USER ABOVE IS NOT DEPUTY*/}
 
-                      {/* EXHIBITED PRODUCTS */}
+                      {/*EXHIBITED PRODUCTS*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -1130,9 +1158,9 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END EXHIBITED PRODUCTS */}
+                      {/*END EXHIBITED PRODUCTS*/}
 
-                      {/* EXHIBITED DATE */}
+                      {/*EXHIBITED DATE*/}
                       <Grid
                         item={true}
                         xs={12}
@@ -1184,13 +1212,13 @@ export default function SellerForm() {
                           }}
                         />
                       </Grid>
-                      {/* END EXHIBITED DATE */}
+                      {/*END EXHIBITED DATE*/}
                     </Grid>
                   </div>
                 </div>
-                {/* END THIRD BLOCK */}
+                {/*END THIRD BLOCK*/}
 
-                {/* FOURTH BLOCK*/}
+                {/*FOURTH BLOCK*/}
                 <div className='formBlock'>
                   <div className='formBlockHeader'>
                     <Typography
@@ -1366,7 +1394,7 @@ export default function SellerForm() {
                     {'審査を通過された出品者様には、出品者に必要な情報をお送りいたします。'}
                   </Box>
                 </div>
-                {/* END FOURTH BLOCK*/}
+                {/*END FOURTH BLOCK*/}
 
                 <Box
                   textAlign='center'

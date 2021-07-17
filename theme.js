@@ -58,6 +58,13 @@ const theme = createMuiTheme({
       errorTextColor: '#f44336',
     },
   },
+  steppers: {
+    textColor: '#8a8a8a',
+    bgColor: '#fff',
+    activeTextColor: '#fff',
+    activeBgColor: '#54c0c0',
+    borderColor: '#bdbdbd',
+  },
   footer: {
     borderTopColor: '#e3e3e3',
   },
