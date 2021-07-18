@@ -19,6 +19,15 @@ const moduleExports = {
   env: {
     API_ENDPOINT: process.env.API_ENDPOINT,
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/about',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const SentryWebpackPluginOptions = {
