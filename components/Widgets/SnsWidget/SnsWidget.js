@@ -15,7 +15,7 @@ const SnsWidget = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Link href={'#'}>
+      <Link href={'https://www.facebook.com/oshinagaki.store'}>
         <Image
           src={'/img/icons/facebook.png'}
           width={48}
@@ -23,7 +23,7 @@ const SnsWidget = () => {
           alt={'Facebook Fanpage'}
         />
       </Link>
-      <Link href={'#'}>
+      <Link href={'https://twitter.com/OshinagakiStore'}>
         <Image
           src={'/img/icons/twitter.png'}
           width={48}
@@ -31,7 +31,7 @@ const SnsWidget = () => {
           alt={'Twitter'}
         />
       </Link>
-      <Link href={'#'}>
+      <Link href={'https://www.instagram.com/oshinagaki_store/'}>
         <Image
           src={'/img/icons/instagram.png'}
           width={48}
