@@ -129,11 +129,11 @@ export default function ContactPage() {
   };
 
   const addProduct = () => {
-    if (products.length === 3) {
+    if (listProduct.length === 3) {
       return;
     }
-    listProduct.push({id: listProduct.length + 1, order_number: '', product_code: '', inquiry: ''});
-    setListProduct(listProduct);
+    const newListProduct = [...listProduct, {id: listProduct.length + 1, order_number: '', product_code: '', inquiry: ''}];
+    setListProduct(newListProduct);
   };
 
   const ExchangeRender = listProduct.map((item) =>
