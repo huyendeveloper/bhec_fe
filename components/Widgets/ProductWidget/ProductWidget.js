@@ -9,11 +9,14 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Avatar, Chip, Link} from '@material-ui/core';
+import Image from 'next/image';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     marginBottom: '1rem',
+    height: '100%',
   },
   productName: {
     fontWeight: 'bold',
@@ -49,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.25rem',
     fontWeight: 'bold',
     lineHeight: '1.875rem',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   productSellerAction: {
     borderTop: `1px solid ${theme.productWidget.seller.sepColor}`,
@@ -76,10 +81,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '3px',
     fontWeight: 'normal',
   },
+  borderNone: {
+    boxShadow: 'none',
+  },
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data}) => {
+const ProductWidget = ({variant, data, heart, border}) => {
   const classes = useStyles();
   if (!data) {
     return null;
@@ -91,7 +99,7 @@ const ProductWidget = ({variant, data}) => {
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   return (
-    <Card className={classes.root}>
+    <Card className={clsx(classes.root, classes[border])}>
       <CardActionArea>
         <CardMedia
           component='img'
@@ -125,6 +133,22 @@ const ProductWidget = ({variant, data}) => {
 
           <div className={classes.productPrice}>
             {currency.format(data.productPrice)}
+            {heart &&
+            (data.favoriteProduct ? (
+              <Image
+                src={'/img/icons/fill-heart.svg'}
+                width={27}
+                height={24}
+                alt={'heart'}
+              />
+            ) : (
+              <Image
+                src={'/img/icons/ountline-heart.svg'}
+                width={27}
+                height={24}
+                alt={'heart'}
+              />
+            ))}
           </div>
         </CardContent>
       </CardActionArea>
@@ -158,10 +182,14 @@ const ProductWidget = ({variant, data}) => {
 ProductWidget.propTypes = {
   variant: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+  heart: PropTypes.bool,
+  border: PropTypes.string,
 };
 
 ProductWidget.defaultProps = {
   variant: 'simple',
+  heart: false,
+  border: null,
 };
 
 export default ProductWidget;
