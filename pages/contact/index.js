@@ -22,7 +22,7 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {Header} from '../../components/Layout/Header';
 import {Footer} from '../../components/Layout/Footer';
@@ -107,8 +107,12 @@ export default function ContactPage() {
   const [listProduct, setListProduct] = useState(products);
   const [open, setOpen] = useState(false);
 
-  const maxNumber = 1;
+  useEffect(() => {
+    // Remove the server-side injected CSS.
+    setValue('type', 1, {shouldValidate: true});
+  }, []);
 
+  const maxNumber = 1;
   const handleClose = () => {
     setOpen(false);
   };
@@ -124,16 +128,17 @@ export default function ContactPage() {
     setValue('images', imageDataUrls);
   };
 
-  const onChangeType = (value) => {
-    setTypeContact(Number(value.target.value));
+  const onChangeType = (e) => {
+    setValue('type', e.target.value, {shouldValidate: true});
+    setTypeContact(Number(e.target.value));
   };
 
   const addProduct = () => {
-    if (products.length === 3) {
+    if (listProduct.length === 3) {
       return;
     }
-    listProduct.push({id: listProduct.length + 1, order_number: '', product_code: '', inquiry: ''});
-    setListProduct(listProduct);
+    const newListProduct = [...listProduct, {id: listProduct.length + 1, order_number: '', product_code: '', inquiry: ''}];
+    setListProduct(newListProduct);
   };
 
   const ExchangeRender = listProduct.map((item) =>
@@ -557,7 +562,7 @@ export default function ContactPage() {
                           control={control}
                           defaultValue=''
                           // eslint-disable-next-line lines-around-comment
-                          // rules={{required: 'この入力は必須です。'}}
+                          rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref}}) => (
                             <FormControl>
                               <NativeSelect
