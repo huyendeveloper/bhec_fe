@@ -93,7 +93,7 @@ const products = [
   {id: 1, order_number: '', product_code: '', inquiry: ''},
 ];
 
-export default function SellerForm() {
+export default function ContactPage() {
   const theme = useTheme();
   const classes = useStyles();
 
