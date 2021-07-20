@@ -82,7 +82,7 @@ const FaqsWidget = ({data}) => {
           map((str, index) => (
             <p
               key={String(index)}
-            >{index === 0 ? 'A.' + str : str}</p>)) : null;
+            ><strong>{index === 0 ? 'A. ' : ''}</strong>{str}</p>)) : null;
 
         return (
           <Accordion
@@ -96,7 +96,10 @@ const FaqsWidget = ({data}) => {
               id={`panel${faq.id}d-header`}
               expandIcon={<ExpandMoreIcon/>}
             >
-              <Typography>{`Q.${faq.question}`}</Typography>
+              <Typography>
+                <strong>{'Q. '}</strong>
+                {`${faq.question}`}
+              </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Box className='faq-answer'>
