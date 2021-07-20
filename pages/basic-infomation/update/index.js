@@ -1,9 +1,17 @@
-import {Grid, Typography, Button, Box, TextField, CircularProgress} from '@material-ui/core';
+/* eslint-disable max-lines */
+import {Grid, Typography, Button, Box, TextField, CircularProgress, Icon, FormControl, NativeSelect} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
 import {useForm, Controller} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import React, {useState} from 'react';
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
+import moment from 'moment';
+import DateFnsUtils from '@date-io/date-fns';
+import jaLocale from 'date-fns/locale/ja';
 
 import {Footer} from '../../../components/Layout/Footer';
 import {Header} from '../../../components/Layout/Header';
@@ -44,6 +52,10 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
+  },
+  blockPassword: {
+    display: 'flex',
+    alignItems: 'center',
   },
 }));
 
@@ -92,207 +104,460 @@ export default function BasicInfomationUpdate() {
               onSubmit={handleSubmit(onSubmit)}
               style={{width: '100%'}}
             >
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'注文ニックネーム番号'}</Typography>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  <Controller
-                    name='other_name'
-                    control={control}
-                    defaultValue=''
-                    render={({field}) => (
-                      <TextField
-                        id='other_name'
-                        label='⽒⽒名を入力してください'
-                        variant='outlined'
-                        InputLabelProps={{shrink: false}}
-                        {...field}
-                      />
-                    )}
-                  />
-                  <ErrorMessage
-                    errors={errors}
-                    name='other_phone'
-                    render={({messages}) => {
-                      return messages ? Object.entries(messages).map(([type, message]) => (
-                        <p
-                          className='inputErrorText'
-                          key={type}
-                        >{`⚠ ${message}`}</p>
-                      )) : null;
-                    }}
-                  />
-                </Grid>
-              </div>
+              <MuiPickersUtilsProvider
+                utils={DateFnsUtils}
+                locale={jaLocale}
+              >
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'注文ニックネーム番号'}</Typography>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='username'
+                      control={control}
+                      defaultValue={info.username}
+                      render={({field}) => (
+                        <TextField
+                          id='username'
+                          label='注文ニックネーム番号'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='username'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
 
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'ログインID'}</Typography>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  {info.email}
-                </Grid>
-              </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'ログインID'}</Typography>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='email'
+                      control={control}
+                      defaultValue={info.email}
+                      render={({field}) => (
+                        <TextField
+                          id='email'
+                          label='ログインID'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='email'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
 
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'パスワード'}</Typography>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  {info.password}
-                </Grid>
-              </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'パスワード'}</Typography>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <label
+                      htmlFor='password'
+                      className='formControlLabel'
+                    >
+                      {'現在のパスワード'}
+                      <span className='formControlRequired'>{'*'}</span>
+                    </label>
+                    <Controller
+                      name='password'
+                      control={control}
+                      defaultValue={info.password}
+                      render={({field}) => (
+                        <div className={classes.blockPassword}>
+                          <TextField
+                            id='password'
+                            label='パスワード'
+                            variant='outlined'
+                            InputLabelProps={{shrink: false}}
+                            {...field}
+                            style={{marginRight: '1rem'}}
+                          />
+                          <Icon>{'visibility'}</Icon>
+                        </div>
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='password'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                    <label
+                      htmlFor='other_name'
+                      className='formControlLabel'
+                    >
+                      {'新しいパスワード'}
+                      <span className='formControlRequired'>{'*'}</span>
+                    </label>
+                    <Controller
+                      name='confirmPassword'
+                      control={control}
+                      defaultValue={info.confirmPassword}
+                      render={({field}) => (
+                        <div className={classes.blockPassword}>
+                          <TextField
+                            id='confirmPassword'
+                            label='パスワード'
+                            variant='outlined'
+                            InputLabelProps={{shrink: false}}
+                            {...field}
+                            style={{marginRight: '1rem'}}
+                          />
+                          <Icon>{'visibility'}</Icon>
+                        </div>
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='confirmPassword'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
 
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'氏名'}</Typography>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  { info.fullName ? <span>{info.fullName}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-                </Grid>
-              </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'氏名'}</Typography>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='fullName'
+                      control={control}
+                      defaultValue={info.fullName}
+                      render={({field}) => (
+                        <TextField
+                          id='fullName'
+                          label='パスワード'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='fullName'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
 
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'ひらがな'}</Typography>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  { info.alphabet ? <span>{info.alphabet}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-                </Grid>
-              </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'ひらがな'}</Typography>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='alphabet'
+                      control={control}
+                      defaultValue={info.alphabet}
+                      render={({field}) => (
+                        <TextField
+                          id='alphabet'
+                          label='パスワード'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='alphabet'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
 
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'性別'}</Typography>
-                </Grid>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'性別'}</Typography>
+                  </Grid>
 
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  { info.gender ? <span>{info.gender}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-                </Grid>
-              </div>
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'生年月日'}</Typography>
-                </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='gender'
+                      control={control}
+                      defaultValue={info.gender}
+                      rules={{required: 'この入力は必須です。'}}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <FormControl>
+                          <NativeSelect
+                            className={errors.city ? 'selectBoxError' : ''}
+                            name={name}
+                            value={value}
+                            inputRef={ref}
+                            onChange={onChange}
+                          >
+                            <option
+                              value={'女性'}
+                            >{'女性'}</option>
+                            <option
+                              value={'男性'}
+                            >{'男性'}</option>
+                            <option
+                              value={'他'}
+                            >{'他'}</option>
+                          </NativeSelect>
+                        </FormControl>
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='gender'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'生年月日'}</Typography>
+                  </Grid>
 
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  { info.birthday ? <span>{info.birthday}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-                </Grid>
-              </div>
-              <div className={classes.block}>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={4}
-                >
-                  <Typography
-                    variant={'h4'}
-                    className={classes.title}
-                  >{'住所'}</Typography>
-                </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='birthday'
+                      control={control}
+                      defaultValue={null}
+                      rules={{required: 'この入力は必須です。'}}
+                      render={({field: {value, onChange}}) => (
+                        <KeyboardDatePicker
+                          disableToolbar={true}
+                          variant='inline'
+                          format='yyyy/MM/dd'
+                          id='birthday'
+                          label='YYYY/MM/DD'
+                          InputLabelProps={{shrink: false}}
+                          value={value}
+                          onChange={(date) => {
+                            const formatedDate = moment(date).format('YYYY/MM/DD');
+                            onChange(formatedDate);
+                          }}
+                          autoOk={true}
+                          error={Boolean(errors.birthday)}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='birthday'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
+                <div className={classes.block}>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                  >
+                    <Typography
+                      variant={'h4'}
+                      className={classes.title}
+                    >{'住所'}</Typography>
+                  </Grid>
 
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={8}
-                  md={8}
-                >
-                  { info.address ? <span>{info.address}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-                </Grid>
-              </div>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={8}
+                    md={8}
+                  >
+                    <Controller
+                      name='address'
+                      control={control}
+                      defaultValue={info.address}
+                      render={({field}) => (
+                        <TextField
+                          id='address'
+                          label='パスワード'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='address'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >{`⚠ ${message}`}</p>
+                        )) : null;
+                      }}
+                    />
+                  </Grid>
+                </div>
+              </MuiPickersUtilsProvider>
             </StyledForm>
           </Grid>
           <Box
