@@ -31,6 +31,15 @@ const theme = createMuiTheme({
     body: {
       textColor: '#2e2e2e',
     },
+    buttonLogin: {
+      default: '#BA2636',
+    },
+  },
+  border: {
+    default: '#21212114',
+  },
+  textDisable: {
+    default: '#d8d8d8',
   },
   topBanner: {
     textColor: '#fff',

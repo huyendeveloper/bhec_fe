@@ -78,7 +78,6 @@ const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bg
       >{str}</p>)) : null;
 
   const descClass = clsx(classes.description, classes[descriptionType]);
-
   return (
     <section
       className={classes.root}
