@@ -14,7 +14,11 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '4px !important',
         padding: '10px 32px 9px 18px',
         color: theme.selectBox.textColor,
+        background: 'url("/img/icons/dropdown-icon.png") right 10px center no-repeat',
       },
+    },
+    '& .MuiNativeSelect-icon': {
+      display: 'none',
     },
   },
 }));

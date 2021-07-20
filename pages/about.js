@@ -268,7 +268,7 @@ export default function About() {
                     fontSize: '0.875rem',
                     lineHeight: '1.375rem',
                     color: '#444',
-                    marginTop: '1rem',
+                    marginTop: '0.875rem',
                     display: 'inline-block',
                   }}
                 >{'*利益の2%を地方へ還元'}</span>
@@ -291,13 +291,14 @@ export default function About() {
               alignItems='center'
             >
               <Box
-                py={4}
+                pt={2}
+                pb={1}
                 className={classes.supportSystemWrapper}
               >
                 <Image
                   src='/img/support-system-lifecycle.png'
-                  width={692}
-                  height={692}
+                  width={691}
+                  height={691}
                   alt='Support system lifecycle'
                 />
               </Box>

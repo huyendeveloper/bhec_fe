@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     textAlign: 'center',
     borderRadius: '4px',
-    padding: '15px',
+    padding: '1rem',
     '& span': {
       fontSize: 'inherit',
       fontWeight: 'bold',
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   cardContent: {
-    fontSize: '1.2rem',
+    fontSize: '1.25rem',
     lineHeight: '2rem',
     textAlign: 'center',
     padding: '2rem 1.5rem',

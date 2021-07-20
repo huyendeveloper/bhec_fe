@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
     },
     '& div[class$="-avatar"]': {
       position: 'absolute',
-      top: '-1rem',
-      left: '-1rem',
+      top: '-1.45rem',
+      left: '-1.45rem',
     },
     [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
@@ -41,10 +41,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   cardContent: {
-    fontSize: '1.2rem',
+    fontSize: '1.25rem',
     lineHeight: '2rem',
     textAlign: 'center',
     padding: '2rem 1.5rem',
+    color: '#333',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.375rem',
@@ -65,8 +66,8 @@ const FeatureWidget = ({iconSrc, title, children}) => {
         avatar={iconSrc === '' ? null : (
           <Image
             className={classes.cardIcon}
-            width={62}
-            height={62}
+            width={78}
+            height={78}
             src={iconSrc}
             alt={title}
           />

@@ -10,10 +10,10 @@ import {Box} from '@material-ui/core';
 
 const Accordion = withStyles({
   root: {
-    border: '1px solid rgba(0, 0, 0, .125)',
+    border: '1px solid #dbdbdb',
     marginBottom: '1rem',
     boxShadow: 'none',
-    borderRadius: 8,
+    borderRadius: 4,
     '&:before': {
       display: 'none',
     },
@@ -30,18 +30,26 @@ const AccordionSummary = withStyles({
     marginBottom: -1,
   },
   content: {
+    '& .MuiTypography-root': {
+      fontWeight: 'bold',
+      color: '#444',
+      paddingLeft: '0.5rem',
+    },
     '&$expanded': {
       margin: '12px 0',
+      '& .MuiTypography-root': {
+        color: '#fff',
+      },
     },
   },
   expanded: {
-    borderRadius: '8px 8px 0 0',
+    borderRadius: '4px 4px 0 0',
   },
 })(MuiAccordionSummary);
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(3, 2),
+    padding: theme.spacing(3),
     '& .faq-answer p': {
       marginTop: 0,
       marginBottom: '0.5rem',

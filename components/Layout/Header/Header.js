@@ -57,6 +57,14 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      height: '80px',
+    },
+  },
+  toolBarPlaceholder: {
+    [theme.breakpoints.up('md')]: {
+      height: '80px',
+    },
   },
   logoLink: {
     display: 'flex',
@@ -114,7 +122,7 @@ const Header = (props) => {
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <Toolbar/>
+      <Toolbar className={classes.toolBarPlaceholder}/>
     </>
   );
 };
