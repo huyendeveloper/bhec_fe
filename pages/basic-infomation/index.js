@@ -1,6 +1,7 @@
 import {Grid, Typography, Button, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
+import Router from 'next/router';
 
 import {Footer} from '../../components/Layout/Footer';
 import {Header} from '../../components/Layout/Header';
@@ -35,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
     color: theme.palette.background.default,
-    padding: '0.5rem 2rem',
+    padding: '0.5rem 3rem',
+    fontSize: '1rem',
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
@@ -56,6 +58,12 @@ const info = {
 
 export default function BasicInfomation() {
   const classes = useStyles();
+
+  function updateInfo() {
+    Router.push({
+      pathname: '/basic-infomation/update',
+    });
+  }
 
   return (
     <div className={'page'}>
@@ -265,6 +273,7 @@ export default function BasicInfomation() {
               customSize='extraLarge'
               type='submit'
               className={classes.btnSubmit}
+              onClick={() => updateInfo()}
             >
               {'基本情報を編集'}
             </Button>
