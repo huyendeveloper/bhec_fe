@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-/* eslint-disable no-useless-escape */
 import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
@@ -514,7 +512,6 @@ export default function ContactPage() {
                           rules={{
                             required: 'この入力は必須です。',
                             pattern: {
-                              value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                               message: 'メールアドレスが無効です。',
                             },
                           }}
@@ -561,7 +558,6 @@ export default function ContactPage() {
                           name='type'
                           control={control}
                           defaultValue=''
-                          // eslint-disable-next-line lines-around-comment
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref}}) => (
                             <FormControl>
@@ -644,7 +640,6 @@ export default function ContactPage() {
                     </Grid>
                   </div>
                 </div>
-                {/* FOURTH BLOCK*/}
                 {typeContact !== 8 && <div className='formBlock'>
                   <div className='formBlockHeader'>
                     <Typography
