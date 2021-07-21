@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
-    padding: theme.spacing(8),
+    padding: theme.spacing(6, 6, 5.875, 6),
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(6, 0, 4, 0),
     },
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
   },
   copyRight: {
-    padding: theme.spacing(3, 0),
+    padding: theme.spacing(1.875, 0),
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
     fontSize: '0.75rem',
     [theme.breakpoints.down('sm')]: {
@@ -102,7 +102,7 @@ const Footer = (props) => {
               >
                 <Image
                   src={'/logo.png'}
-                  width={224}
+                  width={218}
                   height={64}
                   alt={'Footer logo'}
                 />

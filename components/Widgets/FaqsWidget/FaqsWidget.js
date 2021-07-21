@@ -20,6 +20,20 @@ const Accordion = withStyles({
     '&$expanded': {
       margin: 'auto',
       marginBottom: '1rem',
+      borderColor: '#eee0b5',
+    },
+    '& .MuiAccordionSummary-expandIcon': {
+      background: 'url("/img/icons/arrow-right.png") center no-repeat',
+      backgroundSize: '11.4px 20px',
+      transform: 'none',
+      marginRight: -10,
+      '& .MuiIconButton-label': {
+        opacity: 0,
+      },
+      '&.Mui-expanded': {
+        backgroundImage: 'url("/img/icons/arrow-down-white.png")',
+        backgroundSize: '20px 11.4px',
+      },
     },
   },
   expanded: {},
@@ -49,7 +63,7 @@ const AccordionSummary = withStyles({
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(3.75, 3),
     '& .faq-answer p': {
       marginTop: 0,
       marginBottom: '0.5rem',
