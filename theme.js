@@ -22,11 +22,21 @@ const theme = createMuiTheme({
       main: '#e6b422',
       dark: '#b18914',
     },
+    black: {
+      main: '#000000'
+    },
+    white: {
+      main: '#ffffff'
+    },
+    grey: {
+      light: '#ededed',
+      main: '#C4C4C4'
+    },
     green: {
       main: '#54c0c0',
     },
     background: {
-      default: '#fff',
+      default: '#fff'
     },
     body: {
       textColor: '#2e2e2e',
