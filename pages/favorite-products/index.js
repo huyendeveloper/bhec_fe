@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const recommendProducts = [
+const favoriteProducts = [
   {
     productId: 1,
     productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
@@ -112,7 +112,7 @@ const recommendProducts = [
   },
 ];
 
-export default function FavoriteProduct() {
+export default function FavoriteProducts() {
   const classes = useStyles();
   const [age, setAge] = useState('');
 
@@ -154,33 +154,12 @@ export default function FavoriteProduct() {
                 md={12}
                 className={classes.gridFilter}
               >
-                {/* <FormControl
-                  variant='outlined'
-                  className={classes.formControl}
-                >
-                  <InputLabel id='demo-simple-select-filled-label'>{'フィルター'}</InputLabel>
-                  <Select
-                    labelId='demo-simple-select-filled-label'
-                    id='demo-simple-select-filled'
-                    value={age}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value=''>
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                </FormControl> */}
                 <FormControl
                   variant='outlined'
                   className={classes.formControl}
                 >
-                  <InputLabel id='demo-simple-select-outlined-label'>{'フィルター'}</InputLabel>
+                  <InputLabel>{'フィルター'}</InputLabel>
                   <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
                     value={age}
                     onChange={handleChange}
                     label='フィルター'
@@ -199,7 +178,7 @@ export default function FavoriteProduct() {
                   </Select>
                 </FormControl>
               </Grid>
-              {recommendProducts.map((product) => (
+              {favoriteProducts.map((product) => (
                 <Grid
                   key={product.productId}
                   item={true}
