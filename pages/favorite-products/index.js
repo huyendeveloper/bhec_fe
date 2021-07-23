@@ -7,6 +7,7 @@ import {Header} from '../../components/Layout/Header';
 import {ProductWidget} from '../../components/Widgets/ProductWidget';
 import {Footer} from '../../components/Layout/Footer';
 import {ContentBlock} from '../../components/ContentBlock';
+import {TopBannerWidget} from '../../components/Widgets/TopBannerWidget';
 
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
@@ -191,6 +192,33 @@ export default function FavoriteProducts() {
                   />
                 </Grid>
               ))}
+            </Grid>
+            <Grid
+              item={true}
+              xs={12}
+              md={12}
+              style={{marginBottom: '2rem'}}
+            >
+              <TopBannerWidget
+                variant='titleBanner'
+                imgSrc='/img/banner-favorite1.png'
+                imgWidth={1140}
+                imgHeight={192}
+                imgAlt='Seller Form'
+              />
+            </Grid>
+            <Grid
+              item={true}
+              xs={12}
+              md={12}
+            >
+              <TopBannerWidget
+                variant='titleBanner'
+                imgSrc='/img/banner-favorite2.png'
+                imgWidth={1140}
+                imgHeight={192}
+                imgAlt='Seller Form'
+              />
             </Grid>
           </Box>
         </ContentBlock>
