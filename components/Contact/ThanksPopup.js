@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 const useStyles = makeStyles((theme) => ({
   muipaper: {
-    width: '30rem',
+    width: '100%',
     textAlign: 'center',
   },
 

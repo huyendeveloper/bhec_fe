@@ -752,6 +752,7 @@ export default function ContactPage() {
         <ThanksPopup
           open={open}
           handleClose={handleClose}
+          style={{width: '80%'}}
         />
       }
     </div>
