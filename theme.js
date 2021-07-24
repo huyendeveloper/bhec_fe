@@ -25,15 +25,12 @@ const theme = createMuiTheme({
       main: '#e6b422',
       dark: '#b18914',
     },
-    black: {
-      main: '#000000'
-    },
     white: {
       main: '#ffffff'
     },
     grey: {
       light: '#ededed',
-      main: '#C4C4C4'
+      main: '#c4c4c4'
     },
     green: {
       main: '#54c0c0',
@@ -44,12 +41,9 @@ const theme = createMuiTheme({
     body: {
       textColor: '#2e2e2e',
     },
-    buttonLogin: {
-      default: '#BA2636',
-    },
   },
   border: {
-    default: '#21212114',
+    default: '#dbdbdb',
   },
   textDisable: {
     default: '#d8d8d8',

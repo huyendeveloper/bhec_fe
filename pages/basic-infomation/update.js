@@ -1,4 +1,3 @@
-import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import {
@@ -13,7 +12,7 @@ import {
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
 import DateFnsUtils from '@date-io/date-fns';
-import jaLocale from 'date-fns/locale/ja';
+import {jaLocale, format as formatDate} from 'date-fns';
 
 import {
   MuiPickersUtilsProvider,
@@ -22,23 +21,21 @@ import {
 
 import React from 'react';
 
-import moment from 'moment';
+import {Header} from '../../components/Layout/Header';
+import {Footer} from '../../components/Layout/Footer';
+import {ContentBlock} from '../../components/ContentBlock';
+import {Button} from '../../components/Button';
+import {StyledForm} from '../../components/StyledForm';
 
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
-import {ContentBlock} from '../../../components/ContentBlock';
-import {Button} from '../../../components/Button';
-import {StyledForm} from '../../../components/StyledForm';
+import {prefectures} from '../../constants';
 
-import {prefectures} from '../../../constants';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
   },
 
   formBlock: {
-    borderBottom: '1px solid #DBDBDB',
+    borderBottom: `1px solid ${theme.blockContact.borderColor}`,
     paddingBottom: '1.5rem',
     marginBottom: '1.5rem',
   },
@@ -131,7 +128,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -175,7 +172,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -220,7 +217,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -266,7 +263,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -320,7 +317,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -365,7 +362,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -447,7 +444,7 @@ export default function BasicInfomationUpdate() {
                               InputLabelProps={{shrink: false}}
                               value={value}
                               onChange={(date) => {
-                                const formatedDate = moment(date).format('YYYY/MM/DD');
+                                const formatedDate = formatDate(date, 'yyyy/MM/dd');
                                 onChange(formatedDate);
                               }}
                               autoOk={true}
@@ -466,7 +463,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -519,7 +516,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -569,7 +566,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -614,7 +611,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -658,7 +655,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />
@@ -702,7 +699,7 @@ export default function BasicInfomationUpdate() {
                               <p
                                 className='inputErrorText'
                                 key={type}
-                              >{`⚠ ${message}`}</p>
+                              >{`${message}`}</p>
                             )) : null;
                           }}
                         />

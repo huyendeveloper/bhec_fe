@@ -32,14 +32,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.textDisable.default,
   },
   btnSubmit: {
-    background: theme.palette.buttonLogin.default,
+    background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
     color: theme.palette.background.default,
     padding: '0.5rem 3rem',
     fontSize: '1rem',
     '&:hover': {
-      background: theme.palette.buttonLogin.default,
+      background: theme.palette.red.main,
       color: theme.palette.background.default,
     },
   },
@@ -66,7 +66,7 @@ export default function BasicInfomation() {
   }
 
   return (
-    <div className={'page'}>
+    <>
       <Head>
         <title>{'Order Detail - BH_EC'}</title>
 
@@ -282,6 +282,6 @@ export default function BasicInfomation() {
       </div>
 
       <Footer/>
-    </div >
+    </>
   );
 }
