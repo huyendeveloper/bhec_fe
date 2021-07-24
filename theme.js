@@ -17,6 +17,9 @@ const theme = createMuiTheme({
       main: '#ba2636',
       dark: '#8b1c28',
     },
+    black: {
+      default: '#000000',
+    },
     yellow: {
       light: '#ecc659',
       main: '#e6b422',
@@ -50,6 +53,9 @@ const theme = createMuiTheme({
   },
   textDisable: {
     default: '#d8d8d8',
+  },
+  blockContact: {
+    borderColor: '#d8d8d8',
   },
   topBanner: {
     textColor: '#fff',
