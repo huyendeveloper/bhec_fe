@@ -1,6 +1,6 @@
 import {Link} from '@material-ui/core';
 import Image from 'next/image';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({
   root: {
@@ -17,29 +17,32 @@ const useStyles = makeStyles(({
 
 const SnsWidget = () => {
   const classes = useStyles();
+  const theme = useTheme();
+  const isTablet = theme.breakpoints.down('sm');
+  const imgSize = isTablet ? 40 : 44;
   return (
     <div className={classes.root}>
       <Link href={'https://www.facebook.com/oshinagaki.store'}>
         <Image
           src={'/img/icons/facebook.png'}
-          width={44}
-          height={44}
+          width={imgSize}
+          height={imgSize}
           alt={'Facebook Fanpage'}
         />
       </Link>
       <Link href={'https://twitter.com/OshinagakiStore'}>
         <Image
           src={'/img/icons/twitter.png'}
-          width={44}
-          height={44}
+          width={imgSize}
+          height={imgSize}
           alt={'Twitter'}
         />
       </Link>
       <Link href={'https://www.instagram.com/oshinagaki_store/'}>
         <Image
           src={'/img/icons/instagram.png'}
-          width={44}
-          height={44}
+          width={imgSize}
+          height={imgSize}
           alt={'Instagram'}
         />
       </Link>

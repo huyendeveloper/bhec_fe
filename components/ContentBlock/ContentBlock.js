@@ -32,8 +32,12 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.red.main,
       bottom: '-0.875rem',
       borderRadius: '2px',
+      [theme.breakpoints.down('sm')]: {
+        bottom: '-0.75rem',
+      },
     },
     [theme.breakpoints.down('sm')]: {
+      marginBottom: '1.75rem',
       '& h2': {
         fontSize: '1.5rem',
         lineHeight: '2.5rem',

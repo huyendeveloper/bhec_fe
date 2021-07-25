@@ -39,9 +39,12 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
-      lineHeight: '1.5rem',
+      height: 48,
       padding: '0.875rem',
-      top: '-4.5rem',
+      top: '-4rem',
+      '& .MuiCardHeader-title': {
+        lineHeight: '48px',
+      },
     },
   },
   cardContent: {
@@ -52,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
-      padding: '1.5rem 2rem',
+      padding: '1.285rem 2rem !important',
+      lineHeight: '1.25rem',
 
       '& > div': {
         marginLeft: '-1rem',

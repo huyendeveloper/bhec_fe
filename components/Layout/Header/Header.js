@@ -7,9 +7,9 @@ import Slide from '@material-ui/core/Slide';
 import {
   Hidden,
   IconButton,
-  Link,
+  Link, useMediaQuery,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
 
@@ -78,6 +78,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = (props) => {
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const logoWidth = isTablet ? 138 : 162;
+  const logoHeight = isTablet ? 40 : 48;
+
   const classes = useStyles();
   const {showMainMenu} = props;
   return (
@@ -105,8 +110,8 @@ const Header = (props) => {
                 <Image
                   src='/logo.png'
                   alt='BH_EC Logo'
-                  width={162}
-                  height={48}
+                  width={logoWidth}
+                  height={logoHeight}
                 />
               </Link>
             </div>

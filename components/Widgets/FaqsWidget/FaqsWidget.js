@@ -8,12 +8,15 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {Box} from '@material-ui/core';
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     border: '1px solid #dbdbdb',
     marginBottom: '1rem',
     boxShadow: 'none',
     borderRadius: 4,
+    '&:last-child': {
+      marginBottom: 0,
+    },
     '&:before': {
       display: 'none',
     },
@@ -27,21 +30,36 @@ const Accordion = withStyles({
       backgroundSize: '11.4px 20px',
       transform: 'none',
       marginRight: -10,
+      [theme.breakpoints.down('sm')]: {
+        padding: 8,
+        backgroundSize: '8px 14px',
+      },
       '& .MuiIconButton-label': {
         opacity: 0,
       },
       '&.Mui-expanded': {
         backgroundImage: 'url("/img/icons/arrow-down-white.png")',
         backgroundSize: '20px 11.4px',
+        [theme.breakpoints.down('sm')]: {
+          backgroundSize: '14px 8px',
+        },
+      },
+    },
+    '& .MuiTypography-root': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.875rem',
       },
     },
   },
   expanded: {},
-})(MuiAccordion);
+}))(MuiAccordion);
 
-const AccordionSummary = withStyles({
+const AccordionSummary = withStyles((theme) => ({
   root: {
     marginBottom: -1,
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 40,
+    },
   },
   content: {
     '& .MuiTypography-root': {
@@ -55,11 +73,14 @@ const AccordionSummary = withStyles({
         color: '#fff',
       },
     },
+    [theme.breakpoints.down('sm')]: {
+      margin: '8px 0',
+    },
   },
   expanded: {
     borderRadius: '4px 4px 0 0',
   },
-})(MuiAccordionSummary);
+}))(MuiAccordionSummary);
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
@@ -71,15 +92,29 @@ const AccordionDetails = withStyles((theme) => ({
     '& .faq-answer p:last-child': {
       marginBottom: 0,
     },
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1.75, 2),
+    },
   },
 }))(MuiAccordionDetails);
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: 5,
+    },
+    '& .MuiAccordionSummary-root': {
+      [theme.breakpoints.down('sm')]: {
+        padding: '0 12px 0 8px',
+      },
+    },
     '& > div[class*="-expanded"]': {
       '& .MuiAccordionSummary-root': {
         backgroundColor: theme.palette.red.main,
         minHeight: '3rem',
+        [theme.breakpoints.down('sm')]: {
+          minHeight: 40,
+        },
         color: '#fff',
         '& .MuiIconButton-root': {
           color: '#fff',

@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '-1px -1px 0 -1px',
     borderRadius: '4px 4px 0 0',
     padding: '15px',
+    borderBottom: `1px solid ${theme.palette.yellow.light}`,
     '& span': {
       fontSize: 'inherit',
       fontWeight: 'bold',
@@ -49,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.375rem',
+      padding: '1rem 0.5rem !important',
+    },
+    '& span.note': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '13px !important',
+      },
     },
   },
 }));
