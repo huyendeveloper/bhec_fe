@@ -22,12 +22,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(4, 0, 2, 0),
     },
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(3, 0, 1.875, 0),
+    },
   },
   footerLogo: {
     marginBottom: '1.5rem',
     display: 'inline-block',
     [theme.breakpoints.down('sm')]: {
       marginBottom: '1.2rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '0.75rem',
     },
   },
   copyRight: {
@@ -89,6 +95,7 @@ ScrollTop.propTypes = {
 const Footer = (props) => {
   const theme = useTheme();
   const isTablet = theme.breakpoints.down('sm');
+  const isMobile = theme.breakpoints.down('sm');
   const classes = useStyles();
   return (
     <>
@@ -104,7 +111,10 @@ const Footer = (props) => {
               >
                 <Image
                   src={'/logo.png'}
-                  width={isTablet ? 170 : 218}
+                  width={
+                    // eslint-disable-next-line no-nested-ternary
+                    isMobile ? 163 : (isTablet ? 170 : 218)
+                  }
                   height={isTablet ? 48 : 64}
                   alt={'Footer logo'}
                 />

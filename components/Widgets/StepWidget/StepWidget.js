@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '4.5rem',
       height: 'calc(100% - 4.5rem)',
     },
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '5rem',
+    },
   },
   cardHeader: {
     fontSize: '1.5rem',
@@ -66,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('xs')]: {
       fontSize: '1.2rem',
+      lineHeight: '1.5rem',
+      padding: '2.625rem 2rem 1.25rem !important',
     },
   },
 }));

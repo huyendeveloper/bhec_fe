@@ -60,10 +60,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       height: '80px',
     },
+    [theme.breakpoints.up('xs')]: {
+      minHeight: 48,
+      height: 48,
+    },
   },
   toolBarPlaceholder: {
     [theme.breakpoints.up('md')]: {
       height: '80px',
+    },
+    [theme.breakpoints.up('xs')]: {
+      minHeight: 48,
+      height: 48,
     },
   },
   logoLink: {
@@ -80,8 +88,11 @@ const useStyles = makeStyles((theme) => ({
 const Header = (props) => {
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
-  const logoWidth = isTablet ? 138 : 162;
-  const logoHeight = isTablet ? 40 : 48;
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  // eslint-disable-next-line no-nested-ternary
+  const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
+  // eslint-disable-next-line no-nested-ternary
+  const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
 
   const classes = useStyles();
   const {showMainMenu} = props;

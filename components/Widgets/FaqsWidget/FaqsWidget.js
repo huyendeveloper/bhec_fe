@@ -72,6 +72,9 @@ const AccordionSummary = withStyles((theme) => ({
       '& .MuiTypography-root': {
         color: '#fff',
       },
+      [theme.breakpoints.down('xs')]: {
+        margin: '9px 0',
+      },
     },
     [theme.breakpoints.down('sm')]: {
       margin: '8px 0',
@@ -88,6 +91,9 @@ const AccordionDetails = withStyles((theme) => ({
     '& .faq-answer p': {
       marginTop: 0,
       marginBottom: '0.5rem',
+      [theme.breakpoints.down('xs')]: {
+        lineHeight: '1.375rem',
+      },
     },
     '& .faq-answer p:last-child': {
       marginBottom: 0,

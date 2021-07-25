@@ -9,6 +9,9 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.yellow.light,
     overflow: 'unset',
     height: '100%',
+    [theme.breakpoints.down('xs')]: {
+      margin: '0 13px',
+    },
   },
   cardHeader: {
     fontSize: '1.5rem',

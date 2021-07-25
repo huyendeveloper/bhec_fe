@@ -190,6 +190,7 @@ export default function About() {
 
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles();
 
   return (
@@ -225,7 +226,7 @@ export default function About() {
           <Grid
             container={true}
             justify='center'
-            spacing={3}
+            spacing={isMobile ? 4 : 3}
           >
             <Grid
               item={true}
@@ -337,12 +338,18 @@ export default function About() {
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={isTablet ? 134 : 217}
-                    height={isTablet ? 129 : 207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP1'
                     src='/img/product-arrival-step-1.png'
                   />
@@ -366,12 +373,18 @@ export default function About() {
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={isTablet ? 134 : 217}
-                    height={isTablet ? 129 : 207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP2'
                     src='/img/product-arrival-step-2.png'
                   />
@@ -395,12 +408,18 @@ export default function About() {
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={isTablet ? 134 : 217}
-                    height={isTablet ? 129 : 207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP3'
                     src='/img/product-arrival-step-3.png'
                   />
