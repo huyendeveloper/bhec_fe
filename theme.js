@@ -11,7 +11,22 @@ const theme = createMuiTheme({
       xl: 1920,
     },
   },
+  typography: {
+    fontFamily: [
+      'Meiryo',
+      '"ヒラギノ角ゴ Pro W3"',
+      '"Hiragino Kaku Gothic Pro"',
+      'Osaka',
+      '"メイリオ"',
+      '"ＭＳ Ｐゴシック"',
+      '"MS PGothic"',
+      'sans-serif',
+    ].join(','),
+  },
   palette: {
+    text: {
+      primary: '#111111',
+    },
     red: {
       light: '#da4c5c',
       main: '#ba2636',
