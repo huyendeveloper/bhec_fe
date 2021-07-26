@@ -471,7 +471,7 @@ export default function SellerForm() {
                           htmlFor='gender'
                           className='formControlLabel'
                         >
-                          {'⽒名カナ '}
+                          {'性別 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
