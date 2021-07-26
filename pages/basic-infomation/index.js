@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     padding: '1.25rem 0',
     borderBottom: `1px solid ${theme.border.default}`,
-    fontSize: '1.125rem',
+    fontSize: '1rem',
     lineHeight: '2.188rem',
     color: 'black',
     '& h4': {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontStyle: 'normal',
     fontWeight: 'bold',
-    fontSize: '1.25rem',
+    fontSize: '1rem',
     lineHeight: '2.5rem',
   },
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   btnSubmit: {
     background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-    borderRadius: '45px',
+    borderRadius: '3rem',
     color: theme.palette.background.default,
     padding: '0.5rem 3rem',
     fontSize: '1rem',
@@ -75,6 +75,7 @@ export default function BasicInfomation() {
           <Grid
             container={true}
             spacing={3}
+            style={{padding: '0 1rem'}}
           >
             <div className={classes.block}>
               <Grid
@@ -258,9 +259,7 @@ export default function BasicInfomation() {
             mt={5}
           >
             <Button
-              variant='pill'
-              customColor='red'
-              customSize='extraLarge'
+              variant='contained'
               type='submit'
               className={classes.btnSubmit}
               onClick={() => updateInfo()}
