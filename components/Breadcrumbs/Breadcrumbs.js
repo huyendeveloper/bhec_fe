@@ -6,9 +6,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     alignItems: 'center',
     display: 'flex',
-    padding: '0 2.26rem',
     height: '3.375rem',
-    background: theme.palette.grey.light,
     '& .MuiBreadcrumbs-separator': {
       color: theme.palette.black.main,
       fontWeight: 'bold',
