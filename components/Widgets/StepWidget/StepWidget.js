@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '4.5rem',
       height: 'calc(100% - 4.5rem)',
     },
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '5rem',
+    },
   },
   cardHeader: {
     fontSize: '1.5rem',
@@ -22,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     textAlign: 'center',
     borderRadius: '4px',
-    padding: '15px',
+    padding: '1rem',
     '& span': {
       fontSize: 'inherit',
       fontWeight: 'bold',
@@ -39,20 +42,24 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
-      lineHeight: '1.5rem',
+      height: 48,
       padding: '0.875rem',
-      top: '-4.5rem',
+      top: '-4rem',
+      '& .MuiCardHeader-title': {
+        lineHeight: '48px',
+      },
     },
   },
   cardContent: {
-    fontSize: '1.2rem',
+    fontSize: '1.25rem',
     lineHeight: '2rem',
     textAlign: 'center',
     padding: '2rem 1.5rem',
 
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
-      padding: '1.5rem 2rem',
+      padding: '1.285rem 2rem !important',
+      lineHeight: '1.25rem',
 
       '& > div': {
         marginLeft: '-1rem',
@@ -62,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('xs')]: {
       fontSize: '1.2rem',
+      lineHeight: '1.5rem',
+      padding: '2.625rem 2rem 1.25rem !important',
     },
   },
 }));

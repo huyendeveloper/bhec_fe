@@ -7,9 +7,9 @@ import Slide from '@material-ui/core/Slide';
 import {
   Hidden,
   IconButton,
-  Link,
+  Link, useMediaQuery,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
 
@@ -57,6 +57,21 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      height: '80px',
+    },
+    [theme.breakpoints.up('xs')]: {
+      minHeight: 48,
+    },
+  },
+  toolBarPlaceholder: {
+    [theme.breakpoints.up('md')]: {
+      height: '80px',
+    },
+    [theme.breakpoints.up('xs')]: {
+      minHeight: 48,
+      height: 48,
+    },
   },
   logoLink: {
     display: 'flex',
@@ -70,6 +85,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = (props) => {
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  // eslint-disable-next-line no-nested-ternary
+  const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
+  // eslint-disable-next-line no-nested-ternary
+  const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
+
   const classes = useStyles();
   const {showMainMenu} = props;
   return (
@@ -97,8 +120,8 @@ const Header = (props) => {
                 <Image
                   src='/logo.png'
                   alt='BH_EC Logo'
-                  width={162}
-                  height={48}
+                  width={logoWidth}
+                  height={logoHeight}
                 />
               </Link>
             </div>
@@ -114,7 +137,7 @@ const Header = (props) => {
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <Toolbar/>
+      <Toolbar className={classes.toolBarPlaceholder}/>
     </>
   );
 };
