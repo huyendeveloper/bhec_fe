@@ -11,26 +11,57 @@ const theme = createMuiTheme({
       xl: 1920,
     },
   },
+  typography: {
+    fontFamily: [
+      'Meiryo',
+      '"ヒラギノ角ゴ Pro W3"',
+      '"Hiragino Kaku Gothic Pro"',
+      'Osaka',
+      '"メイリオ"',
+      '"ＭＳ Ｐゴシック"',
+      '"MS PGothic"',
+      'sans-serif',
+    ].join(','),
+  },
   palette: {
+    text: {
+      primary: '#111111',
+    },
     red: {
       light: '#da4c5c',
       main: '#ba2636',
       dark: '#8b1c28',
+    },
+    black: {
+      default: '#000000',
     },
     yellow: {
       light: '#ecc659',
       main: '#e6b422',
       dark: '#b18914',
     },
+    black: {
+      main: '#000000'
+    },
+    white: {
+      main: '#ffffff'
+    },
+    grey: {
+      light: '#ededed',
+      main: '#C4C4C4'
+    },
     green: {
       main: '#54c0c0',
     },
     background: {
-      default: '#fff',
+      default: '#fff'
     },
     body: {
       textColor: '#2e2e2e',
     },
+  },
+  blockContact: {
+    borderColor: '#d8d8d8',
   },
   topBanner: {
     textColor: '#fff',

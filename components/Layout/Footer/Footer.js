@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
@@ -18,22 +18,28 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
-    padding: theme.spacing(8),
+    padding: theme.spacing(6, 6, 5.875, 6),
     [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(6, 0, 4, 0),
+      padding: theme.spacing(4, 0, 2, 0),
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(3, 0, 1.875, 0),
     },
   },
   footerLogo: {
     marginBottom: '1.5rem',
     display: 'inline-block',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '1.2rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '0.75rem',
+    },
   },
   copyRight: {
-    padding: theme.spacing(3, 0),
+    padding: theme.spacing(1.875, 0),
     borderTop: `1px solid ${theme.footer.borderTopColor}`,
     fontSize: '0.75rem',
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(2, 0),
-    },
   },
   scrollToTopIcon: {
     backgroundColor: theme.palette.yellow.main,
@@ -87,6 +93,9 @@ ScrollTop.propTypes = {
 };
 
 const Footer = (props) => {
+  const theme = useTheme();
+  const isTablet = theme.breakpoints.down('sm');
+  const isMobile = theme.breakpoints.down('sm');
   const classes = useStyles();
   return (
     <>
@@ -102,8 +111,11 @@ const Footer = (props) => {
               >
                 <Image
                   src={'/logo.png'}
-                  width={224}
-                  height={64}
+                  width={
+                    // eslint-disable-next-line no-nested-ternary
+                    isMobile ? 163 : (isTablet ? 170 : 218)
+                  }
+                  height={isTablet ? 48 : 64}
                   alt={'Footer logo'}
                 />
               </Link>

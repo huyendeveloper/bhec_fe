@@ -2,9 +2,9 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Box, Container, Grid} from '@material-ui/core';
+import {Box, Container, Grid, useMediaQuery} from '@material-ui/core';
 
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 // import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -188,8 +188,9 @@ export default function About() {
     },
   ];
 
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles();
 
   return (
@@ -217,11 +218,15 @@ export default function About() {
           title='おしながきの特徴'
           description={'生産者から直送！新鮮で厳選された商品をお届けするのは今や当たり前！\n' +
           'おしながきではこんな特徴があります'}
+          bgColor='#FFFFFF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
         >
           <Grid
             container={true}
             justify='center'
-            spacing={3}
+            spacing={isMobile ? 4 : 3}
           >
             <Grid
               item={true}
@@ -264,11 +269,12 @@ export default function About() {
                 {'ふるさとや好きな地域を'} <br/>
                 {'応援することができる！'} <br/>
                 <span
+                  className='note'
                   style={{
                     fontSize: '0.875rem',
                     lineHeight: '1.375rem',
                     color: '#444',
-                    marginTop: '1rem',
+                    marginTop: '0.875rem',
                     display: 'inline-block',
                   }}
                 >{'*利益の2%を地方へ還元'}</span>
@@ -291,13 +297,14 @@ export default function About() {
               alignItems='center'
             >
               <Box
-                py={4}
+                pt={2}
+                pb={1}
                 className={classes.supportSystemWrapper}
               >
                 <Image
                   src='/img/support-system-lifecycle.png'
-                  width={692}
-                  height={692}
+                  width={691}
+                  height={691}
                   alt='Support system lifecycle'
                 />
               </Box>
@@ -305,7 +312,13 @@ export default function About() {
           </Container>
         </ContentBlock>
 
-        <ContentBlock title='簡単３ステップで商品到着'>
+        <ContentBlock
+          title='簡単３ステップで商品到着'
+          bgColor='#FFFFFF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
+        >
           <Grid
             container={true}
             justify='center'
@@ -325,12 +338,18 @@ export default function About() {
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={217}
-                    height={207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP1'
                     src='/img/product-arrival-step-1.png'
                   />
@@ -347,19 +366,25 @@ export default function About() {
                 title='Step2'
               >
                 <Box
-                  lineHeight='4rem'
+                  lineHeight={isTablet ? '2.5rem' : '4rem'}
                   fontWeight='bold'
                 >
                   {'発送を待つだけ'}
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={217}
-                    height={207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP2'
                     src='/img/product-arrival-step-2.png'
                   />
@@ -376,19 +401,25 @@ export default function About() {
                 title='Step3'
               >
                 <Box
-                  lineHeight='4rem'
+                  lineHeight={isTablet ? '2.5rem' : '4rem'}
                   fontWeight='bold'
                 >
                   {'お家で受け取り'}
                 </Box>
                 <Box
                   textAlign='center'
-                  mt={2}
+                  mt={isMobile ? 3 : 2}
                   mb={-4}
                 >
                   <Image
-                    width={217}
-                    height={207}
+                    width={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 204 : (isTablet ? 134 : 217)
+                    }
+                    height={
+                      /* eslint-disable-next-line no-nested-ternary */
+                      isMobile ? 196 : (isTablet ? 129 : 207)
+                    }
                     alt='簡単３ステップで商品到着 - STEP3'
                     src='/img/product-arrival-step-3.png'
                   />
@@ -461,6 +492,10 @@ export default function About() {
 
         <ContentBlock
           title='よくある質問'
+          bgColor='#FFFFFF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
         >
           <FaqsWidget data={faqsData}/>
         </ContentBlock>
