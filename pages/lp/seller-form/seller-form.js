@@ -4,9 +4,10 @@ import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import Image from 'next/image';
+import {useRouter} from 'next/router';
 import {
-  Box, Checkbox, FormControl,
-  FormControlLabel, FormGroup,
+  Box, Checkbox, CircularProgress, FormControl,
+  FormControlLabel,
   Grid, Icon, NativeSelect,
   Radio,
   RadioGroup,
@@ -30,12 +31,16 @@ import React, {useState} from 'react';
 
 import moment from 'moment';
 
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {TopBannerWidget} from '../../components/Widgets/TopBannerWidget';
-import {ContentBlock} from '../../components/ContentBlock';
-import {Button} from '../../components/Button';
-import {StyledForm} from '../../components/StyledForm';
+import {Header} from '../../../components/Layout/Header';
+import {Footer} from '../../../components/Layout/Footer';
+import {TopBannerWidget} from '../../../components/Widgets/TopBannerWidget';
+import {ContentBlock} from '../../../components/ContentBlock';
+import {Button} from '../../../components/Button';
+import {StyledForm} from '../../../components/StyledForm';
+
+import {prefectures} from '../../../constants';
+
+import {registerSeller} from './index';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -46,11 +51,17 @@ const useStyles = makeStyles(() => ({
 export default function SellerForm() {
   const theme = useTheme();
   const classes = useStyles();
-  const {control, handleSubmit, getValues, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
+  const router = useRouter();
+
+  const {control, handleSubmit, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [iamDeputy, setIamDeputy] = useState(false);
-  const [productImages, setProductImages] = React.useState([]);
+  const [productImages, setProductImages] = useState([]);
+  const [isViewedTerms, setIsViewedTerms] = useState(false);
+  const [isViewedPolicy, setIsViewedPolicy] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const maxNumber = 3;
 
   const onProductImagesChange = (imageList) => {
@@ -64,28 +75,15 @@ export default function SellerForm() {
     setValue('images', imageDataUrls);
   };
 
-  const considerList = [
-    '農作物（野菜/果物/⽶/穀類/お茶',
-    '⽔産物（⿂介類',
-    '畜産物（⾁/卵/乳製品）',
-    '酒類',
-    '加⼯品',
-    '伝統⼯芸品 (漆器/陶磁器/染物/織物/⽊⼯品など)',
-    'ライフスタイル⽤品',
-  ];
-
-  const handleConsiderListChange = (evt) => {
-    let productTypes = getValues('product_types') || [];
-    if (evt.target.checked) {
-      productTypes.push(evt.target.value);
-    } else {
-      productTypes = productTypes.filter((type) => type !== evt.target.value);
-    }
-    setValue('product_types', productTypes);
-  };
-
   // eslint-disable-next-line no-console
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    const res = await registerSeller(data);
+    if (res && !res.errors) {
+      setLoading(false);
+      await router.push('/lp/seller-form/thanks');
+    }
+  };
 
   const DeputyInputRender = (
     <>
@@ -692,16 +690,22 @@ export default function SellerForm() {
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <TextField
-                              id='city'
-                              variant='outlined'
-                              error={Boolean(errors.city)}
-                              InputLabelProps={{shrink: false}}
-                              name={name}
-                              value={value}
-                              inputRef={ref}
-                              onChange={onChange}
-                            />
+                            <FormControl>
+                              <NativeSelect
+                                className={errors.city ? 'selectBoxError' : ''}
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              >
+                                {prefectures.map((pref, index) => (
+                                  <option
+                                    key={String(index)}
+                                    value={pref.value}
+                                  >{pref.label}</option>
+                                ))}
+                              </NativeSelect>
+                            </FormControl>
                           )}
                         />
                         <ErrorMessage
@@ -1100,18 +1104,17 @@ export default function SellerForm() {
                           defaultValue=''
                           rules={{required: 'この入力は必須です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <FormControl>
-                              <NativeSelect
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              >
-                                <option value=''>{'出品するアイテムをお選びください'}</option>
-                                <option value='ITEM 01'>{'ITEM 01'}</option>
-                                <option value='ITEM 02'>{'ITEM 02'}</option>
-                              </NativeSelect>
-                            </FormControl>
+                            <TextField
+                              id='product_sell'
+                              label='農作物（野菜/果物/⽶/穀類/お茶）'
+                              variant='outlined'
+                              error={Boolean(errors.product_sell)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              onChange={onChange}
+                              inputRef={ref}
+                            />
                           )}
                         />
                         <ErrorMessage
@@ -1182,48 +1185,6 @@ export default function SellerForm() {
                         />
                       </Grid>
                       {/* END EXHIBITED DATE */}
-
-                      {/* CONSIDER LIST*/}
-                      <Grid
-                        item={true}
-                        xs={12}
-                      >
-                        <Box my={3}>
-                          <Typography component='h5'>{'出品を検討している時期 (選択式)'}</Typography>
-                          <Typography
-                            component='p'
-                            style={{marginTop: '0.5rem'}}
-                          >{'取り扱い商品（ご出品予定の全ての商材） * 商品によって審査基準が異なるため、出品予定商材全てを選択してください。'}</Typography>
-                        </Box>
-
-                        <Controller
-                          name='product_types'
-                          control={control}
-                          render={() => (
-                            <FormControl component='fieldset'>
-                              <FormGroup>
-                                {considerList.map((value, index) => {
-                                  return (
-                                    <FormControlLabel
-                                      key={`considerListItem_${String(index)}`}
-                                      control={
-                                        <Checkbox
-                                          name={`${index + 1}`}
-                                          value={value}
-                                          onChange={handleConsiderListChange}
-                                        />
-                                      }
-                                      label={value}
-                                    />
-                                  );
-                                })}
-                              </FormGroup>
-                            </FormControl>
-                          )}
-                        />
-                      </Grid>
-                      {/* END CONSIDER LIST*/}
-
                     </Grid>
                   </div>
                 </div>
@@ -1331,13 +1292,24 @@ export default function SellerForm() {
                             className={errors.term ? 'checkboxRequiredError' : ''}
                             control={
                               <Checkbox
+                                disabled={!isViewedTerms}
                                 name={name}
                                 checked={value}
                                 inputRef={ref}
                                 onChange={onChange}
                               />
                             }
-                            label='「出品者利⽤規約」に同意します'
+                            label={(
+                              <a
+                                className='linkLabel'
+                                href='/files/おしながき利用規約.pdf'
+                                target='_blank'
+                                onClick={() => {
+                                  setIsViewedTerms(true);
+                                  setValue('term', true);
+                                }}
+                              >{'「出品者利⽤規約」に同意します'}</a>
+                            )}
                           />
                         )}
                       />
@@ -1354,13 +1326,24 @@ export default function SellerForm() {
                             className={errors.policy ? 'checkboxRequiredError' : ''}
                             control={
                               <Checkbox
+                                disabled={!isViewedPolicy}
                                 name={name}
                                 checked={value}
                                 inputRef={ref}
                                 onChange={onChange}
                               />
                             }
-                            label='「おしながき基準」に同意します'
+                            label={(
+                              <a
+                                className='linkLabel'
+                                href='/files/おしながき基準.pdf'
+                                target='_blank'
+                                onClick={() => {
+                                  setIsViewedPolicy(true);
+                                  setValue('policy', true);
+                                }}
+                              >{'「おしながき基準」に同意します'}</a>
+                            )}
                           />
                         )}
                       />
@@ -1394,8 +1377,14 @@ export default function SellerForm() {
                     customColor='red'
                     customSize='extraLarge'
                     type='submit'
+                    disabled={loading}
                   >
                     {'送信する'}
+                    {loading ? (
+                      <CircularProgress
+                        size={24}
+                      />
+                    ) : null}
                   </Button>
                 </Box>
               </MuiPickersUtilsProvider>

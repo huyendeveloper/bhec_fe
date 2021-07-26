@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   description: {
-    fontSize: '1.5rem',
+    fontSize: '1.35rem',
     lineHeight: '3rem',
     textAlign: 'center',
     marginBottom: '2rem',

@@ -6,6 +6,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {Box} from '@material-ui/core';
 
 const Accordion = withStyles({
   root: {
@@ -41,6 +42,13 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(3, 2),
+    '& .faq-answer p': {
+      marginTop: 0,
+      marginBottom: '0.5rem',
+    },
+    '& .faq-answer p:last-child': {
+      marginBottom: 0,
+    },
   },
 }))(MuiAccordionDetails);
 
@@ -69,27 +77,38 @@ const FaqsWidget = ({data}) => {
 
   return (
     <div className={classes.root}>
-      {data && data.length > 0 ? data.map((faq) => (
-        <Accordion
-          key={faq.id}
-          square={true}
-          expanded={expanded === `panel_${faq.id}`}
-          onChange={handleChange(`panel_${faq.id}`)}
-        >
-          <AccordionSummary
-            aria-controls={`panel${faq.id}d-content`}
-            id={`panel${faq.id}d-header`}
-            expandIcon={<ExpandMoreIcon/>}
+      {data && data.length > 0 ? data.map((faq) => {
+        const formattedAnswer = faq.answer ? faq.answer.split('\n').
+          map((str, index) => (
+            <p
+              key={String(index)}
+            ><strong>{index === 0 ? 'A. ' : ''}</strong>{str}</p>)) : null;
+
+        return (
+          <Accordion
+            key={faq.id}
+            square={true}
+            expanded={expanded === `panel_${faq.id}`}
+            onChange={handleChange(`panel_${faq.id}`)}
           >
-            <Typography>{`Q.${faq.question}`}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              {`A.${faq.answer}`}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      )) : null}
+            <AccordionSummary
+              aria-controls={`panel${faq.id}d-content`}
+              id={`panel${faq.id}d-header`}
+              expandIcon={<ExpandMoreIcon/>}
+            >
+              <Typography>
+                <strong>{'Q. '}</strong>
+                {`${faq.question}`}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box className='faq-answer'>
+                {formattedAnswer}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        );
+      }) : null}
     </div>
   );
 };

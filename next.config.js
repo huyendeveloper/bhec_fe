@@ -1,3 +1,5 @@
+/* eslint-disable no-process-env,no-undef */
+
 // This file sets a custom webpack configuration to use your Next.js app
 // with Sentry.
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
@@ -14,6 +16,18 @@ const {withSentryConfig} = require('@sentry/nextjs');
 
 const moduleExports = {
   reactStrictMode: false,
+  env: {
+    API_ENDPOINT: process.env.API_ENDPOINT,
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/about',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const SentryWebpackPluginOptions = {

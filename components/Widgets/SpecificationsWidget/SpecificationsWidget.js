@@ -30,7 +30,7 @@ const SpecificationsWidget = ({specs}) => {
           {specs.map((item, index) => {
             return (
               <li
-                key={String(index)}
+                key={`spec_${String(index)}`}
                 className={classes.specListItem}
               >
                 {item}

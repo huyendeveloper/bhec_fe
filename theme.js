@@ -2,6 +2,15 @@ import {createMuiTheme} from '@material-ui/core/styles';
 
 // Create a theme instance.
 const theme = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1188,
+      xl: 1920,
+    },
+  },
   palette: {
     red: {
       light: '#da4c5c',
@@ -13,8 +22,14 @@ const theme = createMuiTheme({
       main: '#e6b422',
       dark: '#b18914',
     },
+    green: {
+      main: '#54c0c0',
+    },
     background: {
       default: '#fff',
+    },
+    body: {
+      textColor: '#2e2e2e',
     },
   },
   topBanner: {

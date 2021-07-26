@@ -17,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.red.dark,
       color: theme.palette.common.white,
     },
+
+    '&.Mui-disabled': {
+      color: theme.palette.common.white,
+      backgroundColor: theme.palette.red.light,
+    },
   },
   pill: {
     borderRadius: 45,
@@ -32,6 +37,11 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '2.25rem',
     },
 
+    '& .MuiCircularProgress-root': {
+      marginLeft: '1rem',
+      color: theme.palette.common.white,
+    },
+
     [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
       padding: '0.375rem 1.25rem',
@@ -39,9 +49,6 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       padding: '0.5rem 2.75rem',
-    },
-    [theme.breakpoints.down('xs')]: {
-      padding: '0.375rem 1rem 0.375rem 2.75rem',
     },
   },
 }));

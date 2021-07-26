@@ -1,19 +1,21 @@
+/* eslint-disable no-irregular-whitespace */
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Box, Container, Grid, Icon, useMediaQuery} from '@material-ui/core';
+import {Box, Container, Grid} from '@material-ui/core';
 
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
-import {Swiper, SwiperSlide} from 'swiper/react';
+// import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
 import {ContentBlock} from '../components/ContentBlock';
 import {FeatureWidget} from '../components/Widgets/FeatureWidget';
 import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
-import {Button} from '../components/Button';
+
+// import {ProductWidget} from '../components/Widgets/ProductWidget';
+// import {Button} from '../components/Button';
 import {FaqsWidget} from '../components/Widgets/FaqsWidget';
 
 // Import Swiper styles
@@ -33,137 +35,161 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function About() {
-  const recommendProducts = [
-    {
-      productId: 1,
-      productName: '『大好評』小田原漆器についてご紹介しています。',
-      productThumb: '/img/products/product-01.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 26600,
-      productOwner: {
-        name: '小田原漆器',
-        avatar: '/img/sellers/seller-01.png',
-        introduction: '木地部門　伝統工芸士',
-      },
-    },
-    {
-      productId: 2,
-      productName: '『大好評』江戸べっ甲についてご紹介しています。',
-      productThumb: '/img/products/product-02.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      productPrice: 32800,
-      productOwner: {
-        name: '磯貝 剛',
-        avatar: '/img/sellers/seller-02.png',
-        introduction: 'ベッ甲イソガイ　統括',
-      },
-    },
-    {
-      productId: 3,
-      productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
-      productThumb: '/img/products/product-03.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 149300,
-      productOwner: {
-        name: '林　文雄',
-        avatar: '/img/sellers/seller-03.png',
-        introduction: 'アートランド',
-      },
-    },
-    {
-      productId: 4,
-      productName: '『大好評』江戸節句人形についてご紹介しています。',
-      productThumb: '/img/products/product-04.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-      productPrice: 184750,
-      productOwner: {
-        name: '松崎光正',
-        avatar: '/img/sellers/seller-04.png',
-        introduction: '松崎人形',
-      },
-    },
-    {
-      productId: 5,
-      productName: '『大好評』箱根寄木細工についてご紹介しています。',
-      productThumb: '/img/products/product-05.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      productPrice: 45753,
-      productOwner: {
-        name: '金指　勝悦',
-        avatar: '/img/sellers/seller-05.png',
-        introduction: '箱根寄木細工　伝統工芸士',
-      },
-    },
-    {
-      productId: 6,
-      productName: '『大好評』江戸木版画についてご紹介しています。',
-      productThumb: '/img/products/product-06.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-      productPrice: 180630,
-      productOwner: {
-        name: '高橋 由貴子',
-        avatar: '/img/sellers/seller-06.png',
-        introduction: '三越百貨店 友の会 版画教室主宰',
-      },
-    },
-    {
-      productId: 7,
-      productName: '『大好評』東京手描友禅についてご紹介しています。',
-      productThumb: '/img/products/product-07.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-      productPrice: 35700,
-      productOwner: {
-        name: '岩間 奨',
-        avatar: '/img/sellers/seller-07.png',
-        introduction: '東京手描友禅･手描部門',
-      },
-    },
-    {
-      productId: 8,
-      productName: '『大好評』江戸和竿についてご紹介しています。',
-      productThumb: '/img/products/product-08.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      productPrice: 89620,
-      productOwner: {
-        name: '中台泰夫',
-        avatar: '/img/sellers/seller-08.png',
-        introduction: '竿中',
-      },
-    },
-  ];
+  // const recommendProducts = [
+  //   {
+  //     productId: 1,
+  //     productName: '『大好評』小田原漆器についてご紹介しています。',
+  //     productThumb: '/img/products/product-01.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+  //     productPrice: 26600,
+  //     productOwner: {
+  //       name: '小田原漆器',
+  //       avatar: '/img/sellers/seller-01.png',
+  //       introduction: '木地部門　伝統工芸士',
+  //     },
+  //   },
+  //   {
+  //     productId: 2,
+  //     productName: '『大好評』江戸べっ甲についてご紹介しています。',
+  //     productThumb: '/img/products/product-02.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
+  //     productPrice: 32800,
+  //     productOwner: {
+  //       name: '磯貝 剛',
+  //       avatar: '/img/sellers/seller-02.png',
+  //       introduction: 'ベッ甲イソガイ　統括',
+  //     },
+  //   },
+  //   {
+  //     productId: 3,
+  //     productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
+  //     productThumb: '/img/products/product-03.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
+  //     productPrice: 149300,
+  //     productOwner: {
+  //       name: '林　文雄',
+  //       avatar: '/img/sellers/seller-03.png',
+  //       introduction: 'アートランド',
+  //     },
+  //   },
+  //   {
+  //     productId: 4,
+  //     productName: '『大好評』江戸節句人形についてご紹介しています。',
+  //     productThumb: '/img/products/product-04.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
+  //     productPrice: 184750,
+  //     productOwner: {
+  //       name: '松崎光正',
+  //       avatar: '/img/sellers/seller-04.png',
+  //       introduction: '松崎人形',
+  //     },
+  //   },
+  //   {
+  //     productId: 5,
+  //     productName: '『大好評』箱根寄木細工についてご紹介しています。',
+  //     productThumb: '/img/products/product-05.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
+  //     productPrice: 45753,
+  //     productOwner: {
+  //       name: '金指　勝悦',
+  //       avatar: '/img/sellers/seller-05.png',
+  //       introduction: '箱根寄木細工　伝統工芸士',
+  //     },
+  //   },
+  //   {
+  //     productId: 6,
+  //     productName: '『大好評』江戸木版画についてご紹介しています。',
+  //     productThumb: '/img/products/product-06.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
+  //     productPrice: 180630,
+  //     productOwner: {
+  //       name: '高橋 由貴子',
+  //       avatar: '/img/sellers/seller-06.png',
+  //       introduction: '三越百貨店 友の会 版画教室主宰',
+  //     },
+  //   },
+  //   {
+  //     productId: 7,
+  //     productName: '『大好評』東京手描友禅についてご紹介しています。',
+  //     productThumb: '/img/products/product-07.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
+  //     productPrice: 35700,
+  //     productOwner: {
+  //       name: '岩間 奨',
+  //       avatar: '/img/sellers/seller-07.png',
+  //       introduction: '東京手描友禅･手描部門',
+  //     },
+  //   },
+  //   {
+  //     productId: 8,
+  //     productName: '『大好評』江戸和竿についてご紹介しています。',
+  //     productThumb: '/img/products/product-08.png',
+  //     productUrl: '#',
+  //     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
+  //     productPrice: 89620,
+  //     productOwner: {
+  //       name: '中台泰夫',
+  //       avatar: '/img/sellers/seller-08.png',
+  //       introduction: '竿中',
+  //     },
+  //   },
+  // ];
   const faqsData = [
     {
       id: 1,
       question: '利用料金はかかりますか？',
-      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+      answer: '利用料金は一切かかりません。商品の代金＋送料のみでお買い物をお楽しみください。',
     },
     {
       id: 2,
       question: 'どんな生産者さんが登録していますか？',
-      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+      answer: 'おしながきでは、趣味ではなく事業として生産しているプロの生産者の方のみが出品可能となっております。\n' +
+        'おしながき独自の審査基準を設け、審査を通過した生産者さんのみが出品者として登録をいただいております。',
     },
     {
       id: 3,
-      question: '従来の直送サービとの違いはなんですか？',
-      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+      question: '従来の直送サービスとの違いはなんですか？',
+      answer: 'おしながきでは以下のような商品のこだわりを簡単に知ることができ、あなたにぴったりな商品を探すことができます。\n' +
+        '　・生産者さんについて\n' +
+        '　・商品の作られ方や歴史\n' +
+        '　・地域の文化\n' +
+        '\n' +
+        'また、売上の一部をが地域へ還元されるので、お買い物を通してふるさとやお気に入りの地域を応援することができます。',
     },
     {
       id: 4,
-      question: 'よくある質問？',
-      answer: '利用料金は一切かかりません。商品の代金+送料のみでお買い物をお楽しみいただけます。',
+      question: '支払い方法は何が選べますか？',
+      answer: '以下のお支払い方法がご利用いただけます。\n' +
+        '\n' +
+        '・クレジットカード払い\n' +
+        '　対応ブランド：VISA・Mastercard・JCB・AMEX・DINERS\n' +
+        '\n' +
+        '・銀聯カード（UnionPay）払い\n' +
+        '・コンビニ払い\n' +
+        '　対応コンビニ：セブンイレブン・ローソン・ファミリーマート・ミニストップ\n' +
+        '　※近日導入予定',
+    },
+    {
+      id: 5,
+      question: '送料はいくらですか？',
+      answer: '生産者さんが指定をした配送方法で配送されます。配送方法と配送料金は、各商品ページをご確認ください。\n' +
+        '\n' +
+        'また、配送料金は以下の項目によって変わります。\n' +
+        '・生産者の発送元地域からお客様の配送先の地域\n' +
+        '・荷物のサイズ\n' +
+        '・クール便の有無',
     },
   ];
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const classes = useStyles();
 
   return (
@@ -372,66 +398,66 @@ export default function About() {
           </Grid>
         </ContentBlock>
 
-        <ContentBlock
-          title='初めての方にオススメ！'
-          bgColor='#FAF6EF'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          {isMobile ? (
-            <Swiper
-              slidesPerView={'auto'}
-              spaceBetween={24}
-              pagination={{
-                clickable: true,
-              }}
-              className='productSwiper'
-            >
-              {recommendProducts.map((product) => (
-                <SwiperSlide
-                  style={{width: '70%'}}
-                  key={`product-${product.productID}`}
-                >
-                  <ProductWidget data={product}/>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          ) : (
-            <Grid
-              container={true}
-              justify='center'
-              spacing={3}
-            >
-              {recommendProducts.map((product) => (
-                <Grid
-                  key={`product-${product.productID}`}
-                  item={true}
-                  xs={12}
-                  sm={4}
-                  md={3}
-                >
-                  <ProductWidget data={product}/>
-                </Grid>
-              ))}
-            </Grid>
-          )}
+        {/*<ContentBlock*/}
+        {/*  title='初めての方にオススメ！'*/}
+        {/*  bgColor='#FAF6EF'*/}
+        {/*  bgImage='/img/noise.png'*/}
+        {/*  bgRepeat='repeat'*/}
+        {/*  mixBlendMode='multiply'*/}
+        {/*>*/}
+        {/*  {isMobile ? (*/}
+        {/*    <Swiper*/}
+        {/*      slidesPerView={'auto'}*/}
+        {/*      spaceBetween={24}*/}
+        {/*      pagination={{*/}
+        {/*        clickable: true,*/}
+        {/*      }}*/}
+        {/*      className='productSwiper'*/}
+        {/*    >*/}
+        {/*      {recommendProducts.map((product) => (*/}
+        {/*        <SwiperSlide*/}
+        {/*          style={{width: '70%'}}*/}
+        {/*          key={`product-${product.productID}`}*/}
+        {/*        >*/}
+        {/*          <ProductWidget data={product}/>*/}
+        {/*        </SwiperSlide>*/}
+        {/*      ))}*/}
+        {/*    </Swiper>*/}
+        {/*  ) : (*/}
+        {/*    <Grid*/}
+        {/*      container={true}*/}
+        {/*      justify='center'*/}
+        {/*      spacing={3}*/}
+        {/*    >*/}
+        {/*      {recommendProducts.map((product) => (*/}
+        {/*        <Grid*/}
+        {/*          key={`product-${product.productID}`}*/}
+        {/*          item={true}*/}
+        {/*          xs={12}*/}
+        {/*          sm={4}*/}
+        {/*          md={3}*/}
+        {/*        >*/}
+        {/*          <ProductWidget data={product}/>*/}
+        {/*        </Grid>*/}
+        {/*      ))}*/}
+        {/*    </Grid>*/}
+        {/*  )}*/}
 
-          <Box
-            mt={isMobile ? 3 : 6}
-            textAlign='center'
-          >
-            <Button
-              variant='pill'
-              customColor='red'
-              customSize='extraLarge'
-              endIcon={<Icon>{'chevron_right'}</Icon>}
-              href='/lp/seller'
-            >
-              {'オススメ商品をもっと見る'}
-            </Button>
-          </Box>
-        </ContentBlock>
+        {/*  <Box*/}
+        {/*    mt={isMobile ? 3 : 6}*/}
+        {/*    textAlign='center'*/}
+        {/*  >*/}
+        {/*    <Button*/}
+        {/*      variant='pill'*/}
+        {/*      customColor='red'*/}
+        {/*      customSize='extraLarge'*/}
+        {/*      endIcon={<Icon>{'chevron_right'}</Icon>}*/}
+        {/*      href='/lp/seller'*/}
+        {/*    >*/}
+        {/*      {'オススメ商品をもっと見る'}*/}
+        {/*    </Button>*/}
+        {/*  </Box>*/}
+        {/*</ContentBlock>*/}
 
         <ContentBlock
           title='よくある質問'
