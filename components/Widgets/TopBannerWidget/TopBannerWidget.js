@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     [theme.breakpoints.down('xs')]: {
-      height: '65vh',
+      height: '68.5vh',
       width: '100%',
       position: 'relative',
     },
