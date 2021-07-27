@@ -55,7 +55,7 @@ const info = {
   address: '',
 };
 
-export default function BasicInfomation() {
+export default function BasicInformation() {
   const classes = useStyles();
 
   function updateInfo() {
