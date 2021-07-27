@@ -84,6 +84,12 @@ const theme = createMuiTheme({
       color: '#54c0c0',
     },
   },
+  border: {
+    default: '#dbdbdb',
+  },
+  textDisable: {
+    default: '#d8d8d8',
+  },
   blockContact: {
     borderColor: '#d8d8d8',
   },
