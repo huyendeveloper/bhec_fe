@@ -62,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('xs')]: {
       minHeight: 48,
-      height: 48,
     },
   },
   toolBarPlaceholder: {

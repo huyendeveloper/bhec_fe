@@ -163,8 +163,8 @@ export default function Seller() {
             <Image
               src='/img/product-arrival-cycle.png'
               layout='responsive'
-              width={1031}
-              height={489}
+              width={1366}
+              height={688}
               alt='Product Arrival Cycle'
             />
           </Box>

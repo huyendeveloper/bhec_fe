@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import {createMuiTheme} from '@material-ui/core/styles';
 
 // Create a theme instance.
@@ -41,20 +42,46 @@ const theme = createMuiTheme({
       dark: '#b18914',
     },
     white: {
-      main: '#ffffff'
+      main: '#ffffff',
     },
     grey: {
       light: '#ededed',
-      main: '#c4c4c4'
+      main: '#c4c4c4',
     },
     green: {
       main: '#54c0c0',
     },
     background: {
-      default: '#fff'
+      default: '#fff',
     },
     body: {
       textColor: '#2e2e2e',
+    },
+    buttonLogin: {
+      default: '#ba2636',
+    },
+    border: {
+      default: '#c4c4c4',
+    },
+  },
+  line: {
+    background: '#00c300',
+  },
+  boxStep: {
+    background: '#f2f2f2',
+  },
+  boxProduct: {
+    background: '#f8f8f8',
+  },
+  step: {
+    one: {
+      color: '#ba2636',
+    },
+    two: {
+      color: '#e6b422',
+    },
+    three: {
+      color: '#54c0c0',
     },
   },
   border: {
@@ -66,8 +93,14 @@ const theme = createMuiTheme({
   blockContact: {
     borderColor: '#d8d8d8',
   },
+  divider: {
+    dashCorlor: '#da505f',
+  },
   topBanner: {
     textColor: '#fff',
+  },
+  chipItem: {
+    borderColor: '#8a8a8a',
   },
   selectBox: {
     borderColor: '#444',
@@ -94,6 +127,9 @@ const theme = createMuiTheme({
   },
   footer: {
     borderTopColor: '#e3e3e3',
+  },
+  font: {
+    default: 'Meiryo',
   },
 });
 

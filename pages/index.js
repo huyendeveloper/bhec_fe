@@ -8,7 +8,7 @@ import Image from 'next/image';
 import {Header} from '../components/Layout/Header';
 import {Footer} from '../components/Layout/Footer';
 import {Slider} from '../components/Slider';
-import {Article} from '../components/Article';
+import {Article} from '../components/Article/Article';
 import {Search} from '../components/Search';
 import {AdsWidget} from '../components/AdsWidget';
 import {CategoryBlock} from '../components/CategoryBlock';
