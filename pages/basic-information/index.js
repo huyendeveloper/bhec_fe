@@ -60,7 +60,7 @@ export default function BasicInformation() {
 
   function updateInfo() {
     Router.push({
-      pathname: '/basic-infomation/update',
+      pathname: '/basic-information/update',
     });
   }
 

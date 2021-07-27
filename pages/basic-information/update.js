@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BasicInfomationUpdate() {
+export default function BasicInformationUpdate() {
   const theme = useTheme();
   const classes = useStyles();
 
