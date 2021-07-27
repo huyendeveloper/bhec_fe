@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     border: 'none',
     color: theme.palette.white.main,
-    fontWeight: '500',
     margin: '0 auto 2.188rem',
   },
 }));

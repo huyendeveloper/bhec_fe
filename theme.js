@@ -35,6 +35,7 @@ const theme = createMuiTheme({
     },
     black: {
       default: '#000000',
+      light: '#444444',
     },
     yellow: {
       light: '#ecc659',
@@ -47,9 +48,16 @@ const theme = createMuiTheme({
     grey: {
       light: '#ededed',
       main: '#c4c4c4',
+      dark: '#BEBEBE',
     },
     green: {
       main: '#54c0c0',
+    },
+    pink: {
+      light: '#FAF6EF',
+    },
+    orange: {
+      light: '#EEE0B5',
     },
     background: {
       default: '#fff',
@@ -90,6 +98,15 @@ const theme = createMuiTheme({
   textDisable: {
     default: '#d8d8d8',
   },
+  notifications: {
+    borderColor: '#DBDBDB',
+    boxShadow: 'rgba(0, 0, 0, 0.1)',
+    scrollColor: '#DBDBDB',
+  },
+  notification: {
+    backgroundColor: '#F8F8F8',
+    dateLabelColor: '#8A8A8A',
+  },
   blockContact: {
     borderColor: '#d8d8d8',
   },
@@ -116,6 +133,9 @@ const theme = createMuiTheme({
       sepColor: '#f1ebdf',
       textColor: '#000',
     },
+  },
+  mypage: {
+    borderColor: '#8A8A8A',
   },
   styledForm: {
     formControl: {

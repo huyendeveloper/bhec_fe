@@ -8,14 +8,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     height: '3.375rem',
     '& .MuiBreadcrumbs-separator': {
-      color: theme.palette.black.main,
+      color: theme.palette.black.default,
       fontWeight: 'bold',
       fontSize: '0.75rem',
       lineHeight: '0.875rem',
     },
   },
   link: {
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
     fontWeight: 'bold',
     fontSize: '0.75rem',
     lineHeight: '0.875rem',

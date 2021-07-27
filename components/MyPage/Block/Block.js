@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     height: '4.065rem',
     fontWeight: 'bold',
     justifyContent: 'center',
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
     display: 'flex',
     alignItems: 'center',
   },

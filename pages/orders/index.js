@@ -19,19 +19,19 @@ import {Block} from '../../components/MyPage/Block';
 const useStyles = makeStyles((theme) => ({
   containerTable: {
     padding: '2.5rem 1.875rem',
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
     '& .MuiTableRow-head': {
       background: '#E5E5E5',
       height: '3.875rem',
       '& .MuiTableCell-root': {
         fontWeight: 'bold',
-        color: theme.palette.black.main,
+        color: theme.palette.black.default,
       },
     },
     '& tbody': {
       background: '#F2F2F2',
       height: '8.375rem',
-      color: theme.palette.black.main,
+      color: theme.palette.black.default,
     },
     '& .MuiTableCell-root': {
       border: '2px solid #D8D8D8',
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1.125rem',
     },
     '& a': {
-      color: theme.palette.black.main,
+      color: theme.palette.black.default,
     },
   },
 }));

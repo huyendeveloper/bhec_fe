@@ -15,13 +15,13 @@ const useStyles = makeStyles((theme) => ({
     '& h3': {
       fontSize: '1.125rem',
       margin: '0rem',
-      color: theme.palette.black.main,
+      color: theme.palette.black.default,
     },
   },
   productName: {
     fontSize: '1.5rem',
     lineHeight: '2.188rem',
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
   },
   stars: {
     display: 'flex',
@@ -54,8 +54,7 @@ const useStyles = makeStyles((theme) => ({
   guide: {
     fontSize: '0.875rem',
     lineHeight: '2.188rem',
-    color: theme.palette.black.main,
-    fontWeight: '500',
+    color: theme.palette.black.default,
     marginBottom: '0',
   },
   followBtn: {

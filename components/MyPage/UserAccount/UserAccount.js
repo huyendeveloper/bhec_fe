@@ -1,53 +1,70 @@
 import {makeStyles} from '@material-ui/core/styles';
-import {Avatar, Input} from '@material-ui/core';
+import {Avatar, Input, Badge} from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import {useState} from 'react';
-import Image from 'next/image';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    '& .MuiAvatar-root': {
-      width: '10rem',
-      height: '10rem',
+  },
+  avatar: {
+    width: '7rem',
+    height: '7rem',
+  },
+  changeAvatarBtn: {
+    background: theme.palette.white.main,
+    border: '1px solid ' + theme.palette.grey.dark,
+    width: '2rem',
+    height: '2rem',
+    '& img': {
+      width: '1.25rem',
+      height: '1.25rem',
     },
-    '& .username': {
-      position: 'relative',
-      marginLeft: '1.375rem',
-      fontWeight: 'bold',
-      fontSize: '1.875rem',
-      color: theme.palette.black.main,
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  badge: {
+    '& .MuiBadge-badge': {
+      padding: '0',
+      height: 'auto',
     },
-    '& #iconTop': {
-      position: 'absolute',
-      top: '-2.5rem',
-      left: '0',
-      color: theme.palette.grey.main,
-    },
-    '& #editIcon': {
-      marginLeft: '1.875rem',
-      color: theme.palette.grey.main,
-      cursor: 'pointer',
-      '& path': {
-        width: '1.125rem',
-        height: '1.125rem',
-      },
-    },
-    '& .MuiInputBase-root': {
-      fontWeight: 'bold',
-      fontSize: '1.875rem',
-      color: theme.palette.black.main,
-      maxWidth: '12.5rem',
-    },
+  },
+  username: {
+    position: 'relative',
+    marginLeft: '1rem',
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    color: theme.palette.black.default,
+    fontFamily: theme.typography.fontFamily,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  editIcon: {
+    marginLeft: '1rem',
+    color: theme.palette.black.light,
+    cursor: 'pointer',
+    width: '1.5rem',
+    height: '1.5rem',
+  },
+  confirmIcon: {
+    marginLeft: '1rem',
+    color: theme.palette.green.main,
+    cursor: 'pointer',
+    width: '1.5rem',
+    height: '1.5rem',
+  },
+  inputUsername: {
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    color: theme.palette.black.default,
+    maxWidth: '12.5rem',
   },
 }));
 
 const UserAccount = () => {
   const classes = useStyles();
   const [changeNameStatus, setchangeNameStatus] = useState(false);
-  const [username, setUsername] = useState('username1');
+  const [username, setUsername] = useState('Kurokawa Yoshio');
 
   const handleUpdateStatus = () => {
     setchangeNameStatus(!changeNameStatus);
@@ -65,36 +82,50 @@ const UserAccount = () => {
 
   return (
     <div className={classes.root}>
-      <Avatar src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU'}/>
-
-      <div className='username'>
-        {/* <PlayArrowIcon /> */}
-        <div id='iconTop'>
-          <Image
-            src={'/img/icons/polygon.svg'}
-            width={40}
-            height={34}
-            alt={'polygon'}
+      <Badge
+        overlap='circle'
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        className={classes.badge}
+        badgeContent={
+          <Avatar
+            alt='Remy Sharp'
+            src='/img/icons/camera.png'
+            className={classes.changeAvatarBtn}
           />
-        </div>
+        }
+      >
+        <Avatar
+          className={classes.avatar}
+          src={'/img/sellers/avatar.png'}
+        />
+      </Badge>
 
+      <div className={classes.username}>
         {changeNameStatus ? (
-          <Input
-            value={username}
-            onChange={handleChangeUsername}
-            onBlur={handleUpdateStatus}
-            onKeyDown={handleKeyDown}
-            autoFocus={true}
-            inputProps={{
-              'aria-label': 'username',
-            }}
-          />
+          <>
+            <Input
+              value={username}
+              onChange={handleChangeUsername}
+              onBlur={handleUpdateStatus}
+              onKeyDown={handleKeyDown}
+              autoFocus={true}
+              className={classes.inputUsername}
+              inputProps={{
+                'aria-label': 'username',
+              }}
+            />
+
+            <DoneOutlineIcon className={classes.confirmIcon}/>
+          </>
         ) : (
           <>
             {username}
             <CreateIcon
-              id={'editIcon'}
               onClick={handleUpdateStatus}
+              className={classes.editIcon}
             />
           </>)}
       </div>
