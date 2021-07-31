@@ -224,7 +224,10 @@ export default function SellerForm() {
               <p
                 className='inputErrorText'
                 key={type}
-              >{`⚠ ${message}`}</p>
+              >
+                <Icon>{'warning_amber'}</Icon>
+                {message}
+              </p>
             )) : null;
           }}
         />
@@ -276,7 +279,10 @@ export default function SellerForm() {
               <p
                 className='inputErrorText'
                 key={type}
-              >{`⚠ ${message}`}</p>
+              >
+                <Icon>{'warning_amber'}</Icon>
+                {message}
+              </p>
             )) : null;
           }}
         />
@@ -392,7 +398,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -439,7 +448,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -492,7 +504,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -604,7 +619,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -649,7 +667,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -695,7 +716,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -754,7 +778,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -800,7 +827,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -845,7 +875,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -926,7 +959,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -978,7 +1014,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -1028,7 +1067,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -1163,7 +1205,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -1217,7 +1262,10 @@ export default function SellerForm() {
                                 <p
                                   className='inputErrorText'
                                   key={type}
-                                >{`⚠ ${message}`}</p>
+                                >
+                                  <Icon>{'warning_amber'}</Icon>
+                                  {message}
+                                </p>
                               )) : null;
                             }}
                           />
@@ -1390,7 +1438,10 @@ export default function SellerForm() {
                           <p
                             className='inputErrorText'
                             key='need-agree'
-                          >{'⚠ 出店にあたっての同意事項'}</p>
+                          >
+                            <Icon>{'warning_amber'}</Icon>
+                            {'出店にあたっての同意事項'}
+                          </p>
                         ) : null}
                       </div>
                     </div>
