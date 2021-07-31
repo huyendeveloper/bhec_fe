@@ -59,12 +59,22 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.black.default,
     maxWidth: '12.5rem',
   },
+  uploadInput: {
+    left: '0',
+    outline: '0',
+    opacity: '0',
+    position: 'absolute',
+    top: '0',
+    width: '100%',
+    height: '100%',
+  },
 }));
 
 const UserAccount = () => {
   const classes = useStyles();
   const [changeNameStatus, setchangeNameStatus] = useState(false);
   const [username, setUsername] = useState('Kurokawa Yoshio');
+  const [imagePreview, setImagePreview] = useState('/img/sellers/avatar.png');
 
   const handleUpdateStatus = () => {
     setchangeNameStatus(!changeNameStatus);
@@ -80,6 +90,17 @@ const UserAccount = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const newImage = e.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result);
+    };
+
+    reader.readAsDataURL(newImage);
+  };
+
   return (
     <div className={classes.root}>
       <Badge
@@ -90,16 +111,26 @@ const UserAccount = () => {
         }}
         className={classes.badge}
         badgeContent={
-          <Avatar
-            alt='Remy Sharp'
-            src='/img/icons/camera.png'
-            className={classes.changeAvatarBtn}
-          />
+          <>
+            <Avatar
+              alt={'Remy Sharp'}
+              src={'/img/icons/camera.png'}
+              className={classes.changeAvatarBtn}
+            />
+
+            <input
+              type='file'
+              accept='image/*'
+              id='image'
+              onChange={handleChange}
+              className={classes.uploadInput}
+            />
+          </>
         }
       >
         <Avatar
           className={classes.avatar}
-          src={'/img/sellers/avatar.png'}
+          src={imagePreview}
         />
       </Badge>
 
