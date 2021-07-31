@@ -7,14 +7,14 @@ import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '3rem 0',
+    padding: '4rem 0',
     [theme.breakpoints.down('sm')]: {
       padding: '2.5rem 0',
     },
   },
   title: {
     textAlign: 'center',
-    marginBottom: '3rem',
+    marginBottom: '2.875rem',
     position: 'relative',
     '& h2': {
       fontSize: '2rem',
@@ -31,8 +31,13 @@ const useStyles = makeStyles((theme) => ({
       margin: '0 auto',
       backgroundColor: theme.palette.red.main,
       bottom: '-0.875rem',
+      borderRadius: '2px',
+      [theme.breakpoints.down('sm')]: {
+        bottom: '-0.75rem',
+      },
     },
     [theme.breakpoints.down('sm')]: {
+      marginBottom: '1.75rem',
       '& h2': {
         fontSize: '1.5rem',
         lineHeight: '2.5rem',
@@ -44,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '3rem',
     textAlign: 'center',
     marginBottom: '2rem',
+    color: '#333',
     '& p': {
       margin: 0,
     },
@@ -78,7 +84,6 @@ const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bg
       >{str}</p>)) : null;
 
   const descClass = clsx(classes.description, classes[descriptionType]);
-
   return (
     <section
       className={classes.root}

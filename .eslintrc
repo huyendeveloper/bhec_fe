@@ -15,6 +15,9 @@
       "experimentalObjectRestSpread": true
     }
   },
+  "globals": {
+    "process": true
+  },
   "plugins": [
     "react",
     "import"
@@ -298,8 +301,6 @@
     "no-new-wrappers": 2,
     "no-octal-escape": 2,
     "no-param-reassign": 2,
-    "no-process-env": 2,
-    "no-process-exit": 2,
     "no-proto": 2,
     "no-redeclare": 2,
     "no-return-assign": [

@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Meiryo';
+    src: url("/fonts/meiryo.ttc");
+    font-style: normal;
+    font-weight: 400;
+    /* src: local('Meiryo'), url(/fonts/meiryo.ttc) format('ttc'); */
+  }
+
+/* * {
+  font-family: 'Meiryo';
+} */
