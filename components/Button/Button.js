@@ -7,12 +7,15 @@ import clsx from 'clsx';
 const useStyles = makeStyles((theme) => ({
   root: {
     textTransform: 'none',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    boxShadow: 'none',
     padding: theme.spacing(1, 3),
+    border: `1px solid ${theme.palette.red.main}`,
+    color: theme.palette.red.main,
   },
   red: {
     backgroundColor: theme.palette.red.main,
     color: theme.palette.common.white,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     '&:hover': {
       backgroundColor: theme.palette.red.dark,
       color: theme.palette.common.white,

@@ -46,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 0,
       marginTop: '5px',
       color: theme.palette.red.main,
+      display: 'flex',
+      alignItems: 'center',
+      '& .material-icons': {
+        fontSize: '1rem',
+        marginRight: '5px',
+      },
     },
     '& .formBlock': {
       marginBottom: '3rem',
