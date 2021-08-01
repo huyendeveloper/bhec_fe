@@ -85,13 +85,13 @@ const boxLinks = [
     image: '/img/icons/bill.png',
     content: '注文確認',
     url: '/orders',
-    colorLabel: '#54C0C0',
+    colorLabel: '#54c0c0',
   },
   {
     image: '/img/icons/heart_fill.png',
     content: 'お気に入り商品',
     url: '/',
-    colorLabel: '#BA2636',
+    colorLabel: '#ba2636',
   },
 ];
 
@@ -205,7 +205,7 @@ export default function MyPage() {
 
         <ContentBlock
           title={'あなたにオススメの商品'}
-          bgColor='#FAF6EF'
+          bgColor='#faf6ef'
           bgImage='/img/noise.png'
         >
           <Grid

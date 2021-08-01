@@ -14,33 +14,71 @@ import Link from 'next/link';
 
 import {Footer} from '../../components/Layout/Footer';
 import {Header} from '../../components/Layout/Header';
-import {Block} from '../../components/MyPage/Block';
+import {ContentBlock} from '../../components/ContentBlock';
 
 const useStyles = makeStyles((theme) => ({
   containerTable: {
-    padding: '2.5rem 1.875rem',
-    color: theme.palette.black.default,
-    '& .MuiTableRow-head': {
-      background: '#E5E5E5',
-      height: '3.875rem',
-      '& .MuiTableCell-root': {
-        fontWeight: 'bold',
-        color: theme.palette.black.default,
-      },
-    },
-    '& tbody': {
-      background: '#F2F2F2',
-      height: '8.375rem',
-      color: theme.palette.black.default,
+    '& th, td': {
+      border: '1px solid ' + theme.border.default,
     },
     '& .MuiTableCell-root': {
-      border: '2px solid #D8D8D8',
       textAlign: 'center',
-      fontSize: '1.125rem',
+      fontSize: '1rem',
+      [theme.breakpoints.down('md')]: {
+        fontSize: '0.813rem',
+      },
     },
-    '& a': {
-      color: theme.palette.black.default,
+  },
+  table: {
+    borderCollapse: 'separate',
+    [theme.breakpoints.down('xs')]: {
+      width: '27.313rem',
+      overflow: 'scroll',
     },
+    '& th:first-child': {
+      borderTopLeftRadius: '0.25rem',
+    },
+    '& th:last-child': {
+      borderTopRightRadius: '0.25rem',
+    },
+    '& tr:last-child td:first-child': {
+      borderBottomLeftRadius: '0.25rem',
+    },
+    '& tr:last-child td:last-child': {
+      borderBottomRightRadius: '0.25rem',
+    },
+  },
+  tableHead: {
+    background: theme.palette.pink.light,
+    height: '3rem',
+    '& .MuiTableCell-head': {
+      padding: '0',
+      color: theme.palette.black.light,
+      fontWeight: 'bold',
+    },
+  },
+  tableBody: {
+    background: theme.palette.white.main,
+    height: '8.375rem',
+    '& .MuiTableCell-body': {
+      lineHeight: '1.5rem',
+      color: theme.palette.black.light,
+      padding: '1.75rem 0',
+      [theme.breakpoints.down('md')]: {
+        fontSize: '0.813rem',
+        lineHeight: '1.25rem',
+        padding: '1.375rem 0',
+      },
+    },
+    '& .MuiTableRow-root:nth-of-type(even)': {
+      backgroundColor: theme.palette.gray.light,
+      [theme.breakpoints.down('md')]: {
+        backgroundColor: theme.palette.white.main,
+      },
+    },
+  },
+  orderLink: {
+    color: theme.palette.red.main,
   },
 }));
 
@@ -149,12 +187,16 @@ const Orders = () => {
       <Header showMainMenu={false}/>
 
       <div className='content'>
-        <Block title={'注文一覧'}>
+        <ContentBlock
+          title={'基本情報'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
           <TableContainer className={classes.containerTable}>
             <Table
               className={classes.table}
             >
-              <TableHead>
+              <TableHead className={classes.tableHead}>
                 <TableRow>
                   {headCells.map((headCell) => (
                     <TableCell
@@ -166,11 +208,11 @@ const Orders = () => {
                 </TableRow>
               </TableHead>
 
-              <TableBody>
+              <TableBody className={classes.tableBody}>
                 {rows.slice(page * 10, 10 * (page + 1)).map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      <Link href={`/order/${row.id}`}><a>{row.id}</a></Link>
+                      <Link href={`/orders/${row.id}`}><a className={classes.orderLink}>{row.id}</a></Link>
                     </TableCell>
                     <TableCell>{row.dateTime}</TableCell>
                     <TableCell>{currency.format(row.price)}</TableCell>
@@ -179,18 +221,17 @@ const Orders = () => {
                 ))}
               </TableBody>
             </Table>
-            {rows.length > 10 &&
-            <TablePagination
-              rowsPerPageOptions={[]}
-              component='div'
-              count={rows.length}
-              rowsPerPage={10}
-              page={page}
-              onChangePage={handleChangePage}
-            />
-            }
           </TableContainer>
-        </Block>
+
+          <TablePagination
+            rowsPerPageOptions={[]}
+            component='div'
+            count={rows.length}
+            rowsPerPage={10}
+            page={page}
+            onChangePage={handleChangePage}
+          />
+        </ContentBlock>
       </div>
 
       <Footer/>

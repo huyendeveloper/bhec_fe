@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   editIcon: {
     marginLeft: '1rem',
-    color: theme.palette.black.light,
+    color: theme.palette.pink.light,
     cursor: 'pointer',
     width: '1.5rem',
     height: '1.5rem',
