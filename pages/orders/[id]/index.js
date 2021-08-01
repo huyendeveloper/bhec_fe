@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid rgba(33, 33, 33, 0.08)',
     fontSize: '1.125rem',
     lineHeight: '2.188rem',
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
     '& h4': {
       margin: '0rem',
     },
@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.grey.main,
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     fontSize: '1.125rem',
-    fontWeight: '500',
     cursor: 'pointer',
   },
   contentBlock: {

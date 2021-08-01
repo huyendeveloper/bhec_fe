@@ -4,15 +4,16 @@ import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '4.125rem',
-    border: '1px solid rgba(0, 0, 0, 0.38)',
+    height: '4rem',
+    border: '1px solid ' + theme.mypage.borderColor,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1rem',
-    color: theme.palette.black.main,
+    color: theme.palette.black.default,
     textDecoration: 'none',
-    fontWeight: '600',
+    background: theme.palette.white.main,
+    borderRadius: '0.25rem',
     '& .MuiGrid-item': {
       paddingTop: '0',
       paddingBottom: '2.063rem',

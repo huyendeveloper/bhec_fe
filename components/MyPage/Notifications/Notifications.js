@@ -1,8 +1,8 @@
 import {makeStyles} from '@material-ui/core/styles';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {useState} from 'react';
-import {Fade, Popper, List} from '@material-ui/core';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import {Fade, Popper, List, Badge, Avatar} from '@material-ui/core';
 
 import {Notification} from '../Notification';
 
@@ -10,46 +10,60 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    '& button': {
-      width: '4.688rem',
-      height: '4.688rem',
-      borderRadius: '50%',
-      border: 'none',
-      backgroundColor: theme.palette.grey.main,
-      position: 'relative',
-      cursor: 'pointer',
-      '& .notificationsNumber': {
-        position: 'absolute',
-        top: '0',
-        right: '0',
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        fontWeight: '500',
-        fontSize: '1.5rem',
-      },
-    },
-    '& .MuiSvgIcon-root': {
-      width: '1.875rem',
-      height: '1.875rem',
-      color: theme.palette.grey.light,
-    },
   },
   notificationsBox: {
-    width: '42.313rem',
-    backgroundColor: theme.palette.grey.light,
-    padding: '1.438rem 2.25rem',
-    height: '29.25rem',
+    width: '24.25rem',
+    height: '30rem',
+    backgroundColor: theme.palette.white.main,
+    padding: '1rem 1.5rem',
     overflow: 'auto',
+    border: '0.063rem solid ' + theme.notifications.borderColor,
+    boxShadow: '0 0.125rem 0.25rem ' + theme.notifications.boxShadow,
+    borderRadius: '0.5rem',
     '&::-webkit-scrollbar': {
-      width: '0.75rem',
+      width: '0.375rem',
       backgroundColor: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      borderRadius: '0.625rem',
-      backgroundColor: theme.palette.grey.main,
+      borderRadius: '0.313rem',
+      backgroundColor: theme.notifications.scrollColor,
     },
   },
   noNotifications: {
-    padding: '22px 0',
+    padding: '1.375rem 0',
+  },
+  btnNotifications: {
+    width: '3rem',
+    height: '3rem',
+    backgroundColor: theme.palette.pink.light,
+    cursor: 'pointer',
+    '& img': {
+      width: '1.688rem',
+      height: '1.688rem',
+    },
+  },
+  notificationsNumber: {
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 'bold',
+    fontSize: '0.625rem',
+    background: theme.palette.red.main,
+    minWidth: '1.25rem',
+    minHeight: '1.25rem',
+    borderRadius: '50%',
+    border: '0.125rem solid ' + theme.palette.white.main,
+    color: theme.palette.white.main,
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+    padding: '0 3px',
+  },
+  hoverStatus: {
+    background: theme.palette.orange.light,
+  },
+  badge: {
+    '& .MuiBadge-badge': {
+      padding: '0',
+    },
   },
 }));
 
@@ -71,11 +85,23 @@ const Notifications = ({notifications}) => {
       className={classes.root}
       onMouseLeave={showNotification}
     >
-      <button onMouseEnter={showNotification}>
-        <NotificationsIcon/>
-
-        <div className='notificationsNumber'>{2}</div>
-      </button>
+      <Badge
+        overlap='circle'
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        className={classes.badge}
+        badgeContent={
+          <div className={classes.notificationsNumber}>{20}</div>
+        }
+      >
+        <Avatar
+          className={clsx({[classes.btnNotifications]: true, [classes.hoverStatus]: open})}
+          src={'/img/icons/bell.svg'}
+          onMouseEnter={showNotification}
+        />
+      </Badge>
 
       <Popper
         open={open}

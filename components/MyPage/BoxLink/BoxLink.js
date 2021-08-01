@@ -5,24 +5,26 @@ import Image from 'next/image';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    background: theme.palette.grey.main,
+    background: theme.palette.pink.light,
     display: 'flex',
-    height: '11.313rem',
+    height: '12rem',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     textDecoration: 'none',
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: theme.palette.black.main,
-    marginBottom: '3.625rem',
+    color: theme.palette.black.default,
+    marginBottom: '2rem',
+    borderRadius: '0.25rem',
     '& .content': {
-      marginTop: '1.5rem',
+      marginTop: '1rem',
+      lineHeight: '2.25rem',
     },
   },
 }));
 
-const BoxLink = ({link}) => {
+const BoxLink = ({link, colorLabel}) => {
   const classes = useStyles();
 
   return (
@@ -30,12 +32,15 @@ const BoxLink = ({link}) => {
       <a className={classes.root}>
         <Image
           src={link.image}
-          width={26.92}
-          height={25.5}
+          width={48}
+          height={48}
           alt={'icon'}
         />
 
-        <div className='content'>
+        <div
+          className='content'
+          style={{color: colorLabel}}
+        >
           {link.content}
         </div>
       </a>
@@ -45,6 +50,11 @@ const BoxLink = ({link}) => {
 
 BoxLink.propTypes = {
   link: PropTypes.object,
+  colorLabel: PropTypes.string,
+};
+
+BoxLink.defaultProps = {
+  colorLabel: '#000000',
 };
 
 export default BoxLink;

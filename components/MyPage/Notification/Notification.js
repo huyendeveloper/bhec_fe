@@ -2,27 +2,49 @@ import {makeStyles} from '@material-ui/core/styles';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import {Avatar} from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    padding: '1.438rem 0.75rem',
-    borderRadius: '1.25rem',
+    padding: '1rem',
+    borderRadius: '0.5rem',
     textDecoration: 'none',
+    marginBottom: '1rem',
+    backgroundColor: theme.notification.backgroundColor,
+    border: '1px solid ' + theme.palette.white.main,
+    minHeight: '6rem',
     '&:hover': {
-      background: 'white',
+      background: theme.palette.white.main,
+      border: '1px solid ' + theme.palette.orange.light,
+      boxShadow: '0 0.125rem 0.25rem ' + theme.notifications.boxShadow,
     },
     '& .MuiAvatar-root': {
-      width: '3.25rem',
-      height: '3.25rem',
-      marginRight: '1.188rem',
+      width: '3rem',
+      height: '3rem',
+      marginRight: '1rem',
+      background: theme.palette.yellow.main,
+      '& img': {
+        width: '1.75rem',
+        height: '1.75rem',
+      },
     },
   },
   content: {
-    fontWeight: '500',
-    fontSize: '1rem',
-    lineHeight: '1.875rem',
-    color: theme.palette.black.main,
+    fontSize: '0.813rem',
+    lineHeight: '1.188rem',
+    color: theme.palette.black.default,
+    marginBottom: '0.25rem',
+  },
+  readed: {
+    '& .MuiAvatar-root': {
+      background: theme.palette.orange.light,
+    },
+  },
+  dateTime: {
+    fontSize: '0.688rem',
+    lineHeight: '1rem',
+    color: theme.notification.dateLabelColor,
   },
 }));
 
@@ -31,10 +53,15 @@ const Notification = ({notification}) => {
 
   return (
     <Link href='/product'>
-      <a className={classes.root}>
-        <Avatar src={notification.avatar}/>
+      <a className={clsx({[classes.root]: true, [classes.readed]: notification.readed})}>
+        <Avatar
+          src={notification.readed ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
+        />
 
-        <div className={classes.content}>{notification.content}</div>
+        <div>
+          <div className={classes.content}>{notification.content}</div>
+          <span className={classes.dateTime}>{notification.dateTime}</span>
+        </div>
       </a>
     </Link>
   );
