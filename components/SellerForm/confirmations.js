@@ -235,6 +235,8 @@ const Confirmations = ({data, onBackStep, onNextStep}) => {
           <Button
             variant='pill'
             customSize='extraLarge'
+            customColor='white'
+            customBorder='bdBlack'
             disabled={loading}
             onClick={() => onBackStep()}
           >

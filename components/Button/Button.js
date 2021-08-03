@@ -9,8 +9,6 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'none',
     boxShadow: 'none',
     padding: theme.spacing(1, 3),
-    border: `1px solid ${theme.palette.red.main}`,
-    color: theme.palette.red.main,
   },
   red: {
     backgroundColor: theme.palette.red.main,
@@ -24,6 +22,37 @@ const useStyles = makeStyles((theme) => ({
     '&.Mui-disabled': {
       color: theme.palette.common.white,
       backgroundColor: theme.palette.red.light,
+    },
+  },
+  yellow: {
+    backgroundColor: theme.palette.yellow.main,
+    color: theme.palette.common.white,
+    '&:hover': {
+      backgroundColor: theme.palette.yellow.dark,
+      color: theme.palette.common.white,
+    },
+  },
+  green: {
+    backgroundColor: theme.palette.green.main,
+    color: theme.palette.common.white,
+    '&:hover': {
+      backgroundColor: theme.palette.green.dark,
+      color: theme.palette.common.white,
+    },
+  },
+  white: {
+    backgroundColor: theme.palette.white.main,
+    color: `${theme.palette.black3.main}`,
+    '&:hover': {
+      backgroundColor: theme.palette.white.main,
+    },
+  },
+  whiteRed: {
+    backgroundColor: theme.palette.white.main,
+    color: theme.palette.red.main,
+    '&:hover': {
+      backgroundColor: theme.palette.white.main,
+      color: theme.palette.red.main,
     },
   },
   pill: {
@@ -54,6 +83,54 @@ const useStyles = makeStyles((theme) => ({
       padding: '0.5rem 2.75rem',
     },
   },
+  medium: {
+    fontSize: '0.875rem',
+    lineHeight: '1.313rem',
+    fontWeight: 'bold',
+    padding: '0.688rem 1.25rem',
+    minWidth: '16.688rem',
+
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.813rem',
+      lineHeight: '1.219rem',
+      padding: '0.438rem 1.25rem',
+      minWidth: '21.75rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.813rem',
+      lineHeight: '1.219rem',
+      padding: '0.438rem 1.25rem',
+      minWidth: '10.188rem',
+    },
+  },
+  small: {
+    fontSize: '0.875rem',
+    lineHeight: '1.313rem',
+    fontWeight: 'bold',
+    padding: '0.532rem 1.25rem',
+    minWidth: '10.625rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.813rem',
+      lineHeight: '1.219rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.813rem',
+      lineHeight: '1.188rem',
+      minWidth: '10.188rem',
+    },
+  },
+  fullwidth: {
+    width: '100%',
+  },
+  bdRed: {
+    border: '1px solid #BA2636',
+  },
+  bdGray: {
+    border: '1px solid #DBDBDB',
+  },
+  bdBlack: {
+    border: `1px solid ${theme.palette.black3.main}`,
+  },
 }));
 
 const Button = (props) => {
@@ -71,8 +148,8 @@ const Button = (props) => {
   *
   * https://stackoverflow.com/a/49358913
   * */
-  const {children, variant, customColor, customSize, ...rest} = props;
-  const className = clsx(classes.root, classes[variant], classes[customColor], classes[customSize]);
+  const {children, variant, customColor, customSize, customBorder, customWidth, ...rest} = props;
+  const className = clsx(classes.root, classes[variant], classes[customColor], classes[customSize], classes[customBorder], classes[customWidth]);
 
   return (
     <MuiButton
@@ -86,8 +163,10 @@ const Button = (props) => {
 
 Button.propTypes = {
   variant: PropTypes.oneOf(['contained', 'pill']),
-  customColor: PropTypes.oneOf(['red', 'yellow', 'default']),
-  customSize: PropTypes.oneOf(['extraLarge']),
+  customColor: PropTypes.oneOf(['red', 'yellow', 'green', 'white', 'whiteRed', 'default']),
+  customSize: PropTypes.oneOf(['extraLarge', 'medium', 'small']),
+  customBorder: PropTypes.oneOf(['bdRed', 'bdGray', 'bdBlack']),
+  customWidth: PropTypes.oneOf(['fullwidth']),
   children: PropTypes.any.isRequired,
 };
 

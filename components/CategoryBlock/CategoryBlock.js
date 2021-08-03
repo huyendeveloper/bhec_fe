@@ -52,23 +52,10 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: '1rem',
     },
     [theme.breakpoints.down('sm')]: {
-      '& h2': {
-        fontSize: '1.5rem',
-        lineHeight: '2.5rem',
+      '& h4': {
+        fontSize: '1rem',
+        lineHeight: '1.5rem',
       },
-    },
-  },
-  description: {
-    fontSize: '1.5rem',
-    lineHeight: '3rem',
-    textAlign: 'center',
-    marginBottom: '2rem',
-    '& p': {
-      margin: 0,
-    },
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '1rem',
-      lineHeight: '1.75rem',
     },
   },
 }));

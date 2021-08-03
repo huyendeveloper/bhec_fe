@@ -4,21 +4,17 @@ import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    alignItems: 'center',
-    display: 'flex',
-    height: '3.375rem',
+    color: theme.palette.common.black,
+    fontSize: '0.813rem',
+    lineHeight: '1.188rem',
+
     '& .MuiBreadcrumbs-separator': {
-      color: theme.palette.black.default,
       fontWeight: 'bold',
-      fontSize: '0.75rem',
-      lineHeight: '0.875rem',
     },
-  },
-  link: {
-    color: theme.palette.black.default,
-    fontWeight: 'bold',
-    fontSize: '0.75rem',
-    lineHeight: '0.875rem',
+    '& a': {
+      color: theme.palette.common.black,
+      fontWeight: 'bold',
+    },
   },
 }));
 
@@ -28,13 +24,12 @@ const Breadcrumbs = ({linkProps}) => {
   return (
     <MuiBreadcrumbs
       className={classes.root}
-      separator={'＞'}
+      separator={' / '}
     >
       {linkProps.map((item) => (
         item.linkUrl ? (
           <Link
             key={item.id}
-            className={classes.link}
             href={item.linkUrl}
           >
             {item.linkLabel}
@@ -42,7 +37,7 @@ const Breadcrumbs = ({linkProps}) => {
         ) : (
           <Typography
             key={item.id}
-            className={classes.link}
+            variant={'inherit'}
           >
             {item.linkLabel}
           </Typography>
