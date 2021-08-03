@@ -5,7 +5,7 @@ import {Box, useMediaQuery, useTheme} from '@material-ui/core';
 
 const AdsWidget = ({imgSrc, imgAlt, imgWidth, imgHeight}) => {
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <>
