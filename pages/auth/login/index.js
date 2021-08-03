@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
@@ -5,6 +6,10 @@ import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
 import {signIn} from 'next-auth/client';
+import {ErrorMessage} from '@hookform/error-message';
+import {Controller, useForm} from 'react-hook-form';
+
+import {StyledForm} from '../../../components/StyledForm';
 
 import SignInModal from '../../../components/Auth/SignInModal';
 import LineLogin from '../../../components/Auth/LineLogin';
@@ -227,45 +232,20 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const initialFormValues = {
-  email: 'user+1@example.com',
-  password: 'user@123',
-};
-
 function Login() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [values, setValues] = React.useState(initialFormValues);
   const [setPayload] = React.useState(null);
   const [setIdToken] = React.useState(null);
-
-  const handleInputValue = (e) => {
-    const {name, value} = e.target;
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    emailAuth(values.email);
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({criteriaMode: 'all'});
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  function emailAuth(value) {
-    const actionCodeSettings = {
-      url: window.location.href,
-      handleCodeInApp: true,
-    };
-    firebase.auth().sendSignInLinkToEmail(value, actionCodeSettings).then(() => {
-      window.localStorage.setItem('emailForSignIn', value);
-      handleClose();
-    });
-  }
 
   function forgotPass() {
     Router.push({
@@ -279,12 +259,12 @@ function Login() {
     });
   }
 
-  const login = async () => {
+  const onSubmit = async (data) => {
     await signIn('credentials',
       {
         type: 'email',
-        email: values.email,
-        password: values.password,
+        email: data.email,
+        password: data.password,
         callbackUrl: `${window.location.origin}`,
       },
     );
@@ -318,11 +298,8 @@ function Login() {
               >{'まだ会員ではない方はこちら、以下の会員登録をお願いします。'}</Typography>
             </div>
           </div>
-          <form
-            noValidate={true}
-            autoComplete='off'
-            onSubmit={handleSubmit}
-          >
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
+
             <Container
               maxWidth='lg'
               className={classes.content}
@@ -468,19 +445,46 @@ function Login() {
                   xs={12}
                 >
                   <div className={classes.grid}>
-                    <TextField
-                      id='email'
-                      autoFocus={true}
-                      margin='dense'
+                    <Controller
+                      className={classes.grid}
                       name='email'
-                      defaultValue={values.email}
-                      type='email'
-                      variant='outlined'
-                      onChange={handleInputValue}
-                      placeholder='メールアドレス'
-                      fullWidth={true}
-                      required={true}
-                      className={classes.inputLogin}
+                      control={control}
+                      defaultValue={'user+1@example.com'}
+                      rules={{
+                        required: 'この入力は必須です。',
+                        pattern: {
+                          value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                          message: 'メールアドレスが無効です。',
+                        },
+                      }}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <TextField
+                          id='email'
+                          variant='outlined'
+                          placeholder='メールアドレス'
+                          error={Boolean(errors.email)}
+                          InputLabelProps={{shrink: false}}
+                          name={name}
+                          value={value}
+                          inputRef={ref}
+                          onChange={onChange}
+                          className={classes.inputLogin}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='email'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >
+                            {message}
+                          </p>
+                        )) : null;
+                      }}
                     />
                   </div>
                 </Grid>
@@ -489,19 +493,40 @@ function Login() {
                   xs={12}
                 >
                   <div className={classes.grid}>
-                    <TextField
-                      autoFocus={true}
-                      margin='dense'
-                      id='password'
-                      defaultValue={values.password}
+                    <Controller
+                      className={classes.grid}
                       name='password'
-                      type='password'
-                      variant='outlined'
-                      onChange={handleInputValue}
-                      placeholder='パスワード'
-                      fullWidth={true}
-                      required={true}
-                      className={classes.inputLogin}
+                      control={control}
+                      rules={{required: 'この入力は必須です。'}}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <TextField
+                          id='password'
+                          variant='outlined'
+                          placeholder='パスワード'
+                          type='password'
+                          error={Boolean(errors.password)}
+                          InputLabelProps={{shrink: false}}
+                          name={name}
+                          value={value}
+                          inputRef={ref}
+                          onChange={onChange}
+                          className={classes.inputLogin}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='password'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >
+                            {message}
+                          </p>
+                        )) : null;
+                      }}
                     />
                   </div>
                 </Grid>
@@ -514,7 +539,6 @@ function Login() {
                       variant='contained'
                       type='submit'
                       className={classes.btnSubmit}
-                      onClick={() => login()}
                     >{'ログイン'}</Button>
                   </div>
                 </Grid>
@@ -535,7 +559,7 @@ function Login() {
                 </Grid>
               </Grid>
             </Container>
-          </form>
+          </StyledForm>
           {open &&
             <SignInModal
               open={open}
