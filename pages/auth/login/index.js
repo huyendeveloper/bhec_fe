@@ -4,6 +4,7 @@ import {Box, Container, Grid, FormControl, Button, Typography} from '@material-u
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
+import {signIn} from 'next-auth/client';
 
 import SignInModal from '../../../components/Auth/SignInModal';
 import LineLogin from '../../../components/Auth/LineLogin';
@@ -227,8 +228,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialFormValues = {
-  email: '',
-  password: '',
+  email: 'user+1@example.com',
+  password: 'user@123',
 };
 
 function Login() {
@@ -277,6 +278,17 @@ function Login() {
       pathname: '/auth/register-email',
     });
   }
+
+  const login = async () => {
+    await signIn('credentials',
+      {
+        type: 'email',
+        email: values.email,
+        password: values.password,
+        callbackUrl: `${window.location.origin}`,
+      },
+    );
+  };
 
   function googleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -461,6 +473,7 @@ function Login() {
                       autoFocus={true}
                       margin='dense'
                       name='email'
+                      defaultValue={values.email}
                       type='email'
                       variant='outlined'
                       onChange={handleInputValue}
@@ -480,6 +493,7 @@ function Login() {
                       autoFocus={true}
                       margin='dense'
                       id='password'
+                      defaultValue={values.password}
                       name='password'
                       type='password'
                       variant='outlined'
@@ -500,6 +514,7 @@ function Login() {
                       variant='contained'
                       type='submit'
                       className={classes.btnSubmit}
+                      onClick={() => login()}
                     >{'ログイン'}</Button>
                   </div>
                 </Grid>
