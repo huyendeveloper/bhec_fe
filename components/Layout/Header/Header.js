@@ -104,6 +104,10 @@ const useStyles = makeStyles((theme) => ({
       marginRight: '1.5rem',
       padding: '0.5rem',
     },
+
+    '.MuiLink-underlineHover:hover': {
+      textDecoration: 'none',
+    },
   },
   personalItem: {
     fontFamily: theme.font.default,
@@ -119,9 +123,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     minWidth: '7.5rem',
     cursor: 'pointer',
-    '&:last-child': {
-      border: 'none',
-    },
     [theme.breakpoints.up('md')]: {
       width: '33%',
       fontSize: '0.7rem',
@@ -130,6 +131,10 @@ const useStyles = makeStyles((theme) => ({
       width: '33%',
       fontSize: '0.7rem',
     },
+  },
+
+  lastItem: {
+    border: 'none',
   },
   iconWrapper: {
     display: 'flex',
@@ -193,15 +198,22 @@ const Header = (props) => {
               </Link>
             </div>
             {displaySameRow && <div className={classes.personalAction}>
-              <div className={classes.personalItem}>
+              {isLoggined && <div className={classes.personalItem}>
                 <PersonPinIcon/>
-                {isLoggined ? 'マイページ' : '登録・ログイン'}
-              </div>
+                {'マイページ'}
+              </div>}
+              {!isLoggined &&
+              <Link href={'/auth/login'}>
+                <div className={classes.personalItem} >
+                  <PersonPinIcon/>
+                  {'登録・ログイン'}
+                </div>
+              </Link>}
               <div className={classes.personalItem}>
                 <EmailIcon/>
                 {'お問い合わせ'}
               </div>
-              <div className={classes.personalItem}>
+              <div className={`${classes.personalItem} ${classes.lastItem}`}>
                 <ShoppingCartIcon/>
                 {'カート'}
               </div>
@@ -218,10 +230,17 @@ const Header = (props) => {
           </Toolbar>
           {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
-              <div className={classes.personalItem}>
+              {isLoggined && <div className={classes.personalItem}>
                 <PersonPinIcon/>
-                {isLoggined ? 'マイページ' : '登録・ログイン'}
-              </div>
+                {'マイページ'}
+              </div>}
+              {!isLoggined &&
+              <Link href={'/auth/login'}>
+                <div className={classes.personalItem} >
+                  <PersonPinIcon/>
+                  {'登録・ログイン'}
+                </div>
+              </Link>}
               <div className={classes.personalItem}>
                 <EmailIcon/>
                 {'お問い合わせ'}
