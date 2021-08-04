@@ -37,11 +37,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: '90%',
       margin: '0 5%',
+      marginTop: '3.5rem',
     },
     [theme.breakpoints.down('md')]: {
       width: '90%',
       margin: '0 5%',
-      marginTop: '1rem',
+      marginTop: '3rem',
     },
   },
 

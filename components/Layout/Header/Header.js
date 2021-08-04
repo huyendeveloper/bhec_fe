@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('xs')]: {
       width: '100%',
       marginRight: 0,
-      padding: '1rem 0',
+      padding: '0.5rem 0',
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: '7rem',
+    minWidth: '7.5rem',
     cursor: 'pointer',
     '&:last-child': {
       border: 'none',

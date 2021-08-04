@@ -125,6 +125,7 @@ function RegisterEmail() {
     control,
     handleSubmit,
     formState: {errors},
+    getValues,
   } = useForm({criteriaMode: 'all'});
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = React.useState(false);
@@ -303,6 +304,12 @@ function RegisterEmail() {
                         defaultValue=''
                         rules={{
                           required: 'この入力は必須です。',
+                          validate: {
+                            matchesPreviousPassword: (value) => {
+                              const {password} = getValues();
+                              return password === value || 'パスワードは一致する必要があります！';
+                            },
+                          },
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
