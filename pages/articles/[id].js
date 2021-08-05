@@ -4,15 +4,10 @@ import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import SearchIcon from '@material-ui/icons/Search';
 
-import ArticleDetail from '../../components/Article/ArticleDetail';
-import ArticleDetailProduct from '../../components/Article/ArticleDetailProduct';
-import {articleDetail} from '../../mock/article';
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
-import TopBannerWidget from '../../components/Widgets/TopBannerWidget/TopBannerWidget';
-import {ProductWidget} from '../../components/Widgets/ProductWidget';
-import {ArticleWidget} from '../../components/Widgets/ArticleWidget';
+import {articleDetail} from '~/mock/article';
+import {Header, Footer, ContentBlock} from '~/components';
+import {ArticleDetail, ArticleDetailProduct} from '~/components/Article';
+import {ArticleWidget, ProductWidget, TopBannerWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
   root: {

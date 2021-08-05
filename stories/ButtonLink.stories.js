@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ButtonLink} from '../components/MyPage/ButtonLink';
+import {ButtonLink} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -9,5 +9,5 @@ export default {
 };
 
 export const ButtonLinkDefault = () => (
-  <ButtonLink linkLabel={'基本情報'} />
+  <ButtonLink linkLabel={'基本情報'}/>
 );

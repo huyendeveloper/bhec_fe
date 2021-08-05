@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ReviewProduct} from '../components/Review';
+import {ReviewProduct} from '~/components';
 
 const product = {
   productId: 2,
@@ -15,12 +15,12 @@ const product = {
     avatar: '/img/sellers/seller1.jpg',
     introduction: 'ベッ甲イソガイ　統括',
     rate: 3.5,
-},
-}
+  },
+};
 
 export const ReviewProductDefault = () => (
   <div style={{width: '80%', margin: 'auto'}}>
-    <ReviewProduct product={product} />
+    <ReviewProduct product={product}/>
   </div>
 );
 

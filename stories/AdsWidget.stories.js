@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AdsWidget } from '../components/AdsWidget';
+import {AdsWidget} from '~/components/Widgets';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

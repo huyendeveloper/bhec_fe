@@ -12,7 +12,7 @@
     "prepare": "husky install",
     "lint:css": "stylelint --aei \"styles/*.{css,scss}\"",
     "fix:css": "stylelint --fix --aei \"styles/*.{css,scss}\"",
-    "fix:js": "eslint --fix \"pages/**/*.{js,jsx}\" \"components/**/*.{js,jsx}\" \"mock/**/*.{js,jsx}\"",
+    "fix:js": "eslint --fix \"pages/**/*.{js,jsx}\" \"components/**/*.{js,jsx}\" \"mock/**/*.{js,jsx}\" \"stories/**/*.{js,jsx}\"",
     "fix": "run-p fix:css fix:js"
   },
   "dependencies": {

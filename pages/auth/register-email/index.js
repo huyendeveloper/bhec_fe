@@ -4,10 +4,9 @@ import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
 
-import {ContentBlock} from '../../../components/ContentBlock';
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
 import firebase from '../../../firebase';
+
+import {ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {

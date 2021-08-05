@@ -3,17 +3,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-
 import {Box, Grid, Icon, useMediaQuery} from '@material-ui/core';
 
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import TopBannerWidget from '../../components/Widgets/TopBannerWidget/TopBannerWidget';
-import {ContentBlock} from '../../components/ContentBlock';
-import {Button} from '../../components/Button';
-import {FeatureWidget} from '../../components/Widgets/FeatureWidget';
-import {StepWidget as ProductArrivalStep} from '../../components/Widgets/StepWidget';
-import {SpecificationsWidget} from '../../components/Widgets/SpecificationsWidget';
+import {ContentBlock, Header, Footer, Button} from '~/components';
+import {FeatureWidget, TopBannerWidget, SpecificationsWidget, StepWidget as ProductArrivalStep} from '~/components/Widgets';
 
 const useStyles = makeStyles(() => ({
   root: {

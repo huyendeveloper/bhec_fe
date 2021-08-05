@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {useState} from 'react';
 import {Fade, Popper, List, Badge, Avatar} from '@material-ui/core';
 
-import {Notification} from '../Notification';
+import {Notification} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {

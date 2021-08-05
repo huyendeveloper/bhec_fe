@@ -1,8 +1,6 @@
-import React from 'react';
-
 import {useState} from 'react';
 
-import {ImageDropzone} from '../components/ImageDropzone';
+import {ImageDropzone} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -11,14 +9,14 @@ export default {
 };
 
 export const ImageDropzoneDefault = () => {
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState(null);
   const setImages = (index, newImage) => {
-    setImage(newImage)
-  }
+    setImage(newImage);
+  };
 
-  const removeImage = (index) => {
-    setImage(null)
-  }
+  const removeImage = () => {
+    setImage(null);
+  };
 
   return (
     <ImageDropzone
@@ -27,5 +25,5 @@ export const ImageDropzoneDefault = () => {
       setImages={setImages}
       removeImage={removeImage}
     />
-  )
+  );
 };

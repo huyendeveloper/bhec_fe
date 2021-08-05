@@ -2,10 +2,7 @@ import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
 
-import {Footer} from '../../../components/Layout/Footer';
-import {Header} from '../../../components/Layout/Header';
-import {Block} from '../../../components/MyPage/Block';
-import {OrderItem} from '../../../components/Order';
+import {Block, Header, Footer, OrderItem} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -237,7 +234,7 @@ const OrdersDetail = () => {
 
         {orderDetails.map((detail) => (
           <OrderItem
-            key={`orderDetail-${detail.id}`}
+            key={`orderDetail-${detail.productId}`}
             data={detail}
           />
         ))}

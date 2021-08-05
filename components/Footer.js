@@ -8,7 +8,7 @@ import Fab from '@material-ui/core/Fab';
 import Zoom from '@material-ui/core/Zoom';
 import {Box, Icon, Link} from '@material-ui/core';
 
-import {SnsWidget} from '../../Widgets/SnsWidget';
+import {SnsWidget} from './Widgets';
 
 const useStyles = makeStyles((theme) => ({
   root: {

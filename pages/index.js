@@ -5,16 +5,10 @@ import Head from 'next/head';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
 
-import {Header} from '../components/Layout/Header';
-import {Footer} from '../components/Layout/Footer';
-import {Slider} from '../components/Slider';
-import {Article} from '../components/Article';
-import {Search} from '../components/Search';
-import {AdsWidget} from '../components/AdsWidget';
-import {CategoryBlock} from '../components/CategoryBlock';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
+import {Header, Footer, Slider, Search, CategoryBlock, ContentBlock} from '~/components';
+import {Article} from '~/components/Article';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
-import {ContentBlock} from '../components/ContentBlock';
 
 const useStyles = makeStyles((theme) => ({
   root: {

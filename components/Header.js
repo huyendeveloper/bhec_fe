@@ -13,7 +13,7 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
 
-import {SelectBox} from '../../SelectBox';
+import {SelectBox} from '~/components';
 
 function HideOnScroll(props) {
   const {children, window} = props;

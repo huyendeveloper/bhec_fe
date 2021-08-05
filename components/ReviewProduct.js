@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
-import {ImageDropzone} from '../ImageDropzone';
+import {ImageDropzone} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {

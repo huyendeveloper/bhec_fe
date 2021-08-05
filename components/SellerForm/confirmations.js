@@ -7,12 +7,12 @@ import {Box, CircularProgress} from '@material-ui/core';
 
 import React, {useState} from 'react';
 
-import prefectures from '../../constants/prefectures';
-import {Button} from '../Button';
+import {prefectures, genders} from '~/constants';
+import {Button} from '~/components';
 
-import {registerSeller} from '../../pages/lp/seller-form';
+import {registerSeller} from '~/pages/lp/seller-form';
 
-const useStypes = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
   },
@@ -59,7 +59,7 @@ const useStypes = makeStyles((theme) => ({
 
 const Confirmations = ({data, onBackStep, onNextStep}) => {
   const [loading, setLoading] = useState(false);
-  const classes = useStypes();
+  const classes = useStyles();
   const index = prefectures.findIndex((prefecture) => prefecture.value === Number.parseInt(data.city, 10));
   const selected = index && index > 0 ? prefectures[index] : null;
 
@@ -97,7 +97,7 @@ const Confirmations = ({data, onBackStep, onNextStep}) => {
           </Typography>
           <Typography component='p'>
             <span>{'性別：'}</span>
-            {data.gender ? data.gender : ''}
+            {data.gender ? genders[data.gender] : ''}
           </Typography>
         </div>
       </div>

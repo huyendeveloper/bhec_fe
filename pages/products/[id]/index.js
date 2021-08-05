@@ -5,17 +5,9 @@ import Head from 'next/head';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
 
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
-import {CategoryBlock} from '../../../components/CategoryBlock';
-import {ProductWidget} from '../../../components/Widgets/ProductWidget';
+import {Header, Footer, Button, CategoryBlock, Search, ProductGallery, SelectBox, Breadcrumbs} from '~/components';
+import {ProductWidget, RatingWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
-import {Search} from '../../../components/Search';
-import {ProductGallery} from '../../../components/ProductGallery';
-import {RatingWidget} from '../../../components/Widgets/RatingWidget';
-import {SelectBox} from '../../../components/SelectBox';
-import {Breadcrumbs} from '../../../components/Breadcrumbs';
-import {Button} from '../../../components/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {

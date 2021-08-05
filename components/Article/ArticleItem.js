@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ArticleItem = ({id, image, articleTitle, tags, description}) => {
+const ArticleItem = ({id, image, title, tags = [], description}) => {
   const classes = useStyles();
 
   function toDetailPage(article_id) {
@@ -73,7 +73,7 @@ const ArticleItem = ({id, image, articleTitle, tags, description}) => {
         xs={12}
         sm={4}
         md={4}
-        key={id}
+        key={`article-left-${id}`}
       >
         <div>
           <Image
@@ -91,20 +91,20 @@ const ArticleItem = ({id, image, articleTitle, tags, description}) => {
         xs={12}
         sm={8}
         md={8}
-        key={id + 1}
+        key={`article-right-${id}`}
       >
         <div justify='left'>
           <Typography
             variant={'h3'}
             className={classes.articleLabel}
             onClick={() => toDetailPage(id)}
-          >{articleTitle}</Typography>
+          >{title}</Typography>
           <div className={classes.chipList}>
             {tags.map((tag) => {
               return (
                 <>
                   <Chip
-                    key={tag}
+                    key={`${tag}-${id}`}
                     label={tag}
                     className={classes.chipItem}
                     onClick={() => toDetailPage(id)}
@@ -128,7 +128,7 @@ ArticleItem.propTypes = {
   id: PropTypes.number,
   tags: PropTypes.array,
   image: PropTypes.string,
-  articleTitle: PropTypes.string,
+  title: PropTypes.string,
   description: PropTypes.string,
 };
 

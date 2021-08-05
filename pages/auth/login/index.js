@@ -5,13 +5,10 @@ import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
 
-import SignInModal from '../../../components/Auth/SignInModal';
-import LineLogin from '../../../components/Auth/LineLogin';
-import StepLogin from '../../../components/Auth/StepLogin';
 import firebase from '../../../firebase';
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
 
+import {Header, Footer} from '~/components';
+import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '2rem 0',

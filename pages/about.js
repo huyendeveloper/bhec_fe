@@ -8,19 +8,11 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 // import {Swiper, SwiperSlide} from 'swiper/react';
 
-import {Header} from '../components/Layout/Header';
-import {Footer} from '../components/Layout/Footer';
-import {ContentBlock} from '../components/ContentBlock';
-import {FeatureWidget} from '../components/Widgets/FeatureWidget';
-import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
-
-// import {ProductWidget} from '../components/Widgets/ProductWidget';
-// import {Button} from '../components/Button';
-import {FaqsWidget} from '../components/Widgets/FaqsWidget';
+import {Header, Footer, ContentBlock} from '~/components';
+import {FaqsWidget, FeatureWidget, TopBannerWidget, StepWidget as ProductArrivalStep} from '~/components/Widgets';
 
 // Import Swiper styles
 import 'swiper/swiper.min.css';
-import TopBannerWidget from '../components/Widgets/TopBannerWidget/TopBannerWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {

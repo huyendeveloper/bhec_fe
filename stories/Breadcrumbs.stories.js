@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Breadcrumbs} from '../components/Breadcrumbs';
+import {Breadcrumbs} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -11,17 +11,17 @@ export default {
 const linkProps = [
   {
     linkLabel: 'パンクズ',
-    linkUrl: '/'
+    linkUrl: '/',
   },
   {
     linkLabel: 'パンクズ',
-    linkUrl: '/'
+    linkUrl: '/',
   },
   {
-    linkLabel: 'パンクズ'
-  }
-]
+    linkLabel: 'パンクズ',
+  },
+];
 
 export const BreadcrumbsDefault = () => (
-  <Breadcrumbs linkProps={linkProps} />
+  <Breadcrumbs linkProps={linkProps}/>
 );

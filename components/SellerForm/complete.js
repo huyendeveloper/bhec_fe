@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import Typography from '@material-ui/core/Typography';
 
-import {AlertBox} from '../AlertBox';
+import {AlertBox} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {

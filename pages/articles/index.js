@@ -3,12 +3,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-import ArticleItem from '../../components/Article/ArticleItem';
-import {listArticle} from '../../mock/article';
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
-import TopBannerWidget from '../../components/Widgets/TopBannerWidget/TopBannerWidget';
+import {Header, Footer, ContentBlock} from '~/components';
+import {ArticleItem} from '~/components/Article';
+import {listArticle} from '~/mock/article';
+import {TopBannerWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -172,11 +170,7 @@ function ArticlePage() {
               xs={12}
               sm={6}
               md={4}
-            >
-              {/* <Pagination count={2} color="secondary"/> */}
-              {/* <div className={classes.pagination}>
-              </div> */}
-            </Grid>
+            />
             <Grid
               item={true}
               xs={12}

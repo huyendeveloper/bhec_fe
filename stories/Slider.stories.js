@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Slider } from '../components/Slider';
+import {Slider} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -20,5 +20,5 @@ const sliderItem = [
 ];
 
 export const SliderDefault = () => (
-  <Slider data={sliderItem} />
+  <Slider data={sliderItem}/>
 );

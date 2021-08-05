@@ -20,13 +20,8 @@ import {
 
 import React from 'react';
 
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
-import {Button} from '../../components/Button';
-import {StyledForm} from '../../components/StyledForm';
-
-import {prefectures} from '../../constants';
+import {ContentBlock, Header, Footer, Button, StyledForm} from '~/components';
+import {prefectures} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {

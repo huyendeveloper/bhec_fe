@@ -2,9 +2,7 @@ import {Container, Grid} from '@material-ui/core';
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
+import {ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   content: {
