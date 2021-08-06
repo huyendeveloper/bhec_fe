@@ -10,7 +10,7 @@ import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import {signIn} from 'next-auth/client';
 
-import {AuthService} from '../../services/auth.services';
+import {AuthService} from '~/services/auth.services';
 const maxAge = 120;
 
 const useStyles = makeStyles((theme) => ({

@@ -10,9 +10,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import axios from 'axios';
 
-import {StyledForm} from '../../../components';
-
-import {ContentBlock, Header, Footer} from '~/components';
+import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {

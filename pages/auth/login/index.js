@@ -9,11 +9,12 @@ import {signIn} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 
-import {SignInModal, LineLogin, StepLogin} from '../../../components/Auth';
 import firebase from '../../../firebase';
-import {Header, Footer, StyledForm} from '../../../components';
 
-import {AuthService} from '../../../services/auth.services';
+import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
+import {Header, Footer, StyledForm} from '~/components';
+
+import {AuthService} from '~/services/auth.services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
