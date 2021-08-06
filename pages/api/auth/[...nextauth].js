@@ -1,8 +1,8 @@
+/* eslint-disable new-cap */
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
 
 const providers = [
-  // eslint-disable-next-line new-cap
   Providers.Credentials({
     name: 'Credentials',
     authorize: async (credentials) => {
