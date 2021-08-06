@@ -1,1 +1,0 @@
-export {default as ArticleWidget} from './ArticleWidget';

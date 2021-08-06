@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-import {ProductWidget} from '../Widgets/ProductWidget';
+import {ProductWidget} from '../Widgets';
 
 const useStyles = makeStyles(() => ({
 
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
     lineHeight: '2rem',
     fontWeight: 'bold',
   },
-  desctiption: {
+  description: {
     width: '90%',
     margin: '1rem 5% 0 5%',
   },
@@ -67,7 +67,7 @@ const ArticleDetailProduct = ({id, listProducts, description}) => {
           item={true}
           xs={12}
         >
-          <div className={classes.desctiption}>{description}
+          <div className={classes.description}>{description}
           </div>
         </Grid>
       </Grid>

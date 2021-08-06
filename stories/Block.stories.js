@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Block} from '../components/MyPage/Block';
+import {Block} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -15,7 +15,10 @@ export const BlockDefault = () => (
 );
 
 export const BlockWithCustomPaddingBottom = () => (
-  <Block title={'マイページ'} paddingBot={'10rem'}>
+  <Block
+    title={'マイページ'}
+    paddingBot={'10rem'}
+  >
     {'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repudiandae eaque molestias enim fugiat nostrum praesentium perferendis tenetur laborum maiores quos commodi veniam beatae, quisquam excepturi explicabo quibusdam quas laboriosam? Neque?'}
   </Block>
 );

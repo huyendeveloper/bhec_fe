@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {FeatureWidget} from '../components/Widgets/FeatureWidget';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
+import {ProductWidget, FeatureWidget} from '~/components/Widgets';
 
 export const FeatureDefault = () => (
   <FeatureWidget title='見つかる'>

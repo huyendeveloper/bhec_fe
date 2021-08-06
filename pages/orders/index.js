@@ -12,9 +12,7 @@ import {
 import {useState} from 'react';
 import Link from 'next/link';
 
-import {Footer} from '../../components/Layout/Footer';
-import {Header} from '../../components/Layout/Header';
-import {ContentBlock} from '../../components/ContentBlock';
+import {ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   containerTable: {

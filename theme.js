@@ -37,6 +37,9 @@ const theme = createMuiTheme({
       default: '#000000',
       light: '#333333',
     },
+    black3: {
+      main: '#333333',
+    },
     yellow: {
       light: '#ecc659',
       main: '#e6b422',
@@ -55,6 +58,7 @@ const theme = createMuiTheme({
     },
     green: {
       main: '#54c0c0',
+      dark: '#297070',
     },
     pink: {
       light: '#faf6ef',

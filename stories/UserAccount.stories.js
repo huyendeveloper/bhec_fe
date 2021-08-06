@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {UserAccount} from '../components/MyPage/UserAccount';
+import {UserAccount} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -9,5 +9,5 @@ export default {
 };
 
 export const UserAccountDefault = () => (
-  <UserAccount />
+  <UserAccount/>
 );

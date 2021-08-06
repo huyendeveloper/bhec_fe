@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {OrderItem} from '../components/Order';
+import {OrderItem} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

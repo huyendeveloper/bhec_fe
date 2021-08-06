@@ -1,10 +1,7 @@
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
 
-import {Footer} from '../../../components/Layout/Footer';
-import {Header} from '../../../components/Layout/Header';
-import {Block} from '../../../components/MyPage/Block';
-import {ReviewProduct, ReviewShop} from '../../../components/Review';
+import {Header, Footer, Block, ReviewProduct, ReviewShop} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   content: {

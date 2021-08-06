@@ -2,11 +2,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box, Select, MenuItem, FormControl, InputLabel} from '@material-ui/core';
 import {useState} from 'react';
 
-import {Header} from '../../components/Layout/Header';
-import {ProductWidget} from '../../components/Widgets/ProductWidget';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
-import {TopBannerWidget} from '../../components/Widgets/TopBannerWidget';
+import {Header, Footer, ContentBlock} from '~/components';
+import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {

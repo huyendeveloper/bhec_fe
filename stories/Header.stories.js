@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Header} from '../components/Layout/Header';
+import {Header} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

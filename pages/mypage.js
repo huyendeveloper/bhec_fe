@@ -2,14 +2,8 @@ import Head from 'next/head';
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
 
-import {Header} from '../components/Layout/Header';
-import {UserAccount} from '../components/MyPage/UserAccount';
-import {Notifications} from '../components/MyPage/Notifications';
-import {ContentBlock} from '../components/ContentBlock';
-import {BoxLink} from '../components/MyPage/BoxLink';
-import {ButtonLink} from '../components/MyPage/ButtonLink';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
-import {Footer} from '../components/Layout/Footer';
+import {Header, Footer, UserAccount, Notifications, ContentBlock, BoxLink, ButtonLink} from '~/components';
+import {ProductWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles(() => ({
   userInfo: {

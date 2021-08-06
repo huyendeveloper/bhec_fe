@@ -3,9 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
-import {ContentBlock} from '../../../components/ContentBlock';
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
+import {ContentBlock, Header, Footer} from '~/components';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     fontFamily: theme.font.default,

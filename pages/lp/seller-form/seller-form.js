@@ -31,21 +31,10 @@ import React, {useState} from 'react';
 
 import moment from 'moment';
 
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
-import {TopBannerWidget} from '../../../components/Widgets/TopBannerWidget';
-import {ContentBlock} from '../../../components/ContentBlock';
-import {Button} from '../../../components/Button';
-import {StyledForm} from '../../../components/StyledForm';
-
-import {prefectures} from '../../../constants';
-
-import {StyledSteppers} from '../../../components/StyledSteppers';
-
-import Confirmations from '../../../components/SellerForm/confirmations';
-import Complete from '../../../components/SellerForm/complete';
-
-// import {registerSeller} from './index';
+import {ContentBlock, Header, Footer, Button, StyledForm, StyledSteppers} from '~/components';
+import {TopBannerWidget} from '~/components/Widgets';
+import {Confirmations, Complete} from '~/components/SellerForm';
+import {prefectures} from '~/constants';
 
 const useStyles = makeStyles(() => ({
   root: {

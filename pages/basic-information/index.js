@@ -2,9 +2,7 @@ import {Grid, Typography, Button, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Router from 'next/router';
 
-import {Footer} from '../../components/Layout/Footer';
-import {Header} from '../../components/Layout/Header';
-import {ContentBlock} from '../../components/ContentBlock';
+import {ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   block: {

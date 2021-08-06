@@ -5,18 +5,12 @@ import Head from 'next/head';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
 
-import {Header} from '../components/Layout/Header';
-import {Footer} from '../components/Layout/Footer';
-import {Slider} from '../components/Slider';
-import {Article} from '../components/Article/Article';
-import {Search} from '../components/Search';
-import {AdsWidget} from '../components/AdsWidget';
-import {CategoryBlock} from '../components/CategoryBlock';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
+import {Header, Footer, Slider, Search, CategoryBlock, ContentBlock} from '~/components';
+import {Article} from '~/components/Article';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
-import {ContentBlock} from '../components/ContentBlock';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
   },
@@ -24,11 +18,17 @@ const useStyles = makeStyles(() => ({
     backgroundImage: 'url("/img/noise.png")',
   },
   topContainer: {
+    position: 'relative',
     paddingTop: '2rem',
-    paddingBottom: '2rem',
+    paddingBottom: '1rem',
+    [theme.breakpoints.up('md')]: {
+      paddingTop: '4rem',
+    },
   },
-  search: {
-    paddingBottom: '2rem',
+  news: {
+    [theme.breakpoints.up('lg')]: {
+      padding: '0rem 6.063rem',
+    },
   },
   advertisements: {
     backgroundImage: 'url("/img/noise.png")',
@@ -77,6 +77,7 @@ export default function TopPage() {
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
       productPrice: 26600,
+      favoriteProduct: false,
       productOwner: {
         name: '小田原漆器',
         avatar: '/img/sellers/seller-01.png',
@@ -90,6 +91,7 @@ export default function TopPage() {
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
       productPrice: 32800,
+      favoriteProduct: false,
       productOwner: {
         name: '磯貝 剛',
         avatar: '/img/sellers/seller-02.png',
@@ -103,6 +105,7 @@ export default function TopPage() {
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
       productPrice: 149300,
+      favoriteProduct: false,
       productOwner: {
         name: '林　文雄',
         avatar: '/img/sellers/seller-03.png',
@@ -116,6 +119,7 @@ export default function TopPage() {
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
       productPrice: 184750,
+      favoriteProduct: false,
       productOwner: {
         name: '松崎光正',
         avatar: '/img/sellers/seller-04.png',
@@ -127,7 +131,8 @@ export default function TopPage() {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'));
 
   const renderProduct = () => {
     if (isMobile) {
@@ -145,7 +150,10 @@ export default function TopPage() {
               style={{width: '70%'}}
               key={String(index)}
             >
-              <ProductWidget data={product}/>
+              <ProductWidget
+                data={product}
+                heart={true}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -165,7 +173,10 @@ export default function TopPage() {
               style={{width: '90%'}}
               key={String(index)}
             >
-              <ProductWidget data={product}/>
+              <ProductWidget
+                data={product}
+                heart={true}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -185,7 +196,10 @@ export default function TopPage() {
             sm={4}
             md={3}
           >
-            <ProductWidget data={product}/>
+            <ProductWidget
+              data={product}
+              heart={true}
+            />
           </Grid>
         ))}
       </Grid>
@@ -208,11 +222,17 @@ export default function TopPage() {
           maxWidth='lg'
           className={classes.topContainer}
         >
-          <div className={classes.search}>
+          <Grid
+            item={true}
+            xs={12}
+            lg={12}
+          >
             <Search/>
-          </div>
-          <Slider data={slideData}/>
+            <Slider data={slideData}/>
+          </Grid>
+
         </Container>
+
       </div>
 
       {/* News */}
@@ -228,12 +248,16 @@ export default function TopPage() {
             key={article.id}
             container={true}
             justify='space-between'
-            spacing={1}
+            direction='row'
+            alignItems='center'
+            spacing={isDesktop ? 4 : 2}
+            className={classes.news}
           >
             <Grid
               item={true}
               xs={12}
-              md={3}
+              sm={6}
+              lg={4}
             >
               <Image
                 src={article.thumb}
@@ -246,7 +270,8 @@ export default function TopPage() {
             <Grid
               item={true}
               xs={12}
-              md={9}
+              sm={6}
+              lg={8}
             >
               <Article
                 key={article.id}
@@ -268,7 +293,7 @@ export default function TopPage() {
             <Grid
               item={true}
               xs={12}
-              md={6}
+              sm={6}
             >
               <AdsWidget
                 imgSrc={'/img/ad/ad1.png'}
@@ -279,7 +304,7 @@ export default function TopPage() {
             <Grid
               item={true}
               xs={12}
-              md={6}
+              sm={6}
             >
               <AdsWidget
                 imgSrc={'/img/ad/ad2.png'}
@@ -331,7 +356,7 @@ export default function TopPage() {
             <Grid
               item={true}
               xs={12}
-              md={6}
+              sm={6}
             >
               <AdsWidget
                 imgSrc={'/img/ad/ad3.png'}
@@ -342,7 +367,7 @@ export default function TopPage() {
             <Grid
               item={true}
               xs={12}
-              md={6}
+              sm={6}
             >
               <AdsWidget
                 imgSrc={'/img/ad/ad4.png'}

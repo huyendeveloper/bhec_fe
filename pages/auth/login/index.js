@@ -9,14 +9,9 @@ import {signIn} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 
-import {StyledForm} from '../../../components/StyledForm';
-
-import SignInModal from '../../../components/Auth/SignInModal';
-import LineLogin from '../../../components/Auth/LineLogin';
-import StepLogin from '../../../components/Auth/StepLogin';
+import {SignInModal, LineLogin, StepLogin} from '../../../components/Auth';
 import firebase from '../../../firebase';
-import {Header} from '../../../components/Layout/Header';
-import {Footer} from '../../../components/Layout/Footer';
+import {Header, Footer, StyledForm} from '../../../components';
 
 import {AuthService} from '../../../services/auth.services';
 
@@ -323,7 +318,6 @@ function Login() {
             </div>
           </div>
           <StyledForm onSubmit={handleSubmit(onSubmit)}>
-
             <Container
               maxWidth='lg'
               className={classes.content}

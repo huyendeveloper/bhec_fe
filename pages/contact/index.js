@@ -21,14 +21,8 @@ import {
 import clsx from 'clsx';
 import React, {useState, useEffect} from 'react';
 
-import {Header} from '../../components/Layout/Header';
-import {Footer} from '../../components/Layout/Footer';
-import {ContentBlock} from '../../components/ContentBlock';
-import {Button} from '../../components/Button';
-import {StyledForm} from '../../components/StyledForm';
-import {ThanksPopup} from '../../components/Contact';
-
-import {contactType} from '../../constants';
+import {ContentBlock, Header, Footer, Button, StyledForm, ThanksPopup} from '~/components';
+import {contactType} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
