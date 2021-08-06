@@ -18,6 +18,8 @@ import firebase from '../../../firebase';
 import {Header} from '../../../components/Layout/Header';
 import {Footer} from '../../../components/Layout/Footer';
 
+import {AuthService} from '../../../services/auth.services';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '2rem 0',
@@ -261,20 +263,41 @@ function Login() {
   }
 
   const onSubmit = async (data) => {
-    await signIn('credentials',
-      {
-        type: 'email',
-        email: data.email,
-        password: data.password,
-        callbackUrl: `${window.location.origin}`,
-      },
-    );
+    const result = await AuthService.loginByEmail({user: {
+      email: data.email,
+      password: data.password,
+    }});
+    if (result.status === 200) {
+      await signIn('credentials',
+        {
+          data: result.data,
+          token: result.data.access_token,
+          callbackUrl: `${window.location.origin}`,
+        },
+      );
+    }
   };
 
   function googleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope(process.env.NEXT_PUBLIC_FIREBASE_SCOPE);
-    firebase.auth().signInWithPopup(provider);
+    firebase.auth().signInWithPopup(provider).then(async (result) => {
+      const credential = result.credential;
+      if (credential.idToken) {
+        const res = await AuthService.loginByGmail({
+          id_token: credential.idToken,
+        });
+        if (res.status === 200) {
+          await signIn('credentials',
+            {
+              data: res.data,
+              token: res.data.access_token,
+              callbackUrl: `${window.location.origin}`,
+            },
+          );
+        }
+      }
+    });
   }
 
   return (

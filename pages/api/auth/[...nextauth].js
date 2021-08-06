@@ -1,31 +1,12 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
-import axios from 'axios';
 
 const providers = [
   // eslint-disable-next-line new-cap
   Providers.Credentials({
     name: 'Credentials',
     authorize: async (credentials) => {
-      if (credentials.type === 'email') {
-        const axiosConfig = {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        };
-        const user = await axios.post('http://18.118.210.155/api/v1/users/sign_in',
-          {user: {
-            email: credentials.email,
-            password: credentials.password,
-          }},
-          axiosConfig);
-        if (user) {
-          return {status: 'success', data: {...user.data, token: user.headers.authorization.split(' ')[1] || ''}};
-        }
-      }
-
-      return {status: 'fail'};
+      return {status: 'success', data: {...credentials.data, token: credentials.token}};
     },
   }),
 ];
