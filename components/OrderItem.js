@@ -1,4 +1,4 @@
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import {
@@ -7,68 +7,93 @@ import {
   Stepper,
   Step,
   StepLabel,
+  useMediaQuery,
 } from '@material-ui/core';
+
+import {order} from '~/constants';
+import {format as formatNumber} from '~/lib/number';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    background: '#F2F2F2',
-    margin: '0 5rem 2.125rem',
-    padding: '1.875rem',
-    fontSize: '1.125rem',
-    lineHeight: '2.188rem',
-    '& img': {
-      objectFit: 'cover',
-    },
-    '& a': {
-      width: '11.125rem',
-      height: '3.875rem',
-      border: 'none',
-      background: theme.palette.grey.main,
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-      fontSize: '1.125rem',
-      textAlign: 'center',
-      lineHeight: '3.875rem',
-      textDecoration: 'none',
-      color: theme.palette.black.default,
+    background: theme.boxProduct.background,
+    marginBottom: '2.125rem',
+    padding: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.313rem',
+    border: '1px solid ' + theme.border.default,
+    borderRadius: '0.25rem',
+    color: theme.palette.black.light,
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.813rem',
+      lineHeight: '1.188rem',
     },
     '& h4': {
       margin: '0',
     },
   },
   productName: {
-    fontSize: '1.5rem',
-    lineHeight: '2.188rem',
-    margin: '0',
+    fontSize: '1.25rem',
+    lineHeight: '1.875rem',
     fontWeight: 'bold',
-    marginBottom: '1.75rem',
+    marginBottom: '0.625rem',
+    color: theme.palette.black.default,
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      marginBottom: '1rem',
+    },
   },
   buttonList: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      flexWrap: 'wrap',
+    },
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'space-between',
+      marginTop: '1rem',
+    },
     '& a': {
-      marginBottom: '1.25rem',
+      margin: '0 1.5rem 1.25rem 0',
+      height: '2.5rem',
+      width: '10.625rem',
+      background: theme.palette.white.main,
+      border: '1px solid ' + theme.border.default,
+      boxShadow: 'none',
+      color: theme.palette.black.light,
+      fontWeight: 'bold',
+      [theme.breakpoints.down('sm')]: {
+        width: '8rem',
+        padding: '0',
+        margin: '0 0 1rem 1rem',
+      },
+      [theme.breakpoints.down('xs')]: {
+        width: 'calc(50% - 0.5rem)',
+        margin: '0 0 1rem',
+      },
+    },
+    '& a.Mui-disabled': {
+      background: theme.palette.white.main + ' !important',
+      color: theme.palette.gray.main + '!important',
+      border: '1px solid ' + theme.border.default + ' !important',
     },
   },
   container: {
     '& > div': {
-      marginBottom: '1.75rem',
+      marginBottom: '1rem',
+      [theme.breakpoints.down('md')]: {
+        marginBottom: '0',
+      },
     },
-  },
-  timeline: {
-    transform: 'rotate(90deg)',
-  },
-  timelineItem: {
-    '&:before': {
-      flex: '0',
-    },
-  },
-  timelineContent: {
-    flex: '0',
   },
   stepper: {
     background: 'transparent',
     padding: '0',
+    transform: 'translateX(-13%)',
+    [theme.breakpoints.down('xs')]: {
+      transform: 'translateX(0%)',
+      margin: '0 -10%',
+    },
     '& .MuiStep-root': {
       padding: '0',
     },
@@ -78,42 +103,62 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiStepIcon-root': {
       width: '0.875rem',
       height: '0.875rem',
-      color: '#979797',
+      color: theme.palette.gray.dark,
       zIndex: '1',
       '&.MuiStepIcon-active': {
-        color: theme.palette.black.default,
+        color: theme.palette.yellow.main,
       },
       '&.MuiStepIcon-completed': {
-        color: theme.palette.black.default,
-        background: theme.palette.black.default,
+        color: theme.palette.green.main,
+        background: theme.palette.green.main,
         borderRadius: '50%',
       },
     },
     '& .MuiStepLabel-root': {
-      alignItems: 'flex-start',
-    },
-    '& .MuiTypography-root': {
-      textAlign: 'left',
+      '& .MuiStepLabel-active': {
+        color: theme.palette.yellow.main,
+      },
+      '& .MuiStepLabel-completed': {
+        color: theme.palette.green.main,
+      },
     },
     '& .MuiStepConnector-root': {
-      left: 'calc(-100%)',
-      right: 'calc(100%)',
+      left: '-50%',
+      right: '50%',
       top: '0.438rem',
+      '& span': {
+        borderTop: '2px ' + theme.border.default + ' dashed',
+      },
+    },
+    '& .MuiStepConnector-completed span, .MuiStepConnector-active span': {
+      borderTopColor: theme.palette.green.main + '!important',
     },
   },
   productThumb: {
-    maxWidth: '100%',
+    borderRadius: '0.25rem',
+    objectFit: 'cover',
+  },
+  multiLine: {
+    '& div': {
+      marginBottom: '0.688rem',
+    },
+  },
+  btnBuyAgain: {
+    borderColor: theme.palette.green.main + '!important',
+    color: theme.palette.green.main + '!important',
   },
 }));
 
-const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
-
-const steps = ['注文完了', '発送準備中', '発送済み'];
+const steps = Object.values(order.label);
 
 const OrderItem = ({data}) => {
   const {name, image, productId, price, quantity, trackingNum, transportType, status} = data;
   const classes = useStyles();
-  const isDelivered = () => status === 2;
+  const isDelivered = () => status === order.status.arrival;
+
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <div className={classes.root}>
@@ -129,30 +174,53 @@ const OrderItem = ({data}) => {
         <Grid
           item={true}
           md={3}
+          sm={4}
+          xs={12}
         >
-          <Image
-            src={image}
-            width={250}
-            height={170}
-            className={classes.productThumb}
-            alt={name}
-          />
+          {isMobile ? (
+            <Image
+              src={image}
+              width={500}
+              height={200}
+              layout={'responsive'}
+              className={classes.productThumb}
+              alt={name}
+            />
+          ) : (
+            <Image
+              src={image}
+              width={
+                /* eslint-disable-next-line no-nested-ternary */
+                (isTablet ? 146 : 195)
+              }
+              height={
+                /* eslint-disable-next-line no-nested-ternary */
+                (isTablet ? 96 : 128)
+              }
+              layout={'intrinsic'}
+              className={classes.productThumb}
+              alt={name}
+            />
+          )}
         </Grid>
         <Grid
           item={true}
           md={9}
+          sm={8}
+          xs={12}
           className={classes.buttonList}
         >
           <Button
             variant='contained'
             href='/'
             disabled={!isDelivered()}
+            className={classes.btnBuyAgain}
           >
             {'再度購入'}
           </Button>
           <Button
             variant='contained'
-            href={`/review/${productId}`}
+            href={`/reviews/${productId}`}
             disabled={!isDelivered()}
           >
             {'レビューを書く'}
@@ -175,53 +243,63 @@ const OrderItem = ({data}) => {
 
         <Grid
           item={true}
-          md={3}
+          sm={3}
         >
-          <h4>
-            {'商品コード'}<br/>
-            {'数量'}<br/>
-            {'単価'}<br/>
-            {'合計'}
+          <h4 className={classes.multiLine}>
+            <div>{'商品コード'}</div>
+            <div>{'数量'}</div>
+            <div>{'単価'}</div>
+            <div>{'合計'}</div>
+            <div>{'ご注文進行状況'}</div>
           </h4>
         </Grid>
         <Grid
           item={true}
-          md={9}
+          sm={9}
+          className={classes.multiLine}
         >
-          {productId}<br/>
-          {quantity}<br/>
-          {currency.format(price)}<br/>
-          {currency.format(price * quantity)}
+          <div>{productId}</div>
+          <div>{quantity}</div>
+          <div>{'¥' + formatNumber(price)}</div>
+          <div>{'¥' + formatNumber(price * quantity)}</div>
+          {!isMobile && (
+            <Stepper
+              activeStep={status}
+              alternativeLabel={true}
+              className={classes.stepper}
+            >
+              {steps.map((item) => (
+                <Step key={item}>
+                  <StepLabel>{item}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          )}
         </Grid>
 
-        <Grid
-          item={true}
-          md={3}
-        >
-          <h4>
-            {'ご注文進行状況'}
-          </h4>
-        </Grid>
-        <Grid
-          item={true}
-          md={9}
-        >
-          <Stepper
-            activeStep={status}
-            alternativeLabel={true}
-            className={classes.stepper}
+        {isMobile && (
+          <Grid
+            item={true}
+            xs={12}
           >
-            {steps.map((item) => (
-              <Step key={item}>
-                <StepLabel>{item}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Grid>
+            <Stepper
+              activeStep={status}
+              alternativeLabel={true}
+              className={classes.stepper}
+            >
+              {steps.map((item) => (
+                <Step key={item}>
+                  <StepLabel>{item}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Grid>
+        )}
 
         <Grid
           item={true}
-          md={3}
+          sm={3}
+          xs={4}
         >
           <h4>
             {'出品者のメモ'}
@@ -229,10 +307,13 @@ const OrderItem = ({data}) => {
         </Grid>
         <Grid
           item={true}
-          md={9}
+          sm={9}
+          xs={8}
+          className={classes.multiLine}
         >
-          {'追跡番号: '} {trackingNum || null } <br/>
-          {transportType}
+          <div>{'追跡番号'}</div>
+          <div>{trackingNum || null }</div>
+          <div>{transportType}</div>
         </Grid>
       </Grid>
     </div>
