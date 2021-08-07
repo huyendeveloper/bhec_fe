@@ -423,12 +423,12 @@ function Login() {
                 >
                   <div className={classes.grid}>
                     <LineLogin
-                      clientID='1656197119'
-                      clientSecret='254636639a30aac39e877f52e6c03d9f'
-                      state='b41c8fd15b895f0fc28bf3b9d7da89054d931e7s'
-                      nonce='d78a51235f6ee189e831q9c68523cfa336917ada'
-                      redirectURI='http://localhost:3000/auth/login'
-                      scope='profile openid email'
+                      clientID={process.env.NEXT_PUBLIC_LINE_CLIENT_ID}
+                      clientSecret={process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET}
+                      state={process.env.NEXT_PUBLIC_LINE_STATE}
+                      nonce={process.env.NEXT_PUBLIC_LINE_NONCE}
+                      redirectURI={process.env.NEXT_PUBLIC_LINE_REDIRECT_URL}
+                      scope={process.env.NEXT_PUBLIC_LINE_SCOPE}
                       setPayload={setPayload}
                       setIdToken={setIdToken}
                     />

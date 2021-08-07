@@ -1,14 +1,14 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import axios from 'axios';
+
+import {AuthService} from '~/services/auth.services';
 
 import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
@@ -123,41 +123,21 @@ function RegisterEmail() {
     formState: {errors},
     getValues,
   } = useForm({criteriaMode: 'all'});
-  const [openSuccess, setOpenSuccess] = React.useState(false);
-  const [openFail, setOpenFail] = React.useState(false);
-
-  const handleCloseSuccess = () => {
-    setOpenSuccess(false);
-  };
-
-  const handleCloseFail = () => {
-    setOpenFail(false);
-  };
 
   const onSubmit = async (data) => {
-    const axiosConfig = {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    const res = await AuthService.registerEmail({
+      user: {
+        ...data,
       },
-    };
-    axios.post('http://18.118.210.155/api/v1/users',
-      {
-        user: {
-          ...data,
-        },
-      }, axiosConfig).then((res) => {
-      if (res.status === 201) {
-        setOpenSuccess(true);
-        Router.push({
-          pathname: '/auth/login',
-        });
-      } else {
-        setOpenFail(true);
-      }
-    }).catch(() => {
-      setOpenFail(true);
     });
+    if (res.status === 201) {
+      alert('サインアップの成功 !');
+      Router.push({
+        pathname: '/auth/login',
+      });
+    } else {
+      alert('登録に失敗しました！');
+    }
   };
 
   return (
@@ -363,34 +343,6 @@ function RegisterEmail() {
         </div>
         <Footer/>
       </div>
-      <Snackbar
-        open={openSuccess}
-        autoHideDuration={6000}
-        onClose={handleCloseSuccess}
-      >
-        <MuiAlert
-          onClose={handleCloseSuccess}
-          severity='success'
-          elevation={6}
-          variant='filled'
-        >
-          {'アカウント登録の成功'}
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
-        open={openFail}
-        autoHideDuration={6000}
-        onClose={handleCloseFail}
-      >
-        <MuiAlert
-          onClose={handleCloseFail}
-          severity='success'
-          elevation={6}
-          variant='filled'
-        >
-          {'アカウント登録に失敗しました'}
-        </MuiAlert>
-      </Snackbar>
     </>
   );
 }

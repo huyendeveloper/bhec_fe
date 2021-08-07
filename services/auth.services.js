@@ -4,6 +4,7 @@ export const AuthService = {
   loginByEmail,
   loginByLine,
   loginByGmail,
+  registerEmail,
 };
 
 async function loginByEmail(body) {
@@ -18,5 +19,10 @@ async function loginByLine(body) {
 
 async function loginByGmail(body) {
   const result = await axios.post('/users/google_oauth2', body);
+  return result;
+}
+
+async function registerEmail(body) {
+  const result = await axios.post('/users', body);
   return result;
 }

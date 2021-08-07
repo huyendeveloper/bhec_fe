@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   toolBarPersonal: {
     width: '100%',
-    background: '#FAF6EF',
+    background: theme.palette.pink.light,
     padding: 0,
   },
   logoLink: {
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   personalAction: {
     display: 'flex',
     alignItems: 'center',
-    background: '#FAF6EF',
+    background: theme.palette.pink.light,
     height: '100%',
     [theme.breakpoints.up('xs')]: {
       width: '100%',
@@ -115,8 +115,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'normal',
     fontSize: '0.8rem',
     lineHeight: '1.2rem',
-    color: '#333333',
-    borderRight: '2px solid #DBDBDB',
+    color: theme.palette.black.light,
+    borderRight: `2px solid ${theme.border.default}`,
     padding: '0 1rem',
     display: 'flex',
     flexDirection: 'column',

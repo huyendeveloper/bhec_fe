@@ -18,6 +18,7 @@ const moduleExports = {
   reactStrictMode: false,
   env: {
     API_ENDPOINT: process.env.API_ENDPOINT,
+    API_DEFAULT_ENDPOINT: process.env.API_DEFAULT_ENDPOINT,
   },
   async redirects() {
     return [
