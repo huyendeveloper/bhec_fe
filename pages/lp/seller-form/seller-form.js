@@ -31,9 +31,8 @@ import React, {useState} from 'react';
 
 import moment from 'moment';
 
-import {ContentBlock, Header, Footer, Button, StyledForm, StyledSteppers} from '~/components';
+import {ContentBlock, Header, Footer, Button, StyledForm, StyledSteppers, SellerFormConfirmations, SellerFormComplete} from '~/components';
 import {TopBannerWidget} from '~/components/Widgets';
-import {Confirmations, Complete} from '~/components/SellerForm';
 import {prefectures} from '~/constants';
 
 const useStyles = makeStyles(() => ({
@@ -1470,7 +1469,7 @@ export default function SellerForm() {
             ) : null}
 
             {activeStep === 1 ? (
-              <Confirmations
+              <SellerFormConfirmations
                 data={formData}
                 onNextStep={handleNext}
                 onBackStep={handleBack}
@@ -1478,7 +1477,7 @@ export default function SellerForm() {
             ) : null}
 
             {activeStep === 2 ? (
-              <Complete/>
+              <SellerFormComplete/>
             ) : null}
           </Box>
 

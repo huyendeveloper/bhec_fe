@@ -1,8 +1,8 @@
 /* eslint-disable linebreak-style */
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createTheme} from '@material-ui/core/styles';
 
 // Create a theme instance.
-const theme = createMuiTheme({
+const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
@@ -24,6 +24,9 @@ const theme = createMuiTheme({
       'sans-serif',
     ].join(','),
   },
+  expanded: {
+    borderColor: '#eee0b5',
+  },
   palette: {
     text: {
       primary: '#111111',
@@ -39,6 +42,9 @@ const theme = createMuiTheme({
     },
     black3: {
       main: '#333333',
+    },
+    solidBlack: {
+      default: '#333333',
     },
     yellow: {
       light: '#ecc659',
@@ -83,6 +89,10 @@ const theme = createMuiTheme({
   },
   line: {
     background: '#00c300',
+  },
+  cardPayment: {
+    background: '#faf6ef',
+    borderColor: '#dbdbdb',
   },
   boxStep: {
     background: '#f2f2f2',

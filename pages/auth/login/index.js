@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.font.default,
   },
 
-  muipaper: {
+  muiPaper: {
     width: '30rem',
   },
 

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 
 const useStyles = makeStyles((theme) => ({
-  muipaper: {
+  muiPaper: {
     width: '100%',
     textAlign: 'center',
   },
@@ -50,7 +50,7 @@ const ThanksPopup = ({open, handleClose}) => {
         >
           <DialogContent
             classes={{
-              root: classes.muipaper,
+              root: classes.muiPaper,
             }}
           >
             <Image

@@ -17,6 +17,8 @@ export {default as ReviewProduct} from './ReviewProduct';
 export {default as ReviewShop} from './ReviewShop';
 export {default as Search} from './Search';
 export {default as SelectBox} from './SelectBox';
+export {default as SellerFormComplete} from './SellerFormComplete';
+export {default as SellerFormConfirmations} from './SellerFormConfirmations';
 export {default as Slider} from './Slider';
 export {default as StyledForm} from './StyledForm';
 export {default as StyledSteppers} from './StyledSteppers';

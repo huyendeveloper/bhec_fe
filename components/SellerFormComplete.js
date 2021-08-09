@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Complete() {
+const SellerFormComplete = () => {
   const classes = useStyles();
 
   return (
@@ -57,4 +57,6 @@ export default function Complete() {
       </AlertBox>
     </div>
   );
-}
+};
+
+export default SellerFormComplete;

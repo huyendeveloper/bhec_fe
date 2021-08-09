@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Confirmations = ({data, onBackStep, onNextStep}) => {
+const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const index = prefectures.findIndex((prefecture) => prefecture.value === Number.parseInt(data.city, 10));
@@ -263,10 +263,10 @@ const Confirmations = ({data, onBackStep, onNextStep}) => {
   );
 };
 
-Confirmations.propTypes = {
+SellerFormConfirmations.propTypes = {
   data: PropTypes.any.isRequired,
   onBackStep: PropTypes.func,
   onNextStep: PropTypes.func,
 };
 
-export default Confirmations;
+export default SellerFormConfirmations;

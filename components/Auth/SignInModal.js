@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   root: {
   },
 
-  muipaper: {
+  muiPaper: {
     width: '30rem',
   },
 
@@ -95,7 +95,7 @@ const SignInModal = ({open, handleClose}) => {
             <DialogTitle id='form-dialog-title'>{isSignUp ? 'Sign up' : 'Sign in'}</DialogTitle>
             <DialogContent
               classes={{
-                root: classes.muipaper,
+                root: classes.muiPaper,
               }}
             >
 
