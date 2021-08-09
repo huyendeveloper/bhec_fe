@@ -9,6 +9,8 @@ export {default as ContentBlock} from './ContentBlock';
 export {default as Footer} from './Footer';
 export {default as Header} from './Header';
 export {default as ImageDropzone} from './ImageDropzone';
+export {default as Media} from './Media';
+export {default as Medias} from './Medias';
 export {default as Notification} from './Notification';
 export {default as Notifications} from './Notifications';
 export {default as OrderItem} from './OrderItem';
