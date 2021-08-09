@@ -8,6 +8,9 @@ import axios from 'axios';
 import qs from 'qs';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
+import {signIn} from 'next-auth/client';
+
+import {AuthService} from '~/services/auth.services';
 const maxAge = 120;
 
 const useStyles = makeStyles((theme) => ({
@@ -89,7 +92,22 @@ const LineLogin = ({
         'https://api.line.me/oauth2/v2.1/token',
         qs.stringify(reqBody),
         reqConfig,
-      ).then((res) => {
+      ).then(async (res) => {
+        if (res.status === 200) {
+          const result = await AuthService.loginByLine({
+            id_token: res.data.id_token,
+            client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
+          });
+          if (result.status === 200) {
+            await signIn('credentials',
+              {
+                data: res.data,
+                token: result.data.access_token,
+                callbackUrl: `${window.location.origin}`,
+              },
+            );
+          }
+        }
         if (setPayload) {
           setPayload(res.data);
         }

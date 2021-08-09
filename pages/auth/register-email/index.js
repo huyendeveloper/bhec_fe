@@ -1,12 +1,16 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-useless-escape */
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
+import {ErrorMessage} from '@hookform/error-message';
+import {Controller, useForm} from 'react-hook-form';
 
-import firebase from '../../../firebase';
+import {AuthService} from '~/services/auth.services';
 
-import {ContentBlock, Header, Footer} from '~/components';
+import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,36 +115,29 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const initialFormValues = {
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
-
 function RegisterEmail() {
   const classes = useStyles();
-  const [values, setValues] = React.useState(initialFormValues);
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    getValues,
+  } = useForm({criteriaMode: 'all'});
 
-  const handleInputValue = (e) => {
-    const {name, value} = e.target;
-    setValues({
-      ...values,
-      [name]: value,
+  const onSubmit = async (data) => {
+    const res = await AuthService.registerEmail({
+      user: {
+        ...data,
+      },
     });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    signUpEmail(values);
-  };
-
-  const signUpEmail = (data) => {
-    const {email, password} = data;
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+    if (res.status === 201) {
+      alert('サインアップの成功 !');
       Router.push({
         pathname: '/auth/login',
       });
-    });
+    } else {
+      alert('登録に失敗しました！');
+    }
   };
 
   return (
@@ -153,11 +150,7 @@ function RegisterEmail() {
           <ContentBlock
             title='メールアドレスで会員登録'
           >
-            <form
-              noValidate={true}
-              autoComplete='off'
-              onSubmit={handleSubmit}
-            >
+            <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <Container
                 maxWidth='lg'
               >
@@ -173,19 +166,51 @@ function RegisterEmail() {
                       xs={12}
                       className={classes.grid}
                     >
-                      <span className={classes.label}>{'メールアドレス'}
-                        <span className={classes.required}>{'＊'}</span>
-                      </span>
-                      <TextField
-                        placeholder='oshinagaki@gmail.com'
-                        autoFocus={true}
-                        margin='dense'
-                        id='email'
+                      <label
+                        htmlFor='email'
+                        className='formControlLabel'
+                      >
+                        {'メールアドレス '}
+                        <span className='formControlRequired'>{'*'}</span>
+                      </label>
+                      <Controller
                         name='email'
-                        type='email'
-                        onChange={handleInputValue}
-                        fullWidth={true}
-                        variant='outlined'
+                        control={control}
+                        defaultValue=''
+                        rules={{
+                          required: 'この入力は必須です。',
+                          pattern: {
+                            value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                            message: 'メールアドレスが無効です。',
+                          },
+                        }}
+                        render={({field: {name, value, ref, onChange}}) => (
+                          <TextField
+                            id='email'
+                            variant='outlined'
+                            placeholder='oshinagaki@gmail.com'
+                            error={Boolean(errors.email)}
+                            InputLabelProps={{shrink: false}}
+                            name={name}
+                            value={value}
+                            inputRef={ref}
+                            onChange={onChange}
+                          />
+                        )}
+                      />
+                      <ErrorMessage
+                        errors={errors}
+                        name='email'
+                        render={({messages}) => {
+                          return messages ? Object.entries(messages).map(([type, message]) => (
+                            <p
+                              className='inputErrorText'
+                              key={type}
+                            >
+                              {message}
+                            </p>
+                          )) : null;
+                        }}
                       />
                     </Grid>
                     <Grid
@@ -193,19 +218,48 @@ function RegisterEmail() {
                       xs={12}
                       className={classes.grid}
                     >
-                      <span className={classes.label}>{'パスワード'}
-                        <span className={classes.required}>{'＊'}</span>
-                      </span>
-                      <TextField
-                        autoFocus={true}
-                        margin='dense'
-                        id='password'
+                      <label
+                        htmlFor='password'
+                        className='formControlLabel'
+                      >
+                        {'パスワード '}
+                        <span className='formControlRequired'>{'*'}</span>
+                      </label>
+                      <Controller
                         name='password'
-                        type='password'
-                        onChange={handleInputValue}
-                        fullWidth={true}
-                        variant='outlined'
-                        placeholder='パスワードを８文字以上ご記入ください。'
+                        control={control}
+                        defaultValue=''
+                        rules={{
+                          required: 'この入力は必須です。',
+                        }}
+                        render={({field: {name, value, ref, onChange}}) => (
+                          <TextField
+                            id='password'
+                            variant='outlined'
+                            error={Boolean(errors.password)}
+                            InputLabelProps={{shrink: false}}
+                            name={name}
+                            type='password'
+                            value={value}
+                            inputRef={ref}
+                            placeholder='パスワードを８文字以上ご記入ください。'
+                            onChange={onChange}
+                          />
+                        )}
+                      />
+                      <ErrorMessage
+                        errors={errors}
+                        name='password'
+                        render={({messages}) => {
+                          return messages ? Object.entries(messages).map(([type, message]) => (
+                            <p
+                              className='inputErrorText'
+                              key={type}
+                            >
+                              {message}
+                            </p>
+                          )) : null;
+                        }}
                       />
                     </Grid>
                     <Grid
@@ -213,18 +267,53 @@ function RegisterEmail() {
                       xs={12}
                       className={classes.grid}
                     >
-                      <span className={classes.label}>{'パスワード（確認）'}
-                        <span className={classes.required}>{'＊'}</span>
-                      </span>
-                      <TextField
-                        autoFocus={true}
-                        margin='dense'
-                        id='confirmPassword'
-                        name='confirmPassword'
-                        type='password'
-                        onChange={handleInputValue}
-                        fullWidth={true}
-                        variant='outlined'
+                      <label
+                        htmlFor='password_confirmation'
+                        className='formControlLabel'
+                      >
+                        {'パスワード '}
+                        <span className='formControlRequired'>{'*'}</span>
+                      </label>
+                      <Controller
+                        name='password_confirmation'
+                        control={control}
+                        defaultValue=''
+                        rules={{
+                          required: 'この入力は必須です。',
+                          validate: {
+                            matchesPreviousPassword: (value) => {
+                              const {password} = getValues();
+                              return password === value || 'パスワードは一致する必要があります！';
+                            },
+                          },
+                        }}
+                        render={({field: {name, value, ref, onChange}}) => (
+                          <TextField
+                            id='password_confirmation'
+                            variant='outlined'
+                            error={Boolean(errors.password_confirmation)}
+                            InputLabelProps={{shrink: false}}
+                            name={name}
+                            type='password'
+                            value={value}
+                            inputRef={ref}
+                            onChange={onChange}
+                          />
+                        )}
+                      />
+                      <ErrorMessage
+                        errors={errors}
+                        name='password_confirmation'
+                        render={({messages}) => {
+                          return messages ? Object.entries(messages).map(([type, message]) => (
+                            <p
+                              className='inputErrorText'
+                              key={type}
+                            >
+                              {message}
+                            </p>
+                          )) : null;
+                        }}
                       />
                     </Grid>
                     <Grid
@@ -249,7 +338,7 @@ function RegisterEmail() {
                   </div>
                 </Grid>
               </Container>
-            </form>
+            </StyledForm>
           </ContentBlock>
         </div>
         <Footer/>

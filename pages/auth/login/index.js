@@ -1,14 +1,21 @@
+/* eslint-disable no-useless-escape */
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
+import {signIn} from 'next-auth/client';
+import {ErrorMessage} from '@hookform/error-message';
+import {Controller, useForm} from 'react-hook-form';
 
 import firebase from '../../../firebase';
 
-import {Header, Footer} from '~/components';
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
+import {Header, Footer, StyledForm} from '~/components';
+
+import {AuthService} from '~/services/auth.services';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '2rem 0',
@@ -28,11 +35,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: '90%',
       margin: '0 5%',
+      marginTop: '3.5rem',
     },
     [theme.breakpoints.down('md')]: {
       width: '90%',
       margin: '0 5%',
-      marginTop: '1rem',
+      marginTop: '3rem',
     },
   },
 
@@ -223,45 +231,20 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const initialFormValues = {
-  email: '',
-  password: '',
-};
-
 function Login() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [values, setValues] = React.useState(initialFormValues);
   const [setPayload] = React.useState(null);
   const [setIdToken] = React.useState(null);
-
-  const handleInputValue = (e) => {
-    const {name, value} = e.target;
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    emailAuth(values.email);
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({criteriaMode: 'all'});
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  function emailAuth(value) {
-    const actionCodeSettings = {
-      url: window.location.href,
-      handleCodeInApp: true,
-    };
-    firebase.auth().sendSignInLinkToEmail(value, actionCodeSettings).then(() => {
-      window.localStorage.setItem('emailForSignIn', value);
-      handleClose();
-    });
-  }
 
   function forgotPass() {
     Router.push({
@@ -275,10 +258,42 @@ function Login() {
     });
   }
 
+  const onSubmit = async (data) => {
+    const result = await AuthService.loginByEmail({user: {
+      email: data.email,
+      password: data.password,
+    }});
+    if (result.status === 200) {
+      await signIn('credentials',
+        {
+          data: result.data,
+          token: result.data.access_token,
+          callbackUrl: `${window.location.origin}`,
+        },
+      );
+    }
+  };
+
   function googleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope(process.env.NEXT_PUBLIC_FIREBASE_SCOPE);
-    firebase.auth().signInWithPopup(provider);
+    firebase.auth().signInWithPopup(provider).then(async (result) => {
+      const credential = result.credential;
+      if (credential.idToken) {
+        const res = await AuthService.loginByGmail({
+          id_token: credential.idToken,
+        });
+        if (res.status === 200) {
+          await signIn('credentials',
+            {
+              data: res.data,
+              token: res.data.access_token,
+              callbackUrl: `${window.location.origin}`,
+            },
+          );
+        }
+      }
+    });
   }
 
   return (
@@ -303,11 +318,7 @@ function Login() {
               >{'まだ会員ではない方はこちら、以下の会員登録をお願いします。'}</Typography>
             </div>
           </div>
-          <form
-            noValidate={true}
-            autoComplete='off'
-            onSubmit={handleSubmit}
-          >
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <Container
               maxWidth='lg'
               className={classes.content}
@@ -412,12 +423,12 @@ function Login() {
                 >
                   <div className={classes.grid}>
                     <LineLogin
-                      clientID='1656197119'
-                      clientSecret='254636639a30aac39e877f52e6c03d9f'
-                      state='b41c8fd15b895f0fc28bf3b9d7da89054d931e7s'
-                      nonce='d78a51235f6ee189e831q9c68523cfa336917ada'
-                      redirectURI='http://localhost:3000/auth/login'
-                      scope='profile openid email'
+                      clientID={process.env.NEXT_PUBLIC_LINE_CLIENT_ID}
+                      clientSecret={process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET}
+                      state={process.env.NEXT_PUBLIC_LINE_STATE}
+                      nonce={process.env.NEXT_PUBLIC_LINE_NONCE}
+                      redirectURI={process.env.NEXT_PUBLIC_LINE_REDIRECT_URL}
+                      scope={process.env.NEXT_PUBLIC_LINE_SCOPE}
                       setPayload={setPayload}
                       setIdToken={setIdToken}
                     />
@@ -453,18 +464,46 @@ function Login() {
                   xs={12}
                 >
                   <div className={classes.grid}>
-                    <TextField
-                      id='email'
-                      autoFocus={true}
-                      margin='dense'
+                    <Controller
+                      className={classes.grid}
                       name='email'
-                      type='email'
-                      variant='outlined'
-                      onChange={handleInputValue}
-                      placeholder='メールアドレス'
-                      fullWidth={true}
-                      required={true}
-                      className={classes.inputLogin}
+                      control={control}
+                      defaultValue={'user+1@example.com'}
+                      rules={{
+                        required: 'この入力は必須です。',
+                        pattern: {
+                          value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                          message: 'メールアドレスが無効です。',
+                        },
+                      }}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <TextField
+                          id='email'
+                          variant='outlined'
+                          placeholder='メールアドレス'
+                          error={Boolean(errors.email)}
+                          InputLabelProps={{shrink: false}}
+                          name={name}
+                          value={value}
+                          inputRef={ref}
+                          onChange={onChange}
+                          className={classes.inputLogin}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='email'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >
+                            {message}
+                          </p>
+                        )) : null;
+                      }}
                     />
                   </div>
                 </Grid>
@@ -473,18 +512,40 @@ function Login() {
                   xs={12}
                 >
                   <div className={classes.grid}>
-                    <TextField
-                      autoFocus={true}
-                      margin='dense'
-                      id='password'
+                    <Controller
+                      className={classes.grid}
                       name='password'
-                      type='password'
-                      variant='outlined'
-                      onChange={handleInputValue}
-                      placeholder='パスワード'
-                      fullWidth={true}
-                      required={true}
-                      className={classes.inputLogin}
+                      control={control}
+                      rules={{required: 'この入力は必須です。'}}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <TextField
+                          id='password'
+                          variant='outlined'
+                          placeholder='パスワード'
+                          type='password'
+                          error={Boolean(errors.password)}
+                          InputLabelProps={{shrink: false}}
+                          name={name}
+                          value={value}
+                          inputRef={ref}
+                          onChange={onChange}
+                          className={classes.inputLogin}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name='password'
+                      render={({messages}) => {
+                        return messages ? Object.entries(messages).map(([type, message]) => (
+                          <p
+                            className='inputErrorText'
+                            key={type}
+                          >
+                            {message}
+                          </p>
+                        )) : null;
+                      }}
                     />
                   </div>
                 </Grid>
@@ -517,7 +578,7 @@ function Login() {
                 </Grid>
               </Grid>
             </Container>
-          </form>
+          </StyledForm>
           {open &&
             <SignInModal
               open={open}
