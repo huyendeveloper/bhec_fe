@@ -217,7 +217,7 @@ export default function About() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={isMobile ? 4 : 3}
           >
             <Grid
@@ -285,7 +285,7 @@ export default function About() {
           <Container>
             <Grid
               container={true}
-              justify='center'
+              justifyContent='center'
               alignItems='center'
             >
               <Box
@@ -313,7 +313,7 @@ export default function About() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={3}
           >
             <Grid
@@ -449,7 +449,7 @@ export default function About() {
         {/*  ) : (*/}
         {/*    <Grid*/}
         {/*      container={true}*/}
-        {/*      justify='center'*/}
+        {/*      justifyContent='center'*/}
         {/*      spacing={3}*/}
         {/*    >*/}
         {/*      {recommendProducts.map((product) => (*/}

@@ -85,7 +85,7 @@ export default function Seller() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={3}
           >
             <Grid
@@ -172,7 +172,7 @@ export default function Seller() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={3}
           >
             <Grid
@@ -258,7 +258,7 @@ export default function Seller() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={3}
           >
             <Grid

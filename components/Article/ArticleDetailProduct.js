@@ -59,7 +59,7 @@ const ArticleDetailProduct = ({id, listProducts, description}) => {
     <div>
       <Grid
         container={true}
-        justify={'center'}
+        justifyContent='center'
         className={classes.block}
       >
         {listProducts && listProducts.length && generateProduct(listProducts)}

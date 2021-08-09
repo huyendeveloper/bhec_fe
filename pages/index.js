@@ -185,7 +185,7 @@ export default function TopPage() {
     return (
       <Grid
         container={true}
-        justify='center'
+        justifyContent='center'
         spacing={3}
       >
         {recommendProducts.map((product, index) => (
@@ -247,7 +247,7 @@ export default function TopPage() {
           <Grid
             key={article.id}
             container={true}
-            justify='space-between'
+            justifyContent='space-between'
             direction='row'
             alignItems='center'
             spacing={isDesktop ? 4 : 2}

@@ -93,7 +93,7 @@ const ArticleItem = ({id, image, title, tags = [], description}) => {
         md={8}
         key={`article-right-${id}`}
       >
-        <div justify='left'>
+        <div justifyContent='left'>
           <Typography
             variant={'h3'}
             className={classes.articleLabel}

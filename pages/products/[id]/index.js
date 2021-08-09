@@ -363,7 +363,7 @@ export default function ProductDetail() {
     return (
       <Grid
         container={true}
-        justify='center'
+        justifyContent='center'
         spacing={3}
       >
         {recommendProducts.map((product, index) => (

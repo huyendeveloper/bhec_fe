@@ -327,7 +327,7 @@ function Login() {
               <Grid
                 container={true}
                 spacing={3}
-                justify='center'
+                justifyContent='center'
               >
                 <Grid
                   item={true}

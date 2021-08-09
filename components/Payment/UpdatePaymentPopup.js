@@ -184,7 +184,7 @@ const UpdatePaymentPopup = ({open, handleClose}) => {
           <Grid
             container={true}
             spacing={3}
-            justify='center'
+            justifyContent='center'
           >
             <Grid
               item={true}
@@ -211,7 +211,7 @@ const UpdatePaymentPopup = ({open, handleClose}) => {
           <Grid
             container={true}
             spacing={3}
-            justify='center'
+            justifyContent='center'
           >
             <Button
               autoFocus={true}
@@ -229,7 +229,7 @@ const UpdatePaymentPopup = ({open, handleClose}) => {
 };
 
 UpdatePaymentPopup.propTypes = {
-  open: PropTypes.boolean,
+  open: PropTypes.bool,
   handleClose: PropTypes.any,
 };
 

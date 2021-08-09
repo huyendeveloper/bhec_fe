@@ -99,7 +99,7 @@ function ArticlePage() {
           <Grid
             container={true}
             spacing={3}
-            justify={'center'}
+            justifyContent='center'
             maxWidth={'lg'}
           >
             <Grid
@@ -162,7 +162,7 @@ function ArticlePage() {
           <Grid
             container={true}
             spacing={3}
-            justify={'center'}
+            justifyContent='center'
           >
             {ArticleList}
             <Grid

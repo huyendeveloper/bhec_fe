@@ -213,7 +213,7 @@ function ArticleDetailPage() {
             <Grid
               container={true}
               spacing={3}
-              justify={'center'}
+              justifyContent='center'
               maxWidth={'lg'}
             >
               <Grid
@@ -275,7 +275,7 @@ function ArticleDetailPage() {
           >
             <Grid
               container={true}
-              justify={'center'}
+              justifyContent='center'
               className={classes.tagHeader}
             >
               <Grid
@@ -306,7 +306,7 @@ function ArticleDetailPage() {
             <Grid
               container={true}
               spacing={3}
-              justify={'center'}
+              justifyContent='center'
             >
               <Grid
                 item={true}
@@ -347,7 +347,7 @@ function ArticleDetailPage() {
                     <Grid
                       container={true}
                       spacing={3}
-                      justify={'center'}
+                      justifyContent='center'
                     >
                       {article && article.related.length && generateRelated(article)}
                     </Grid>

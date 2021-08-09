@@ -1,8 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Button} from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
+import {Button, Dialog, DialogContent} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
@@ -78,7 +76,7 @@ const ThanksPopup = ({open, handleClose}) => {
 };
 
 ThanksPopup.propTypes = {
-  open: PropTypes.boolean,
+  open: PropTypes.bool,
   handleClose: PropTypes.any,
 };
 

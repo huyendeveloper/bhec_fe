@@ -158,7 +158,7 @@ function RegisterEmail() {
                 <Grid
                   container={true}
                   spacing={3}
-                  justify='center'
+                  justifyContent='center'
                 >
                   <div className={classes.content}>
                     <Grid

@@ -159,7 +159,7 @@ const SignInModal = ({open, handleClose}) => {
 };
 
 SignInModal.propTypes = {
-  open: PropTypes.boolean,
+  open: PropTypes.bool,
   handleClose: PropTypes.any,
 };
 

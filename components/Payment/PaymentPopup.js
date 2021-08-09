@@ -462,7 +462,7 @@ const PaymentPopup = ({open, handleClose, addPayment, dataUpdate}) => {
                   container={true}
                   spacing={3}
                   className={classes.form}
-                  justify='center'
+                  justifyContent='center'
                 >
                   <Button
                     autoFocus={true}

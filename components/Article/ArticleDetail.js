@@ -40,7 +40,7 @@ const ArticleDetail = ({image, description}) => {
       <Grid
         container={true}
         xs={12}
-        justify={'center'}
+        justifyContent='center'
       >
         <Grid
           item={true}
