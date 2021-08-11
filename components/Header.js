@@ -161,6 +161,8 @@ const Header = (props) => {
   const classes = useStyles();
   const {showMainMenu} = props;
 
+  const isDev = process.env.NODE_ENV === 'development';
+
   useEffect(() => {
     if (session?.accessToken) {
       setIsLoggined(true);
@@ -197,7 +199,7 @@ const Header = (props) => {
                 />
               </Link>
             </div>
-            {displaySameRow && <div className={classes.personalAction}>
+            {displaySameRow && isDev && <div className={classes.personalAction}>
               {isLoggined && <div className={classes.personalItem}>
                 <PersonPinIcon/>
                 {'マイページ'}
@@ -228,7 +230,7 @@ const Header = (props) => {
               />
             </div>
           </Toolbar>
-          {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
+          {!displaySameRow && isDev && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
               {isLoggined && <div className={classes.personalItem}>
                 <PersonPinIcon/>
