@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require("path");
 
 module.exports = {
   "stories": [
@@ -19,6 +20,9 @@ module.exports = {
         loader: 'default',
       }),
     }));
+    config.resolve.alias = {
+      "~": path.resolve(__dirname, "..")
+    }
     return config;
   },
 }

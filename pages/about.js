@@ -2,25 +2,17 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import {Box, Container, Grid, useMediaQuery} from '@material-ui/core';
+import {Box, Container, Grid, useMediaQuery, Divider} from '@material-ui/core';
 
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 // import {Swiper, SwiperSlide} from 'swiper/react';
 
-import {Header} from '../components/Layout/Header';
-import {Footer} from '../components/Layout/Footer';
-import {ContentBlock} from '../components/ContentBlock';
-import {FeatureWidget} from '../components/Widgets/FeatureWidget';
-import {StepWidget as ProductArrivalStep} from '../components/Widgets/StepWidget';
-
-// import {ProductWidget} from '../components/Widgets/ProductWidget';
-// import {Button} from '../components/Button';
-import {FaqsWidget} from '../components/Widgets/FaqsWidget';
+import {Header, Footer, ContentBlock, Medias} from '~/components';
+import {FaqsWidget, FeatureWidget, TopBannerWidget, StepWidget as ProductArrivalStep} from '~/components/Widgets';
 
 // Import Swiper styles
 import 'swiper/swiper.min.css';
-import TopBannerWidget from '../components/Widgets/TopBannerWidget/TopBannerWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -188,6 +180,37 @@ export default function About() {
     },
   ];
 
+  const medias = [
+    {
+      id: 1,
+      image: '/img/media/media1.png',
+      time: '2021/07/15',
+      content: '畑や果樹の権利、すし職人の所作をデジタルデータに【お金の学校】',
+      url: 'https://www.google.co.jp/amp/s/news.yahoo.co.jp/amp/articles/bb8b83aecdfeb420a3f9b4f2a4ab6d65f4501698',
+    },
+    {
+      id: 2,
+      image: '/img/media/media2.png',
+      time: '2021/07/15',
+      content: 'Branding House、地域貢献型ECサイト「おしながき」を9月開設 日本の伝統や農業の課題解決目指す',
+      url: 'https://ecnomikata.com/ecnews/31231/',
+    },
+    {
+      id: 3,
+      image: '/img/media/media3.png',
+      time: '2021/07/15',
+      content: 'Branding House、地域貢献型ECサイト「おしながき」を9月開設 日本の伝統や農業の課題解決目指す',
+      url: 'https://netkeizai.com/articles/detail/4265',
+    },
+    {
+      id: 4,
+      image: '/img/media/media4.png',
+      time: '2021/07/15',
+      content: '【EC×ブロックチェーン】農産物だけでなく土地そのものも取引可能なECサイト『おしながき』がリリースへ',
+      url: 'https://news.goo.ne.jp/article/netkeizai/business/netkeizai-4265.html',
+    },
+  ];
+
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -225,7 +248,7 @@ export default function About() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={isMobile ? 4 : 3}
           >
             <Grid
@@ -293,7 +316,7 @@ export default function About() {
           <Container>
             <Grid
               container={true}
-              justify='center'
+              justifyContent='center'
               alignItems='center'
             >
               <Box
@@ -321,7 +344,7 @@ export default function About() {
         >
           <Grid
             container={true}
-            justify='center'
+            justifyContent='center'
             spacing={3}
           >
             <Grid
@@ -457,7 +480,7 @@ export default function About() {
         {/*  ) : (*/}
         {/*    <Grid*/}
         {/*      container={true}*/}
-        {/*      justify='center'*/}
+        {/*      justifyContent='center'*/}
         {/*      spacing={3}*/}
         {/*    >*/}
         {/*      {recommendProducts.map((product) => (*/}
@@ -498,6 +521,16 @@ export default function About() {
           mixBlendMode='multiply'
         >
           <FaqsWidget data={faqsData}/>
+        </ContentBlock>
+
+        <Divider/>
+
+        <ContentBlock
+          title='メディア掲載'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
+          <Medias medias={medias}/>
         </ContentBlock>
 
       </div>

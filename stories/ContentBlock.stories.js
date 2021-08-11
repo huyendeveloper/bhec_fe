@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Box} from '@material-ui/core';
 
-import {ContentBlock} from '../components/ContentBlock';
+import {ContentBlock} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

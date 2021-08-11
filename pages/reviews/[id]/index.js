@@ -1,10 +1,7 @@
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
 
-import {Footer} from '../../../components/Layout/Footer';
-import {Header} from '../../../components/Layout/Header';
-import {Block} from '../../../components/MyPage/Block';
-import {ReviewProduct, ReviewShop} from '../../../components/Review';
+import {Header, Footer, Block, ReviewProduct, ReviewShop} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -20,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     border: 'none',
     color: theme.palette.white.main,
-    fontWeight: '500',
     margin: '0 auto 2.188rem',
   },
 }));

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button} from '../components/Button';
+import {Button} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

@@ -1,0 +1,10 @@
+// see https://nextjs.org/docs/advanced-features/module-path-aliases
+
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    }
+  }
+}

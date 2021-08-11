@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {BoxLink} from '../components/MyPage/BoxLink';
+import {BoxLink} from '~/components';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -11,8 +11,9 @@ export default {
 export const BoxLinkDefault = () => (
   <BoxLink
     link={{
-      image: '/img/icons/list.svg',
+      image: '~/img/icons/list.svg',
       content: '注文確認',
-      url: '/orders'
-    }} />
+      url: '/orders',
+    }}
+  />
 );

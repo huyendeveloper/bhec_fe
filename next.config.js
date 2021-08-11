@@ -18,6 +18,9 @@ const moduleExports = {
   reactStrictMode: false,
   env: {
     API_ENDPOINT: process.env.API_ENDPOINT,
+    VERITRANS_TOKEN_SERVER_ENDPOINT: process.env.VERITRANS_TOKEN_SERVER_ENDPOINT,
+    VERITRANS_TOKEN_API: process.env.VERITRANS_TOKEN_API,
+    API_DEFAULT_ENDPOINT: process.env.API_DEFAULT_ENDPOINT,
   },
   async redirects() {
     return [

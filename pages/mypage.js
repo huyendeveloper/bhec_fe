@@ -2,31 +2,35 @@ import Head from 'next/head';
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
 
-import {Header} from '../components/Layout/Header';
-import {Breadcrumbs} from '../components/Breadcrumbs';
-import {Block} from '../components/MyPage/Block';
-import {UserAccount} from '../components/MyPage/UserAccount';
-import {Notifications} from '../components/MyPage/Notifications';
-
-import {BoxLink} from '../components/MyPage/BoxLink';
-import {ButtonLink} from '../components/MyPage/ButtonLink';
-import {ProductWidget} from '../components/Widgets/ProductWidget';
-import {Footer} from '../components/Layout/Footer';
+import {Header, Footer, UserAccount, Notifications, ContentBlock, BoxLink, ButtonLink} from '~/components';
+import {ProductWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles(() => ({
   userInfo: {
-    padding: '2.75rem 0 3.625rem',
+    padding: '1.875rem 0 3rem',
     display: 'flex',
     justifyContent: 'space-between',
   },
   boxLink: {
+    marginTop: '0',
     '& .MuiGrid-item': {
       paddingTop: '0',
       paddingBottom: '0',
     },
   },
+  buttonLink: {
+    marginTop: '0.75rem',
+    '& .MuiGrid-item': {
+      paddingTop: '0',
+      paddingBottom: '1rem',
+    },
+  },
   recommendedProducts: {
     marginTop: '2rem',
+    '& .MuiGrid-item': {
+      paddingTop: '0',
+      paddingBottom: '0',
+    },
   },
 }));
 
@@ -70,33 +74,18 @@ const buttonLinks = [
   'ログアウト',
 ];
 
-const linkProps = [
-  {
-    id: 1,
-    linkLabel: 'パンクズ',
-    linkUrl: '/',
-  },
-  {
-    id: 2,
-    linkLabel: 'パンクズ',
-    linkUrl: '/',
-  },
-  {
-    id: 3,
-    linkLabel: 'パンクズ',
-  },
-];
-
 const boxLinks = [
   {
-    image: '/img/icons/list.svg',
+    image: '/img/icons/bill.png',
     content: '注文確認',
     url: '/orders',
+    colorLabel: '#54c0c0',
   },
   {
-    image: '/img/icons/heart.svg',
+    image: '/img/icons/heart_fill.png',
     content: 'お気に入り商品',
     url: '/',
+    colorLabel: '#ba2636',
   },
 ];
 
@@ -162,9 +151,10 @@ export default function MyPage() {
       <Header showMainMenu={false}/>
 
       <div className='content'>
-        <Breadcrumbs linkProps={linkProps}/>
-
-        <Block title={'マイページ'}>
+        <ContentBlock
+          title='マイページ'
+          bgImage='/img/noise.png'
+        >
           <div className={classes.userInfo}>
             <UserAccount/>
 
@@ -173,7 +163,7 @@ export default function MyPage() {
 
           <Grid
             container={true}
-            spacing={5}
+            spacing={3}
             className={classes.boxLink}
           >
             {boxLinks.map((item) => (
@@ -182,15 +172,18 @@ export default function MyPage() {
                 item={true}
                 md={4}
               >
-                <BoxLink link={item}/>
+                <BoxLink
+                  link={item}
+                  colorLabel={item.colorLabel}
+                />
               </Grid>
             ))}
           </Grid>
 
           <Grid
             container={true}
-            spacing={5}
-            className={classes.buttomLink}
+            spacing={3}
+            className={classes.buttonLink}
           >
             {buttonLinks.map((item) => (
               <Grid
@@ -202,9 +195,13 @@ export default function MyPage() {
               </Grid>
             ))}
           </Grid>
-        </Block>
+        </ContentBlock>
 
-        <Block title={'あなたにオススメの商品'}>
+        <ContentBlock
+          title={'あなたにオススメの商品'}
+          bgColor='#faf6ef'
+          bgImage='/img/noise.png'
+        >
           <Grid
             container={true}
             spacing={4}
@@ -224,7 +221,7 @@ export default function MyPage() {
               </Grid>
             ))}
           </Grid>
-        </Block>
+        </ContentBlock>
       </div>
 
       <Footer/>
