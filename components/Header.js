@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,8 +10,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {
   Hidden,
-  IconButton,
-  Link, useMediaQuery,
+  IconButton, useMediaQuery,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -60,20 +60,20 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     backgroundColor: '#fff',
     display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      height: '80px',
-    },
     [theme.breakpoints.up('xs')]: {
       minHeight: 48,
+    },
+    [theme.breakpoints.up('md')]: {
+      height: 80,
     },
   },
   toolBarPlaceholder: {
-    [theme.breakpoints.up('md')]: {
-      height: '80px',
-    },
     [theme.breakpoints.up('xs')]: {
       minHeight: 48,
       height: 48,
+    },
+    [theme.breakpoints.up('md')]: {
+      height: 80,
     },
   },
   toolBarPersonal: {
@@ -188,15 +188,17 @@ const Header = (props) => {
                 </Hidden>
               ) : null}
               <Link
-                href={'/'}
+                href={'/about'}
                 className={classes.logoLink}
               >
-                <Image
-                  src='/logo.png'
-                  alt='BH_EC Logo'
-                  width={logoWidth}
-                  height={logoHeight}
-                />
+                <a className='next-link'>
+                  <Image
+                    src='/logo.png'
+                    alt='BH_EC Logo'
+                    width={logoWidth}
+                    height={logoHeight}
+                  />
+                </a>
               </Link>
             </div>
             {displaySameRow && isDev && <div className={classes.personalAction}>
@@ -206,10 +208,12 @@ const Header = (props) => {
               </div>}
               {!isLoggined &&
               <Link href={'/auth/login'}>
-                <div className={classes.personalItem} >
-                  <PersonPinIcon/>
-                  {'登録・ログイン'}
-                </div>
+                <a className='next-link'>
+                  <div className={classes.personalItem} >
+                    <PersonPinIcon/>
+                    {'登録・ログイン'}
+                  </div>
+                </a>
               </Link>}
               <div className={classes.personalItem}>
                 <EmailIcon/>
@@ -238,10 +242,12 @@ const Header = (props) => {
               </div>}
               {!isLoggined &&
               <Link href={'/auth/login'}>
-                <div className={classes.personalItem} >
-                  <PersonPinIcon/>
-                  {'登録・ログイン'}
-                </div>
+                <a className='next-link'>
+                  <div className={classes.personalItem} >
+                    <PersonPinIcon/>
+                    {'登録・ログイン'}
+                  </div>
+                </a>
               </Link>}
               <div className={classes.personalItem}>
                 <EmailIcon/>

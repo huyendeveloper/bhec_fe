@@ -176,6 +176,9 @@ const theme = createTheme({
   font: {
     default: 'Meiryo',
   },
+  progressBar: {
+    color: '#ba2636',
+  },
 });
 
 export default theme;
