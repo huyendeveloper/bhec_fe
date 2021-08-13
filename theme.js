@@ -62,7 +62,7 @@ const theme = createTheme({
     gray: {
       light: '#f8f8f8',
       main: '#dbdbdb',
-      dark: '8a8a8a',
+      dark: '#8a8a8a',
     },
     green: {
       main: '#54c0c0',
@@ -124,7 +124,6 @@ const theme = createTheme({
   },
   notification: {
     backgroundColor: '#f8f8f8',
-    dateLabelColor: '#8a8a8a',
   },
   blockContact: {
     borderColor: '#d8d8d8',
@@ -152,9 +151,6 @@ const theme = createTheme({
       sepColor: '#f1ebdf',
       textColor: '#000',
     },
-  },
-  mypage: {
-    borderColor: '#8a8a8a',
   },
   styledForm: {
     formControl: {

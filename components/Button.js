@@ -89,12 +89,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     padding: '0.688rem 1.25rem',
     minWidth: '16.688rem',
+    minHeight: '3rem',
 
     [theme.breakpoints.down('md')]: {
       fontSize: '0.813rem',
       lineHeight: '1.219rem',
       padding: '0.438rem 1.25rem',
       minWidth: '21.75rem',
+      minHeight: '2.5rem',
     },
     [theme.breakpoints.down('xs')]: {
       fontSize: '0.813rem',

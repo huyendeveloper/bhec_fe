@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   dateTime: {
     fontSize: '0.688rem',
     lineHeight: '1rem',
-    color: theme.notification.dateLabelColor,
+    color: theme.palette.gray.dark,
   },
 }));
 

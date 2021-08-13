@@ -5,7 +5,7 @@ import Link from 'next/link';
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '4rem',
-    border: '1px solid ' + theme.mypage.borderColor,
+    border: '1px solid ' + theme.palette.gray.dark,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

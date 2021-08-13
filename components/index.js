@@ -1,5 +1,5 @@
 export {default as AlertBox} from './AlertBox';
-export {default as Block} from './Block';
+export {default as ReviewsBlock} from './ReviewsBlock';
 export {default as BoxLink} from './BoxLink';
 export {default as Breadcrumbs} from './Breadcrumbs';
 export {default as Button} from './Button';

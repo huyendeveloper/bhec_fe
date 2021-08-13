@@ -1,7 +1,8 @@
 import {makeStyles} from '@material-ui/core/styles';
 import Head from 'next/head';
+import {Grid} from '@material-ui/core';
 
-import {Header, Footer, Block, ReviewProduct, ReviewShop} from '~/components';
+import {Header, Footer, ReviewsBlock, ReviewProduct, ReviewShop, Button} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -9,28 +10,37 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyItems: 'space-between',
   },
-  btnReview: {
-    width: '14.125rem',
-    height: '3.375rem',
-    background: '#979797',
-    fontSize: '0.75rem',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    border: 'none',
-    color: theme.palette.white.main,
-    margin: '0 auto 2.188rem',
+  container: {
+    padding: '0 1rem',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '0 auto 4rem',
+    '& button': {
+      width: '30%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '2.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      '& button': {
+        width: '100%',
+      },
+    },
   },
 }));
 
 const product = {
   productId: 2,
-  productName: '『大好評』江戸べっ甲についてご紹介しています。',
+  productName: '何個もパクパク「種ごと丸ごときんかん」ミニサイズ計2kg',
   productThumb: '/img/products/product-02.png',
   productUrl: '#',
   productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
   productPrice: 32800,
   productRate: 3.5,
   productOwner: {
-    name: '磯貝 剛',
+    name: '小田原漆器',
     avatar: '/img/sellers/seller1.jpg',
     introduction: 'ベッ甲イソガイ　統括',
     rate: 3.5,
@@ -53,18 +63,42 @@ const ReviewsDetail = () => {
       <Header showMainMenu={false}/>
 
       <div className={classes.content}>
-        <Block title={'商品レビューを書く'}>
+        <ReviewsBlock
+          title={'商品レビューを書く'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
           <ReviewProduct product={product}/>
-        </Block>
+        </ReviewsBlock>
 
-        <Block
+        <ReviewsBlock
           title={'店舗レビューを書く'}
-          paddingBot={'2.188rem'}
         >
           <ReviewShop productOwner={product.productOwner}/>
-        </Block>
+        </ReviewsBlock>
 
-        <button className={classes.btnReview}>{'投稿'}</button>
+        <Grid
+          container={true}
+          spacing={0}
+        >
+          <Grid
+            item={true}
+            xs={12}
+            md={12}
+            lg={12}
+          >
+            <div className={classes.container}>
+              <Button
+                variant={'pill'}
+                customColor={'red'}
+                customSize={'medium'}
+                customWidth={'fullwidth'}
+              >
+                {'投稿'}
+              </Button>
+            </div>
+          </Grid>
+        </Grid>
       </div>
 
       <Footer/>

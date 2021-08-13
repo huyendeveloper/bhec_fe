@@ -39,26 +39,31 @@ const notifications = [
     id: 1,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU',
     content: '通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１通知１',
+    dateTime: '2021.06.11',
   },
   {
     id: 2,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU',
     content: '通知2テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+    dateTime: '2021.06.11',
   },
   {
     id: 3,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU',
     content: '通知3テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+    dateTime: '2021.06.11',
   },
   {
     id: 4,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU',
     content: '通知4テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+    dateTime: '2021.06.11',
   },
   {
     id: 5,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMo03l8HKKj-8SUhLfwJ9qGXw4TvyKWNcLlA&usqp=CAU',
     content: '通知5テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+    dateTime: '2021.06.11',
   },
 ];
 
