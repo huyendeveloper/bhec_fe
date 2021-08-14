@@ -348,11 +348,9 @@ export default function About() {
               >
                 <Image
                   width={
-                    /* eslint-disable-next-line no-nested-ternary */
                     isMobile ? 204 : (isTablet ? 134 : 217)
                   }
                   height={
-                    /* eslint-disable-next-line no-nested-ternary */
                     isMobile ? 196 : (isTablet ? 129 : 207)
                   }
                   alt='簡単３ステップで商品到着 - STEP1'
@@ -383,11 +381,11 @@ export default function About() {
               >
                 <Image
                   width={
-                    /* eslint-disable-next-line no-nested-ternary */
+
                     isMobile ? 204 : (isTablet ? 134 : 217)
                   }
                   height={
-                    /* eslint-disable-next-line no-nested-ternary */
+
                     isMobile ? 196 : (isTablet ? 129 : 207)
                   }
                   alt='簡単３ステップで商品到着 - STEP2'
@@ -418,11 +416,11 @@ export default function About() {
               >
                 <Image
                   width={
-                    /* eslint-disable-next-line no-nested-ternary */
+
                     isMobile ? 204 : (isTablet ? 134 : 217)
                   }
                   height={
-                    /* eslint-disable-next-line no-nested-ternary */
+
                     isMobile ? 196 : (isTablet ? 129 : 207)
                   }
                   alt='簡単３ステップで商品到着 - STEP3'

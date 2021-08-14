@@ -136,11 +136,9 @@ const ImageDropzone = ({index, image, setImages, removeImage}) => {
             <Image
               src={'/img/icons/add.svg'}
               width={
-                /* eslint-disable-next-line no-nested-ternary */
                 isMobile ? 48 : (isTablet ? 64 : 80)
               }
               height={
-                /* eslint-disable-next-line no-nested-ternary */
                 isMobile ? 48 : (isTablet ? 64 : 80)
               }
               alt={'add'}

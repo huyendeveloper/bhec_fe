@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       marginRight: 0,
       padding: '0.5rem 0',
+      height: '64',
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
@@ -104,7 +105,6 @@ const useStyles = makeStyles((theme) => ({
       marginRight: '1.5rem',
       padding: '0.5rem',
     },
-
     '.MuiLink-underlineHover:hover': {
       textDecoration: 'none',
     },
@@ -131,6 +131,10 @@ const useStyles = makeStyles((theme) => ({
       width: '33%',
       fontSize: '0.7rem',
     },
+
+    '&:last-child': {
+      border: 'none',
+    },
   },
 
   lastItem: {
@@ -147,13 +151,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const [session, loading] = useSession();
-  const [isLoggined, setIsLoggined] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(false);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  // eslint-disable-next-line no-nested-ternary
   const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
-  // eslint-disable-next-line no-nested-ternary
   const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
 
   const displaySameRow = isMobile ? false : (!isTablet);
@@ -165,7 +167,7 @@ const Header = (props) => {
 
   useEffect(() => {
     if (session?.accessToken) {
-      setIsLoggined(true);
+      setAuthenticated(true);
     }
   }, [loading, session]);
 
@@ -202,11 +204,11 @@ const Header = (props) => {
               </Link>
             </div>
             {displaySameRow && isDev && <div className={classes.personalAction}>
-              {isLoggined && <div className={classes.personalItem}>
+              {isAuthenticated && <div className={classes.personalItem}>
                 <PersonPinIcon/>
                 {'マイページ'}
               </div>}
-              {!isLoggined &&
+              {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className='next-link'>
                   <div className={classes.personalItem} >
@@ -236,11 +238,11 @@ const Header = (props) => {
           </Toolbar>
           {!displaySameRow && isDev && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
-              {isLoggined && <div className={classes.personalItem}>
+              {isAuthenticated && <div className={classes.personalItem}>
                 <PersonPinIcon/>
                 {'マイページ'}
               </div>}
-              {!isLoggined &&
+              {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className='next-link'>
                   <div className={classes.personalItem} >
@@ -261,7 +263,12 @@ const Header = (props) => {
           </Toolbar>}
         </AppBar>
       </HideOnScroll>
-      <Toolbar className={classes.toolBarPlaceholder}/>
+      <Toolbar
+        className={classes.toolBarPlaceholder}
+        style={{
+          height: !displaySameRow && isDev ? '112px' : '80px',
+        }}
+      />
     </>
   );
 };

@@ -190,11 +190,9 @@ const OrderItem = ({data}) => {
             <Image
               src={image}
               width={
-                /* eslint-disable-next-line no-nested-ternary */
                 (isTablet ? 146 : 195)
               }
               height={
-                /* eslint-disable-next-line no-nested-ternary */
                 (isTablet ? 96 : 128)
               }
               layout={'intrinsic'}

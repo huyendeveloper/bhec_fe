@@ -170,11 +170,9 @@ const ReviewProduct = ({product}) => {
           <Image
             src={product.productThumb}
             width={
-              /* eslint-disable-next-line no-nested-ternary */
               isMobile ? 121 : (isTablet ? 145 : 170)
             }
             height={
-              /* eslint-disable-next-line no-nested-ternary */
               isMobile ? 80 : (isTablet ? 96 : 112)
             }
             layout={'responsive'}
@@ -253,7 +251,6 @@ const ReviewProduct = ({product}) => {
         >
           <p
             className={classes.guide}
-            /* eslint-disable-next-line no-nested-ternary */
             style={{color: '#333333', margin: (isMobile ? '0 0 1.5rem' : (isTablet ? '0 0 1.25rem' : '0 0 1.688rem'))}}
           >
             {'5MB未満の画像(jpg, png)を3枚までアップロードすることができます。'}

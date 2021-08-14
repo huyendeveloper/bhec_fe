@@ -134,7 +134,7 @@ const ReviewShop = ({productOwner}) => {
             <Grid
               item={true}
               md={2}
-              /* eslint-disable-next-line no-nested-ternary */
+
               style={{marginBottom: isMobile ? '1.5rem' : (isTablet ? '1.625rem' : '2.125rem')}}
             >
               <Avatar

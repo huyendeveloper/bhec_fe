@@ -112,7 +112,6 @@ const Footer = (props) => {
                 <Image
                   src={'/logo.png'}
                   width={
-                    // eslint-disable-next-line no-nested-ternary
                     isMobile ? 163 : (isTablet ? 170 : 218)
                   }
                   height={isTablet ? 48 : 64}
