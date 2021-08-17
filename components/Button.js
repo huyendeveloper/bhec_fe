@@ -121,6 +121,13 @@ const useStyles = makeStyles((theme) => ({
       minWidth: '10.188rem',
     },
   },
+  tiny: {
+    fontSize: '0.875rem',
+    lineHeight: '1.313rem',
+    fontWeight: 'bold',
+    padding: '0.532rem 0.5rem',
+    minWidth: '5rem',
+  },
   fullwidth: {
     width: '100%',
   },
@@ -166,7 +173,7 @@ const Button = (props) => {
 Button.propTypes = {
   variant: PropTypes.oneOf(['contained', 'pill']),
   customColor: PropTypes.oneOf(['red', 'yellow', 'green', 'white', 'whiteRed', 'default']),
-  customSize: PropTypes.oneOf(['extraLarge', 'medium', 'small']),
+  customSize: PropTypes.oneOf(['extraLarge', 'medium', 'small', 'tiny']),
   customBorder: PropTypes.oneOf(['bdRed', 'bdGray', 'bdBlack']),
   customWidth: PropTypes.oneOf(['fullwidth']),
   children: PropTypes.any.isRequired,

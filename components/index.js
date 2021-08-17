@@ -6,6 +6,7 @@ export {default as Button} from './Button';
 export {default as ButtonLink} from './ButtonLink';
 export {default as CategoryBlock} from './CategoryBlock';
 export {default as ContentBlock} from './ContentBlock';
+export {default as DeliveryForm} from './DeliveryForm';
 export {default as Footer} from './Footer';
 export {default as Header} from './Header';
 export {default as ImageDropzone} from './ImageDropzone';
