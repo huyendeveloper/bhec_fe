@@ -19,7 +19,7 @@ export const ProductListItem = () => (
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
       productPrice: 26600,
-      productOwner: {
+      seller_info: {
         name: '小田原漆器',
         avatar: '/img/sellers/seller-01.png',
         introduction: '木地部門　伝統工芸士',

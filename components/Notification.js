@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0.5rem',
     textDecoration: 'none',
     marginBottom: '1rem',
-    backgroundColor: theme.notification.backgroundColor,
+    backgroundColor: theme.palette.gray.light,
     border: '1px solid ' + theme.palette.white.main,
     minHeight: '6rem',
     '&:hover': {

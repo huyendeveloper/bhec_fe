@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.white.main,
     padding: '1rem 1.5rem',
     overflow: 'auto',
-    border: '0.063rem solid ' + theme.notifications.borderColor,
+    border: '0.063rem solid ' + theme.border.default,
     boxShadow: '0 0.125rem 0.25rem ' + theme.notifications.boxShadow,
     borderRadius: '0.5rem',
     '&::-webkit-scrollbar': {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '&::-webkit-scrollbar-thumb': {
       borderRadius: '0.313rem',
-      backgroundColor: theme.notifications.scrollColor,
+      backgroundColor: theme.palette.gray.main,
     },
   },
   noNotifications: {
@@ -86,7 +86,7 @@ const Notifications = ({notifications}) => {
       onMouseLeave={showNotification}
     >
       <Badge
-        overlap='circle'
+        overlap='circular'
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',

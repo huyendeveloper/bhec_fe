@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
-  productName: {
+  name: {
     '& h2': {
       fontSize: '2rem',
       lineHeight: '3rem',
@@ -234,59 +234,87 @@ export default function ProductDetail() {
   const recommendProducts = [
     {
       productId: 1,
-      productName: '『大好評』小田原漆器についてご紹介しています。',
+      name: '『大好評』小田原漆器についてご紹介しています。',
       productThumb: '/img/products/product-01.png',
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 26600,
-      favoriteProduct: false,
-      productOwner: {
+      price: 26600,
+      is_favorite_product: true,
+      seller_info: {
         name: '小田原漆器',
+        catch_phrase: '木地部門　伝統工芸士',
         avatar: '/img/sellers/seller-01.png',
         introduction: '木地部門　伝統工芸士',
       },
+      tags: [
+        {
+          id: 2,
+          name: '農薬節約栽培',
+        },
+      ],
     },
     {
       productId: 2,
-      productName: '『大好評』江戸べっ甲についてご紹介しています。',
+      name: '『大好評』江戸べっ甲についてご紹介しています。',
       productThumb: '/img/products/product-02.png',
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      productPrice: 32800,
-      favoriteProduct: false,
-      productOwner: {
+      price: 32800,
+      is_favorite_product: false,
+      seller_info: {
         name: '磯貝 剛',
+        catch_phrase: '木地部門　伝統工芸士',
         avatar: '/img/sellers/seller-02.png',
         introduction: 'ベッ甲イソガイ　統括',
       },
+      tags: [
+        {
+          id: 2,
+          name: '農薬節約栽培',
+        },
+      ],
     },
     {
       productId: 3,
-      productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
+      name: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
       productThumb: '/img/products/product-03.png',
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 149300,
-      favoriteProduct: false,
-      productOwner: {
+      price: 149300,
+      is_favorite_product: false,
+      seller_info: {
         name: '林　文雄',
+        catch_phrase: '木地部門　伝統工芸士',
         avatar: '/img/sellers/seller-03.png',
         introduction: 'アートランド',
       },
+      tags: [
+        {
+          id: 2,
+          name: '農薬節約栽培',
+        },
+      ],
     },
     {
       productId: 4,
-      productName: '『大好評』江戸節句人形についてご紹介しています。',
+      name: '『大好評』江戸節句人形についてご紹介しています。',
       productThumb: '/img/products/product-04.png',
       productUrl: '#',
       productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-      productPrice: 184750,
-      favoriteProduct: false,
-      productOwner: {
+      price: 184750,
+      is_favorite_product: false,
+      seller_info: {
         name: '松崎光正',
+        catch_phrase: '木地部門　伝統工芸士',
         avatar: '/img/sellers/seller-04.png',
         introduction: '松崎人形',
       },
+      tags: [
+        {
+          id: 2,
+          name: '農薬節約栽培',
+        },
+      ],
     },
   ];
   const linkProps = [
@@ -437,7 +465,7 @@ export default function ProductDetail() {
               md={12}
               lg={12}
             >
-              <div className={classes.productName}>
+              <div className={classes.name}>
                 <Typography variant={'h2'}>{product.name}</Typography>
               </div>
             </Grid>

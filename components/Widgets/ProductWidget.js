@@ -15,7 +15,7 @@ import clsx from 'clsx';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
-    marginBottom: '1rem',
+    marginBottom: '5.063rem',
     height: '100%',
   },
   productName: {
@@ -57,6 +57,10 @@ const useStyles = makeStyles((theme) => ({
   },
   productSellerAction: {
     borderTop: `1px solid ${theme.productWidget.seller.sepColor}`,
+    position: 'absolute',
+    bottom: '0',
+    right: '0',
+    left: '0',
   },
   productSeller: {
     display: 'flex',
@@ -89,13 +93,14 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line no-unused-vars
 const ProductWidget = ({variant, data, heart, border}) => {
   const classes = useStyles();
+
   if (!data) {
     return null;
   }
 
-  const tags = data.productTags;
-  const owner = data.productOwner;
-
+  const product = data;
+  const tags = data.tags || [];
+  const owner = data.seller_info || {};
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   return (
@@ -103,10 +108,10 @@ const ProductWidget = ({variant, data, heart, border}) => {
       <CardActionArea>
         <CardMedia
           component='img'
-          alt={data.productName}
+          alt={product.name}
           height='160'
-          image={data.productThumb}
-          title={data.productName}
+          image={'/img/products/product-01.png'}
+          title={product.name}
         />
         <CardContent>
           <Typography
@@ -114,7 +119,7 @@ const ProductWidget = ({variant, data, heart, border}) => {
             component='h3'
             className={classes.productName}
           >
-            {data.productName}
+            {product.name}
           </Typography>
 
           <div className={classes.productTags}>
@@ -132,9 +137,9 @@ const ProductWidget = ({variant, data, heart, border}) => {
           </div>
 
           <div className={classes.productPrice}>
-            {currency.format(data.productPrice)}
+            {currency.format(product.price)}
             {heart &&
-            (data.favoriteProduct ? (
+            (data.is_favorite_product ? (
               <Image
                 src={'/img/icons/fill-heart.svg'}
                 width={27}
@@ -159,7 +164,7 @@ const ProductWidget = ({variant, data, heart, border}) => {
         >
           <Avatar
             alt={owner.name}
-            src={owner.avatar}
+            src={'/img/sellers/seller-01.png'}
             className={classes.productSellerAvatar}
           />
 
@@ -171,7 +176,7 @@ const ProductWidget = ({variant, data, heart, border}) => {
             <Typography
               component={'p'}
               className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
-            >{owner.introduction}</Typography>
+            >{owner.catch_phrase}</Typography>
           </div>
         </Link>
       </CardActions>

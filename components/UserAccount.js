@@ -104,7 +104,7 @@ const UserAccount = () => {
   return (
     <div className={classes.root}>
       <Badge
-        overlap='circle'
+        overlap='circular'
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

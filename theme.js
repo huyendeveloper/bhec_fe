@@ -118,12 +118,7 @@ const theme = createTheme({
     default: '#d8d8d8',
   },
   notifications: {
-    borderColor: '#dbdbdb',
     boxShadow: 'rgba(0, 0, 0, 0.1)',
-    scrollColor: '#dbdbdb',
-  },
-  notification: {
-    backgroundColor: '#f8f8f8',
   },
   blockContact: {
     borderColor: '#d8d8d8',

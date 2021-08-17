@@ -97,45 +97,66 @@ const boxLinks = [
 const recommendProducts = [
   {
     productId: 1,
-    productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
+    name: '『大好評』小田原漆器についてご紹介しています。',
     productThumb: '/img/products/product-01.png',
     productUrl: '#',
     productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 26600,
-    favoriteProduct: true,
-    productOwner: {
+    price: 26600,
+    is_favorite_product: true,
+    seller_info: {
       name: '小田原漆器',
+      catch_phrase: '木地部門　伝統工芸士',
       avatar: '/img/sellers/seller-01.png',
       introduction: '木地部門　伝統工芸士',
     },
+    tags: [
+      {
+        id: 2,
+        name: '農薬節約栽培',
+      },
+    ],
   },
   {
     productId: 2,
-    productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
+    name: '『大好評』江戸べっ甲についてご紹介しています。',
     productThumb: '/img/products/product-02.png',
     productUrl: '#',
     productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-    productPrice: 32800,
-    favoriteProduct: true,
-    productOwner: {
+    price: 32800,
+    is_favorite_product: false,
+    seller_info: {
       name: '磯貝 剛',
+      catch_phrase: '木地部門　伝統工芸士',
       avatar: '/img/sellers/seller-02.png',
       introduction: 'ベッ甲イソガイ　統括',
     },
+    tags: [
+      {
+        id: 2,
+        name: '農薬節約栽培',
+      },
+    ],
   },
   {
     productId: 3,
-    productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
+    name: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
     productThumb: '/img/products/product-03.png',
     productUrl: '#',
     productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 149300,
-    favoriteProduct: false,
-    productOwner: {
+    price: 149300,
+    is_favorite_product: false,
+    seller_info: {
       name: '林　文雄',
+      catch_phrase: '木地部門　伝統工芸士',
       avatar: '/img/sellers/seller-03.png',
       introduction: 'アートランド',
     },
+    tags: [
+      {
+        id: 2,
+        name: '農薬節約栽培',
+      },
+    ],
   },
 ];
 
