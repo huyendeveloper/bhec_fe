@@ -1,6 +1,5 @@
 import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.black.default,
     textDecoration: 'none',
     background: theme.palette.white.main,
+    cursor: 'pointer',
     borderRadius: '0.25rem',
     '& .MuiGrid-item': {
       paddingTop: '0',
@@ -21,20 +21,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ButtonLink = ({linkLabel}) => {
+const ButtonLink = ({item, actionButton}) => {
   const classes = useStyles();
 
   return (
-    <Link href={'/'}>
-      <a className={classes.root}>
-        {linkLabel}
-      </a>
-    </Link>
+    <a
+      className={classes.root}
+      onClick={() => actionButton(item)}
+    >
+      {item.label}
+    </a>
   );
 };
 
 ButtonLink.propTypes = {
-  linkLabel: PropTypes.string,
+  item: PropTypes.object,
+  actionButton: PropTypes.func,
 };
 
 export default ButtonLink;

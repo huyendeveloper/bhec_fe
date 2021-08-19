@@ -1,11 +1,11 @@
-/* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+
+import Router from 'next/router';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import {AuthService} from '~/services/auth.services';
@@ -84,6 +84,9 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
 
   label: {
@@ -123,28 +126,28 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function RequestPassword() {
+function ChangePassword() {
   const classes = useStyles();
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
   const {
     control,
     handleSubmit,
     formState: {errors},
     getValues,
   } = useForm({criteriaMode: 'all'});
+  const [errMessage, setErrMessage] = useState();
+  const [openMess, setOpenMess] = useState(false);
+  const [typeMess, setTypeMess] = useState('success');
 
   const onSubmit = async (data) => {
-    const res = await AuthService.resetPassword(data);
+    const res = await AuthService.changePassword(data);
     if (res.data.status === 200) {
       Router.push({
-        pathname: '/auth/login',
+        pathname: '/mypage',
       });
     } else {
       setTypeMess('error');
       setOpenMess(true);
-      setMessage(res.data.message);
+      setErrMessage(res.data.message);
     }
   };
 
@@ -160,7 +163,7 @@ function RequestPassword() {
           className='content'
         >
           <ContentBlock
-            title='新しいパスワードを登録'
+            title='パスワードを変更する'
           >
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <Container
@@ -180,14 +183,14 @@ function RequestPassword() {
                       className={classes.grid}
                     >
                       <label
-                        htmlFor='reset_password_token'
+                        htmlFor='current_password'
                         className='formControlLabel'
                       >
-                        {'検証コード '}
+                        {'以前のパスワード '}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
-                        name='reset_password_token'
+                        name='current_password'
                         control={control}
                         defaultValue=''
                         rules={{
@@ -195,21 +198,22 @@ function RequestPassword() {
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
-                            id='reset_password_token'
+                            id='current_password'
                             variant='outlined'
-                            error={Boolean(errors.reset_password_token)}
+                            error={Boolean(errors.current_password)}
                             InputLabelProps={{shrink: false}}
                             name={name}
                             value={value}
+                            type='password'
                             inputRef={ref}
-                            placeholder='検証コードをご記入ください。'
+                            placeholder='以前のパスワードご記入ください。'
                             onChange={onChange}
                           />
                         )}
                       />
                       <ErrorMessage
                         errors={errors}
-                        name='reset_password_token'
+                        name='current_password'
                         render={({messages}) => {
                           return messages ? Object.entries(messages).map(([type, message]) => (
                             <p
@@ -231,7 +235,7 @@ function RequestPassword() {
                         htmlFor='password'
                         className='formControlLabel'
                       >
-                        {'パスワード '}
+                        {'新しいパスワード '}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
@@ -286,7 +290,7 @@ function RequestPassword() {
                         htmlFor='password_confirm'
                         className='formControlLabel'
                       >
-                        {'パスワード '}
+                        {'新しいパスワード（確認） '}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
@@ -309,8 +313,8 @@ function RequestPassword() {
                             error={Boolean(errors.password_confirm)}
                             InputLabelProps={{shrink: false}}
                             name={name}
-                            type='password'
                             value={value}
+                            type='password'
                             inputRef={ref}
                             onChange={onChange}
                           />
@@ -341,7 +345,7 @@ function RequestPassword() {
                         variant='contained'
                         type='submit'
                         className={classes.btnSubmit}
-                      >{'送信する'}</Button>
+                      >{'登録する'}</Button>
                     </Grid>
                   </div>
                 </Grid>
@@ -362,11 +366,11 @@ function RequestPassword() {
           onClose={handleCloseMess}
           severity={typeMess}
         >
-          {messageResponse}
+          {errMessage}
         </MuiAlert>
       </Snackbar>
     </>
   );
 }
 
-export default RequestPassword;
+export default ChangePassword;

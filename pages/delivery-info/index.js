@@ -121,7 +121,7 @@ const data = [
   },
 ];
 
-const DeliveryInfo = () =>  {
+const DeliveryInfo = () => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));

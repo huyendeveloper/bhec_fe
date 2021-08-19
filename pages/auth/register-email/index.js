@@ -1,12 +1,13 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
-import React from 'react';
+import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button} from '@material-ui/core';
+import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import {AuthService} from '~/services/auth.services';
 
@@ -76,6 +77,9 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
 
   label: {
@@ -93,15 +97,15 @@ const useStyles = makeStyles((theme) => ({
   },
 
   note: {
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
     textAlign: 'center',
     margin: '2rem 0',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.8rem',
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: '0.8rem',
+      fontSize: '0.7rem',
     },
   },
 
@@ -117,6 +121,9 @@ const useStyles = makeStyles((theme) => ({
 
 function RegisterEmail() {
   const classes = useStyles();
+  const [messageResponse, setMessage] = useState();
+  const [openMess, setOpenMess] = useState(false);
+  const [typeMess, setTypeMess] = useState('success');
   const {
     control,
     handleSubmit,
@@ -130,14 +137,20 @@ function RegisterEmail() {
         ...data,
       },
     });
-    if (res.status === 201) {
-      alert('サインアップの成功 !');
+    if (res.status === 200) {
       Router.push({
-        pathname: '/auth/login',
+        pathname: '/auth/account-confirm',
+        query: {token: res.data.access_token},
       });
     } else {
-      alert('登録に失敗しました！');
+      setTypeMess('error');
+      setOpenMess(true);
+      setMessage(res.data.message);
     }
+  };
+
+  const handleCloseMess = () => {
+    setOpenMess(false);
   };
 
   return (
@@ -343,6 +356,20 @@ function RegisterEmail() {
         </div>
         <Footer/>
       </div>
+      <Snackbar
+        open={openMess}
+        autoHideDuration={6000}
+        onClose={handleCloseMess}
+        elevation={6}
+        variant='filled'
+      >
+        <MuiAlert
+          onClose={handleCloseMess}
+          severity={typeMess}
+        >
+          {messageResponse}
+        </MuiAlert>
+      </Snackbar>
     </>
   );
 }

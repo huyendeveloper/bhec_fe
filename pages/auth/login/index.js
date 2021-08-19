@@ -1,13 +1,15 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
+import {Box, Container, Grid, FormControl, Button, Typography, Snackbar} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
-import {signIn} from 'next-auth/client';
+import {signIn, signOut} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import firebase from '../../../firebase';
 
@@ -237,11 +239,18 @@ function Login() {
   const [open, setOpen] = React.useState(false);
   const [setPayload] = React.useState(null);
   const [setIdToken] = React.useState(null);
+  const [messageResponse, setMessage] = React.useState();
+  const [openMess, setOpenMess] = React.useState(false);
+  const [typeMess, setTypeMess] = React.useState('success');
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({criteriaMode: 'all'});
+
+  useEffect(() => {
+    signOut({redirect: false});
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -265,14 +274,30 @@ function Login() {
       password: data.password,
     }});
     if (result.status === 200) {
-      await signIn('credentials',
-        {
-          data: result.data,
-          token: result.data.access_token,
-          callbackUrl: `${window.location.origin}`,
-        },
-      );
+      if (result.data.is_confirmed) {
+        await signIn('credentials',
+          {
+            data: result.data,
+            token: result.data.access_token,
+            callbackUrl: `${window.location.origin}`,
+          },
+        );
+      } else {
+        alert('ログインする前にアカウントを確認してください！');
+        Router.push({
+          pathname: '/auth/account-confirm',
+          query: {token: result.data.access_token},
+        });
+      }
+    } else {
+      setTypeMess('error');
+      setOpenMess(true);
+      setMessage(result.data.error);
     }
+  };
+
+  const handleCloseMess = () => {
+    setOpenMess(false);
   };
 
   function googleAuth() {
@@ -582,6 +607,20 @@ function Login() {
         />
         }
       </div>
+      <Snackbar
+        open={openMess}
+        autoHideDuration={6000}
+        onClose={handleCloseMess}
+        elevation={6}
+        variant='filled'
+      >
+        <MuiAlert
+          onClose={handleCloseMess}
+          severity={typeMess}
+        >
+          {messageResponse}
+        </MuiAlert>
+      </Snackbar>
     </DefaultLayout>
   );
 }

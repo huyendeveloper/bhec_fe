@@ -3,14 +3,15 @@ import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
+import MuiAlert from '@material-ui/lab/Alert';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import MuiAlert from '@material-ui/lab/Alert';
+
+import Router, {useRouter} from 'next/router';
 
 import {AuthService} from '~/services/auth.services';
 
-import {Header, Footer, ContentBlock, StyledForm} from '~/components';
+import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
   title: {
     fontFamily: theme.font.default,
-    fontSize: '2.3rem',
+    fontSize: '2rem',
     lineHeight: '2rem',
     textAlign: 'center',
     fontWeight: 'bold',
@@ -44,6 +45,35 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  link: {
+    color: theme.palette.buttonLogin.default,
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8rem',
+    },
+  },
+
+  container: {
+    width: '40%',
+    margin: '0 30%',
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
+      margin: '0 20%',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '94%',
+      margin: '0 3%',
+    },
+  },
+
+  content: {
+    width: '100%',
+  },
+
   btnSubmit: {
     fontFamily: theme.font.default,
     background: theme.palette.buttonLogin.default,
@@ -54,9 +84,6 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
     },
   },
 
@@ -69,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.8rem',
     },
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '0.8rem',
     },
   },
@@ -80,120 +107,45 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     margin: '2rem 0',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+      fontSize: '0.875rem',
     },
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '0.7rem',
     },
   },
 
-  content: {
-    [theme.breakpoints.down('md')]: {
-      width: '60%',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-    },
-  },
-
-  titleStyle: {
-    margin: '0',
-    textAlign: 'center',
-  },
   grid: {
-    padding: '0',
-    margin: '1rem 0',
-    textAlign: 'center',
-  },
-
-  gridNote: {
-    padding: '0',
-    margin: '2rem 0',
-    textAlign: 'center',
-  },
-
-  gridHeader: {
-    display: 'flex',
-    marginBottom: '0.5rem',
-    padding: '0 0 1rem 0',
-    borderBottom: '1px solid rgba(33, 33, 33, 0.08)',
-  },
-
-  step: {
-    background: '#F2F2F2',
-    marginTop: '1rem',
+    marginBottom: '1.5rem',
   },
 
   required: {
     color: theme.palette.buttonLogin.default,
   },
 
-  stepLabel: {
-    color: 'rgba(0, 0, 0, 0.38)',
-  },
-
-  boxStep: {
-    background: theme.boxStep.background,
-    textAlign: 'center',
-    paddingTop: '1rem',
-  },
-
-  loginMethod: {
-    background: theme.palette.background.default,
-    border: theme.blockContact.borderColor,
-    boxSizing: 'border-box',
-    padding: '1rem',
-    marginBottom: '1rem',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-  },
-
-  divLoginMethod: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  labelLogin: {
-    marginLeft: '1rem',
-  },
-
-  divRules: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-
-  labelRules: {
-    width: '40%',
-    textAlign: 'center',
-  },
-
-  inputLogin: {
-    width: '40%',
-  },
-
 }));
 
-function ForgotPassword() {
+function AccountConfirm() {
+  const classes = useStyles();
   const [messageResponse, setMessage] = useState();
   const [openMess, setOpenMess] = useState(false);
   const [typeMess, setTypeMess] = useState('success');
-  const classes = useStyles();
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({criteriaMode: 'all'});
+  const router = useRouter();
 
   const onSubmit = async (data) => {
-    const res = await AuthService.forgotPassword(data);
-    if (res.data.status === 200) {
+    const configs = {
+      headers: {
+        Authorization: `Bearer ${router.query.token}`,
+      },
+    };
+    const res = await AuthService.confirmAccount(data, configs);
+    if (res.status === 200) {
       Router.push({
-        pathname: '/auth/request-password',
+        pathname: '/auth/login',
       });
     } else {
       setTypeMess('error');
@@ -214,7 +166,7 @@ function ForgotPassword() {
           className='content'
         >
           <ContentBlock
-            title='パスワードをお忘れの方'
+            title='アカウントの確認'
           >
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <Container
@@ -234,40 +186,36 @@ function ForgotPassword() {
                       className={classes.grid}
                     >
                       <label
-                        htmlFor='email'
+                        htmlFor='confirmation_token'
                         className='formControlLabel'
                       >
-                        {'メールアドレス '}
+                        {'検証コード '}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
-                        name='email'
+                        name='confirmation_token'
                         control={control}
                         defaultValue=''
                         rules={{
                           required: 'この入力は必須です。',
-                          pattern: {
-                            value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            message: 'メールアドレスが無効です。',
-                          },
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
-                            id='email'
+                            id='confirmation_token'
                             variant='outlined'
-                            error={Boolean(errors.email)}
+                            error={Boolean(errors.confirmation_token)}
                             InputLabelProps={{shrink: false}}
                             name={name}
                             value={value}
                             inputRef={ref}
-                            placeholder='oshinagaki@gmail.com'
+                            placeholder='検証コードご記入ください。'
                             onChange={onChange}
                           />
                         )}
                       />
                       <ErrorMessage
                         errors={errors}
-                        name='email'
+                        name='confirmation_token'
                         render={({messages}) => {
                           return messages ? Object.entries(messages).map(([type, message]) => (
                             <p
@@ -285,7 +233,7 @@ function ForgotPassword() {
                       xs={12}
                       className={classes.grid}
                     >
-                      <span className={classes.note}>{'ご登録されたメールアドレスにパスワード再設定のご案内が送信されます。 '}</span>
+                      <span className={classes.note}>{'検証コードを受け取りませんでしたか？ '}<span className={classes.link}>{'検証コードを再送'}</span></span>
                     </Grid>
                     <Grid
                       item={true}
@@ -325,4 +273,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default AccountConfirm;

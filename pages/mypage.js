@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
+import {signOut} from 'next-auth/client';
+import Router from 'next/router';
 
 import {Header, Footer, UserAccount, Notifications, ContentBlock, BoxLink, ButtonLink} from '~/components';
 import {ProductWidget} from '~/components/Widgets';
@@ -68,15 +70,16 @@ const notifications = [
 ];
 
 const buttonLinks = [
-  '基本情報',
-  'お届け先情報',
-  '決済方法',
-  '割引クーポン',
-  'お問い合わせ一覧',
-  'フォロー中の出品者一覧',
-  '返品/交換申請',
-  '返品/交換一覧',
-  'ログアウト',
+  {id: 1, label: '基本情報', url: '/'},
+  {id: 2, label: 'お届け先情報', url: '/'},
+  {id: 3, label: '決済方法', url: '/'},
+  {id: 4, label: '割引クーポン', url: '/'},
+  {id: 5, label: 'お問い合わせ一覧', url: '/'},
+  {id: 6, label: 'フォロー中の出品者一覧', url: '/'},
+  {id: 7, label: '返品/交換申請', url: '/'},
+  {id: 8, label: '返品/交換一覧', url: '/'},
+  {id: 9, label: 'パスワードを変更', url: '/'},
+  {id: 10, label: 'ログアウト', url: '/'},
 ];
 
 const boxLinks = [
@@ -163,6 +166,16 @@ const recommendProducts = [
 export default function MyPage() {
   const classes = useStyles();
 
+  const actionButton = (item) => {
+    if (item.id === 10) {
+      signOut();
+    } else {
+      Router.push({
+        pathname: item.url,
+      });
+    }
+  };
+
   return (
     <div className={'page'}>
       <Head>
@@ -213,11 +226,14 @@ export default function MyPage() {
           >
             {buttonLinks.map((item) => (
               <Grid
-                key={item}
+                key={item.id}
                 item={true}
                 md={4}
               >
-                <ButtonLink linkLabel={item}/>
+                <ButtonLink
+                  item={item}
+                  actionButton={actionButton}
+                />
               </Grid>
             ))}
           </Grid>
