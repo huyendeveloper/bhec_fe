@@ -164,7 +164,7 @@ const Header = (props) => {
   const {showMainMenu} = props;
 
   let isDev = process.env.NODE_ENV === 'development';
-  const stagingHost = process.env.STG_HOST;
+  const stagingHost = process.env.STG_HOST || '';
   if (typeof window !== 'undefined') {
     if (stagingHost.includes(window.location.host)) {
       isDev = true;
