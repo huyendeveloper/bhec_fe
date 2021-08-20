@@ -163,7 +163,13 @@ const Header = (props) => {
   const classes = useStyles();
   const {showMainMenu} = props;
 
-  const isDev = process.env.NODE_ENV === 'development';
+  let isDev = process.env.NODE_ENV === 'development';
+  const stagingHost = 'https://pec-rosy.vercel.app/';
+  if (typeof window !== 'undefined') {
+    if (stagingHost.includes(window.location.host)) {
+      isDev = true;
+    }
+  }
 
   useEffect(() => {
     if (session?.accessToken) {
