@@ -1,10 +1,12 @@
-import {Container, Grid, Typography, Icon} from '@material-ui/core';
-import React, {useState} from 'react';
+import {Container, Grid, Typography, Icon, Snackbar} from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import {Header, Footer, ContentBlock} from '~/components';
+import {PaymentService} from '~/services';
 import {PaymentWidget} from '~/components/Widgets';
-import {UpdatePaymentPopup, PaymentPopup} from '~/components/Payment';
+import {DeletePaymentPopup, PaymentPopup} from '~/components/Payment';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -117,14 +119,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const paymentData = [];
-
 function PaymentMethod() {
   const classes = useStyles();
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [openUpdatePopup, setOpenUpdatePopup] = useState(false);
+  const [listPayment, setListPayment] = useState([]);
   const [dataUpdate, setDataUpdate] = useState(null);
-  const openPopupDelete = () => {
+  const [idRemove, setIdRemove] = useState(null);
+  const [message, setMessage] = useState();
+  const [openMess, setOpenMess] = useState(false);
+  const [typeMess, setTypeMess] = useState('success');
+
+  useEffect(() => {
+    getListCard();
+  }, []);
+
+  const getListCard = async () => {
+    const res = await PaymentService.getCards();
+    if (res.status === 200) {
+      setListPayment(res.data.cards);
+    } else {
+      setListPayment([]);
+    }
+  };
+
+  const openPopupDelete = (id) => {
+    setIdRemove(id);
     setOpenDeletePopup(true);
   };
 
@@ -145,8 +165,28 @@ function PaymentMethod() {
     setOpenUpdatePopup(false);
   };
 
-  const addPayment = (data) => {
-    paymentData.push(data);
+  const createPaymentSuccess = () => {
+    setTypeMess('success');
+    setOpenMess(true);
+    setMessage('カードが正常に追加されました!');
+    getListCard();
+  };
+
+  const actionFinish = (status) => {
+    if (status === 'success') {
+      setTypeMess('success');
+      setOpenMess(true);
+      setMessage('カードが正常に削除されました!');
+      getListCard();
+    } else {
+      setTypeMess('error');
+      setOpenMess(true);
+      setMessage('続行する前に、サインインまたはサインアップする必要があります。!');
+    }
+  };
+
+  const handleCloseMess = () => {
+    setOpenMess(false);
   };
 
   return (
@@ -185,8 +225,7 @@ function PaymentMethod() {
                   xs={12}
                 >
                   <PaymentWidget
-                    data={paymentData}
-                    addPayment={addPayment}
+                    data={listPayment}
                     openPopupDelete={openPopupDelete}
                     openPopupUpdate={openPopupUpdate}
                   />
@@ -220,18 +259,34 @@ function PaymentMethod() {
           open={openUpdatePopup}
           handleClose={handleCloseUpdatePopup}
           style={{width: '80%'}}
-          addPayment={addPayment}
+          createPaymentSuccess={createPaymentSuccess}
           dataUpdate={dataUpdate}
         />
         }
         {openDeletePopup &&
-          <UpdatePaymentPopup
+          <DeletePaymentPopup
             open={openDeletePopup}
             handleClose={handleCloseDeletePopup}
             style={{width: '80%'}}
+            idRemove={idRemove}
+            actionFinish={actionFinish}
           />
         }
       </div>
+      <Snackbar
+        open={openMess}
+        autoHideDuration={3000}
+        onClose={handleCloseMess}
+        elevation={6}
+        variant='filled'
+      >
+        <MuiAlert
+          onClose={handleCloseMess}
+          severity={typeMess}
+        >
+          {message}
+        </MuiAlert>
+      </Snackbar>
     </>
   );
 }

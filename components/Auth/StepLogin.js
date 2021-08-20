@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     marginBottom: '1rem',
     position: 'relative',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1rem',
+    },
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.8rem',
     },
@@ -102,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('md')]: {
       lineHeight: '1rem',
-      fontSize: '0.75rem',
+      fontSize: '0.8rem',
       width: '90%',
       margin: '0 10%',
     },

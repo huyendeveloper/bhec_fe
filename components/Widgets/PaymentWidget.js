@@ -7,7 +7,6 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import {Box, Button} from '@material-ui/core';
 import Image from 'next/image';
 
@@ -181,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
+const PaymentWidget = ({data, openPopupDelete}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState('panel_1');
 
@@ -196,12 +195,12 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
           <Accordion
             key={index}
             square={true}
-            expanded={expanded === `panel_${payment.token}`}
-            onChange={handleChange(`panel_${payment.token}`)}
+            expanded={expanded === `panel_${payment.id}`}
+            onChange={handleChange(`panel_${payment.id}`)}
           >
             <AccordionSummary
-              aria-controls={`panel${payment.token}d-content`}
-              id={`panel${payment.token}d-header`}
+              aria-controls={`panel${payment.id}d-content`}
+              id={`panel${payment.id}d-header`}
               expandIcon={<ExpandMoreIcon/>}
             >
               <Image
@@ -211,7 +210,7 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
                 alt={'heart'}
               />
               <Typography className={classes.title}>
-                {'Visa 末尾 0000'}
+                {payment.req_number}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -226,7 +225,7 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
                         {'カードの名義'}
                       </Typography>
                       <Typography className={classes.description}>
-                        {payment.card_name}
+                        {payment.holder_name}
                       </Typography>
                     </div>
                     <div className={classes.row}>
@@ -234,7 +233,7 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
                         {'カード番号'}
                       </Typography>
                       <Typography className={classes.car}>
-                        {payment.req_card_number}
+                        {payment.req_number}
                       </Typography>
                     </div>
                     <div className={classes.row}>
@@ -242,7 +241,7 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
                         {'有効期限'}
                       </Typography>
                       <Typography className={classes.description}>
-                        {payment.card_expire}
+                        {payment.expiration_date}
                       </Typography>
                     </div>
                   </div>
@@ -250,18 +249,9 @@ const PaymentWidget = ({data, openPopupDelete, openPopupUpdate}) => {
                     <Button
                       variant='outlined'
                       className={classes.button}
-                      startIcon={<EditIcon/>}
-                      style={{marginRight: '1rem'}}
-                      onClick={() => openPopupUpdate(payment)}
-                    >
-                      {'編集'}
-                    </Button>
-                    <Button
-                      variant='outlined'
-                      className={classes.button}
                       startIcon={<DeleteIcon/>}
                       style={{color: '#ba2636', borderColor: '#ba2636'}}
-                      onClick={openPopupDelete}
+                      onClick={() => openPopupDelete(payment.id)}
                     >
                       {'削除'}
                     </Button>

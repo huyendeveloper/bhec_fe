@@ -6,6 +6,7 @@ const customAxios = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
   },
 });
 customAxios.interceptors.request.use(
@@ -16,6 +17,8 @@ customAxios.interceptors.request.use(
         Authorization: `Bearer ${session.accessToken}`,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE',
       };
     }
     return config;

@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import {Close} from '@material-ui/icons';
 import Image from 'next/image';
 
+import {PaymentService} from '~/services';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   submitButton: {
     background: theme.palette.white.main,
     borderRadius: '3rem',
-    width: '40%',
+    width: '48%',
     margin: '2rem 0',
     color: theme.palette.black.main,
     border: `1px solid ${theme.palette.solidBlack.default}`,
@@ -46,8 +48,11 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.white.main,
       color: theme.palette.black.main,
     },
+    [theme.breakpoints.down('md')]: {
+      width: '43%',
+    },
     [theme.breakpoints.down('sm')]: {
-      width: '60%',
+      width: '66%',
     },
   },
 
@@ -61,8 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   form: {
-    width: '90%',
-    margin: '0 5%',
+    width: '100%',
   },
 
   note: {
@@ -156,10 +160,19 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const UpdatePaymentPopup = ({open, handleClose}) => {
+const DeletePaymentPopup = ({open, handleClose, idRemove, actionFinish}) => {
   const classes = useStyles();
-  const onSubmit = () => {
-    return false;
+
+  const onSubmit = async () => {
+    if (idRemove) {
+      const res = await PaymentService.deleteCard(idRemove);
+      if (res.status === 200) {
+        actionFinish('success');
+        handleClose();
+      } else {
+        actionFinish('fail');
+      }
+    }
   };
 
   return (
@@ -228,9 +241,11 @@ const UpdatePaymentPopup = ({open, handleClose}) => {
   );
 };
 
-UpdatePaymentPopup.propTypes = {
+DeletePaymentPopup.propTypes = {
+  idRemove: PropTypes.number,
   open: PropTypes.bool,
   handleClose: PropTypes.any,
+  actionFinish: PropTypes.func,
 };
 
-export default UpdatePaymentPopup;
+export default DeletePaymentPopup;

@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
+    },
     [theme.breakpoints.down('xs')]: {
       width: '100%',
     },

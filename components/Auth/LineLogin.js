@@ -10,7 +10,7 @@ import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import {signIn} from 'next-auth/client';
 
-import {AuthService} from '~/services/auth.services';
+import {AuthService} from '~/services';
 const maxAge = 120;
 
 const useStyles = makeStyles((theme) => ({
@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
   labelLogin: {
     fontFamily: 'Roboto',
     marginLeft: '2rem',
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
     textAlign: 'center',
     fontWeight: 'normal',
     position: 'relative',

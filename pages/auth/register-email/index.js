@@ -9,7 +9,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import {AuthService} from '~/services/auth.services';
+import {AuthService} from '~/services';
 
 import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
@@ -76,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
+    },
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
     },
     [theme.breakpoints.down('xs')]: {
       width: '100%',
@@ -244,6 +247,12 @@ function RegisterEmail() {
                         defaultValue=''
                         rules={{
                           required: 'この入力は必須です。',
+                          validate: {
+                            checkLengthPasswrod: () => {
+                              const {password} = getValues();
+                              return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
+                            },
+                          },
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField

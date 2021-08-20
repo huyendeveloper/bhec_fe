@@ -1,6 +1,6 @@
 import axios from '../modules/axios/customAxios';
 
-export const AuthService = {
+const AuthService = {
   loginByEmail,
   loginByLine,
   loginByGmail,
@@ -82,3 +82,5 @@ async function forgotPassword(body) {
   });
   return result;
 }
+
+export default AuthService;

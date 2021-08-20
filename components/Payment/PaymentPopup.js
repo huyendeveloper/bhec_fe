@@ -5,7 +5,6 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
-import Image from 'next/image';
 import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
@@ -15,6 +14,9 @@ import {useForm, Controller} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';
 import MuiAlert from '@material-ui/lab/Alert';
+import Image from 'next/image';
+
+import {PaymentService} from '~/services';
 
 import {checkCreditCardType} from '~/shared/module';
 
@@ -56,15 +58,18 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgb(0 0 0 / 15%)',
     borderRadius: '3rem',
-    width: '40%',
+    width: '48%',
     margin: '2rem 0',
     color: theme.palette.white.main,
     '&:hover': {
       background: theme.palette.red.main,
       color: theme.palette.white.main,
     },
+    [theme.breakpoints.down('md')]: {
+      width: '43%',
+    },
     [theme.breakpoints.down('sm')]: {
-      width: '60%',
+      width: '66%',
     },
   },
 
@@ -78,8 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   form: {
-    width: '90%',
-    margin: '0 5%',
+    width: '100%',
   },
 
   divPayment: {
@@ -178,37 +182,41 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const PaymentPopup = ({open, handleClose, addPayment, dataUpdate}) => {
-  const classes = useStyles();
-  const {control, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
-  const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
+const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => {
   const [errMessage, setErrMessage] = useState();
   const [openMess, setOpenMess] = useState(false);
   const [typeMess, setTypeMess] = useState('success');
+  const classes = useStyles();
+  const {control, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
+  const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const onSubmit = async (data) => {
     const body = {
       card_number: data.card_number.replace(/\s/g, ''),
-      security_code: data.security_code,
       token_api_key: process.env.VERITRANS_TOKEN_API,
       lang: 'en',
+      security_code: data.security_code,
       card_expire: data.card_expire.replace(/\s/g, ''),
     };
     const res = await registerPayment(body);
     if (res && res.status === 200) {
       if (!dataUpdate.token) {
-        addPayment({
-          ...res.data,
-          card_name: data.card_name,
-          card_number: data.card_number,
-          card_expire: data.card_expire,
-          security_code: data.security_code,
-          card_type: checkCreditCardType(data.card_number),
-        });
+        const bodyCreate = {
+          holder_name: data.card_name,
+          req_number: res.data.req_card_number,
+          token: res.data.token,
+          expiration_date: data.card_expire.replace(/\s/g, ''),
+          card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
+        };
+        const result = await PaymentService.createCard(bodyCreate);
+        if (result.status === 201) {
+          createPaymentSuccess();
+          handleClose();
+        } else {
+          setTypeMess('error');
+          setOpenMess(true);
+          setErrMessage('続行する前に、サインインまたはサインアップする必要があります。!');
+        }
       }
-      setTypeMess('success');
-      setOpenMess(true);
-      setErrMessage(res.data.message);
-      handleClose();
     } else {
       setTypeMess('error');
       setOpenMess(true);
@@ -480,7 +488,7 @@ const PaymentPopup = ({open, handleClose, addPayment, dataUpdate}) => {
       </Dialog>
       <Snackbar
         open={openMess}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseMess}
         elevation={6}
         variant='filled'
@@ -499,7 +507,7 @@ const PaymentPopup = ({open, handleClose, addPayment, dataUpdate}) => {
 PaymentPopup.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.func,
-  addPayment: PropTypes.func,
+  createPaymentSuccess: PropTypes.func,
   dataUpdate: PropTypes.object,
 };
 export default PaymentPopup;

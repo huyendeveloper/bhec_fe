@@ -71,8 +71,8 @@ const useStyles = makeStyles((theme) => ({
 
   title: {
     fontFamily: theme.font.default,
-    fontSize: '2.3rem',
-    lineHeight: '3.4rem',
+    fontSize: '2rem',
+    lineHeight: '3rem',
     textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: '1rem',
@@ -88,10 +88,14 @@ const useStyles = makeStyles((theme) => ({
 
   note: {
     fontFamily: theme.font.default,
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
     textAlign: 'center',
     fontWeight: 'normal',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.8rem',
+      lineHeight: '1.2rem',
+    },
   },
 
   titleMethod: {
@@ -111,10 +115,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '1rem',
     position: 'relative',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+      fontSize: '0.875rem',
     },
     [theme.breakpoints.down('md')]: {
-      fontSize: '0.8rem',
+      fontSize: '0.875rem',
     },
   },
 
@@ -139,12 +143,16 @@ const useStyles = makeStyles((theme) => ({
   },
 
   grid: {
-    width: '32%',
-    margin: '0 34%',
+    width: '20%',
+    margin: '0 40%',
     textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      margin: '0 32%',
+      width: '36%',
+    },
     [theme.breakpoints.down('sm')]: {
-      margin: '0 10%',
-      width: '80%',
+      margin: '0 14%',
+      width: '72%',
     },
   },
 
@@ -176,6 +184,20 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       width: '90%',
       margin: '0 5%',
+    },
+  },
+
+  gridLogin: {
+    width: '28%',
+    margin: '0 36%',
+    textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      margin: '0 19%',
+      width: '62%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      margin: '0 5%',
+      width: '90%',
     },
   },
 
@@ -213,8 +235,8 @@ const useStyles = makeStyles((theme) => ({
   labelLogin: {
     fontFamily: theme.font.default,
     marginLeft: '2rem',
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
     textAlign: 'center',
     fontWeight: 'normal',
     position: 'relative',
