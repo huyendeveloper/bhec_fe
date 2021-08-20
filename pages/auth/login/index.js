@@ -1,6 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
-import React, {useEffect} from 'react';
+import {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
 import {Box, Container, Grid, FormControl, Button, Typography, Snackbar} from '@material-ui/core';
 import Image from 'next/image';
@@ -14,9 +15,10 @@ import MuiAlert from '@material-ui/lab/Alert';
 import firebase from '../../../firebase';
 
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
-import {StyledForm} from '~/components';
+import {Alert, StyledForm} from '~/components';
 
-import {AuthService} from '~/services/auth.services';
+import {AuthService} from '~/services';
+const Auth = new AuthService();
 import {DefaultLayout} from '~/components/Layouts';
 
 const useStyles = makeStyles((theme) => ({
@@ -256,19 +258,29 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function Login() {
+const AlertMessageForSection = ({alert}) => {
+  return alert ? <Alert severity={alert.type}>{alert.message}</Alert> : null;
+};
+
+AlertMessageForSection.propTypes = {
+  alert: PropTypes.object,
+};
+
+const Login = () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [setPayload] = React.useState(null);
-  const [setIdToken] = React.useState(null);
-  const [messageResponse, setMessage] = React.useState();
-  const [openMess, setOpenMess] = React.useState(false);
-  const [typeMess, setTypeMess] = React.useState('success');
+  const [open, setOpen] = useState(false);
+  const [setPayload] = useState(null);
+  const [setIdToken] = useState(null);
+  const [messageResponse, setMessage] = useState();
+  const [openMess, setOpenMess] = useState(false);
+  const [typeMess, setTypeMess] = useState('success');
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({criteriaMode: 'all'});
+
+  const [alerts, setAlerts] = useState(null);
 
   useEffect(() => {
     signOut({redirect: false});
@@ -291,9 +303,9 @@ function Login() {
   }
 
   const onSubmit = async (data) => {
-    const result = await AuthService.loginByEmail({user: {
-      email: data.email,
-      password: data.password,
+    const result = await Auth.loginByEmail({user: {
+      email: data.email.trim(),
+      password: data.password.trim(),
     }});
     if (result.status === 200) {
       if (result.data.is_confirmed) {
@@ -312,6 +324,10 @@ function Login() {
         });
       }
     } else {
+      setAlerts({
+        type: 'error',
+        message: 'Something when wrong',
+      });
       setTypeMess('error');
       setOpenMess(true);
       setMessage(result.data.error);
@@ -328,7 +344,7 @@ function Login() {
     firebase.auth().signInWithPopup(provider).then(async (result) => {
       const credential = result.credential;
       if (credential.idToken) {
-        const res = await AuthService.loginByGmail({
+        const res = await Auth.loginByGmail({
           id_token: credential.idToken,
         });
         if (res.status === 200) {
@@ -619,6 +635,7 @@ function Login() {
                   </span>
                 </div>
               </Grid>
+              <AlertMessageForSection alert={alerts}/>
             </Grid>
           </Container>
         </StyledForm>
@@ -645,6 +662,6 @@ function Login() {
       </Snackbar>
     </DefaultLayout>
   );
-}
+};
 
 export default Login;

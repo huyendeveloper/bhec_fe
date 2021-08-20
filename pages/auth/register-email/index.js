@@ -10,6 +10,7 @@ import {Controller, useForm} from 'react-hook-form';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import {AuthService} from '~/services';
+const Auth = new AuthService();
 
 import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
@@ -135,7 +136,7 @@ function RegisterEmail() {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
-    const res = await AuthService.registerEmail({
+    const res = await Auth.registerEmail({
       user: {
         ...data,
       },

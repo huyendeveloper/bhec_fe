@@ -1,86 +1,77 @@
 import axios from '../modules/axios/customAxios';
 
-const AuthService = {
-  loginByEmail,
-  loginByLine,
-  loginByGmail,
-  registerEmail,
-  confirmAccount,
-  changePassword,
-  resetPassword,
-  forgotPassword,
-};
+export default class AuthService {
+  async loginByEmail(payload) {
+  // eslint-disable-next-line no-console
+    console.log(payload);
+    const result = await axios.post('/users/sign_in', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
 
-async function loginByEmail(body) {
-  const result = await axios.post('/users/sign_in', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
+  async loginByLine(payload) {
+    const result = await axios.post('/users/line', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async loginByGmail(payload) {
+    const result = await axios.post('/users/google_oauth2', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async registerEmail(payload) {
+    const result = await axios.post('/users', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async confirmAccount(payload, configs) {
+    const result = await axios.post('/users/confirmation', payload, configs).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async changePassword(payload) {
+    const result = await axios.post('/users/change_password', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async resetPassword(payload) {
+    const result = await axios.post('/users/reset_password', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
+
+  async forgotPassword(payload) {
+    const result = await axios.post('/users/forgot_password', payload).then((res) => {
+      return res;
+    }).catch((error) => {
+      return error.response;
+    });
+    return result;
+  }
 }
-
-async function loginByLine(body) {
-  const result = await axios.post('/users/line', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function loginByGmail(body) {
-  const result = await axios.post('/users/google_oauth2', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function registerEmail(body) {
-  const result = await axios.post('/users', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function confirmAccount(body, configs) {
-  const result = await axios.post('/users/confirmation', body, configs).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function changePassword(body) {
-  const result = await axios.post('/users/change_password', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function resetPassword(body) {
-  const result = await axios.post('/users/reset_password', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-async function forgotPassword(body) {
-  const result = await axios.post('/users/forgot_password', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
-}
-
-export default AuthService;

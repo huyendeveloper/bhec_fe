@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken';
 import {signIn} from 'next-auth/client';
 
 import {AuthService} from '~/services';
+const Auth = new AuthService();
 const maxAge = 120;
 
 const useStyles = makeStyles((theme) => ({
@@ -94,7 +95,7 @@ const LineLogin = ({
         reqConfig,
       ).then(async (res) => {
         if (res.status === 200) {
-          const result = await AuthService.loginByLine({
+          const result = await Auth.loginByLine({
             id_token: res.data.id_token,
             client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
           });

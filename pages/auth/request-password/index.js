@@ -8,7 +8,8 @@ import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import {AuthService} from '~/services/auth.services';
+import {AuthService} from '~/services';
+const Auth = new AuthService();
 
 import {StyledForm, ContentBlock, Header, Footer} from '~/components';
 
@@ -136,7 +137,7 @@ function RequestPassword() {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
-    const res = await AuthService.resetPassword(data);
+    const res = await Auth.resetPassword(data);
     if (res.data.status === 200) {
       Router.push({
         pathname: '/auth/login',

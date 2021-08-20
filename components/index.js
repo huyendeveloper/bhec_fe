@@ -1,3 +1,4 @@
+export {default as Alert} from './Alert';
 export {default as AlertBox} from './AlertBox';
 export {default as ReviewsBlock} from './ReviewsBlock';
 export {default as BoxLink} from './BoxLink';
