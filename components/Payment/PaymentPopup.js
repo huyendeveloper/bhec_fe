@@ -16,6 +16,7 @@ import {usePaymentInputs} from 'react-payment-inputs';
 import MuiAlert from '@material-ui/lab/Alert';
 import Image from 'next/image';
 
+import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
 
 import {checkCreditCardType} from '~/shared/module';
@@ -198,7 +199,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
       card_expire: data.card_expire.replace(/\s/g, ''),
     };
     const res = await registerPayment(body);
-    if (res && res.status === 200) {
+    if (res && res.status === httpStatus.SUCCESS) {
       if (!dataUpdate.token) {
         const bodyCreate = {
           holder_name: data.card_name,

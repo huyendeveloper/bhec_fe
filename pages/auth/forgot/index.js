@@ -8,6 +8,8 @@ import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import MuiAlert from '@material-ui/lab/Alert';
 
+import {httpStatus} from '~/constants';
+
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
@@ -195,14 +197,14 @@ function ForgotPassword() {
 
   const onSubmit = async (data) => {
     const res = await Auth.forgotPassword(data);
-    if (res.data.status === 200) {
+    if (res.status === httpStatus.SUCCESS) {
       Router.push({
         pathname: '/auth/request-password',
       });
     } else {
       setTypeMess('error');
       setOpenMess(true);
-      setMessage(res.data.message);
+      setMessage(res);
     }
   };
 

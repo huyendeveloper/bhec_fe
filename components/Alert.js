@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import {Alert as MuiAlert, AlertTitle} from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
+  root: {
+    maxWidth: '400px',
+  },
   title: {
     marginBottom: '1rem',
     marginTop: '0',

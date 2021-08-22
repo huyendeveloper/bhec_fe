@@ -9,6 +9,8 @@ import {Controller, useForm} from 'react-hook-form';
 
 import Router, {useRouter} from 'next/router';
 
+import {httpStatus} from '~/constants';
+
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
@@ -138,13 +140,11 @@ function AccountConfirm() {
   const router = useRouter();
 
   const onSubmit = async (data) => {
-    const configs = {
-      headers: {
-        Authorization: `Bearer ${router.query.token}`,
-      },
+    const headers = {
+      Authorization: `Bearer ${router.query.token}`,
     };
-    const res = await Auth.confirmAccount(data, configs);
-    if (res.status === 200) {
+    const res = await Auth.confirmAccount(data, headers);
+    if (res.status === httpStatus.SUCCESS) {
       Router.push({
         pathname: '/auth/login',
       });

@@ -1,4 +1,4 @@
-import axios from '../modules/axios/customAxios';
+import {axios} from '~/modules/axios';
 
 const PaymentService = {
   getCards,

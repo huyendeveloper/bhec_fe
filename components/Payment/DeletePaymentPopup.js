@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import {Close} from '@material-ui/icons';
 import Image from 'next/image';
 
+import {httpStatus} from '~/constants';
+
 import {PaymentService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
@@ -166,7 +168,7 @@ const DeletePaymentPopup = ({open, handleClose, idRemove, actionFinish}) => {
   const onSubmit = async () => {
     if (idRemove) {
       const res = await PaymentService.deleteCard(idRemove);
-      if (res.status === 200) {
+      if (res.status === httpStatus.SUCCESS) {
         actionFinish('success');
         handleClose();
       } else {

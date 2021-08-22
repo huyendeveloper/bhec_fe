@@ -141,7 +141,7 @@ function RegisterEmail() {
         ...data,
       },
     });
-    if (res.status === 200) {
+    if (res.id) {
       Router.push({
         pathname: '/auth/account-confirm',
         query: {token: res.data.access_token},
@@ -149,7 +149,7 @@ function RegisterEmail() {
     } else {
       setTypeMess('error');
       setOpenMess(true);
-      setMessage(res.data.message);
+      setMessage(res);
     }
   };
 

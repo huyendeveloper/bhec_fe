@@ -3,14 +3,13 @@
 import {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography, Snackbar} from '@material-ui/core';
+import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
 import {signIn, signOut} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import firebase from '../../../firebase';
 
@@ -271,9 +270,6 @@ const Login = () => {
   const [open, setOpen] = useState(false);
   const [setPayload] = useState(null);
   const [setIdToken] = useState(null);
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
   const {
     control,
     handleSubmit,
@@ -303,16 +299,17 @@ const Login = () => {
   }
 
   const onSubmit = async (data) => {
-    const result = await Auth.loginByEmail({user: {
+    setAlerts(null);
+    const res = await Auth.loginByEmail({user: {
       email: data.email.trim(),
       password: data.password.trim(),
     }});
-    if (result.status === 200) {
-      if (result.data.is_confirmed) {
+    if (res.id) {
+      if (res.is_confirmed) {
         await signIn('credentials',
           {
-            data: result.data,
-            token: result.data.access_token,
+            data: res,
+            token: res.access_token,
             callbackUrl: `${window.location.origin}`,
           },
         );
@@ -320,22 +317,15 @@ const Login = () => {
         alert('ログインする前にアカウントを確認してください！');
         Router.push({
           pathname: '/auth/account-confirm',
-          query: {token: result.data.access_token},
+          query: {token: res.access_token},
         });
       }
     } else {
       setAlerts({
         type: 'error',
-        message: 'Something when wrong',
+        message: res,
       });
-      setTypeMess('error');
-      setOpenMess(true);
-      setMessage(result.data.error);
     }
-  };
-
-  const handleCloseMess = () => {
-    setOpenMess(false);
   };
 
   function googleAuth() {
@@ -344,10 +334,11 @@ const Login = () => {
     firebase.auth().signInWithPopup(provider).then(async (result) => {
       const credential = result.credential;
       if (credential.idToken) {
-        const res = await Auth.loginByGmail({
+        const res = await Auth.loginBySNS({
+          type: 'gg',
           id_token: credential.idToken,
         });
-        if (res.status === 200) {
+        if (res) {
           await signIn('credentials',
             {
               data: res.data,
@@ -646,20 +637,6 @@ const Login = () => {
         />
         }
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {messageResponse}
-        </MuiAlert>
-      </Snackbar>
     </DefaultLayout>
   );
 };

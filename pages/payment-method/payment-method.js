@@ -7,6 +7,7 @@ import {Header, Footer, ContentBlock} from '~/components';
 import {PaymentService} from '~/services';
 import {PaymentWidget} from '~/components/Widgets';
 import {DeletePaymentPopup, PaymentPopup} from '~/components/Payment';
+import {httpStatus} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -136,7 +137,7 @@ function PaymentMethod() {
 
   const getListCard = async () => {
     const res = await PaymentService.getCards();
-    if (res.status === 200) {
+    if (res.status === httpStatus.SUCCESS) {
       setListPayment(res.data.cards);
     } else {
       setListPayment([]);

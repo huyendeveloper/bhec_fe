@@ -8,6 +8,8 @@ import {Controller, useForm} from 'react-hook-form';
 import Router from 'next/router';
 import MuiAlert from '@material-ui/lab/Alert';
 
+import {httpStatus} from '~/constants';
+
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
@@ -141,14 +143,14 @@ function ChangePassword() {
 
   const onSubmit = async (data) => {
     const res = await Auth.changePassword(data);
-    if (res.data.status === 200) {
+    if (res.status === httpStatus.SUCCESS) {
       Router.push({
         pathname: '/mypage',
       });
     } else {
       setTypeMess('error');
       setOpenMess(true);
-      setErrMessage(res.data.message);
+      setErrMessage(res);
     }
   };
 

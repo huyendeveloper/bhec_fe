@@ -10,6 +10,8 @@ import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import {signIn} from 'next-auth/client';
 
+import {httpStatus} from '~/constants';
+
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 const maxAge = 120;
@@ -94,12 +96,13 @@ const LineLogin = ({
         qs.stringify(reqBody),
         reqConfig,
       ).then(async (res) => {
-        if (res.status === 200) {
-          const result = await Auth.loginByLine({
+        if (res.status === httpStatus.SUCCESS) {
+          const result = await Auth.loginBySNS({
+            type: 'line',
             id_token: res.data.id_token,
             client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
           });
-          if (result.status === 200) {
+          if (result) {
             await signIn('credentials',
               {
                 data: res.data,
