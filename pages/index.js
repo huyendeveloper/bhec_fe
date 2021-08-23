@@ -2,6 +2,7 @@ import React from 'react';
 import {Container, Grid, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
+import PropTypes from 'prop-types';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
 
@@ -9,6 +10,8 @@ import {Header, Footer, Slider, Search, CategoryBlock, ContentBlock} from '~/com
 import {Article} from '~/components/Article';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
+import {ProductService} from '~/services';
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopPage() {
+export default function TopPage({traditional_craft, food_and_beverage, lifestyle}) {
   const slideData = [
     {
       id: 1,
@@ -69,72 +72,13 @@ export default function TopPage() {
     },
   ];
 
-  const recommendProducts = [
-    {
-      productId: 1,
-      productName: '『大好評』小田原漆器についてご紹介しています。',
-      productThumb: '/img/products/product-01.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 26600,
-      favoriteProduct: false,
-      productOwner: {
-        name: '小田原漆器',
-        avatar: '/img/sellers/seller-01.png',
-        introduction: '木地部門　伝統工芸士',
-      },
-    },
-    {
-      productId: 2,
-      productName: '『大好評』江戸べっ甲についてご紹介しています。',
-      productThumb: '/img/products/product-02.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      productPrice: 32800,
-      favoriteProduct: false,
-      productOwner: {
-        name: '磯貝 剛',
-        avatar: '/img/sellers/seller-02.png',
-        introduction: 'ベッ甲イソガイ　統括',
-      },
-    },
-    {
-      productId: 3,
-      productName: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
-      productThumb: '/img/products/product-03.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      productPrice: 149300,
-      favoriteProduct: false,
-      productOwner: {
-        name: '林　文雄',
-        avatar: '/img/sellers/seller-03.png',
-        introduction: 'アートランド',
-      },
-    },
-    {
-      productId: 4,
-      productName: '『大好評』江戸節句人形についてご紹介しています。',
-      productThumb: '/img/products/product-04.png',
-      productUrl: '#',
-      productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-      productPrice: 184750,
-      favoriteProduct: false,
-      productOwner: {
-        name: '松崎光正',
-        avatar: '/img/sellers/seller-04.png',
-        introduction: '松崎人形',
-      },
-    },
-  ];
-
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isDesktop = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const renderProduct = () => {
+  const renderProduct = (productData) => {
     if (isMobile) {
       return (
         <Swiper
@@ -145,7 +89,7 @@ export default function TopPage() {
           }}
           className='productSwiper'
         >
-          {recommendProducts.map((product, index) => (
+          {productData.map((product, index) => (
             <SwiperSlide
               style={{width: '70%'}}
               key={String(index)}
@@ -168,7 +112,7 @@ export default function TopPage() {
           }}
           className='productSwiper'
         >
-          {recommendProducts.map((product, index) => (
+          {productData.map((product, index) => (
             <SwiperSlide
               style={{width: '90%'}}
               key={String(index)}
@@ -188,7 +132,7 @@ export default function TopPage() {
         justifyContent='center'
         spacing={3}
       >
-        {recommendProducts.map((product, index) => (
+        {productData.map((product, index) => (
           <Grid
             key={String(index)}
             item={true}
@@ -243,7 +187,7 @@ export default function TopPage() {
         bgRepeat='repeat'
         mixBlendMode='multiply'
       >
-        {articleData && articleData.length > 0 ? articleData.map((article) => (
+        {articleData && articleData.length ? articleData.map((article) => (
           <Grid
             key={article.id}
             container={true}
@@ -317,34 +261,43 @@ export default function TopPage() {
       </div>
 
       {/* Product by category*/}
-      <CategoryBlock
-        title='オススメ商品'
-        category='伝統工芸品'
-        bgColor='#FAF6EF'
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-        mixBlendMode='multiply'
-      >
-        {renderProduct()}
-      </CategoryBlock>
-      <CategoryBlock
-        category='食品・飲料'
-        bgColor='#FAF6EF'
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-        mixBlendMode='multiply'
-      >
-        {renderProduct()}
-      </CategoryBlock>
-      <CategoryBlock
-        category='ライフスタイル'
-        bgColor='#FAF6EF'
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-        mixBlendMode='multiply'
-      >
-        {renderProduct()}
-      </CategoryBlock>
+      {traditional_craft.length ? (
+        <CategoryBlock
+          title='オススメ商品'
+          category='伝統工芸品'
+          categoryLink='traditional_craft'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
+        >
+          {renderProduct(traditional_craft)}
+        </CategoryBlock>) : null
+      }
+      {food_and_beverage.length ? (
+        <CategoryBlock
+          category='食品・飲料'
+          categoryLink='food_and_beverage'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
+        >
+          {renderProduct(food_and_beverage)}
+        </CategoryBlock>) : null
+      }
+      {lifestyle.length ? (
+        <CategoryBlock
+          category='ライフスタイル'
+          categoryLink='lifestyle'
+          bgColor='#FAF6EF'
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          mixBlendMode='multiply'
+        >
+          {renderProduct(lifestyle)}
+        </CategoryBlock>) : null
+      }
 
       {/* Ads */}
       <div className={classes.advertisements}>
@@ -383,3 +336,28 @@ export default function TopPage() {
     </div>
   );
 }
+
+export const getServerSideProps = async () => {
+  //traditional_craft
+  const lstProduct1 = await Product.getProducts({category: 'traditional_craft', limit: '4'});
+  const traditional_craft = lstProduct1?.products?.length ? lstProduct1.products : [];
+
+  //food_and_beverage
+  const lstProduct2 = await Product.getProducts({category: 'food_an3d_beverage', limit: '4'});
+  const food_and_beverage = lstProduct2?.products?.length ? lstProduct2.products : [];
+
+  //lifestyle
+  const lstProduct3 = await Product.getProducts({category: 'life2style', limit: '4'});
+  const lifestyle = lstProduct3?.products?.length ? lstProduct3.products : [];
+  return {
+    props: {
+      traditional_craft, food_and_beverage, lifestyle,
+    },
+  };
+};
+
+TopPage.propTypes = {
+  traditional_craft: PropTypes.array,
+  food_and_beverage: PropTypes.array,
+  lifestyle: PropTypes.array,
+};

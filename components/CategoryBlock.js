@@ -2,6 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Container from '@material-ui/core/Container';
 import {Typography} from '@material-ui/core';
+import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '0.125rem',
       borderWidth: '0.5rem',
       paddingLeft: '1rem',
+      cursor: 'pointer',
     },
     [theme.breakpoints.down('sm')]: {
       '& h4': {
@@ -58,9 +60,15 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  linkName: {
+    color: theme.palette.black.light,
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
 }));
 
-const CategoryBlock = ({title, category, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
+const CategoryBlock = ({title, category, categoryLink, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
   const classes = useStyles();
 
   return (
@@ -80,9 +88,15 @@ const CategoryBlock = ({title, category, bgColor, bgImage, bgRepeat, mixBlendMod
           </div>
         ) : null}
         {category && category !== '' ? (
-          <div className={classes.category}>
-            <Typography variant={'h4'}>{category}</Typography>
-          </div>
+          <Link
+            href={`/products/${categoryLink}`}
+            className={classes.linkName}
+            passHref={true}
+          >
+            <div className={classes.category}>
+              <Typography variant={'h4'}>{category}</Typography>
+            </div>
+          </Link>
         ) : null}
 
         <div className={classes.content}>
@@ -100,6 +114,7 @@ CategoryBlock.propTypes = {
   mixBlendMode: PropTypes.string,
   title: PropTypes.string,
   category: PropTypes.string,
+  categoryLink: PropTypes.string,
   children: PropTypes.any,
 };
 
