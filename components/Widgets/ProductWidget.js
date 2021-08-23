@@ -18,11 +18,17 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '5.063rem',
     height: '100%',
   },
+  linkName: {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
   productName: {
     fontWeight: 'bold',
     fontSize: '0.875rem',
     lineHeight: '1.375rem',
     marginBottom: '0.75rem',
+    color: theme.palette.black.light,
   },
   productTags: {
     marginBottom: '1rem',
@@ -100,20 +106,30 @@ const ProductWidget = ({variant, data, heart, border}) => {
 
   const product = data;
   const tags = data.tags || [];
-  const owner = data.seller_info || {};
+  const seller = data.seller_info || {};
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   return (
     <Card className={clsx(classes.root, classes[border])}>
       <CardActionArea>
-        <CardMedia
-          component='img'
-          alt={product.name}
-          height='160'
-          image={'/img/products/product-01.png'}
-          title={product.name}
-        />
-        <CardContent>
+        <Link
+          href={`/product/${product.id}`}
+          className={clsx(classes.linkName)}
+        >
+          <CardMedia
+            component='img'
+            alt={product.name}
+            height='160'
+            image={product.thumb_url}
+            title={product.name}
+          />
+        </Link>
+      </CardActionArea>
+      <CardContent>
+        <Link
+          href={`/product/${product.id}`}
+          className={clsx(classes.linkName)}
+        >
           <Typography
             gutterBottom={true}
             component='h3'
@@ -121,25 +137,27 @@ const ProductWidget = ({variant, data, heart, border}) => {
           >
             {product.name}
           </Typography>
+        </Link>
 
-          <div className={classes.productTags}>
-            {/* eslint-disable-next-line react/prop-types */}
-            {tags && tags.length > 0 ? tags.map((tag, index) => {
-              return (
-                <Chip
-                  key={String(index)}
-                  size='small'
-                  label={tag.name}
-                  className={tag.isFeatured ? classes.productTagHighlight : ''}
-                />
-              );
-            }) : null}
-          </div>
+        <div className={classes.productTags}>
+          {/* eslint-disable-next-line react/prop-types */}
+          {tags && tags.length > 0 ? tags.map((tag, index) => {
+            return (
+              <Chip
+                key={String(index)}
+                size='small'
+                label={tag.name}
 
-          <div className={classes.productPrice}>
-            {currency.format(product.price)}
-            {heart &&
-            (data.is_favorite_product ? (
+              // className={tag.isFeatured ? classes.productTagHighlight : ''}
+              />
+            );
+          }) : null}
+        </div>
+
+        <div className={classes.productPrice}>
+          {currency.format(product.price)}
+          {heart &&
+            (product.is_favorite_product ? (
               <Image
                 src={'/img/icons/fill-heart.svg'}
                 width={27}
@@ -154,17 +172,17 @@ const ProductWidget = ({variant, data, heart, border}) => {
                 alt={'heart'}
               />
             ))}
-          </div>
-        </CardContent>
-      </CardActionArea>
+        </div>
+      </CardContent>
+
       <CardActions className={classes.productSellerAction}>
         <Link
           href={'#'}
           className={classes.productSeller}
         >
           <Avatar
-            alt={owner.name}
-            src={'/img/sellers/seller-01.png'}
+            alt={seller.name}
+            src={seller.avatar_url}
             className={classes.productSellerAvatar}
           />
 
@@ -172,11 +190,11 @@ const ProductWidget = ({variant, data, heart, border}) => {
             <Typography
               component={'h5'}
               className={classes.sellerInfo}
-            >{owner.name}</Typography>
+            >{seller.name}</Typography>
             <Typography
               component={'p'}
               className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
-            >{owner.catch_phrase}</Typography>
+            >{seller.catch_phrase}</Typography>
           </div>
         </Link>
       </CardActions>
