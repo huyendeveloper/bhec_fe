@@ -54,7 +54,7 @@ export default class AuthService {
   }
 
   async confirmAccount(payload, headers) {
-    const result = await axios.post('/users/confirmation', payload, headers).then((res) => {
+    const result = await axios.post('/users/confirmation', payload, {headers}).then((res) => {
       return res;
     }).catch((error) => {
       return error.response;

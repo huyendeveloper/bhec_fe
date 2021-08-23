@@ -314,7 +314,7 @@ const Login = () => {
           },
         );
       } else {
-        alert('ログインする前にアカウントを確認してください！');
+        // alert('ログインする前にアカウントを確認してください！');
         Router.push({
           pathname: '/auth/account-confirm',
           query: {token: res.access_token},
