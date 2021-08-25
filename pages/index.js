@@ -343,11 +343,11 @@ export const getServerSideProps = async () => {
   const traditional_craft = lstProduct1?.products?.length ? lstProduct1.products : [];
 
   //food_and_beverage
-  const lstProduct2 = await Product.getProducts({category: 'food_an3d_beverage', limit: '4'});
+  const lstProduct2 = await Product.getProducts({category: 'food_and_beverage', limit: '4'});
   const food_and_beverage = lstProduct2?.products?.length ? lstProduct2.products : [];
 
   //lifestyle
-  const lstProduct3 = await Product.getProducts({category: 'life2style', limit: '4'});
+  const lstProduct3 = await Product.getProducts({category: 'lifestyle', limit: '4'});
   const lifestyle = lstProduct3?.products?.length ? lstProduct3.products : [];
   return {
     props: {

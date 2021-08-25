@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'none',
     },
   },
+  bgImg: {
+    height: '100%',
+    backgroundColor: '#DBDBDB',
+    padding: 50,
+    backgroundSize: 'cover',
+  },
   productName: {
     fontWeight: 'bold',
     fontSize: '0.875rem',
@@ -120,7 +126,8 @@ const ProductWidget = ({variant, data, heart, border}) => {
             component='img'
             alt={product.name}
             height='160'
-            image={product.thumb_url}
+            className={clsx(product.thumb_url ? '' : classes.bgImg)}
+            image={product.thumb_url ?? '/logo.png'}
             title={product.name}
           />
         </Link>

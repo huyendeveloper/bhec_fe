@@ -243,7 +243,7 @@ const Header = (props) => {
                 </Hidden>
               ) : null}
               <Link
-                href={'/about'}
+                href={'/'}
                 className={classes.logoLink}
               >
                 <a className='next-link'>
