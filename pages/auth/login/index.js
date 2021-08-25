@@ -286,7 +286,7 @@ const AlertMessageForSection = ({alert, handleCloseAlert}) => {
 
     handleCloseAlert();
   };
-  return alert ?
+  return alert ? (
     <Snackbar
       open={true}
       autoHideDuration={2000}
@@ -294,7 +294,7 @@ const AlertMessageForSection = ({alert, handleCloseAlert}) => {
       anchorOrigin={{vertical: 'top', horizontal: 'right'}}
     >
       <Alert severity={alert.type}>{alert.message}</Alert>
-    </Snackbar> : null;
+    </Snackbar>) : null;
 };
 
 AlertMessageForSection.propTypes = {

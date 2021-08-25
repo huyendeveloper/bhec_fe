@@ -210,14 +210,6 @@ const Header = (props) => {
   const classes = useStyles();
   const {showMainMenu} = props;
 
-  let isDev = process.env.NODE_ENV === 'development';
-  const stagingHost = process.env.STG_HOST || '';
-  if (typeof window !== 'undefined') {
-    if (stagingHost.includes(window.location.host)) {
-      isDev = true;
-    }
-  }
-
   useEffect(() => {
     if (session?.accessToken) {
       setAuthenticated(true);
@@ -270,7 +262,7 @@ const Header = (props) => {
                 ),
               )}
             </div>}
-            {displaySameRow && isDev && <div className={classes.personalAction}>
+            {displaySameRow && <div className={classes.personalAction}>
               {isAuthenticated &&
               <Link href={'/mypage'}>
                 <a className={classes.linkPersonal}>
@@ -329,7 +321,7 @@ const Header = (props) => {
               />
             </div>
           </Toolbar>
-          {!displaySameRow && isDev && <Toolbar className={classes.toolBarPersonal}>
+          {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
               {isAuthenticated && <div className={classes.personalItem}>
                 <PersonPinIcon/>
@@ -359,7 +351,7 @@ const Header = (props) => {
       <Toolbar
         className={classes.toolBarPlaceholder}
         style={{
-          height: !displaySameRow && isDev ? '112px' : '80px',
+          height: displaySameRow ? '80px' : '112px',
         }}
       />
     </>
