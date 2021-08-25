@@ -3,7 +3,7 @@
 import {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
+import {Box, Container, Grid, FormControl, Button, Typography, Snackbar} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
@@ -22,7 +22,9 @@ import {DefaultLayout} from '~/components/Layouts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '3rem 0',
+    backgroundImage: 'url("/bg-login.png")',
+    backgroundSize: 'auto',
+    padding: '1rem 0',
     fontFamily: theme.font.default,
   },
 
@@ -58,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.buttonLogin.default,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
+    fontWeight: '700',
     width: '100%',
     color: theme.palette.background.default,
     '&:hover': {
@@ -75,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '2rem',
     lineHeight: '3rem',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginBottom: '1rem',
     [theme.breakpoints.down('sm')]: {
       fontSize: '1.5rem',
@@ -89,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
 
   note: {
     fontFamily: theme.font.default,
+    color: theme.palette.black4.main,
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
@@ -104,16 +108,24 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 
-  description: {
+  titleNotBold: {
     fontFamily: theme.font.default,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
+  },
+
+  description: {
+    fontFamily: theme.font.default,
+    color: theme.palette.black4.main,
+    fontSize: '1rem',
+    lineHeight: '1.5rem',
+    textAlign: 'center',
     fontWeight: 'normal',
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
     position: 'relative',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
@@ -128,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginBottom: '1rem',
     position: 'relative',
   },
@@ -144,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   grid: {
-    width: '20%',
+    width: '19%',
     margin: '0 40%',
     textAlign: 'center',
     [theme.breakpoints.down('md')]: {
@@ -225,12 +237,13 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.border.default}`,
     boxSizing: 'border-box',
     padding: '1rem',
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
     borderRadius: '4px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     width: '100%',
+    height: '2.5rem',
   },
 
   labelLogin: {
@@ -239,8 +252,16 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
-    fontWeight: 'normal',
+    fontWeight: '700',
     position: 'relative',
+  },
+
+  labelGoogle: {
+    color: theme.palette.grey.shadow,
+  },
+
+  labelEmail: {
+    color: theme.palette.black3.main,
   },
 
   divRules: {
@@ -257,12 +278,28 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const AlertMessageForSection = ({alert}) => {
-  return alert ? <Alert severity={alert.type}>{alert.message}</Alert> : null;
+const AlertMessageForSection = ({alert, handleCloseAlert}) => {
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    handleCloseAlert();
+  };
+  return alert ?
+    <Snackbar
+      open={true}
+      autoHideDuration={2000}
+      onClose={handleClose}
+      anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+    >
+      <Alert severity={alert.type}>{alert.message}</Alert>
+    </Snackbar> : null;
 };
 
 AlertMessageForSection.propTypes = {
   alert: PropTypes.object,
+  handleCloseAlert: PropTypes.func,
 };
 
 const Login = () => {
@@ -323,7 +360,7 @@ const Login = () => {
     } else {
       setAlerts({
         type: 'error',
-        message: res,
+        message: 'メールアドレスまたはパスワードに誤りがあります。',
       });
     }
   };
@@ -341,8 +378,8 @@ const Login = () => {
         if (res) {
           await signIn('credentials',
             {
-              data: res.data,
-              token: res.data.access_token,
+              data: res,
+              token: res.access_token,
               callbackUrl: `${window.location.origin}`,
             },
           );
@@ -368,7 +405,10 @@ const Login = () => {
             >{'まだ会員ではない方はこちら、以下の会員登録をお願いします。'}</Typography>
           </div>
         </div>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <StyledForm
+          onSubmit={handleSubmit(onSubmit)}
+          style={{marginTop: '0.8rem'}}
+        >
           <Container
             maxWidth='lg'
             className={classes.content}
@@ -399,6 +439,7 @@ const Login = () => {
                     scope={process.env.NEXT_PUBLIC_LINE_SCOPE}
                     setPayload={setPayload}
                     setIdToken={setIdToken}
+                    login={false}
                   />
                   <div
                     className={classes.loginMethod}
@@ -411,7 +452,7 @@ const Login = () => {
                       alt=''
                     />
                     <div
-                      className={classes.labelLogin}
+                      className={classes.labelLogin + ' ' + classes.labelGoogle}
                     >{'Google で会員登録'}</div>
                   </div>
                   <div
@@ -425,7 +466,7 @@ const Login = () => {
                       alt=''
                     />
                     <div
-                      className={classes.labelLogin}
+                      className={classes.labelLogin + ' ' + classes.labelEmail}
                     >{'メールアドレスで会員登録'}</div>
                   </div>
                 </div>
@@ -481,6 +522,7 @@ const Login = () => {
                     scope={process.env.NEXT_PUBLIC_LINE_SCOPE}
                     setPayload={setPayload}
                     setIdToken={setIdToken}
+                    login={true}
                   />
                   <div className={classes.loginMethod}>
                     <Image
@@ -490,9 +532,9 @@ const Login = () => {
                       alt=''
                     />
                     <div
-                      className={classes.labelLogin}
+                      className={classes.labelLogin + ' ' + classes.labelGoogle}
                       onClick={() => googleAuth()}
-                    >{'Google で会員登録'}</div>
+                    >{'Google でログイン'}</div>
                   </div>
                 </div>
               </Grid>
@@ -503,9 +545,11 @@ const Login = () => {
                 <div className={classes.gridText}>
                   <div>
                     <Typography
-                      variant={'h2'}
-                      className={classes.titleMethod}
-                    >{'又は　メールアドレスでログイン'}</Typography>
+                      variant={'span'}
+                    >
+                      <span className={classes.titleNotBold}>{'又は'}</span>
+                      <span className={classes.titleMethod}>{'メールアドレスでログイン'}</span>
+                    </Typography>
                   </div>
                 </div>
               </Grid>
@@ -520,15 +564,16 @@ const Login = () => {
                     control={control}
                     defaultValue={'user+1@example.com'}
                     rules={{
-                      required: 'この入力は必須です。',
+                      required: '必須項目です。',
                       pattern: {
                         value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: 'メールアドレスが無効です。',
+                        message: '無効なメールアドレスです。',
                       },
                     }}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='email'
+                        maxLength={64}
                         variant='outlined'
                         placeholder='メールアドレス'
                         error={Boolean(errors.email)}
@@ -537,6 +582,9 @@ const Login = () => {
                         value={value}
                         inputRef={ref}
                         onChange={onChange}
+                        onInput={(e) => {
+                          e.target.value = e.target.value.slice(0, 64);
+                        }}
                         className={classes.inputLogin}
                       />
                     )}
@@ -566,18 +614,22 @@ const Login = () => {
                     className={classes.grid}
                     name='password'
                     control={control}
-                    rules={{required: 'この入力は必須です。'}}
+                    rules={{required: '必須項目です。'}}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='password'
                         variant='outlined'
                         placeholder='パスワード'
                         type='password'
+                        maxLength={64}
                         error={Boolean(errors.password)}
                         InputLabelProps={{shrink: false}}
                         name={name}
                         value={value}
                         inputRef={ref}
+                        onInput={(e) => {
+                          e.target.value = e.target.value.slice(0, 32);
+                        }}
                         onChange={onChange}
                         className={classes.inputLogin}
                       />
@@ -626,7 +678,10 @@ const Login = () => {
                   </span>
                 </div>
               </Grid>
-              <AlertMessageForSection alert={alerts}/>
+              <AlertMessageForSection
+                alert={alerts}
+                handleCloseAlert={() => setAlerts(null)}
+              />
             </Grid>
           </Container>
         </StyledForm>

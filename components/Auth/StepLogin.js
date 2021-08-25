@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.font.default,
     width: '56%',
     margin: '0 22%',
-    background: theme.palette.grey.light,
+    background: theme.palette.gray.light,
     border: `1px solid ${theme.palette.border.default}`,
     boxSizing: 'border-box',
     borderRadius: '4px',
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginBottom: '1rem',
     position: 'relative',
     [theme.breakpoints.down('md')]: {
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     fontFamily: theme.font.default,
     fontStyle: 'normal',
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontSize: '1.4rem',
     lineHeight: '2.15rem',
     display: 'flex',
@@ -91,9 +91,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.step.three.color,
   },
   stepLabel: {
-    width: '60%',
+    width: '44%',
     margin: '0 20%',
     textAlign: 'center',
+    color: theme.palette.black4.main,
     fontFamily: theme.font.default,
     fontSize: '1rem',
     lineHeight: '1.5rem',
@@ -111,11 +112,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  stepLabel2: {
+    width: '36%',
+  },
+
   divider: {
     top: '1.5rem',
     left: 'calc(-50% + 1.7rem)',
     position: 'absolute',
-    border: `1px dashed ${theme.divider.dashCorlor}`,
+    border: `2px dashed ${theme.divider.dashCorlor}`,
     transform: 'rotate(0.02deg)',
     width: 'calc(100% - 3.4rem)',
     [theme.breakpoints.down('sm')]: {
@@ -146,7 +151,7 @@ const StepLogin = () => {
             <div className={classes.divider}/>
             <div className={classes.stepContent}>
               <div className={classes.icStep + ' ' + classes.icStep2}>{'2'}</div>
-              <div className={classes.stepLabel}>{'メールアドレス承認'}</div>
+              <div className={classes.stepLabel + ' ' + classes.stepLabel2}>{'メールアドレス承認'}</div>
             </div>
           </div>
           <div className={classes.stepItem}>

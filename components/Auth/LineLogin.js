@@ -22,12 +22,13 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.border.default}`,
     boxSizing: 'border-box',
     padding: '1rem',
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
     borderRadius: '4px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     width: '100%',
+    height: '2.5rem',
   },
 
   labelLogin: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
-    fontWeight: 'normal',
+    fontWeight: '700',
     position: 'relative',
     color: theme.palette.white.main,
   },
@@ -52,6 +53,7 @@ const LineLogin = ({
   setPayload,
   setIdToken,
   redirectURI,
+  login,
 }) => {
   const classes = useStyles();
   const lineLogin = () => {
@@ -154,7 +156,7 @@ const LineLogin = ({
         />
         <div
           className={classes.labelLogin}
-        >{'LINEで会員登録'}</div>
+        >{login ? 'LINEでログイン' : 'LINEで会員登録'}</div>
       </div>
     </div>
   );
@@ -169,6 +171,7 @@ LineLogin.propTypes = {
   setPayload: PropTypes.any,
   setIdToken: PropTypes.any,
   redirectURI: PropTypes.string,
+  login: PropTypes.bool,
 };
 
 export default LineLogin;

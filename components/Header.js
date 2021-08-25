@@ -117,11 +117,11 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.2rem',
     color: theme.palette.black.light,
     borderRight: `2px solid ${theme.border.default}`,
-    padding: '0 1rem',
+    padding: '0 0.5rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: '7.5rem',
+    minWidth: '6.3rem',
     cursor: 'pointer',
     [theme.breakpoints.up('md')]: {
       width: '33%',
@@ -147,7 +147,54 @@ const useStyles = makeStyles((theme) => ({
       marginRight: '0.5rem',
     },
   },
+
+  linkPersonal: {
+    textDecoration: 'none',
+    borderRight: `2px solid ${theme.border.default}`,
+    width: '33%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+
+  navigation: {
+    margin: '0 2.5rem',
+  },
+
+  naviLink: {
+    fontSize: '1rem',
+    lineHeight: '1.5rem',
+    margin: '0 1rem',
+    color: theme.palette.black3.main,
+    textDecoration: 'none',
+  },
 }));
+
+const listNavigation = [
+  {
+    name: '伝統の一品',
+    url: '/',
+  },
+  {
+    name: '食品・飲料',
+    url: '/',
+  },
+  {
+    name: 'ライフスタイル',
+    url: '/',
+  },
+  {
+    name: 'ブログ',
+    url: '/',
+  },
+  {
+    name: '伝統の一品',
+    url: '/',
+  },
+  {
+    name: 'お買い物ガイド',
+    url: '/',
+  },
+];
 
 const Header = (props) => {
   const [session, loading] = useSession();
@@ -209,26 +256,66 @@ const Header = (props) => {
                 </a>
               </Link>
             </div>
+            {!isTablet && !isMobile && <div className={classes.navigation}>
+              {listNavigation.map((nav, index) =>
+                (
+                  <Link
+                    href={nav.url}
+                    key={index}
+                  >
+                    <a className={classes.naviLink}>
+                      {nav.name}
+                    </a>
+                  </Link>
+                ),
+              )}
+            </div>}
             {displaySameRow && isDev && <div className={classes.personalAction}>
-              {isAuthenticated && <div className={classes.personalItem}>
-                <PersonPinIcon/>
-                {'マイページ'}
-              </div>}
+              {isAuthenticated &&
+              <Link href={'/mypage'}>
+                <a className={classes.linkPersonal}>
+                  <div className={classes.personalItem}>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
+                    {'マイページ'}
+                  </div>
+                </a>
+              </Link>
+              }
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
-                <a className='next-link'>
+                <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
-                    <PersonPinIcon/>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
                     {'登録・ログイン'}
                   </div>
                 </a>
               </Link>}
               <div className={classes.personalItem}>
-                <EmailIcon/>
+                <Image
+                  src='/img/icons/ic-mail.png'
+                  alt='mail icon'
+                  width={24}
+                  height={24}
+                />
                 {'お問い合わせ'}
               </div>
               <div className={`${classes.personalItem} ${classes.lastItem}`}>
-                <ShoppingCartIcon/>
+                <Image
+                  src='/img/icons/ic-cart.png'
+                  alt='cart icon'
+                  width={24}
+                  height={24}
+                />
                 {'カート'}
               </div>
             </div>}
@@ -250,7 +337,7 @@ const Header = (props) => {
               </div>}
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
-                <a className='next-link'>
+                <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
                     <PersonPinIcon/>
                     {'登録・ログイン'}

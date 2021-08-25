@@ -43,6 +43,9 @@ const theme = createTheme({
     black3: {
       main: '#333333',
     },
+    black4: {
+      main: '#444444',
+    },
     solidBlack: {
       default: '#333333',
     },
@@ -58,6 +61,7 @@ const theme = createTheme({
       light: '#ededed',
       main: '#c4c4c4',
       dark: '#bebebe',
+      shadow: '#0000008a',
     },
     gray: {
       light: '#f8f8f8',
