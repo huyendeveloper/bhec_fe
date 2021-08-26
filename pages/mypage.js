@@ -70,7 +70,7 @@ const notifications = [
 ];
 
 const buttonLinks = [
-  {id: 1, label: '基本情報', url: '/'},
+  {id: 1, label: '基本情報', url: '/basic-information'},
   {id: 2, label: 'お届け先情報', url: '/'},
   {id: 3, label: '決済方法', url: '/'},
   {id: 4, label: '割引クーポン', url: '/'},

@@ -85,4 +85,20 @@ export default class AuthService {
     }
     return data;
   }
+
+  async getInfoUser() {
+    const [data, errors] = await api.get('/users/me');
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
+  async updateInfoUser(payload) {
+    const [data, errors] = await api.patch('/users/update_me', payload);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }

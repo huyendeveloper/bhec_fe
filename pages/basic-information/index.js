@@ -1,9 +1,12 @@
 import {Grid, Typography, Button, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Router from 'next/router';
+import {useEffect, useState} from 'react';
 
 import {ContentBlock, Header, Footer} from '~/components';
-
+import {AuthService, CommonServices} from '~/services';
+const Auth = new AuthService();
+const CommonService = new CommonServices();
 const useStyles = makeStyles((theme) => ({
   block: {
     width: '100%',
@@ -42,19 +45,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const info = {
-  username: 'はなこ',
-  email: 'bh@gmail.com',
-  password: '＊＊＊＊＊＊＊＊',
-  fullName: '',
-  alphabet: '',
-  gender: '',
-  birthday: '',
-  address: '',
-};
-
 export default function BasicInformation() {
   const classes = useStyles();
+  const [user, setUser] = useState({});
+  const [listCity, setListCity] = useState([]);
+
+  useEffect(() => {
+    getListCity();
+    getDetailUser();
+  }, []);
+
+  const getDetailUser = async () => {
+    const res = await Auth.getInfoUser();
+    if (res.user) {
+      setUser(res.user);
+    }
+  };
+
+  const getListCity = async () => {
+    const res = await CommonService.getCities();
+    if (res && res.length) {
+      setListCity(res);
+    }
+  };
+
+  const genderTemplate = (gender) => {
+    const genderList = {
+      0: '男性',
+      1: '女性',
+      2: '他',
+    };
+    return (
+      <span>{genderList[gender]}</span>
+    );
+  };
 
   function updateInfo() {
     Router.push({
@@ -85,7 +109,7 @@ export default function BasicInformation() {
                 <Typography
                   variant={'h4'}
                   className={classes.title}
-                >{'注文ニックネーム番号'}</Typography>
+                >{'ニックネーム'}</Typography>
               </Grid>
               <Grid
                 item={true}
@@ -93,7 +117,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                {info.username}
+                {user && user.nickname ? <span>{user.nickname}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
 
@@ -115,29 +139,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                {info.email}
-              </Grid>
-            </div>
-
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'パスワード'}</Typography>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {info.password}
+                {user && user.email ? <span>{user.email}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
 
@@ -159,7 +161,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { info.fullName ? <span>{info.fullName}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                {user && user.name ? <span>{user.name}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
 
@@ -181,7 +183,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { info.alphabet ? <span>{info.alphabet}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                { user.name_kana ? <span>{user.name_kana}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
               </Grid>
             </div>
 
@@ -204,7 +206,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { info.gender ? <span>{info.gender}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                {user ? genderTemplate(user.gender) : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
             <div className={classes.block}>
@@ -226,7 +228,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { info.birthday ? <span>{info.birthday}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                {user && user.dob ? <span>{user.dob}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
             <div className={classes.block}>
@@ -248,7 +250,15 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { info.address ? <span>{info.address}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                { user.zipcode || user.city || user.district ? <>
+                  <span>{user.zipcode}</span>
+                  <br/>
+                  {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)).name}</span> : ''}
+                  <br/>
+                  <span>{user.district}</span>
+                  <br/>
+                </> : <span className={classes.textDisable}>{'未登録'}</span>
+                }
               </Grid>
             </div>
           </Grid>
