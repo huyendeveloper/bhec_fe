@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {api} from '~/lib/api';
+import {clean} from '~/lib/object';
 
 const parserError = (errors) => {
   return errors[0].message.
@@ -9,7 +10,25 @@ const parserError = (errors) => {
 
 export default class ProductService {
   async getProducts(payload) {
-    const [data, errors] = await api.get('/products', payload);
+    const cleanPayload = clean(payload);
+    const activeParam = {};
+    let {category, tag} = cleanPayload;
+    if (category && category.length) {
+      if (category === 'string') {
+        category = category.split(',');
+      }
+      activeParam.category = category;
+    }
+    if (tag && tag.length) {
+      if (tag === 'string') {
+        tag = tag.split(',');
+      }
+      activeParam.tag = tag;
+    }
+    if (payload?.keyword && payload?.keyword.length) {
+      activeParam.keyword = payload.keyword;
+    }
+    const [data, errors] = await api.get('/products', {...cleanPayload, ...activeParam});
     if (errors.length) {
       return parserError(errors);
     }
@@ -24,16 +43,16 @@ export default class ProductService {
     return data;
   }
 
-  async getTags(params) {
-    const [data, errors] = await api.get('/tags', params);
+  async getTags() {
+    const [data, errors] = await api.get('/tags');
     if (errors.length) {
       return parserError(errors);
     }
     return data;
   }
 
-  async getCategories(params) {
-    const [data, errors] = await api.get('/categories', params);
+  async getCategories() {
+    const [data, errors] = await api.get('/categories');
     if (errors.length) {
       return parserError(errors);
     }

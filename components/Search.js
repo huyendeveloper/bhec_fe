@@ -5,10 +5,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Router from 'next/router';
+import PropTypes from 'prop-types';
 
 import {ProductService} from '~/services';
 const Product = new ProductService();
-import {clean} from '~/shared/module';
+import {clean, omit} from '~/lib/object';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -159,94 +160,115 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Search = () => {
-  const [openSearchCategory, setOpenSearchCategory] = useState(false);
-  const [openSearchTag, setOpenSearchTag] = useState(false);
-  const [categoryActive, setCategoryActive] = useState();
+const Search = ({query = {}}) => {
+  const [isExpandedCategory, toggleCategory] = useState(false);
+  const [isExpandedTag, toggleTag] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState();
   const [listCategory, setListCategory] = useState([]);
-  const [listTag, setListTag] = useState([]);
-  const [listTagActive, setListTagActive] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [activeTags, setActiveTags] = useState([]);
   const [keywordSearch, setKeywordSearch] = useState();
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
-    getListTag();
-    getListCategory();
+    getInitData();
   }, []);
 
-  const getListTag = async () => {
-    const result = await Product.getTags({});
-    if (result) {
-      setListTag(result.tags);
+  const getInitData = async () => {
+    const tagArray = await getTags();
+    const categoryArray = await getListCategory();
+    const {category, tag, keyword} = query;
+    const queryTag = tag ? tag.split(',') : [];
+    const findCategory = categoryArray.find(({name}) => name === category);
+    const findTags = queryTag.map((item) => {
+      const targetTag = tagArray.find(({name}) => name === item);
+      return targetTag;
+    });
+    setCurrentCategory(findCategory);
+    setActiveTags(findTags);
+    setKeywordSearch(keyword);
+  };
+
+  const getTags = async () => {
+    const result = await Product.getTags();
+    let res = [];
+    if (result?.tags) {
+      setTags(result.tags);
+      res = result.tags;
     }
+    return res;
   };
 
   const getListCategory = async () => {
-    const result = await Product.getCategories({});
-    if (result) {
+    const result = await Product.getCategories();
+    let res = [];
+    if (result?.categories) {
       setListCategory(result.categories);
+      res = result.categories.reduce((newRes, item) => {
+        return [...newRes, omit(item, ['child_categories']), ...item.child_categories];
+      }, []);
     }
+    return res;
   };
 
-  const checkCategoryActive = (id) => {
-    if (categoryActive) {
-      return categoryActive.id === id;
+  const isActiveCategory = (id) => (currentCategory?.id === id);
+
+  const isActiveTag = (id) => {
+    if (activeTags.length) {
+      return activeTags.some((item) => item.id === id);
     }
     return false;
   };
 
-  const checkTagActive = (id) => {
-    if (listTagActive.length) {
-      return listTagActive.find((item) => item.id === id);
-    }
-    return false;
+  const onSelectCategory = (category) => {
+    const isSelected = isActiveCategory(category.id);
+    const targetCategory = isSelected ? null : category;
+    setCurrentCategory(targetCategory);
+    toggleCategory(false);
   };
 
-  const selectedCategory = (category) => {
-    setCategoryActive(category);
-    setOpenSearchCategory(false);
-  };
-
-  const selectedTag = (tag) => {
-    const indexExits = listTagActive.findIndex((item) => item.id === tag.id);
+  const onSelectTag = (tag) => {
+    const indexExits = activeTags.findIndex((item) => item.id === tag.id);
     if (indexExits >= 0) {
-      listTagActive.splice(indexExits, 1);
-      setListTagActive([...listTagActive]);
+      activeTags.splice(indexExits, 1);
+      setActiveTags([...activeTags]);
     } else {
-      setListTagActive([tag, ...listTagActive]);
+      setActiveTags([...activeTags, tag]);
     }
 
-    setOpenSearchTag(false);
+    toggleTag(false);
   };
 
-  const removeTagActive = (index) => {
-    listTagActive.splice(index, 1);
-    setListTagActive([...listTagActive]);
+  const removeTag = (index) => {
+    activeTags.splice(index, 1);
+    setActiveTags([...activeTags]);
   };
 
-  const searchSubmit = () => {
-    const query = {
-      category: categoryActive ? categoryActive.name : '',
-      tag: listTagActive.length ? listTagActive.map((item) => item.name).join(',') : '',
+  const onSearch = () => {
+    const newQuery = {
+      category: currentCategory ? currentCategory.name : '',
+      tag: activeTags.length ? activeTags.map((item) => item.name).join(',') : '',
       keyword: keywordSearch || '',
     };
-    const cleanObj = clean(query);
+    const cleanObj = clean(newQuery);
+    toggleCategory(false);
+    toggleTag(false);
     Router.push({
       pathname: '/search-page',
       query: cleanObj,
     });
   };
 
-  const openTagSearch = () => {
-    setOpenSearchTag(!openSearchTag);
-    setOpenSearchCategory(false);
+  const toggleSearch = () => {
+    toggleTag(!isExpandedTag);
+    toggleCategory(false);
   };
 
   const openCategorySearch = () => {
-    setOpenSearchTag(false);
-    setOpenSearchCategory(!openSearchCategory);
+    toggleTag(false);
+    toggleCategory(!isExpandedCategory);
   };
 
   return (
@@ -274,7 +296,7 @@ const Search = () => {
           </IconButton>
           {
             isMobile ? (null) : (
-              <span>{categoryActive ? categoryActive.name : 'カテゴリー'}</span>
+              <span>{currentCategory ? currentCategory.name_kana : 'カテゴリー'}</span>
             )
           }
         </div>
@@ -293,7 +315,7 @@ const Search = () => {
         <div
           className={classes.input}
         >
-          {listTagActive && listTagActive.length > 0 ? listTagActive.map((tag, index) => {
+          {activeTags && activeTags.length > 0 ? activeTags.map((tag, index) => {
             return (
               <div
                 className={classes.itemSearch}
@@ -302,16 +324,17 @@ const Search = () => {
                 <span style={{marginRight: '0.5rem'}}>{tag.name}</span>
                 <CloseIcon
                   fontSize='small'
-                  onClick={() => removeTagActive(index)}
+                  onClick={() => removeTag(index)}
                 />
               </div>
             );
           }) : null}
           <div className={classes.divSearch}>
             <input
-              placeholder={listTagActive && listTagActive.length > 0 ? '' : '検索キーワードを入力してください'}
-              onClick={() => openTagSearch()}
+              placeholder={activeTags && activeTags.length > 0 ? '' : '検索キーワードを入力してください'}
+              onClick={() => toggleSearch()}
               className={classes.inputSearch}
+              value={keywordSearch}
               onChange={(e) => setKeywordSearch(e.target.value)}
             />
           </div>
@@ -320,12 +343,12 @@ const Search = () => {
           variant='contained'
           size='large'
           className={classes.btnSearch}
-          onClick={() => searchSubmit()}
+          onClick={() => onSearch()}
         >
           {'検索'}
         </Button>
 
-        {openSearchCategory && <div className={classes.searchBox}>
+        {isExpandedCategory && <div className={classes.searchBox}>
           <Grid
             container={true}
             spacing={3}
@@ -342,10 +365,10 @@ const Search = () => {
                     key={category.id}
                   >
                     <span
-                      className={clsx(classes.parentCategoryLabel, checkCategoryActive(category.id) ? classes.active : '')}
-                      onClick={() => selectedCategory(category)}
+                      className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
+                      onClick={() => onSelectCategory(category)}
                     >
-                      {category.name}
+                      {category.name_kana}
                     </span>
                     <Grid
                       container={true}
@@ -361,10 +384,10 @@ const Search = () => {
                               key={c.id}
                             >
                               <span
-                                className={clsx(classes.childCategoryLabel, checkCategoryActive(c.id) ? classes.active : '')}
-                                onClick={() => selectedCategory(c)}
+                                className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
+                                onClick={() => onSelectCategory(c)}
                               >
-                                {c.name}
+                                {c.name_kana}
                               </span>
                             </Grid>
                           </>
@@ -377,14 +400,14 @@ const Search = () => {
             }) : null}
           </Grid>
         </div>}
-        {openSearchTag && <div className={classes.searchBox}>
+        {isExpandedTag && <div className={classes.searchBox}>
           <Grid
             container={true}
             spacing={3}
             maxWidth={'lg'}
             style={{padding: '1rem'}}
           >
-            {listTag && listTag.length > 0 ? listTag.map((tag, index) => {
+            {tags && tags.length ? tags.map((tag, index) => {
               return (
                 <>
                   <Grid
@@ -392,11 +415,11 @@ const Search = () => {
                     xs={6}
                     md={2}
                     key={index}
-                    style={{marginBotton: '1rem'}}
+                    style={{marginBottom: '1rem'}}
                   >
                     <span
-                      className={clsx(classes.tagLabel, checkTagActive(tag.id) ? classes.active : '')}
-                      onClick={() => selectedTag(tag)}
+                      className={clsx(classes.tagLabel, isActiveTag(tag.id) ? classes.active : '')}
+                      onClick={() => onSelectTag(tag)}
                     >
                       {tag.name}
                     </span>
@@ -411,4 +434,7 @@ const Search = () => {
   );
 };
 
+Search.propTypes = {
+  query: PropTypes.object,
+};
 export default Search;

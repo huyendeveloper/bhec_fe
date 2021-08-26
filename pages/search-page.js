@@ -1,7 +1,9 @@
-import {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box, Container, Breadcrumbs as MuiBreadcrumbs, Typography, Link} from '@material-ui/core';
-import {useRouter} from 'next/router';
+
+import PropTypes from 'prop-types';
+
+import {clean} from '~/lib/object';
 
 import {Header, Footer, ContentBlock, Search} from '~/components';
 import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
@@ -12,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: '3rem 0',
   },
-  favouriteProducts: {
+  favoriteProducts: {
     marginTop: '2rem',
   },
   gridFilter: {
@@ -111,28 +113,15 @@ const linkProps = [
   },
   {
     id: 2,
-    linkLabel: 'の検索結果',
+    linkLabel: '検索結果',
     linkUrl: '/search-page',
   },
 ];
 
-export default function SearchPage() {
+const SearchPage = ({category, tag, keyword, products}) => {
   const classes = useStyles();
-  const [listProduct, setListProduct] = useState([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    getListProduct(router.query);
-  }, []);
-
-  const getListProduct = async (query) => {
-    const result = await Product.getProducts(query);
-    setListProduct([...result.products]);
-  };
-
-  const searchProduct = (query) => {
-    getListProduct(query);
-  };
+  const searchTitle = tag || category;
+  const message = products.length < 1 ? '該当する結果がありません' : searchTitle ? `${searchTitle}に関する結果一覧` : '';
 
   return (
     <div className={classes.root}>
@@ -179,31 +168,12 @@ export default function SearchPage() {
               item={true}
               xs={12}
             >
-              {/* <Paper
-                component='form'
-                className={classes.paper}
-              >
-                <SearchIcon style={{marginLeft: '1rem'}}/>
-                <InputBase
-                  className={classes.input}
-                  placeholder='検索キーワードを入力してください'
-                  inputProps={{'aria-label': 'search'}}
-                />
-                <Button
-                  variant='contained'
-                  type='submit'
-                  size='large'
-                  className={classes.btnSearch}
-                >
-                  {'検索'}
-                </Button>
-              </Paper> */}
-              <Search searchProduct={searchProduct}/>
+              <Search query={{category, tag, keyword}}/>
             </Grid>
           </Grid>
         </Container>
         <ContentBlock
-          title='“送料無料”,”農薬節約栽培”,”期間限定”に関する記事一覧'
+          title={message}
           bgImage='/img/noise.png'
           bgRepeat='repeat'
           mixBlendMode='multiply'
@@ -214,9 +184,9 @@ export default function SearchPage() {
             <Grid
               container={true}
               spacing={3}
-              className={classes.favouriteProducts}
+              className={classes.favoriteProducts}
             >
-              {listProduct.length && listProduct.map((product) => (
+              {products.length > 0 && products.map((product) => (
                 <Grid
                   key={product.productId}
                   item={true}
@@ -244,21 +214,31 @@ export default function SearchPage() {
                 imgAlt='Seller Form'
               />
             </Grid>
-            {/* <Grid
-              item={true}
-              xs={12}
-              md={12}
-              style={{marginBottom: '2rem'}}
-            >
-              <Pagination
-                count={5}
-                color='secondary'
-              />
-            </Grid> */}
           </Box>
         </ContentBlock>
       </div>
       <Footer/>
     </div>
   );
-}
+};
+
+SearchPage.propTypes = {
+  products: PropTypes.array,
+  category: PropTypes.string,
+  tag: PropTypes.string,
+  keyword: PropTypes.string,
+};
+
+export const getServerSideProps = async ({query}) => {
+  const {category, tag, keyword} = query;
+  const res = await Product.getProducts(query);
+  const products = res?.products ?? [];
+
+  return {
+    props: clean({
+      category, tag, keyword, products,
+    }),
+  };
+};
+
+export default SearchPage;

@@ -43,16 +43,6 @@ export const serialize = (obj) => {
   return str.join('&');
 };
 
-export const clean = (obj) => {
-  for (var propName in obj) {
-    // eslint-disable-next-line no-undefined
-    if (!obj[propName] || obj[propName] === null || obj[propName] === undefined) {
-      delete obj[propName];
-    }
-  }
-  return obj;
-};
-
 export const checkCreditCardType = (cardNumber) => {
   let cardType = null;
   if (isVisaCardnumber(cardNumber)) {
