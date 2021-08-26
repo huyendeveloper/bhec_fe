@@ -113,10 +113,10 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.font.default,
     fontStyle: 'normal',
     fontWeight: 'normal',
-    fontSize: '0.8rem',
+    fontSize: '0.75',
     lineHeight: '1.2rem',
     color: theme.palette.black.light,
-    borderRight: `2px solid ${theme.border.default}`,
+    borderRight: `1px solid ${theme.border.default}`,
     padding: '0 0.5rem',
     display: 'flex',
     flexDirection: 'column',
@@ -125,11 +125,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     [theme.breakpoints.up('md')]: {
       width: '33%',
-      fontSize: '0.7rem',
+      fontSize: '0.75rem',
     },
     [theme.breakpoints.up('xs')]: {
       width: '33%',
-      fontSize: '0.7rem',
+      fontSize: '0.75rem',
     },
 
     '&:last-child': {
@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
 
   linkPersonal: {
     textDecoration: 'none',
-    borderRight: `2px solid ${theme.border.default}`,
+    borderRight: `1px solid ${theme.border.default}`,
     width: '33%',
     display: 'flex',
     justifyContent: 'center',
@@ -184,10 +184,6 @@ const listNavigation = [
   },
   {
     name: 'ブログ',
-    url: '/',
-  },
-  {
-    name: '伝統の一品',
     url: '/',
   },
   {

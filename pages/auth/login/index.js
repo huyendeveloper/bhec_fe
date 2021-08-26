@@ -156,9 +156,22 @@ const useStyles = makeStyles((theme) => ({
   },
 
   grid: {
-    width: '19%',
+    width: '20%',
     margin: '0 40%',
     textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      margin: '0 32%',
+      width: '36%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      margin: '0 14%',
+      width: '72%',
+    },
+  },
+
+  gridInput: {
+    width: '22.75rem',
+    margin: '0 calc((100% - 22.75rem)/2)',
     [theme.breakpoints.down('md')]: {
       margin: '0 32%',
       width: '36%',
@@ -248,7 +261,7 @@ const useStyles = makeStyles((theme) => ({
 
   labelLogin: {
     fontFamily: theme.font.default,
-    marginLeft: '2rem',
+    marginLeft: '1rem',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
@@ -351,7 +364,6 @@ const Login = () => {
           },
         );
       } else {
-        // alert('ログインする前にアカウントを確認してください！');
         Router.push({
           pathname: '/auth/account-confirm',
           query: {token: res.access_token},
@@ -360,7 +372,7 @@ const Login = () => {
     } else {
       setAlerts({
         type: 'error',
-        message: 'メールアドレスまたはパスワードに誤りがあります。',
+        message: '無効なメールアドレス/パスワードの組み合わせです。',
       });
     }
   };
@@ -375,7 +387,7 @@ const Login = () => {
           type: 'gg',
           id_token: credential.idToken,
         });
-        if (res) {
+        if (res.id) {
           await signIn('credentials',
             {
               data: res,
@@ -383,6 +395,11 @@ const Login = () => {
               callbackUrl: `${window.location.origin}`,
             },
           );
+        } else {
+          setAlerts({
+            type: 'error',
+            message: '無効なユーザーです。管理者にお問い合わせください',
+          });
         }
       }
     });
@@ -557,7 +574,7 @@ const Login = () => {
                 item={true}
                 xs={12}
               >
-                <div className={classes.grid}>
+                <div className={classes.gridInput}>
                   <Controller
                     className={classes.grid}
                     name='email'
@@ -609,7 +626,7 @@ const Login = () => {
                 item={true}
                 xs={12}
               >
-                <div className={classes.grid}>
+                <div className={classes.gridInput}>
                   <Controller
                     className={classes.grid}
                     name='password'

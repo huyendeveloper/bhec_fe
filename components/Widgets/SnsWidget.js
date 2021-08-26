@@ -19,7 +19,7 @@ const SnsWidget = () => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = theme.breakpoints.down('sm');
-  const imgSize = isTablet ? 40 : 44;
+  const imgSize = isTablet ? 48 : 44;
   return (
     <div className={classes.root}>
       <Link href={'https://www.facebook.com/oshinagaki.store'}>

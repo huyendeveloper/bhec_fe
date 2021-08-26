@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.step.three.color,
   },
   stepLabel: {
-    width: '44%',
+    width: '8.4rem',
     margin: '0 20%',
     textAlign: 'center',
     color: theme.palette.black4.main,
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   stepLabel2: {
-    width: '36%',
+    width: '7.25rem',
   },
 
   divider: {

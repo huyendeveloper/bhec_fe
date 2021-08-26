@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
   labelLogin: {
     fontFamily: 'Roboto',
-    marginLeft: '2rem',
+    marginLeft: '1rem',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
