@@ -28,3 +28,4 @@ export {default as StyledForm} from './StyledForm';
 export {default as StyledSteppers} from './StyledSteppers';
 export {default as ThanksPopup} from './ThanksPopup';
 export {default as UserAccount} from './UserAccount';
+export {default as AlertMessageForSection} from './AlertMessageForSection';

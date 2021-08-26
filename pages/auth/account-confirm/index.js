@@ -1,20 +1,17 @@
 /* eslint-disable no-useless-escape */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
+import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import MuiAlert from '@material-ui/lab/Alert';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 
 import Router, {useRouter} from 'next/router';
 
-import {httpStatus} from '~/constants';
-
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {StyledForm, ContentBlock, Header, Footer} from '~/components';
+import {AlertMessageForSection, StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,9 +126,7 @@ const useStyles = makeStyles((theme) => ({
 
 function AccountConfirm() {
   const classes = useStyles();
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
+  const [alerts, setAlerts] = useState(null);
   const {
     control,
     handleSubmit,
@@ -139,24 +134,43 @@ function AccountConfirm() {
   } = useForm({criteriaMode: 'all'});
   const router = useRouter();
 
-  const onSubmit = async (data) => {
-    const headers = {
-      Authorization: `Bearer ${router.query.token}`,
-    };
-    const res = await Auth.confirmAccount(data, headers);
-    if (res.status === httpStatus.SUCCESS) {
-      Router.push({
-        pathname: '/auth/login',
-      });
-    } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setMessage(res.data.message);
+  useEffect(async () => {
+    if (router.query.confirmation_token) {
+      setAlerts(null);
+      const body = {
+        confirmation_token: router.query && router.query.confirmation_token ? router.query.confirmation_token : '',
+      };
+      const res = await Auth.confirmAccount(body);
+      if (res.user) {
+        Router.push({
+          pathname: '/auth/login',
+        });
+      }
     }
-  };
+  }, [router.query.confirmation_token]);
 
-  const handleCloseMess = () => {
-    setOpenMess(false);
+  const onSubmit = async (data) => {
+    setAlerts(null);
+    const body = {
+      ...data,
+    };
+    const res = await Auth.confirmAccount(body);
+    if (res.user) {
+      setAlerts({
+        type: 'success',
+        message: 'パスワード再設定成功',
+      });
+      setTimeout(() => {
+        Router.push({
+          pathname: '/auth/login',
+        });
+      }, 2000);
+    } else {
+      setAlerts({
+        type: 'error',
+        message: '確認コードが間違っている',
+      });
+    }
   };
 
   return (
@@ -256,20 +270,10 @@ function AccountConfirm() {
         </div>
         <Footer/>
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {messageResponse}
-        </MuiAlert>
-      </Snackbar>
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </>
   );
 }

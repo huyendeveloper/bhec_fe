@@ -2,6 +2,7 @@ import {axios} from '~/modules/axios';
 import {api} from '~/lib/api';
 
 const parserError = (errors) => {
+  console.log('errror', errors);
   return errors[0].message.
     split('\n').
     map((error, i) => <div key={`err-${String(i)}`}>{error}</div>);
@@ -53,13 +54,12 @@ export default class AuthService {
     return data;
   }
 
-  async confirmAccount(payload, headers) {
-    const result = await axios.post('/users/confirmation', payload, {headers}).then((res) => {
-      return res;
-    }).catch((error) => {
-      return error.response;
-    });
-    return result;
+  async confirmAccount(payload) {
+    const [data, errors] = await api.post('/users/confirmation', payload);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
   }
 
   async changePassword(payload) {

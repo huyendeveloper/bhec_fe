@@ -1,19 +1,17 @@
 /* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
+import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import {httpStatus} from '~/constants';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {Header, Footer, ContentBlock, StyledForm} from '~/components';
+import {AlertMessageForSection, Header, Footer, ContentBlock, StyledForm} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     textAlign: 'center',
-    margin: '2rem 0',
+    width: '100%',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.8rem',
     },
@@ -109,7 +107,6 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     padding: '0',
     margin: '1rem 0',
-    textAlign: 'center',
   },
 
   gridNote: {
@@ -185,9 +182,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ForgotPassword() {
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
+  const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
   const {
     control,
@@ -198,18 +193,16 @@ function ForgotPassword() {
   const onSubmit = async (data) => {
     const res = await Auth.forgotPassword(data);
     if (res.status === httpStatus.SUCCESS) {
-      Router.push({
-        pathname: '/auth/request-password',
+      setAlerts({
+        type: 'success',
+        message: res.success,
       });
     } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setMessage(res);
+      setAlerts({
+        type: 'error',
+        message: res,
+      });
     }
-  };
-
-  const handleCloseMess = () => {
-    setOpenMess(false);
   };
 
   return (
@@ -291,7 +284,7 @@ function ForgotPassword() {
                       xs={12}
                       className={classes.grid}
                     >
-                      <span className={classes.note}>{'ご登録されたメールアドレスにパスワード再設定のご案内が送信されます。 '}</span>
+                      <div className={classes.note}>{'ご登録されたメールアドレスにパスワード再設定のご案内が送信されます。 '}</div>
                     </Grid>
                     <Grid
                       item={true}
@@ -307,26 +300,16 @@ function ForgotPassword() {
                     </Grid>
                   </div>
                 </Grid>
+                <AlertMessageForSection
+                  alert={alerts}
+                  handleCloseAlert={() => setAlerts(null)}
+                />
               </Container>
             </StyledForm>
           </ContentBlock>
         </div>
         <Footer/>
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {messageResponse}
-        </MuiAlert>
-      </Snackbar>
     </>
   );
 }

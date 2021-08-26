@@ -2,17 +2,15 @@
 /* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
+import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {StyledForm, ContentBlock, Header, Footer} from '~/components';
+import {AlertMessageForSection, StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,9 +123,7 @@ const useStyles = makeStyles((theme) => ({
 
 function RegisterEmail() {
   const classes = useStyles();
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
+  const [alerts, setAlerts] = useState(null);
   const {
     control,
     handleSubmit,
@@ -142,19 +138,16 @@ function RegisterEmail() {
       },
     });
     if (res.id) {
-      Router.push({
-        pathname: '/auth/account-confirm',
-        query: {token: res.data.access_token},
+      setAlerts({
+        type: 'success',
+        message: '登録が成功しました。メールをチェックしてアカウントを確認してください',
       });
     } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setMessage(res);
+      setAlerts({
+        type: 'error',
+        message: res,
+      });
     }
-  };
-
-  const handleCloseMess = () => {
-    setOpenMess(false);
   };
 
   return (
@@ -366,20 +359,10 @@ function RegisterEmail() {
         </div>
         <Footer/>
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {messageResponse}
-        </MuiAlert>
-      </Snackbar>
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </>
   );
 }

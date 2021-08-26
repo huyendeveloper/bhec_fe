@@ -1,19 +1,18 @@
 /* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
+import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
+import Router, {useRouter} from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import {httpStatus} from '~/constants';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {StyledForm, ContentBlock, Header, Footer} from '~/components';
+import {AlertMessageForSection, StyledForm, ContentBlock, Header, Footer} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,9 +127,8 @@ const useStyles = makeStyles((theme) => ({
 
 function RequestPassword() {
   const classes = useStyles();
-  const [messageResponse, setMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
+  const router = useRouter();
+  const [alerts, setAlerts] = useState(null);
   const {
     control,
     handleSubmit,
@@ -139,20 +137,28 @@ function RequestPassword() {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
-    const res = await Auth.resetPassword(data);
+    setAlerts(null);
+    const body = {
+      ...data,
+      reset_password_token: router.query && router.query.reset_password_token ? router.query.reset_password_token : '',
+    };
+    const res = await Auth.resetPassword(body);
     if (res.status === httpStatus.SUCCESS) {
-      Router.push({
-        pathname: '/auth/login',
+      setAlerts({
+        type: 'success',
+        message: 'パスワード再設定成功',
       });
+      setTimeout(() => {
+        Router.push({
+          pathname: '/auth/login',
+        });
+      }, 2000);
     } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setMessage(res);
+      setAlerts({
+        type: 'error',
+        message: res,
+      });
     }
-  };
-
-  const handleCloseMess = () => {
-    setOpenMess(false);
   };
 
   return (
@@ -177,54 +183,6 @@ function RequestPassword() {
                   justifyContent='center'
                 >
                   <div className={classes.content}>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <label
-                        htmlFor='reset_password_token'
-                        className='formControlLabel'
-                      >
-                        {'検証コード '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='reset_password_token'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: 'この入力は必須です。',
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='reset_password_token'
-                            variant='outlined'
-                            error={Boolean(errors.reset_password_token)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            inputRef={ref}
-                            placeholder='検証コードをご記入ください。'
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='reset_password_token'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >
-                              {message}
-                            </p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
                     <Grid
                       item={true}
                       xs={12}
@@ -347,6 +305,10 @@ function RequestPassword() {
                       >{'送信する'}</Button>
                     </Grid>
                   </div>
+                  <AlertMessageForSection
+                    alert={alerts}
+                    handleCloseAlert={() => setAlerts(null)}
+                  />
                 </Grid>
               </Container>
             </StyledForm>
@@ -354,20 +316,6 @@ function RequestPassword() {
         </div>
         <Footer/>
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {messageResponse}
-        </MuiAlert>
-      </Snackbar>
     </>
   );
 }
