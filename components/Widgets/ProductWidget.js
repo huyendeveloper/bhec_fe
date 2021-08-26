@@ -147,15 +147,12 @@ const ProductWidget = ({variant, data, heart, border}) => {
         </Link>
 
         <div className={classes.productTags}>
-          {/* eslint-disable-next-line react/prop-types */}
           {tags && tags.length > 0 ? tags.map((tag, index) => {
             return (
               <Chip
                 key={String(index)}
                 size='small'
                 label={tag.name}
-
-              // className={tag.isFeatured ? classes.productTagHighlight : ''}
               />
             );
           }) : null}
@@ -199,9 +196,11 @@ const ProductWidget = ({variant, data, heart, border}) => {
               className={classes.sellerInfo}
             >{seller.name}</Typography>
             <Typography
-              component={'p'}
+              component={'div'}
               className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
-            >{seller.catch_phrase}</Typography>
+            >
+              {seller.catch_phrase}
+            </Typography>
           </div>
         </Link>
       </CardActions>

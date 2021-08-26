@@ -23,4 +23,20 @@ export default class ProductService {
     }
     return data;
   }
+
+  async getTags(params) {
+    const [data, errors] = await api.get('/tags', params);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
+  async getCategories(params) {
+    const [data, errors] = await api.get('/categories', params);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }

@@ -32,6 +32,27 @@ const isJCBCardnumber = (inputtxt) => {
   return cardno.test(inputtxt);
 };
 
+export const serialize = (obj) => {
+  var str = [];
+  for (var p in obj) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (obj.hasOwnProperty(p)) {
+      str.push(p + '=' + obj[p]);
+    }
+  }
+  return str.join('&');
+};
+
+export const clean = (obj) => {
+  for (var propName in obj) {
+    // eslint-disable-next-line no-undefined
+    if (!obj[propName] || obj[propName] === null || obj[propName] === undefined) {
+      delete obj[propName];
+    }
+  }
+  return obj;
+};
+
 export const checkCreditCardType = (cardNumber) => {
   let cardType = null;
   if (isVisaCardnumber(cardNumber)) {
