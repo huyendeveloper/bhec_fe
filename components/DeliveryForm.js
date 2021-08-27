@@ -1,23 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Box, makeStyles, TextField, Grid, Icon, FormControl, NativeSelect} from '@material-ui/core';
-import {useForm, Controller} from 'react-hook-form';
-
 import {ErrorMessage} from '@hookform/error-message';
+import {Box, FormControl, Grid, Icon, makeStyles, NativeSelect, TextField, useMediaQuery} from '@material-ui/core';
+import {useTheme} from '@material-ui/core/styles';
+import {getSession} from 'next-auth/client';
+import PropTypes from 'prop-types';
+import React, {useEffect, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 
 import {Button, StyledForm} from '~/components';
-import {prefectures} from '~/constants';
+import {AddressService} from '~/services/address.services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: 0,
-    padding: theme.spacing(2),
+    padding: theme.spacing(1, 9, 6),
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(1, 0, 5),
+    },
   },
 }));
 
 const DeliveryForm = (props) => {
-  const {dataEdit, editMode} = props;
+  const {dataEdit, editMode, handleClose, prefectures} = props;
   const classes = useStyles();
+  const [isAuthenticated, setIsAuthenticated] = useState();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const {
     control,
@@ -25,9 +32,31 @@ const DeliveryForm = (props) => {
     formState: {errors},
   } = useForm({criteriaMode: 'all'});
 
+  const checkAuthenticated = async () => {
+    const session = await getSession();
+    if (session == null) {
+      setIsAuthenticated(false);
+    } else {
+      setIsAuthenticated(true);
+    }
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, []);
+
   const onSubmit = async (data) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+    if (isAuthenticated) {
+      const result = await AddressService.createAddress(data);
+      if (result.status === 201) {
+        // eslint-disable-next-line no-console
+        console.log('success');
+      }
+    } else {
+      const prefecture = prefectures.find((item) => Number(item.code) === Number(data.province_id));
+      window.localStorage.setItem('address', JSON.stringify({...data, province: prefecture}));
+    }
+    handleClose();
   };
 
   return (
@@ -58,7 +87,7 @@ const DeliveryForm = (props) => {
                       name='name'
                       control={control}
                       defaultValue={editMode ? dataEdit.name : ''}
-                      rules={{required: 'この入力は必須です。'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='name'
@@ -91,7 +120,7 @@ const DeliveryForm = (props) => {
                   </Grid>
                   {/*END NAME*/}
 
-                  {/*POSTAL CODE*/}
+                  {/*ZIP CODE*/}
                   <Grid
                     item={true}
                     xs={12}
@@ -108,7 +137,7 @@ const DeliveryForm = (props) => {
                       name='zipcode'
                       control={control}
                       defaultValue={editMode ? dataEdit.zipcode : ''}
-                      rules={{required: 'この入力は必須です。'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='zipcode'
@@ -139,7 +168,7 @@ const DeliveryForm = (props) => {
                       }}
                     />
                   </Grid>
-                  {/*END POSTAL CODE*/}
+                  {/*END ZIP CODE*/}
 
                   {/*PROVINCE*/}
                   <Grid
@@ -148,31 +177,36 @@ const DeliveryForm = (props) => {
                     md={12}
                   >
                     <label
-                      htmlFor='city'
+                      htmlFor='province_id'
                       className='formControlLabel'
                     >
                       {'都道府県 '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
-                      name='city'
+                      name='province_id'
                       control={control}
                       defaultValue=''
-                      rules={{required: 'この入力は必須です。'}}
+                      rules={{required: '必須項目です。',
+                        validate: {
+                          matchesPreviousPassword: (value) => {
+                            return value !== 0 || '必須項目です。';
+                          },
+                        }}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
                           <NativeSelect
-                            className={errors.city ? 'selectBoxError' : ''}
+                            className={errors.province_id ? 'selectBoxError' : ''}
                             name={name}
                             value={value}
                             inputRef={ref}
                             onChange={onChange}
                           >
-                            {prefectures.map((pref, index) => (
+                            {prefectures.map((pref) => (
                               <option
-                                key={String(index)}
-                                value={pref.value}
-                              >{pref.label}</option>
+                                key={pref.code}
+                                value={pref.code}
+                              >{pref.name}</option>
                             ))}
                           </NativeSelect>
                         </FormControl>
@@ -180,7 +214,7 @@ const DeliveryForm = (props) => {
                     />
                     <ErrorMessage
                       errors={errors}
-                      name='city'
+                      name='province_id'
                       render={({messages}) => {
                         return messages ? Object.entries(messages).map(([type, message]) => (
                           <p
@@ -196,30 +230,30 @@ const DeliveryForm = (props) => {
                   </Grid>
                   {/*END PROVINCE*/}
 
-                  {/*DISTRICT*/}
+                  {/*CITY*/}
                   <Grid
                     item={true}
                     xs={12}
                     md={12}
                   >
                     <label
-                      htmlFor='district'
+                      htmlFor='city'
                       className='formControlLabel'
                     >
                       {'市区町村 '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
-                      name='district'
+                      name='city'
                       control={control}
-                      defaultValue={editMode ? dataEdit.district : ''}
-                      rules={{required: 'この入力は必須です。'}}
+                      defaultValue={editMode ? dataEdit.city : ''}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
-                          id='district'
+                          id='city'
                           label='渋谷区渋谷'
                           variant='outlined'
-                          error={Boolean(errors.district)}
+                          error={Boolean(errors.city)}
                           InputLabelProps={{shrink: false}}
                           name={name}
                           value={value}
@@ -230,7 +264,7 @@ const DeliveryForm = (props) => {
                     />
                     <ErrorMessage
                       errors={errors}
-                      name='district'
+                      name='city'
                       render={({messages}) => {
                         return messages ? Object.entries(messages).map(([type, message]) => (
                           <p
@@ -244,7 +278,7 @@ const DeliveryForm = (props) => {
                       }}
                     />
                   </Grid>
-                  {/*END DISTRICT*/}
+                  {/*END CITY*/}
 
                   {/*ADDRESS DETAIL*/}
                   <Grid
@@ -253,20 +287,20 @@ const DeliveryForm = (props) => {
                     md={12}
                   >
                     <label
-                      htmlFor='office_room'
+                      htmlFor='address'
                       className='formControlLabel'
                     >
                       {'番地・建物名 '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
-                      name='office_room'
+                      name='address'
                       control={control}
-                      defaultValue={editMode ? dataEdit.office_room : ''}
-                      rules={{required: 'この入力は必須です。'}}
+                      defaultValue={editMode ? dataEdit.address : ''}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
-                          id='office_room'
+                          id='address'
                           label=' 1-2-3 渋谷マンション101号室'
                           variant='outlined'
                           error={Boolean(errors.city)}
@@ -280,7 +314,7 @@ const DeliveryForm = (props) => {
                     />
                     <ErrorMessage
                       errors={errors}
-                      name='office_room'
+                      name='address'
                       render={({messages}) => {
                         return messages ? Object.entries(messages).map(([type, message]) => (
                           <p
@@ -332,19 +366,19 @@ const DeliveryForm = (props) => {
                     md={12}
                   >
                     <label
-                      htmlFor='department_name'
+                      htmlFor='department'
                       className='formControlLabel'
                     >
                       {'部署名'}
                     </label>
                     <Controller
-                      name='department_name'
+                      name='department'
                       control={control}
                       defaultValue=''
                       render={({field}) => (
                         <TextField
                           label={'ABC株式会社'}
-                          id='department_name'
+                          id='department'
                           variant='outlined'
                           InputLabelProps={{shrink: false}}
                           {...field}
@@ -361,18 +395,18 @@ const DeliveryForm = (props) => {
                     md={12}
                   >
                     <label
-                      htmlFor='phone_no'
+                      htmlFor='tel'
                       className='formControlLabel'
                     >
                       {'電話番号（配送時にご連絡させていただく事があります。） '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
-                      name='phone_no'
+                      name='tel'
                       control={control}
-                      defaultValue={editMode ? dataEdit.phone_no : ''}
+                      defaultValue={editMode ? dataEdit.tel : ''}
                       rules={{
-                        required: 'この入力は必須です。',
+                        required: '必須項目です。',
                         pattern: {
                           value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
                           message: '無効な電話番号。',
@@ -380,10 +414,10 @@ const DeliveryForm = (props) => {
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
-                          id='phone_no'
+                          id='tel'
                           variant='outlined'
                           label={'0123456708'}
-                          error={Boolean(errors.phone_no)}
+                          error={Boolean(errors.tel)}
                           InputLabelProps={{shrink: false}}
                           name={name}
                           value={value}
@@ -394,7 +428,7 @@ const DeliveryForm = (props) => {
                     />
                     <ErrorMessage
                       errors={errors}
-                      name='phone_no'
+                      name='tel'
                       render={({messages}) => {
                         return messages ? Object.entries(messages).map(([type, message]) => (
                           <p
@@ -420,7 +454,7 @@ const DeliveryForm = (props) => {
               <Button
                 variant='pill'
                 customColor='red'
-                customSize='extraLarge'
+                customSize={isMobile ? 'small' : 'extraLarge'}
                 type='submit'
               >
                 {'保存する'}
@@ -436,6 +470,8 @@ const DeliveryForm = (props) => {
 DeliveryForm.propTypes = {
   dataEdit: PropTypes.any.isRequired,
   editMode: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  prefectures: PropTypes.array.isRequired,
 };
 
 DeliveryForm.defaultProps = {

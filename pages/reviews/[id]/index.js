@@ -5,11 +5,6 @@ import {Button, ReviewProduct, ReviewsBlock, ReviewShop} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 
 const useStyles = makeStyles((theme) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyItems: 'space-between',
-  },
   container: {
     padding: '0 1rem',
     width: '100%',
@@ -52,45 +47,42 @@ const ReviewsDetail = () => {
 
   return (
     <DefaultLayout title='Review - BH_EC'>
+      <ReviewsBlock
+        title={'商品レビューを書く'}
+        bgImage='/img/noise.png'
+        bgRepeat='repeat'
+      >
+        <ReviewProduct product={product}/>
+      </ReviewsBlock>
 
-      <div className={classes.content}>
-        <ReviewsBlock
-          title={'商品レビューを書く'}
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-        >
-          <ReviewProduct product={product}/>
-        </ReviewsBlock>
+      <ReviewsBlock
+        title={'店舗レビューを書く'}
+      >
+        <ReviewShop productOwner={product.productOwner}/>
+      </ReviewsBlock>
 
-        <ReviewsBlock
-          title={'店舗レビューを書く'}
-        >
-          <ReviewShop productOwner={product.productOwner}/>
-        </ReviewsBlock>
-
+      <Grid
+        container={true}
+        spacing={0}
+      >
         <Grid
-          container={true}
-          spacing={0}
+          item={true}
+          xs={12}
+          md={12}
+          lg={12}
         >
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-            lg={12}
-          >
-            <div className={classes.container}>
-              <Button
-                variant={'pill'}
-                customColor={'red'}
-                customSize={'medium'}
-                customWidth={'fullwidth'}
-              >
-                {'投稿'}
-              </Button>
-            </div>
-          </Grid>
+          <div className={classes.container}>
+            <Button
+              variant={'pill'}
+              customColor={'red'}
+              customSize={'medium'}
+              customWidth={'fullwidth'}
+            >
+              {'投稿'}
+            </Button>
+          </div>
         </Grid>
-      </div>
+      </Grid>
     </DefaultLayout>
   );
 };

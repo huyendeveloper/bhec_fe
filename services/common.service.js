@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export const commonService = {
   get,
+  post,
 };
 
 function get(url, params) {
@@ -16,4 +17,9 @@ function get(url, params) {
       },
     },
   ).then((response) => response.data);
+}
+
+function post(url, body) {
+  const result = axios.post(url, body);
+  return result;
 }

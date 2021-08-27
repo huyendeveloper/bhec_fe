@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiNativeSelect-icon': {
       display: 'none',
     },
+    '& .MuiInput-underline, .Mui-focused': {
+      border: 'none !important',
+    },
   },
 }));
 
