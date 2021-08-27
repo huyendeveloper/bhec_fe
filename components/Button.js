@@ -55,6 +55,14 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.red.main,
     },
   },
+  black: {
+    backgroundColor: theme.palette.solidBlack.default,
+    color: theme.palette.white.main,
+    '&:hover': {
+      backgroundColor: theme.palette.solidBlack.default,
+      color: theme.palette.white.main,
+    },
+  },
   pill: {
     borderRadius: 45,
   },
@@ -91,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '16.688rem',
     minHeight: '3rem',
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '0.813rem',
       lineHeight: '1.219rem',
       padding: '0.438rem 1.25rem',
@@ -99,9 +107,6 @@ const useStyles = makeStyles((theme) => ({
       minHeight: '2.5rem',
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: '0.813rem',
-      lineHeight: '1.219rem',
-      padding: '0.438rem 1.25rem',
       minWidth: '10.188rem',
     },
   },
@@ -130,6 +135,9 @@ const useStyles = makeStyles((theme) => ({
   },
   fullwidth: {
     width: '100%',
+  },
+  halfwidth: {
+    width: '48%',
   },
   bdRed: {
     border: '1px solid #BA2636',
@@ -172,10 +180,10 @@ const Button = (props) => {
 
 Button.propTypes = {
   variant: PropTypes.oneOf(['contained', 'pill']),
-  customColor: PropTypes.oneOf(['red', 'yellow', 'green', 'white', 'whiteRed', 'default']),
+  customColor: PropTypes.oneOf(['red', 'yellow', 'green', 'white', 'whiteRed', 'black', 'default']),
   customSize: PropTypes.oneOf(['extraLarge', 'medium', 'small', 'tiny']),
   customBorder: PropTypes.oneOf(['bdRed', 'bdGray', 'bdBlack']),
-  customWidth: PropTypes.oneOf(['fullwidth']),
+  customWidth: PropTypes.oneOf(['fullwidth', 'halfwidth']),
   children: PropTypes.any.isRequired,
 };
 

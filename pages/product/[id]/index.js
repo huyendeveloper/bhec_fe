@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {Avatar, Container, Grid, Table, TableBody, TableContainer, TableRow, TableCell, Typography, useMediaQuery, Chip, Box} from '@material-ui/core';
@@ -6,12 +6,14 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
+import {useSession} from 'next-auth/client';
 
-import {Header, Footer, Button, CategoryBlock, Search, ProductGallery, SelectBox, Breadcrumbs} from '~/components';
+import {Header, Footer, Button, CategoryBlock, Search, ProductGallery, Breadcrumbs, QuantityBox} from '~/components';
 import {ProductWidget, RatingWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
-import {ProductService} from '~/services';
+import {ProductService, CartService} from '~/services';
 const Product = new ProductService();
+const Cart = new CartService();
 import {cookieUtil} from '~/modules/cookieUtil';
 
 const useStyles = makeStyles((theme) => ({
@@ -185,6 +187,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProduct}) {
+  const [session] = useSession();
+  const [cartItems, setCartItems] = useState([]);
+
+  const getCartAPI = async () => {
+    const result = await Cart.getCarts();
+
+    //Set setCartItems from api data
+    if (result.cart_items.length > 0) {
+      const apiData = [];
+      for (const item of result.cart_items) {
+        const mapData = {
+          product_id: item.product_id,
+          name: item.product.name,
+          price: item.price ? item.price : 0,
+          maximum_quantity: item.product.maximum_quantity,
+          quantity: item.quantity,
+          thumb_url: item.product.thumb_url ? item.product.thumb_url : '',
+          seller_id: item.product.seller_id,
+          note: item.note,
+        };
+        apiData.push(mapData);
+      }
+      setCartItems(apiData);
+    }
+  };
+
+  useEffect(() => {
+    if (session) {
+      getCartAPI();
+    } else {
+      const cookieData = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+      setCartItems(cookieData);
+    }
+  }, [session]);
+
   const linkProps = [
     {
       id: 1,
@@ -201,17 +238,6 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
       linkLabel: '工芸品名',
     },
   ];
-
-  const generateSelectQuantity = () => {
-    const arrQuantity = [{name: '選択する', value: '0'}];
-    for (let i = 1; i <= productDetail.maximum_quantity; i++) {
-      arrQuantity.push({name: i, value: i});
-    }
-    return (
-      arrQuantity
-    );
-  };
-
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -296,15 +322,14 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
       product_id: productDetail.id,
       name: productDetail.name,
       price: productDetail.price,
-      quantity: productDetail.maximum_quantity,
-      quantity_user: 1,
-      thumbnail: productDetail.images.length > 0 ? productDetail.images[0] : '',
+      maximum_quantity: productDetail.maximum_quantity,
+      quantity: selectedQuantity,
+      thumb_url: productDetail.images.length > 0 ? productDetail.images[0] : '',
       seller_id: sellerInfo.id,
+      note: '',
     };
 
-    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
-
-    //console.log(cartItems);
+    //If cartItems empty set data to cookie and redirect to cart page
     if (!cartItems.length > 0) {
       cartItems.push(dataAdd);
       cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
@@ -315,8 +340,9 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
     //If the same seller -> add to cart and redirect to cart page
     const sameSeller = cartItems.find((item) => item.seller_id === sellerInfo.id);
     if (sameSeller) {
-      const existItem = cartItems.find((item) => item.id === productDetail.id);
+      const existItem = cartItems.find((item) => item.product_id === productDetail.id);
       if (existItem) {
+        cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
         router.push('/cart');
         return;
       }
@@ -328,6 +354,11 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
       // eslint-disable-next-line no-alert
       window.alert('cannot add other seller');
     }
+  };
+
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
+  const handleQuantity = (event) => {
+    setSelectedQuantity(parseInt(event.target.value, 10));
   };
 
   /* eslint-disable max-lines */
@@ -446,8 +477,11 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
                         {'数量'}
                       </TableCell>
                       <TableCell align='left'>
-                        <SelectBox
-                          options={generateSelectQuantity()}
+                        <QuantityBox
+                          name={'productQuantity'}
+                          maximumQuantity={productDetail.maximum_quantity}
+                          defaultValue={selectedQuantity}
+                          handleChange={(event) => handleQuantity(event)}
                         />
                       </TableCell>
                     </TableRow>
