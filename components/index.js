@@ -31,5 +31,5 @@ export {default as SellerFormConfirmations} from './SellerFormConfirmations';
 export {default as Slider} from './Slider';
 export {default as StyledForm} from './StyledForm';
 export {default as StyledSteppers} from './StyledSteppers';
-export {default as ThanksPopup} from './ThanksPopup';
+export {default as ThanksPopup} from './Contact/ThanksPopup';
 export {default as UserAccount} from './UserAccount';
