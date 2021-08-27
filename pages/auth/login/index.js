@@ -1,9 +1,8 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
 import {useState, useEffect} from 'react';
-import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography, Snackbar} from '@material-ui/core';
+import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
@@ -14,7 +13,7 @@ import {Controller, useForm} from 'react-hook-form';
 import firebase from '../../../firebase';
 
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
-import {Alert, StyledForm} from '~/components';
+import {AlertMessageForSection, StyledForm} from '~/components';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
@@ -290,30 +289,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
 }));
-
-const AlertMessageForSection = ({alert, handleCloseAlert}) => {
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    handleCloseAlert();
-  };
-  return alert ? (
-    <Snackbar
-      open={true}
-      autoHideDuration={2000}
-      onClose={handleClose}
-      anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-    >
-      <Alert severity={alert.type}>{alert.message}</Alert>
-    </Snackbar>) : null;
-};
-
-AlertMessageForSection.propTypes = {
-  alert: PropTypes.object,
-  handleCloseAlert: PropTypes.func,
-};
 
 const Login = () => {
   const classes = useStyles();
@@ -695,10 +670,7 @@ const Login = () => {
                   </span>
                 </div>
               </Grid>
-              <AlertMessageForSection
-                alert={alerts}
-                handleCloseAlert={() => setAlerts(null)}
-              />
+
             </Grid>
           </Container>
         </StyledForm>
@@ -709,6 +681,10 @@ const Login = () => {
         />
         }
       </div>
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </DefaultLayout>
   );
 };
