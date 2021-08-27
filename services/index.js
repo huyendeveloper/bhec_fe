@@ -6,5 +6,4 @@ export {default as ContactService} from './contact.services';
 export {default as PaymentService} from './payment.services';
 export {default as PrefectureService} from './prefecture.services';
 export {default as ProductService} from './product.services';
-export {default as CartService} from './cart.services';
 export {default as CommonServices} from './shared.services';
