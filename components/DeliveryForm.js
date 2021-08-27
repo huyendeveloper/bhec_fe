@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 
 import {Button, StyledForm} from '~/components';
-import {AddressService} from '~/services/address.services';
+import {AddressService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DeliveryForm = (props) => {
-  const {dataEdit, editMode, handleClose, prefectures} = props;
+  const {dataEdit, editMode, handleClose, prefectures, fetchData} = props;
   const classes = useStyles();
   const [isAuthenticated, setIsAuthenticated] = useState();
   const theme = useTheme();
@@ -51,6 +51,7 @@ const DeliveryForm = (props) => {
       if (result.status === 201) {
         // eslint-disable-next-line no-console
         console.log('success');
+        fetchData();
       }
     } else {
       const prefecture = prefectures.find((item) => Number(item.code) === Number(data.province_id));
@@ -472,6 +473,7 @@ DeliveryForm.propTypes = {
   editMode: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   prefectures: PropTypes.array.isRequired,
+  fetchData: PropTypes.func.isRequired,
 };
 
 DeliveryForm.defaultProps = {

@@ -1,4 +1,4 @@
-import {commonService} from './common.service';
+import {api} from '~/lib/api';
 
 const PrefectureService = {
   getPrefectures,
@@ -11,7 +11,11 @@ const parserError = (errors) => {
 };
 
 async function getPrefectures() {
-  return commonService.get('https://bhec.alpha-tech.net/api/v1/provinces');
+  const [data, errors] = await api.get('/provinces');
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
 }
 
 export default PrefectureService;

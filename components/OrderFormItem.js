@@ -5,7 +5,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'date-fns';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useRef} from 'react';
 import {Controller} from 'react-hook-form';
 
 import {cookieUtil} from '~/modules/cookieUtil';
@@ -63,13 +63,18 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '700',
     lineHeight: '2.25rem',
     height: '3rem',
+    [theme.breakpoints.down('md')]: {
+      height: '2rem',
+    },
   },
   selectBox: {
     '& .MuiInputBase-root': {
       width: '4.813rem',
-      height: '3rem',
       margin: 'auto',
       background: theme.palette.white.main,
+      [theme.breakpoints.down('md')]: {
+        height: '2rem',
+      },
     },
     '& input[type=number]': {
       '&::-webkit-inner-spin-button,::-webkit-outer-spin-button': {
@@ -99,16 +104,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderFormItem = ({data, control, errors, calculateBill}) => {
+const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const typingTimeoutRef = useRef(null);
 
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   const handleChangeQuantity = (e) => {
-    const cartItems = JSON.parse(cookieUtil.getCookie('cartItems')) || [];
+    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
     let dataUpdate = cartItems.find((item) => item.product_id === data.product_id);
     dataUpdate = {...dataUpdate, quantity_user: e.target.value};
 
@@ -121,11 +127,30 @@ const OrderFormItem = ({data, control, errors, calculateBill}) => {
   };
 
   const handleDelete = () => {
-    const cartItems = JSON.parse(cookieUtil.getCookie('cartItems')) || [];
+    if (!disabled) {
+      const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
 
-    const newCart = cartItems.filter((item) => item.product_id !== data.product_id);
-    cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
-    calculateBill();
+      const newCart = cartItems.filter((item) => item.product_id !== data.product_id);
+      cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
+      setCart(newCart);
+      calculateBill();
+    }
+  };
+
+  const handleChangeNote = (e) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+      let dataUpdate = cartItems.find((item) => item.product_id === data.product_id);
+      dataUpdate = {...dataUpdate, note: e.target.value};
+
+      const index = cartItems.findIndex((item) => item.product_id === dataUpdate.product_id);
+      const newCart = [...cartItems];
+      newCart[index] = dataUpdate;
+      cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
+    }, 300);
   };
 
   return (
@@ -221,6 +246,7 @@ const OrderFormItem = ({data, control, errors, calculateBill}) => {
                       type={'number'}
                       InputProps={{inputProps: {min: 1, max: data.quantity}}}
                       inputRef={ref}
+                      disabled={disabled}
                       onChange={(e) => {
                         onChange(e);
                         handleChangeQuantity(e);
@@ -274,14 +300,14 @@ const OrderFormItem = ({data, control, errors, calculateBill}) => {
         <Grid
           item={true}
           md={4}
-          sm={3}
-          xs={6}
+          sm={4}
+          xs={12}
           className={classes.gridContainer}
         >
           <Controller
             name={`note${data.product_id}`}
             control={control}
-            defaultValue={''}
+            defaultValue={data.note}
             render={({field: {name, value, ref, onChange}}) => (
               <TextField
                 label=''
@@ -289,8 +315,12 @@ const OrderFormItem = ({data, control, errors, calculateBill}) => {
                 InputLabelProps={{shrink: false}}
                 name={name}
                 value={value}
-                onChange={onChange}
+                onChange={(e) => {
+                  onChange(e);
+                  handleChangeNote(e);
+                }}
                 inputRef={ref}
+                disabled={disabled}
               />
             )}
           />
@@ -304,7 +334,9 @@ OrderFormItem.propTypes = {
   data: PropTypes.object,
   control: PropTypes.any,
   errors: PropTypes.object,
+  setCart: PropTypes.func,
   calculateBill: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default OrderFormItem;

@@ -200,23 +200,21 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
     };
     const res = await registerPayment(body);
     if (res && res.status === httpStatus.SUCCESS) {
-      if (!dataUpdate.token) {
-        const bodyCreate = {
-          holder_name: data.card_name,
-          req_number: res.data.req_card_number,
-          token: res.data.token,
-          expiration_date: data.card_expire.replace(/\s/g, ''),
-          card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
-        };
-        const result = await PaymentService.createCard(bodyCreate);
-        if (result.status === 201) {
-          createPaymentSuccess();
-          handleClose();
-        } else {
-          setTypeMess('error');
-          setOpenMess(true);
-          setErrMessage('続行する前に、サインインまたはサインアップする必要があります。!');
-        }
+      const bodyCreate = {
+        holder_name: data.card_name,
+        req_number: res.data.req_card_number,
+        token: res.data.token,
+        expiration_date: data.card_expire.replace(/\s/g, ''),
+        card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
+      };
+      const result = await PaymentService.createCard(bodyCreate);
+      if (result.status === 201) {
+        createPaymentSuccess();
+        handleClose();
+      } else {
+        setTypeMess('error');
+        setOpenMess(true);
+        setErrMessage('続行する前に、サインインまたはサインアップする必要があります。!');
       }
     } else {
       setTypeMess('error');
@@ -275,7 +273,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
                     <Controller
                       name='card_name'
                       control={control}
-                      defaultValue={dataUpdate.card_name || ''}
+                      defaultValue=''
                       rules={{required: '必須雨'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
@@ -319,7 +317,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
                     <Controller
                       name='card_number'
                       control={control}
-                      defaultValue={dataUpdate.card_number || ''}
+                      defaultValue=''
                       rules={{
                         required: '必須項目',
                       }}
@@ -374,7 +372,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
                     <Controller
                       name='card_expire'
                       control={control}
-                      defaultValue={dataUpdate.card_expire || ''}
+                      defaultValue=''
                       rules={{required: '必須項目です'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
@@ -420,7 +418,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => 
                     <Controller
                       name='security_code'
                       control={control}
-                      defaultValue={dataUpdate.security_code || ''}
+                      defaultValue=''
                       rules={{
                         required: '必須項目です。',
                       }}

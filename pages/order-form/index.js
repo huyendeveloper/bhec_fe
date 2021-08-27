@@ -23,14 +23,20 @@ import {Controller, useForm} from 'react-hook-form';
 
 import {BlockForm, Button, ContentBlock, DeliveryForm, OrderFormItem, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {PaymentPopup} from '~/components/Payment';
 import {AdsWidget, DialogWidget, ProductWidget} from '~/components/Widgets';
+import {httpStatus} from '~/constants';
 import {cookieUtil} from '~/modules/cookieUtil';
-import {AddressService, PrefectureService, CardService} from '~/services';
+import {AddressService, PrefectureService, CartService, PaymentService, OrderService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& input': {
       backgroundColor: theme.palette.white.main,
+      [theme.breakpoints.down('md')]: {
+        height: '2.5rem',
+        boxSizing: 'border-box',
+      },
     },
   },
   paragraph: {
@@ -62,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     display: 'flex',
     justifyContent: 'center',
-    marginBottom: '1rem',
+    margin: '2.5rem 0 1rem',
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -171,6 +177,13 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '1rem !important',
     },
   },
+  buttons: {
+    [theme.breakpoints.down('xs')]: {
+      '& button': {
+        width: '100%',
+      },
+    },
+  },
 }));
 
 const recommendProducts = [
@@ -276,6 +289,7 @@ export default function OrderForm() {
   const [editMode] = useState(false);
   const [editData] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
+  const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
 
   const [orderData, setOrderData] = useState({});
 
@@ -300,11 +314,13 @@ export default function OrderForm() {
 
     const handleRouteChange = () => {
       try {
-        // eslint-disable-next-line no-alert
-        const sure = window.confirm('Are you sure about that?');
-        if (!sure) {
-          router.events.emit('routeChangeError');
-          router.replace(router, router.asPath, {shallow: true});
+        if (!isConfirm) {
+          // eslint-disable-next-line no-alert
+          const sure = window.confirm('Are you sure about that?');
+          if (!sure) {
+            router.events.emit('routeChangeError');
+            router.replace(router, router.asPath, {shallow: true});
+          }
         }
       } catch (e) {
         // eslint-disable-next-line no-throw-literal
@@ -312,43 +328,51 @@ export default function OrderForm() {
       }
     };
 
-    router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('beforeHistoryChange', handleRouteChange);
     return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('beforeHistoryChange', handleRouteChange);
     };
-  }, []);
+  }, [isConfirm]);
 
   const fetchData = () => {
     checkAuthenticated();
     fetchDataPrefecture();
-    fetchDataCart();
     calculateBill();
   };
 
   const checkAuthenticated = async () => {
     const session = await getSession();
+    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+    setCart(cartItems);
+
     if (session === null) {
       setIsAuthenticated(false);
       getLocalData();
     } else {
       setIsAuthenticated(true);
       const addresses = await AddressService.getAll();
-      const cards = await CardService.getAll();
-
       setAddressList(addresses);
-      setCardList(cards.cards);
+      fetchListCard();
+      if (cartItems === []) {
+        const cartDetails = await CartService.getCarts();
+        cookieUtil.setCookie('cartItems', JSON.stringify(cartDetails));
+        setCart(cartDetails);
+      }
+    }
+  };
+
+  const fetchListCard = async () => {
+    const res = await PaymentService.getCards();
+    if (res.status === httpStatus.SUCCESS) {
+      setCardList(res.data.cards);
+    } else {
+      setCardList([]);
     }
   };
 
   const fetchDataPrefecture = async () => {
     const prefectureList = await PrefectureService.getPrefectures();
     setPrefectures(prefectureList);
-  };
-
-  const fetchDataCart = () => {
-    // const cartDetails = await CartService.getAll();
-    const cartItems = JSON.parse(cookieUtil.getCookie('cartItems')) || [];
-    setCart(cartItems);
   };
 
   const getLocalData = () => {
@@ -366,18 +390,27 @@ export default function OrderForm() {
   };
 
   const onSubmit = (data) => {
+    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
+
     if (!isAuthenticated && (!address || !card)) {
       return;
     }
 
+    const newCart = [];
+    cartItems.forEach((item) => {
+      const cartItem = {
+        product_id: item.product_id,
+        quantity: item.quantity_user,
+        note: item.note || '',
+      };
+      newCart.push(cartItem);
+    });
+
     let orderDetails = {
-      products: [
-        {
-          product_id: 1,
-          quantity: 10,
-          note: 'toi muon giao hang vao ngay 1-1',
-        },
-      ],
+      products: newCart,
       payment_method: data.payment_method,
       invoice_flag: data.invoice_flag ? 1 : 0,
       invoice_fullname: data.invoice_fullname,
@@ -445,7 +478,7 @@ export default function OrderForm() {
   };
 
   const calculateBill = () => {
-    const cartItems = JSON.parse(cookieUtil.getCookie('cartItems')) || [];
+    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
     const total = cartItems.reduce((totalBill, item) => totalBill + (item.quantity_user * item.price), 0);
     const billDetails = {
       totalBill: total,
@@ -453,6 +486,23 @@ export default function OrderForm() {
       discount: 0,
     };
     setBill(billDetails);
+  };
+
+  const handleCreateOrder = async () => {
+    const result = await OrderService.createOrder(orderData);
+    if (result.status === 201) {
+      cookieUtil.setCookie('cartItems', []);
+      router.push('/order-form/successded');
+    }
+  };
+
+  const createPaymentSuccess = () => {
+    fetchListCard();
+    setIsValid(true);
+  };
+
+  const handleClosePaymentPopup = () => {
+    setOpenPaymentPopup(false);
   };
 
   return (
@@ -781,6 +831,7 @@ export default function OrderForm() {
                 }
               </BlockForm>
 
+              {!isConfirm &&
               <BlockForm
                 themeStyle={'gray'}
                 title={'お支払い方法'}
@@ -821,6 +872,7 @@ export default function OrderForm() {
                   )}
                 />
               </BlockForm>
+              }
 
               <BlockForm
                 themeStyle={'gray'}
@@ -850,7 +902,7 @@ export default function OrderForm() {
                           key={item.id}
                           value={`${item.id}`}
                           control={<Radio/>}
-                          label={`${item.card_type} ${item.holder_name} ${item.cvc_code}`}
+                          label={`${item.card_type} ${item.holder_name} ${item.req_number}`}
                           className={'labelRadioBtn'}
                         />
                       ))}
@@ -875,7 +927,7 @@ export default function OrderForm() {
                 />
 
                 {!isAuthenticated && !isConfirm && card &&
-                  <div>{`${card.card_type} ${card.holder_name} ${card.cvc_code}`}</div>
+                  <div>{`${card.card_type} ${card.holder_name} ${card.req_number}`}</div>
                 }
 
                 {!isValid && !card &&
@@ -893,6 +945,7 @@ export default function OrderForm() {
                       customSize='extraLarge'
                       customColor='whiteRed'
                       customBorder='bdRed'
+                      onClick={() => setOpenPaymentPopup(true)}
                     >
                       {'クレジットカードを登録する'}
                     </Button>
@@ -900,7 +953,7 @@ export default function OrderForm() {
                 }
 
                 {isConfirm &&
-                  <div>{`${orderData.card.card_type} ${orderData.card.holder_name} ${orderData.card.cvc_code}`}</div>
+                  <div>{`${orderData.card.card_type} ${orderData.card.holder_name} ${orderData.card.req_number}`}</div>
                 }
               </BlockForm>
 
@@ -983,6 +1036,7 @@ export default function OrderForm() {
                       value={value}
                       onChange={onChange}
                       className={classes.notification}
+                      disabled={isConfirm}
                     />
                   )}
                 />
@@ -992,32 +1046,35 @@ export default function OrderForm() {
                 themeStyle={'gray'}
                 title={'領収書'}
               >
-                <div className={classes.checkBox}>
-                  <Controller
-                    name='invoice_flag'
-                    control={control}
-                    defaultValue={issueReceipt}
-                    render={({field: {onChange, value}}) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={Boolean(value)}
-                            onChange={(e) => {
-                              const checked = e.target.checked;
-                              setIssueReceipt(checked);
-                              onChange(checked);
-                            }}
-                            name='invoice_flag'
-                          />
-                        }
-                        label='領収書の発行を希望する'
-                      />
-                    )}
-                  />
-                </div>
+                {!isConfirm &&
+                <>
+                  <div className={classes.checkBox}>
+                    <Controller
+                      name='invoice_flag'
+                      control={control}
+                      defaultValue={issueReceipt}
+                      render={({field: {onChange, value}}) => (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={Boolean(value)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setIssueReceipt(checked);
+                                onChange(checked);
+                              }}
+                              name='invoice_flag'
+                            />
+                          }
+                          label='領収書の発行を希望する'
+                        />
+                      )}
+                    />
+                  </div>
 
-                <div className={classes.paragraph}>{'※領収書は発送完了後に別途メールで送付いたします。'}</div>
-
+                  <div className={classes.paragraph}>{'※領収書は発送完了後に別途メールで送付いたします。'}</div>
+                </>
+                }
                 <Grid
                   container={true}
                   spacing={3}
@@ -1053,6 +1110,7 @@ export default function OrderForm() {
                           value={value}
                           onChange={onChange}
                           inputRef={ref}
+                          disabled={isConfirm}
                         />
                       )}
                     />
@@ -1096,6 +1154,7 @@ export default function OrderForm() {
                           value={value}
                           onChange={onChange}
                           inputRef={ref}
+                          disabled={isConfirm}
                         />
                       )}
                     />
@@ -1107,25 +1166,17 @@ export default function OrderForm() {
                 themeStyle={'gray'}
                 title={'注文内容'}
               >
-                <>
-                  {/* {isAuthenticated && cart.cart_items.map((item) => (
-                    <OrderFormItem
-                      key={item.id}
-                      data={item}
-                      control={control}
-                      errors={errors}
-                    />
-                  ))} */}
-                  {!isAuthenticated && cart.map((item) => (
-                    <OrderFormItem
-                      key={item.product_id}
-                      data={item}
-                      control={control}
-                      errors={errors}
-                      calculateBill={calculateBill}
-                    />
-                  ))}
-                </>
+                {cart.map((item) => (
+                  <OrderFormItem
+                    key={item.product_id}
+                    data={item}
+                    control={control}
+                    errors={errors}
+                    setCart={setCart}
+                    calculateBill={calculateBill}
+                    disabled={isConfirm}
+                  />
+                ))}
               </BlockForm>
 
               <Divider/>
@@ -1178,17 +1229,59 @@ export default function OrderForm() {
 
               <div
                 className={classes.row}
-                style={{justifyContent: 'space-around'}}
+                style={{justifyContent: 'center'}}
               >
-                <Button
-                  variant='pill'
-                  customColor='red'
-                  customSize='extraLarge'
-                  type='submit'
-                  onClick={handleValidation}
-                >
-                  {'確認画面へ'}
-                </Button>
+                {!isConfirm &&
+                  <Button
+                    variant='pill'
+                    customColor='red'
+                    customSize='extraLarge'
+                    type='submit'
+                    onClick={handleValidation}
+                  >
+                    {'確認画面へ'}
+                  </Button>
+                }
+
+                {isConfirm &&
+                  <Grid
+                    container={true}
+                    spacing={3}
+                    className={classes.buttons}
+                  >
+                    <Grid
+                      item={true}
+                      sm={6}
+                      xs={12}
+                      style={{justifyContent: 'flex-end', display: 'flex'}}
+                    >
+                      <Button
+                        variant='pill'
+                        customColor='white'
+                        customBorder='bdGray'
+                        customSize='extraLarge'
+                        onClick={() => setIsConfirm(false)}
+                      >
+                        {'前のページへ戻る'}
+                      </Button>
+                    </Grid>
+
+                    <Grid
+                      item={true}
+                      sm={6}
+                      xs={12}
+                    >
+                      <Button
+                        variant='pill'
+                        customColor='red'
+                        customSize='extraLarge'
+                        onClick={handleCreateOrder}
+                      >
+                        {'送信'}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                }
               </div>
             </>
           </StyledForm>
@@ -1209,6 +1302,7 @@ export default function OrderForm() {
                 key={product.productId}
                 item={true}
                 sm={4}
+                xs={12}
               >
                 <ProductWidget
                   data={product}
@@ -1255,9 +1349,19 @@ export default function OrderForm() {
               editMode={editMode}
               handleClose={handleCloseDelivery}
               prefectures={prefectures}
+              fetchData={fetchData}
             />
             }
           </DialogWidget>
+
+          {openPaymentPopup &&
+          <PaymentPopup
+            open={openPaymentPopup}
+            handleClose={handleClosePaymentPopup}
+            style={{width: '80%'}}
+            createPaymentSuccess={createPaymentSuccess}
+          />
+          }
         </ContentBlock>
       </div>
     </DefaultLayout>

@@ -1,22 +1,21 @@
-import {commonService} from './common.service';
+import {api} from '~/lib/api';
 
-export const productCategoryService = {
-  getAll,
+const ProductCategoryService = {
   getProductByCategory,
 };
 
-// const API_ENDPOINT = process.env.API_ENDPOINT;
+const parserError = (errors) => {
+  return errors[0].message.
+    split('\n').
+    map((error, i) => <div key={`err-${String(i)}`}>{error}</div>);
+};
 
-// const baseUrl = `${API_ENDPOINT}`;
-
-async function getAll() {
-  const category = await commonService.get('https://60fea5c925741100170786d1.mockapi.io/categories');
-  return category;
+async function getProductByCategory(categoryName, currentPage) {
+  const [data, errors] = await api.get('/products', {category: categoryName, per_page: 12, page: currentPage});
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
 }
 
-function getProductByCategory(categoryName, currentPage) {
-  // return commonService.get(`https://virtserver.swaggerhub.com/anhphong/BHEC/1.0.0/api/v1/products?page=${page}&category=${category}&per_page=12`);
-  return commonService.get('http://localhost:3000/api/v1/products', {category: categoryName, per_page: 12, page: currentPage});
-
-  // return commonService.get(`http://3.144.18.206/api/v1/products?category=${category}&page=${page}&per_page=12`);
-}
+export default ProductCategoryService;

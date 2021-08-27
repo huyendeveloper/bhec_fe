@@ -10,7 +10,7 @@ import {
 } from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
-import {productCategoryService} from '~/services/productCategory.service';
+import {ProductCategoryService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,7 +93,7 @@ const linkProps = [
 
 export async function getServerSideProps(context) {
   const page = typeof context.query.page === 'undefined' ? '1' : context.query.page;
-  const productList = await productCategoryService.getProductByCategory(context.params.category, page);
+  const productList = await ProductCategoryService.getProductByCategory(context.params.category, page);
 
   return {
     props: {productList},
