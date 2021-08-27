@@ -11,14 +11,18 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderRadius: '4px',
     padding: '2rem 3rem',
-    [theme.breakpoints.down('sm')]: {
-      width: '90%',
-      margin: '0 5%',
-      padding: '1rem',
-    },
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
     [theme.breakpoints.down('md')]: {
-      width: '90%',
-      margin: '0 5%',
+      width: '93.8%',
+      margin: '0 3.1%',
+      padding: '1rem',
+      height: '12rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
       padding: '1rem',
     },
   },
@@ -29,13 +33,13 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.5rem',
     textAlign: 'center',
     fontWeight: '700',
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
     position: 'relative',
     [theme.breakpoints.down('md')]: {
       fontSize: '1rem',
     },
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.875rem',
     },
   },
 
@@ -46,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
   stepItem: {
     flex: 1,
+    width: '33%',
     position: 'relative',
   },
 
@@ -70,10 +75,15 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '2.15rem',
     display: 'flex',
     alignItems: 'center',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
+      width: '2.5rem',
+      height: '2.5rem',
+      fontSize: '1rem',
+    },
+    [theme.breakpoints.down('xs')]: {
       width: '2rem',
       height: '2rem',
-      fontSize: '1rem',
+      fontSize: '0.875rem',
     },
   },
 
@@ -98,15 +108,14 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.font.default,
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    [theme.breakpoints.down('sm')]: {
-      lineHeight: '1rem',
-      fontSize: '0.75rem',
-      width: '90%',
-      margin: '0 10%',
-    },
     [theme.breakpoints.down('md')]: {
       lineHeight: '1rem',
-      fontSize: '0.8rem',
+      fontSize: '0.8125rem',
+      width: '6.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      lineHeight: '1rem',
+      fontSize: '0.6875rem',
       width: '90%',
       margin: '0 10%',
     },
@@ -114,6 +123,11 @@ const useStyles = makeStyles((theme) => ({
 
   stepLabel2: {
     width: '7.25rem',
+    [theme.breakpoints.down('md')]: {
+      lineHeight: '1rem',
+      fontSize: '0.8125rem',
+      width: '5.6875rem',
+    },
   },
 
   divider: {
@@ -123,10 +137,15 @@ const useStyles = makeStyles((theme) => ({
     border: `2px dashed ${theme.divider.dashCorlor}`,
     transform: 'rotate(0.02deg)',
     width: 'calc(100% - 3.4rem)',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
+      top: '1.25rem',
+      left: 'calc(-50% + 1.25rem)',
+      width: 'calc(100% - 2.5rem)',
+    },
+    [theme.breakpoints.down('xs')]: {
       top: '1rem',
-      left: 'calc(-50% + 1rem)',
-      width: 'calc(100% - 2rem)',
+      left: 'calc(-50% + 1.2rem)',
+      width: 'calc(100% - 2.4rem)',
     },
   },
 

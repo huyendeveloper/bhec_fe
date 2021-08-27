@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '3.5rem',
     },
     [theme.breakpoints.down('md')]: {
-      width: '90%',
-      margin: '0 5%',
+      width: 'auto',
+      margin: '0 2rem',
       marginTop: '3rem',
     },
   },
@@ -158,13 +158,27 @@ const useStyles = makeStyles((theme) => ({
     width: '20%',
     margin: '0 40%',
     textAlign: 'center',
-    [theme.breakpoints.down('md')]: {
-      margin: '0 32%',
-      width: '36%',
-    },
     [theme.breakpoints.down('sm')]: {
       margin: '0 14%',
       width: '72%',
+    },
+    [theme.breakpoints.down('md')]: {
+      width: '16.9375rem',
+      margin: '0 calc((100% - 16.9375rem)/2)',
+    },
+  },
+
+  gridButton: {
+    width: '22.75rem',
+    margin: '0 calc((100% - 22.75rem)/2)',
+    textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      width: '22.75rem',
+      margin: '0 calc((100% - 22.75rem)/2)',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
     },
   },
 
@@ -172,12 +186,12 @@ const useStyles = makeStyles((theme) => ({
     width: '22.75rem',
     margin: '0 calc((100% - 22.75rem)/2)',
     [theme.breakpoints.down('md')]: {
-      margin: '0 32%',
-      width: '36%',
+      margin: '0 calc((100% - 29.5rem)/2)',
+      width: '29.5rem',
     },
-    [theme.breakpoints.down('sm')]: {
-      margin: '0 14%',
-      width: '72%',
+    [theme.breakpoints.down('xs')]: {
+      margin: '0 calc((100% - 21.4375rem)/2)',
+      width: '21.4375rem',
     },
   },
 
@@ -202,13 +216,13 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 22%',
     textAlign: 'center',
     borderBottom: '1px solid #d8d8d8',
-    [theme.breakpoints.down('sm')]: {
-      margin: '0 5%',
-      width: '90%',
-    },
     [theme.breakpoints.down('md')]: {
       width: '90%',
       margin: '0 5%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      margin: '0 5%',
+      width: '90%',
     },
   },
 
@@ -282,6 +296,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: '4rem',
+    [theme.breakpoints.down('md')]: {
+      marginBottom: '2.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '2.25rem',
+    },
   },
 
   filedValue: {
@@ -565,7 +585,7 @@ const Login = () => {
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='email'
-                        maxLength={64}
+                        maxLength={254}
                         variant='outlined'
                         placeholder='メールアドレス'
                         error={Boolean(errors.email)}
@@ -575,7 +595,7 @@ const Login = () => {
                         inputRef={ref}
                         onChange={onChange}
                         onInput={(e) => {
-                          e.target.value = e.target.value.slice(0, 64);
+                          e.target.value = e.target.value.slice(0, 254);
                         }}
                         className={classes.inputLogin}
                       />
@@ -647,7 +667,7 @@ const Login = () => {
                 item={true}
                 xs={12}
               >
-                <div className={classes.grid}>
+                <div className={classes.gridButton}>
                   <Button
                     variant='contained'
                     type='submit'
