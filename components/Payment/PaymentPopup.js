@@ -183,7 +183,7 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const PaymentPopup = ({open, handleClose, createPaymentSuccess, dataUpdate}) => {
+const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
   const [errMessage, setErrMessage] = useState();
   const [openMess, setOpenMess] = useState(false);
   const [typeMess, setTypeMess] = useState('success');
@@ -507,6 +507,5 @@ PaymentPopup.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.func,
   createPaymentSuccess: PropTypes.func,
-  dataUpdate: PropTypes.object,
 };
 export default PaymentPopup;
