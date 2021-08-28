@@ -6,6 +6,7 @@ import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import Router from 'next/router';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
@@ -138,9 +139,9 @@ function RegisterEmail() {
       },
     });
     if (res.id) {
-      setAlerts({
-        type: 'success',
-        message: '登録が成功しました。メールをチェックしてアカウントを確認してください',
+      Router.push({
+        pathname: '/auth/request-succeeded',
+        query: {type: 'sign-up'},
       });
     } else {
       setAlerts({
