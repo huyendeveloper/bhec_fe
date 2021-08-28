@@ -1,16 +1,17 @@
-import {Container, Grid} from '@material-ui/core';
+import {Container, Grid, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import {
   Breadcrumbs, ContentBlock, Search,
 } from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
-import {ProductCategoryService} from '~/services';
+import {ProductService} from '~/services';
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,42 +80,58 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const linkProps = [
-  {
-    id: 1,
-    linkLabel: 'ホーム',
-    linkUrl: '/',
-  },
-  {
-    id: 2,
-    linkLabel: '工芸品一覧',
-  },
-];
+const ProductNotFound = () => {
+  return (
+    <Box
+      display='flex'
+      justifyContent='center'
+    >
+      <Box
+        component='h5'
+        textAlign='center'
+        p={1}
+        fontSize={16}
+      >
+        {'該当する商品ありません'}
+      </Box>
+    </Box>);
+};
 
-export async function getServerSideProps(context) {
-  const page = typeof context.query.page === 'undefined' ? '1' : context.query.page;
-  const productList = await ProductCategoryService.getProductByCategory(context.params.category, page);
-
-  return {
-    props: {productList},
-  };
-}
-
-export default function ProductCategory({productList}) {
+const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
   const classes = useStyles();
-  const pagination = productList.pagination;
-  const categories = productList.categories;
-  const nameCategories = categories.map((item) => item.name_kana);
+  const {pagination, products} = fetchData;
   const router = useRouter();
-  const [page] = useState(pagination.page);
+  const [currentPage, setCurrentPage] = useState(pagination.page);
   const [isAuthenticated] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      // return an anonymous clean up function
+    };
+  }, [currentPage]);
+
+  const linkProps = [
+    {
+      id: 1,
+      linkLabel: 'ホーム',
+      linkUrl: '/',
+    },
+    {
+      id: 2,
+      linkLabel: `${category}一覧`,
+    },
+  ];
+
   const changePage = (e, pageNumber) => {
-    router.replace(`/products/${router.query.category}?page=${pageNumber}`);
+    setCurrentPage(pageNumber);
+    router.push({
+      pathname: '/products/[category]',
+      query: {...router.query, page: pageNumber},
+    });
   };
 
   return (
-    <DefaultLayout title={'BH_EC - ' + nameCategories.join(' & ')}>
+    <DefaultLayout title={`BH_EC-${category}`}>
       <Container
         maxWidth='lg'
       >
@@ -142,41 +159,43 @@ export default function ProductCategory({productList}) {
       </Container>
 
       <ContentBlock
-        title={'伝統工芸品'}
+        title={category}
         bgImage={'/img/noise.png'}
         bgRepeat={'repeat'}
       >
-        <Grid
-          container={true}
-          spacing={3}
-        >
-          {productList.products.map((item) => (
-            <Grid
-              key={item.id}
-              item={true}
-              sm={4}
-              xs={6}
-              className={classes.product}
-            >
-              <ProductWidget
-                data={item}
-                heart={isAuthenticated}
-                border={'borderNone'}
-              />
-            </Grid>
-          ))}
-        </Grid>
-
-        <Pagination
-          count={pagination.number_of_page}
-          variant={'outlined'}
-          color={'primary'}
-          size={'large'}
-          defaultPage={page}
-          onChange={changePage}
-          className={classes.pagination}
-        />
-
+        { products.length > 0 ? (
+          <Grid
+            container={true}
+            spacing={3}
+          >
+            {products.map((item) => (
+              <Grid
+                key={item.id}
+                item={true}
+                sm={4}
+                xs={6}
+                className={classes.product}
+              >
+                <ProductWidget
+                  data={item}
+                  heart={isAuthenticated}
+                  border={'borderNone'}
+                />
+              </Grid>
+            ))}
+          </Grid>) : <ProductNotFound/>
+        }
+        { products.length && pagination?.number_of_page > 0 &&
+          <Pagination
+            count={pagination.number_of_page}
+            variant={'outlined'}
+            color={'primary'}
+            size={'large'}
+            defaultPage={1}
+            onChange={changePage}
+            className={classes.pagination}
+          />
+        }
         <AdsWidget
           imgSrc={'/img/ad/ad5.png'}
           imgWidth={'1140'}
@@ -185,11 +204,23 @@ export default function ProductCategory({productList}) {
       </ContentBlock>
     </DefaultLayout>
   );
-}
+};
 
 ProductCategory.propTypes = {
-  productList: PropTypes.object,
+  fetchData: PropTypes.object,
+  category: PropTypes.string,
 };
+
+export async function getServerSideProps({query, params}) {
+  const {category} = params;
+  const fetchData = await Product.getProducts(query);
+
+  return {
+    props: {fetchData, category},
+  };
+}
 
 ProductCategory.defaultProps = {
 };
+
+export default ProductCategory;

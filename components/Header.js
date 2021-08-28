@@ -172,15 +172,15 @@ const useStyles = makeStyles((theme) => ({
 const listNavigation = [
   {
     name: '伝統の一品',
-    url: '/',
+    url: '/products/伝統の一品',
   },
   {
     name: '食品・飲料',
-    url: '/',
+    url: '/products/食品・飲料',
   },
   {
     name: 'ライフスタイル',
-    url: '/',
+    url: '/products/ライフスタイル',
   },
   {
     name: 'ブログ',

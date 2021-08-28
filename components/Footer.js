@@ -254,7 +254,7 @@ const Footer = (props) => {
                         lg={2}
                         md={6}
                         xs={3}
-                        key={index}
+                        key={`${link.label}-${String(index)}`}
                         className={classes.grid}
                       >
                         <span
@@ -273,7 +273,7 @@ const Footer = (props) => {
                                 <Grid
                                   item={true}
                                   xs={12}
-                                  key={i}
+                                  key={`${link.label}-${c.label}-${String(i)}`}
                                   style={{textAlign: 'left', marginBottom: '0.6875rem'}}
                                 >
                                   <span

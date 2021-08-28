@@ -1,7 +1,9 @@
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box, Container, Breadcrumbs as MuiBreadcrumbs, Typography, Link} from '@material-ui/core';
-
+import {Pagination} from '@material-ui/lab';
 import PropTypes from 'prop-types';
+import {useRouter} from 'next/router';
+import {useState, useEffect} from 'react';
 
 import {clean} from '~/lib/object';
 
@@ -118,10 +120,27 @@ const linkProps = [
   },
 ];
 
-const SearchPage = ({category, tag, keyword, products}) => {
+const SearchPage = ({query, searchResult}) => {
+  const {category, tag, keyword, page} = query;
+  const {pagination, products} = searchResult;
+  const [currentPage, setCurrentPage] = useState(page);
+  const router = useRouter();
   const classes = useStyles();
   const searchTitle = tag || category;
   const message = products.length < 1 ? '該当する結果がありません' : searchTitle ? `${searchTitle}に関する結果一覧` : '';
+
+  useEffect(() => {
+    return () => {
+      // return an anonymous clean up function
+    };
+  }, [currentPage]);
+  const changePage = async (e, pageNumber) => {
+    setCurrentPage(pageNumber);
+    router.push({
+      pathname: '/search-page',
+      query: clean({category, tag, keyword, page: pageNumber}),
+    });
+  };
 
   return (
     <div className={classes.root}>
@@ -146,7 +165,7 @@ const SearchPage = ({category, tag, keyword, products}) => {
                 {linkProps.map((item) => (
                   item.linkUrl ? (
                     <Link
-                      key={item.id}
+                      key={`link-${item.id}`}
                       className={classes.link}
                       href={item.linkUrl}
                       color='textPrimary'
@@ -155,7 +174,7 @@ const SearchPage = ({category, tag, keyword, products}) => {
                     </Link>
                   ) : (
                     <Typography
-                      key={item.id}
+                      key={`textLink-${item.id}`}
                       className={classes.link}
                     >
                       {item.linkLabel}
@@ -188,7 +207,7 @@ const SearchPage = ({category, tag, keyword, products}) => {
             >
               {products.length > 0 && products.map((product) => (
                 <Grid
-                  key={product.productId}
+                  key={`product${product.id}`}
                   item={true}
                   md={4}
                 >
@@ -206,6 +225,17 @@ const SearchPage = ({category, tag, keyword, products}) => {
               md={12}
               style={{marginBottom: '2rem'}}
             >
+              { products.length && pagination?.number_of_page > 0 &&
+                <Pagination
+                  count={pagination.number_of_page}
+                  variant={'outlined'}
+                  color={'primary'}
+                  size={'large'}
+                  defaultPage={1}
+                  onChange={changePage}
+                  className={classes.pagination}
+                />
+              }
               <TopBannerWidget
                 variant='titleBanner'
                 imgSrc='/img/banner-favorite1.png'
@@ -223,20 +253,16 @@ const SearchPage = ({category, tag, keyword, products}) => {
 };
 
 SearchPage.propTypes = {
-  products: PropTypes.array,
-  category: PropTypes.string,
-  tag: PropTypes.string,
-  keyword: PropTypes.string,
+  searchResult: PropTypes.object,
+  query: PropTypes.object,
 };
 
 export const getServerSideProps = async ({query}) => {
-  const {category, tag, keyword} = query;
-  const res = await Product.getProducts(query);
-  const products = res?.products ?? [];
+  const searchResult = await Product.getProducts(query);
 
   return {
     props: clean({
-      category, tag, keyword, products,
+      query, searchResult,
     }),
   };
 };

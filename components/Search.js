@@ -181,9 +181,9 @@ const Search = ({query = {}}) => {
     const categoryArray = await getListCategory();
     const {category, tag, keyword} = query;
     const queryTag = tag ? tag.split(',') : [];
-    const findCategory = categoryArray.find(({name}) => name === category);
+    const findCategory = categoryArray.find(({name_kana}) => name_kana === category);
     const findTags = queryTag.map((item) => {
-      const targetTag = tagArray.find(({name}) => name === item);
+      const targetTag = tagArray.find(({name_kana}) => name_kana === item);
       return targetTag;
     });
     setCurrentCategory(findCategory);
@@ -248,7 +248,7 @@ const Search = ({query = {}}) => {
 
   const onSearch = () => {
     const newQuery = {
-      category: currentCategory ? currentCategory.name : '',
+      category: currentCategory ? currentCategory.name_kana : '',
       tag: activeTags.length ? activeTags.map((item) => item.name).join(',') : '',
       keyword: keywordSearch || '',
     };
@@ -319,9 +319,9 @@ const Search = ({query = {}}) => {
             return (
               <div
                 className={classes.itemSearch}
-                key={tag.id}
+                key={`activeTag-${tag.id}`}
               >
-                <span style={{marginRight: '0.5rem'}}>{tag.name}</span>
+                <span style={{marginRight: '0.5rem'}}>{tag?.name}</span>
                 <CloseIcon
                   fontSize='small'
                   onClick={() => removeTag(index)}
@@ -362,7 +362,7 @@ const Search = ({query = {}}) => {
                     item={true}
                     xs={6}
                     md={3}
-                    key={category.id}
+                    key={`${category.name}-${category.id}`}
                   >
                     <span
                       className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
@@ -381,7 +381,7 @@ const Search = ({query = {}}) => {
                             <Grid
                               item={true}
                               xs={12}
-                              key={c.id}
+                              key={`${c.name}-${c.id}`}
                             >
                               <span
                                 className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
@@ -407,14 +407,14 @@ const Search = ({query = {}}) => {
             maxWidth={'lg'}
             style={{padding: '1rem'}}
           >
-            {tags && tags.length ? tags.map((tag, index) => {
+            {tags && tags.length ? tags.map((tag) => {
               return (
                 <>
                   <Grid
                     item={true}
                     xs={6}
                     md={2}
-                    key={index}
+                    key={tag.name}
                     style={{marginBottom: '1rem'}}
                   >
                     <span

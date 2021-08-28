@@ -10,8 +10,12 @@ const parserError = (errors) => {
 
 export default class ProductService {
   async getProducts(payload) {
+    const DEFAULT_PER_PAGE = 12;
     const cleanPayload = clean(payload);
-    const activeParam = {};
+    const activeParam = {
+      per_page: DEFAULT_PER_PAGE,
+      page: 1,
+    };
     let {category, tag} = cleanPayload;
     if (category && category.length) {
       if (category === 'string') {
@@ -25,6 +29,11 @@ export default class ProductService {
       }
       activeParam.tag = tag;
     }
+
+    if (payload?.page) {
+      activeParam.page = parseInt(payload.page, 10);
+    }
+
     if (payload?.keyword && payload?.keyword.length) {
       activeParam.keyword = payload.keyword;
     }
