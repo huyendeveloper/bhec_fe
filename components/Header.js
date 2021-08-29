@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
 import {
-  Hidden,
   useMediaQuery,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
@@ -56,11 +55,13 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     backgroundColor: '#fff',
     display: 'flex',
-    [theme.breakpoints.up('xs')]: {
-      minHeight: 48,
+    height: '80px',
+    minHeight: '48px',
+    [theme.breakpoints.down('md')]: {
+      height: '64px',
     },
-    [theme.breakpoints.up('md')]: {
-      height: 80,
+    [theme.breakpoints.down('xs')]: {
+      height: '48px',
     },
   },
   toolBarPlaceholder: {
@@ -76,13 +77,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     background: theme.palette.pink.light,
     padding: 0,
-    minHeight: '3rem',
-    [theme.breakpoints.down('md')]: {
-      height: '4rem',
-    },
-    [theme.breakpoints.down('xs')]: {
-      height: '3rem',
-    },
+    minHeight: '48px',
   },
   logoLink: {
     display: 'flex',
@@ -92,17 +87,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     background: theme.palette.pink.light,
     height: '100%',
-    [theme.breakpoints.up('md')]: {
+    marginRight: '1rem',
+    [theme.breakpoints.down('md')]: {
       width: '100%',
       marginRight: 0,
       padding: '0.5rem 0',
-      height: '4rem',
+      height: '64px',
     },
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '100%',
       marginRight: 0,
       padding: '0.5rem 0',
-      height: '3rem',
+      height: '48px',
     },
     '.MuiLink-underlineHover:hover': {
       textDecoration: 'none',
@@ -122,29 +118,17 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     minWidth: '6.3rem',
     cursor: 'pointer',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.up('md')]: {
       width: '33%',
       fontSize: '0.75rem',
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.up('xs')]: {
       width: '33%',
       fontSize: '0.75rem',
     },
 
     '&:last-child': {
       border: 'none',
-    },
-  },
-
-  languageSwitcher: {
-    width: '6.25rem',
-    [theme.breakpoints.down('md')]: {
-      width: '5.9375rem',
-      fontSize: '0.8125rem',
-    },
-
-    '& .MuiNativeSelect-root': {
-      fontSize: '0.875rem',
     },
   },
 
@@ -178,6 +162,21 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 1rem',
     color: theme.palette.black3.main,
     textDecoration: 'none',
+  },
+
+  icNav: {
+    marginRight: '1rem',
+  },
+
+  languageSwitcher: {
+    width: '100px',
+    [theme.breakpoints.down('md')]: {
+      width: '95px',
+    },
+
+    '& .MuiNativeSelect-root': {
+      fontSize: '0.875rem',
+    },
   },
 }));
 
@@ -231,23 +230,20 @@ const Header = (props) => {
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
               {!displaySameRow && (
-                <Hidden lgUp={true}>
+                <div className={classes.icNav}>
                   <Image
                     src='/menu.png'
                     alt='BH_EC nav Logo'
                     width={24}
                     height={24}
                   />
-                </Hidden>
+                </div>
               )}
               <Link
                 href={'/'}
                 className={classes.logoLink}
               >
-                <a
-                  className='next-link'
-                  style={{marginLeft: '1.5rem'}}
-                >
+                <a className='next-link'>
                   <Image
                     src='/logo.png'
                     alt='BH_EC Logo'

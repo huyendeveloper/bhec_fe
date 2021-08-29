@@ -168,7 +168,7 @@ export default function MyPage() {
 
   const actionButton = (item) => {
     if (item.id === 10) {
-      signOut();
+      signOut({redirect: true, callbackUrl: '/'});
     } else {
       Router.push({
         pathname: item.url,
