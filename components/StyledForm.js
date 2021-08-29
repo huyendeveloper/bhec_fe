@@ -39,8 +39,12 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& .MuiInputBase-input': {
-      padding: '1rem',
+      padding: '0 1rem',
       fontSize: '0.875rem',
+      height: '3rem',
+      [theme.breakpoints.down('md')]: {
+        height: '2.5rem',
+      },
     },
     '& .inputErrorText': {
       marginBottom: 0,

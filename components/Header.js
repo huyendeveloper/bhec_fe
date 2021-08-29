@@ -5,15 +5,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import EmailIcon from '@material-ui/icons/Email';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {
-  Hidden,
-  IconButton, useMediaQuery,
+  useMediaQuery,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
 
@@ -60,11 +55,13 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     backgroundColor: '#fff',
     display: 'flex',
-    [theme.breakpoints.up('xs')]: {
-      minHeight: 48,
+    height: '80px',
+    minHeight: '48px',
+    [theme.breakpoints.down('md')]: {
+      height: '64px',
     },
-    [theme.breakpoints.up('md')]: {
-      height: 80,
+    [theme.breakpoints.down('xs')]: {
+      height: '48px',
     },
   },
   toolBarPlaceholder: {
@@ -80,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     background: theme.palette.pink.light,
     padding: 0,
+    minHeight: '48px',
   },
   logoLink: {
     display: 'flex',
@@ -89,21 +87,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     background: theme.palette.pink.light,
     height: '100%',
-    [theme.breakpoints.up('xs')]: {
+    marginRight: '1rem',
+    [theme.breakpoints.down('md')]: {
       width: '100%',
       marginRight: 0,
       padding: '0.5rem 0',
-      height: '64',
+      height: '64px',
     },
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '100%',
       marginRight: 0,
-      padding: '0.5rem',
-    },
-    [theme.breakpoints.up('md')]: {
-      width: 'max-content',
-      marginRight: '1.5rem',
-      padding: '0.5rem',
+      padding: '0.5rem 0',
+      height: '48px',
     },
     '.MuiLink-underlineHover:hover': {
       textDecoration: 'none',
@@ -143,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
   iconWrapper: {
     display: 'flex',
     flexGrow: 1,
+    alignItems: 'center',
     '& button': {
       marginRight: '0.5rem',
     },
@@ -166,6 +162,21 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 1rem',
     color: theme.palette.black3.main,
     textDecoration: 'none',
+  },
+
+  icNav: {
+    marginRight: '1rem',
+  },
+
+  languageSwitcher: {
+    width: '100px',
+    [theme.breakpoints.down('md')]: {
+      width: '95px',
+    },
+
+    '& .MuiNativeSelect-root': {
+      fontSize: '0.875rem',
+    },
   },
 }));
 
@@ -204,7 +215,6 @@ const Header = (props) => {
   const displaySameRow = isMobile ? false : (!isTablet);
 
   const classes = useStyles();
-  const {showMainMenu} = props;
 
   useEffect(() => {
     if (session?.accessToken) {
@@ -219,17 +229,16 @@ const Header = (props) => {
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
-              {showMainMenu ? (
-                <Hidden lgUp={true}>
-                  <IconButton
-                    edge='start'
-                    color='inherit'
-                    aria-label='menu'
-                  >
-                    <MenuIcon/>
-                  </IconButton>
-                </Hidden>
-              ) : null}
+              {!displaySameRow && (
+                <div className={classes.icNav}>
+                  <Image
+                    src='/menu.png'
+                    alt='BH_EC nav Logo'
+                    width={24}
+                    height={24}
+                  />
+                </div>
+              )}
               <Link
                 href={'/'}
                 className={classes.logoLink}
@@ -320,24 +329,44 @@ const Header = (props) => {
           {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
               {isAuthenticated && <div className={classes.personalItem}>
-                <PersonPinIcon/>
+                <Image
+                  src='/img/icons/ic-user.png'
+                  alt='user icon'
+                  width={24}
+                  height={24}
+                />
                 {'マイページ'}
               </div>}
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
-                    <PersonPinIcon/>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
                     {'登録・ログイン'}
                   </div>
                 </a>
               </Link>}
               <div className={classes.personalItem}>
-                <EmailIcon/>
+                <Image
+                  src='/img/icons/ic-mail.png'
+                  alt='mail icon'
+                  width={24}
+                  height={24}
+                />
                 {'お問い合わせ'}
               </div>
               <div className={classes.personalItem}>
-                <ShoppingCartIcon/>
+                <Image
+                  src='/img/icons/ic-cart.png'
+                  alt='cart icon'
+                  width={24}
+                  height={24}
+                />
                 {'カート'}
               </div>
             </div>

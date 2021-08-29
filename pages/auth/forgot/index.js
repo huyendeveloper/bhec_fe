@@ -5,6 +5,7 @@ import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import Router from 'next/router';
 
 import {httpStatus} from '~/constants';
 
@@ -46,21 +47,26 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btnSubmit: {
+    fontSize: '1rem',
+    fontWeight: '700',
     fontFamily: theme.font.default,
     background: theme.palette.buttonLogin.default,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
-    width: '60%',
+    width: '22.75rem',
+    height: '3rem',
     color: theme.palette.background.default,
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
     [theme.breakpoints.down('md')]: {
-      width: '60%',
+      width: '14rem',
+      height: '2.5rem',
     },
     [theme.breakpoints.down('xs')]: {
-      width: '100%',
+      width: '21.4375',
+      height: '2.5rem',
     },
   },
 
@@ -83,17 +89,18 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.4rem',
     textAlign: 'center',
     width: '100%',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
-    },
     [theme.breakpoints.down('md')]: {
-      fontSize: '0.7rem',
+      fontSize: '0.8125rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
     },
   },
 
   content: {
+    width: '60%',
     [theme.breakpoints.down('md')]: {
-      width: '60%',
+      width: '29.5rem',
     },
     [theme.breakpoints.down('xs')]: {
       width: '100%',
@@ -193,9 +200,9 @@ function ForgotPassword() {
   const onSubmit = async (data) => {
     const res = await Auth.forgotPassword(data);
     if (res.status === httpStatus.SUCCESS) {
-      setAlerts({
-        type: 'success',
-        message: res.success,
+      Router.push({
+        pathname: '/auth/request-succeeded',
+        query: {type: 'forgot'},
       });
     } else {
       setAlerts({
@@ -244,7 +251,7 @@ function ForgotPassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           pattern: {
                             value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                             message: 'メールアドレスが無効です。',
@@ -254,9 +261,13 @@ function ForgotPassword() {
                           <TextField
                             id='email'
                             variant='outlined'
+                            maxLength={254}
                             error={Boolean(errors.email)}
                             InputLabelProps={{shrink: false}}
                             name={name}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 254);
+                            }}
                             value={value}
                             inputRef={ref}
                             placeholder='oshinagaki@gmail.com'
