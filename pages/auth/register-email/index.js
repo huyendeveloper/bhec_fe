@@ -2,7 +2,7 @@
 /* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button} from '@material-ui/core';
+import {Container, Grid, FormControl, Button, Link} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
@@ -58,30 +58,30 @@ const useStyles = makeStyles((theme) => ({
   },
 
   content: {
-    [theme.breakpoints.down('md')]: {
-      width: '60%',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-    },
+    width: '100%',
   },
 
   btnSubmit: {
+    fontSize: '1rem',
+    fontWeight: '700',
+    width: '22.75rem',
+    height: '3rem',
     fontFamily: theme.font.default,
     background: theme.palette.buttonLogin.default,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
-    width: '60%',
     color: theme.palette.background.default,
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
     },
     [theme.breakpoints.down('md')]: {
-      width: '60%',
+      width: '14rem',
+      height: '2.5rem',
     },
     [theme.breakpoints.down('xs')]: {
-      width: '100%',
+      width: '21.4375rem',
+      height: '2.5rem',
     },
   },
 
@@ -114,6 +114,27 @@ const useStyles = makeStyles((theme) => ({
 
   grid: {
     marginBottom: '1.5rem',
+    width: '34.875rem',
+    margin: '0 calc((100% - 34.875rem)/2)',
+    [theme.breakpoints.down('md')]: {
+      width: '29.5rem',
+      margin: '0 calc((100% - 29.5rem)/2)',
+      marginBottom: '1rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
+      marginBottom: '1rem',
+    },
+  },
+
+  gridNote: {
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    marginBottom: '2.75rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.8125rem',
+    },
   },
 
   required: {
@@ -146,7 +167,7 @@ function RegisterEmail() {
     } else {
       setAlerts({
         type: 'error',
-        message: res,
+        message: '入力されたユーザーIDが存在しています。再度確認してください。',
       });
     }
   };
@@ -154,7 +175,7 @@ function RegisterEmail() {
   return (
     <>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
+        <Header showMainMenu={true}/>
         <div
           className='content'
         >
@@ -189,10 +210,10 @@ function RegisterEmail() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           pattern: {
                             value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            message: 'メールアドレスが無効です。',
+                            message: '無効なメールアドレスです。',
                           },
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
@@ -203,6 +224,10 @@ function RegisterEmail() {
                             error={Boolean(errors.email)}
                             InputLabelProps={{shrink: false}}
                             name={name}
+                            maxLength={254}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 254);
+                            }}
                             value={value}
                             inputRef={ref}
                             onChange={onChange}
@@ -241,11 +266,11 @@ function RegisterEmail() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             checkLengthPasswrod: () => {
                               const {password} = getValues();
-                              return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
+                              return password.length >= 8 || '8文字以上で入力してください。';
                             },
                           },
                         }}
@@ -257,6 +282,10 @@ function RegisterEmail() {
                             InputLabelProps={{shrink: false}}
                             name={name}
                             type='password'
+                            maxLength={32}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 32);
+                            }}
                             value={value}
                             inputRef={ref}
                             placeholder='パスワードを８文字以上ご記入ください。'
@@ -288,7 +317,7 @@ function RegisterEmail() {
                         htmlFor='password_confirmation'
                         className='formControlLabel'
                       >
-                        {'パスワード '}
+                        {'パスワード（確認）'}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
@@ -296,11 +325,11 @@ function RegisterEmail() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             matchesPreviousPassword: (value) => {
                               const {password} = getValues();
-                              return password === value || 'パスワードは一致する必要があります！';
+                              return password === value || 'パスワードが一致しません';
                             },
                           },
                         }}
@@ -336,9 +365,19 @@ function RegisterEmail() {
                     <Grid
                       item={true}
                       xs={12}
-                      className={classes.grid}
+                      className={classes.gridNote + ' ' + classes.grid}
                     >
-                      <span className={classes.note}>{'食べチョクの'}</span><span className={classes.link}>{'利用規約'}</span><span>{'、'}</span><span className={classes.link}>{'個人情報保護方針'}</span><span>{'、'}</span><span className={classes.link}>{'特定商取引法'}</span><span>{'に同意の上、'}</span>
+                      <span className={classes.note}>{'おしながきの'}</span>
+                      <Link href={'/guide'}>
+                        <span className={classes.link}>{'利用規約'}</span>
+                      </Link>
+                      <span>{'、'}</span>
+                      <Link href={'/policy'}>
+                        <span className={classes.link}>{'個人情報保護方針'}</span>
+                      </Link>
+                      <span>{'、'}</span>
+                      <span className={classes.link}>{'特定商取引法'}</span>
+                      <span>{'に同意の上、'}</span>
                     </Grid>
                     <Grid
                       item={true}
@@ -350,7 +389,7 @@ function RegisterEmail() {
                         variant='contained'
                         type='submit'
                         className={classes.btnSubmit}
-                      >{'送信する'}</Button>
+                      >{'登録する'}</Button>
                     </Grid>
                   </div>
                 </Grid>

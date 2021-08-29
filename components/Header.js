@@ -5,15 +5,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import EmailIcon from '@material-ui/icons/Email';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {
   Hidden,
-  IconButton, useMediaQuery,
+  useMediaQuery,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
 
@@ -80,6 +76,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     background: theme.palette.pink.light,
     padding: 0,
+    minHeight: '3rem',
+    [theme.breakpoints.down('md')]: {
+      height: '4rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: '3rem',
+    },
   },
   logoLink: {
     display: 'flex',
@@ -89,21 +92,17 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     background: theme.palette.pink.light,
     height: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '100%',
+      marginRight: 0,
+      padding: '0.5rem 0',
+      height: '4rem',
+    },
     [theme.breakpoints.up('xs')]: {
       width: '100%',
       marginRight: 0,
       padding: '0.5rem 0',
-      height: '64',
-    },
-    [theme.breakpoints.up('sm')]: {
-      width: '100%',
-      marginRight: 0,
-      padding: '0.5rem',
-    },
-    [theme.breakpoints.up('md')]: {
-      width: 'max-content',
-      marginRight: '1.5rem',
-      padding: '0.5rem',
+      height: '3rem',
     },
     '.MuiLink-underlineHover:hover': {
       textDecoration: 'none',
@@ -123,11 +122,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     minWidth: '6.3rem',
     cursor: 'pointer',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.down('md')]: {
       width: '33%',
       fontSize: '0.75rem',
     },
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '33%',
       fontSize: '0.75rem',
     },
@@ -137,12 +136,25 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  languageSwitcher: {
+    width: '6.25rem',
+    [theme.breakpoints.down('md')]: {
+      width: '5.9375rem',
+      fontSize: '0.8125rem',
+    },
+
+    '& .MuiNativeSelect-root': {
+      fontSize: '0.875rem',
+    },
+  },
+
   lastItem: {
     border: 'none',
   },
   iconWrapper: {
     display: 'flex',
     flexGrow: 1,
+    alignItems: 'center',
     '& button': {
       marginRight: '0.5rem',
     },
@@ -204,7 +216,6 @@ const Header = (props) => {
   const displaySameRow = isMobile ? false : (!isTablet);
 
   const classes = useStyles();
-  const {showMainMenu} = props;
 
   useEffect(() => {
     if (session?.accessToken) {
@@ -219,22 +230,24 @@ const Header = (props) => {
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
-              {showMainMenu ? (
+              {!displaySameRow && (
                 <Hidden lgUp={true}>
-                  <IconButton
-                    edge='start'
-                    color='inherit'
-                    aria-label='menu'
-                  >
-                    <MenuIcon/>
-                  </IconButton>
+                  <Image
+                    src='/menu.png'
+                    alt='BH_EC nav Logo'
+                    width={24}
+                    height={24}
+                  />
                 </Hidden>
-              ) : null}
+              )}
               <Link
                 href={'/'}
                 className={classes.logoLink}
               >
-                <a className='next-link'>
+                <a
+                  className='next-link'
+                  style={{marginLeft: '1.5rem'}}
+                >
                   <Image
                     src='/logo.png'
                     alt='BH_EC Logo'
@@ -320,24 +333,44 @@ const Header = (props) => {
           {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
               {isAuthenticated && <div className={classes.personalItem}>
-                <PersonPinIcon/>
+                <Image
+                  src='/img/icons/ic-user.png'
+                  alt='user icon'
+                  width={24}
+                  height={24}
+                />
                 {'マイページ'}
               </div>}
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
-                    <PersonPinIcon/>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
                     {'登録・ログイン'}
                   </div>
                 </a>
               </Link>}
               <div className={classes.personalItem}>
-                <EmailIcon/>
+                <Image
+                  src='/img/icons/ic-mail.png'
+                  alt='mail icon'
+                  width={24}
+                  height={24}
+                />
                 {'お問い合わせ'}
               </div>
               <div className={classes.personalItem}>
-                <ShoppingCartIcon/>
+                <Image
+                  src='/img/icons/ic-cart.png'
+                  alt='cart icon'
+                  width={24}
+                  height={24}
+                />
                 {'カート'}
               </div>
             </div>
