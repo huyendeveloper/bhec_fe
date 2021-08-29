@@ -59,16 +59,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   container: {
-    width: '40%',
-    margin: '0 30%',
-    [theme.breakpoints.down('md')]: {
-      width: '60%',
-      margin: '0 20%',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '94%',
-      margin: '0 3%',
-    },
+    width: '100%',
+    margin: 0,
+    padding: 0,
   },
 
   content: {
@@ -80,11 +73,23 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.buttonLogin.default,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
-    width: '60%',
+    width: '22.75rem',
+    height: '3rem',
+    fontWeight: '700',
+    fontSize: '0.875rem',
     color: theme.palette.background.default,
     '&:hover': {
       background: theme.palette.buttonLogin.default,
       color: theme.palette.background.default,
+    },
+
+    [theme.breakpoints.down('md')]: {
+      width: '14rem',
+      height: '2.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      height: '2.5rem',
     },
   },
 
@@ -117,6 +122,18 @@ const useStyles = makeStyles((theme) => ({
 
   grid: {
     marginBottom: '1.5rem',
+    width: '34.875rem',
+    margin: '0 calc((100% - 34.875rem)/2)',
+    [theme.breakpoints.down('md')]: {
+      width: '29.5rem',
+      margin: '0 calc((100% - 29.5rem)/2)',
+      marginBottom: '1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
+      marginBottom: '1.5rem',
+    },
   },
 
   required: {
@@ -200,11 +217,11 @@ function RequestPassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             checkLengthPasswrod: () => {
                               const {password} = getValues();
-                              return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
+                              return password.length >= 8 || 'パスワードを８文字以上ご記入ください。';
                             },
                           },
                         }}
@@ -216,6 +233,10 @@ function RequestPassword() {
                             InputLabelProps={{shrink: false}}
                             name={name}
                             value={value}
+                            maxLength={32}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 32);
+                            }}
                             type='password'
                             inputRef={ref}
                             placeholder='パスワードを８文字以上ご記入ください。'
@@ -247,7 +268,7 @@ function RequestPassword() {
                         htmlFor='password_confirm'
                         className='formControlLabel'
                       >
-                        {'パスワード '}
+                        {'パスワード（確認）'}
                         <span className='formControlRequired'>{'*'}</span>
                       </label>
                       <Controller
@@ -255,11 +276,11 @@ function RequestPassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             matchesPreviousPassword: (value) => {
                               const {password} = getValues();
-                              return password === value || 'パスワードは一致する必要があります！';
+                              return password === value || 'パスワードが一致しません';
                             },
                           },
                         }}
@@ -271,6 +292,10 @@ function RequestPassword() {
                             InputLabelProps={{shrink: false}}
                             name={name}
                             type='password'
+                            maxLength={32}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 32);
+                            }}
                             value={value}
                             inputRef={ref}
                             onChange={onChange}
