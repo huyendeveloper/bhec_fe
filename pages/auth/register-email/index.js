@@ -167,7 +167,7 @@ function RegisterEmail() {
     } else {
       setAlerts({
         type: 'error',
-        message: '入力されたユーザーIDが存在しています。再度確認してください。',
+        message: '無効なメールアドレス/パスワードの組み合わせです。',
       });
     }
   };

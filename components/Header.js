@@ -336,15 +336,19 @@ const Header = (props) => {
           </Toolbar>
           {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
-              {isAuthenticated && <div className={classes.personalItem}>
-                <Image
-                  src='/img/icons/ic-user.png'
-                  alt='user icon'
-                  width={24}
-                  height={24}
-                />
-                {'マイページ'}
-              </div>}
+              {isAuthenticated &&
+              <Link href={'/mypage'}>
+                <div className={classes.personalItem}>
+                  <Image
+                    src='/img/icons/ic-user.png'
+                    alt='user icon'
+                    width={24}
+                    height={24}
+                  />
+                  {'マイページ'}
+                </div>
+              </Link>
+              }
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className={classes.linkPersonal}>
@@ -359,24 +363,32 @@ const Header = (props) => {
                   </div>
                 </a>
               </Link>}
-              <div className={classes.personalItem}>
-                <Image
-                  src='/img/icons/ic-mail.png'
-                  alt='mail icon'
-                  width={24}
-                  height={24}
-                />
-                {'お問い合わせ'}
-              </div>
-              <div className={classes.personalItem}>
-                <Image
-                  src='/img/icons/ic-cart.png'
-                  alt='cart icon'
-                  width={24}
-                  height={24}
-                />
-                {'カート'}
-              </div>
+              <Link href={'/contact'}>
+                <a className={classes.linkPersonal}>
+                  <div className={classes.personalItem} >
+                    <Image
+                      src='/img/icons/ic-mail.png'
+                      alt='mail icon'
+                      width={24}
+                      height={24}
+                    />
+                    {'お問い合わせ'}
+                  </div>
+                </a>
+              </Link>
+              <Link href={'/cart'}>
+                <a className={classes.linkPersonal}>
+                  <div className={`${classes.personalItem} ${classes.lastItem}`}>
+                    <Image
+                      src='/img/icons/ic-cart.png'
+                      alt='cart icon'
+                      width={24}
+                      height={24}
+                    />
+                    {'カート'}
+                  </div>
+                </a>
+              </Link>
             </div>
           </Toolbar>}
         </AppBar>
