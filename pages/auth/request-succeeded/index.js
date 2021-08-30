@@ -2,6 +2,8 @@
 import {
   Typography,
   Link,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
@@ -53,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   note: {
     width: '35rem',
     margin: '0 calc((100% - 35rem)/2)',
-    textAlign: 'left',
+    textAlign: 'center',
     fontSize: '0.875rem',
     lineHeight: '1.3rem',
     marginBottom: '2rem',
@@ -70,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
     width: '35rem',
     margin: '0 calc((100% - 35rem)/2)',
     fontSize: '0.875rem',
+    textAlign: 'center',
     lineHeight: '1.3rem',
     marginBottom: '3.5rem',
     [theme.breakpoints.down('md')]: {
@@ -85,7 +88,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RequestSucceeded() {
   const classes = useStyles();
+  const theme = useTheme();
   const [type, setType] = useState('sign-up');
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const router = useRouter();
   useEffect(() => {
     if (router.type) {
@@ -101,8 +106,8 @@ export default function RequestSucceeded() {
         <div className={classes.orderSuccess}>
           <Image
             src={'/order-succes.png'}
-            width={181}
-            height={320}
+            width={isMobile ? 113 : 181}
+            height={isMobile ? 200 : 320}
             alt={'icon'}
           />
 

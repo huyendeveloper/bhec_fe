@@ -104,11 +104,11 @@ const LineLogin = ({
             id_token: res.data.id_token,
             client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
           });
-          if (result) {
+          if (result && result.access_token) {
             await signIn('credentials',
               {
-                data: res.data,
-                token: result.data.access_token,
+                data: result,
+                token: result.access_token,
                 callbackUrl: `${window.location.origin}`,
               },
             );

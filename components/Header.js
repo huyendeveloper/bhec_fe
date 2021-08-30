@@ -328,15 +328,19 @@ const Header = (props) => {
           </Toolbar>
           {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
             <div className={classes.personalAction}>
-              {isAuthenticated && <div className={classes.personalItem}>
-                <Image
-                  src='/img/icons/ic-user.png'
-                  alt='user icon'
-                  width={24}
-                  height={24}
-                />
-                {'マイページ'}
-              </div>}
+              {isAuthenticated &&
+              <Link href={'/mypage'}>
+                <div className={classes.personalItem}>
+                  <Image
+                    src='/img/icons/ic-user.png'
+                    alt='user icon'
+                    width={24}
+                    height={24}
+                  />
+                  {'マイページ'}
+                </div>
+              </Link>
+              }
               {!isAuthenticated &&
               <Link href={'/auth/login'}>
                 <a className={classes.linkPersonal}>
