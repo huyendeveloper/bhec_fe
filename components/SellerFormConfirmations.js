@@ -8,9 +8,9 @@ import {Box, CircularProgress} from '@material-ui/core';
 import React, {useState} from 'react';
 
 import {prefectures, genders} from '~/constants';
-import {Button} from '~/components';
+import {Button, AlertMessageForSection} from '~/components';
 
-import {registerSeller} from '~/pages/lp/seller-form';
+import {CommonService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,13 +62,22 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
   const classes = useStyles();
   const index = prefectures.findIndex((prefecture) => prefecture.value === Number.parseInt(data.city, 10));
   const selected = index && index > 0 ? prefectures[index] : null;
+  const [alerts, setAlerts] = useState(null);
 
   const handleSubmitForm = async () => {
+    setAlerts(null);
     setLoading(true);
-    const res = await registerSeller(data);
-    if (res && !res.errors) {
+    const res = await CommonService.registerSeller(data);
+    if (res?.data) {
       setLoading(false);
       onNextStep();
+    } else {
+      setLoading(false);
+      const message = res?.errors ? res.errors : '送信できませんでした。再度、別のタイミングでお試してください。';
+      setAlerts({
+        type: 'error',
+        message,
+      });
     }
   };
 
@@ -223,6 +232,11 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
           </div>
         </div>
       ) : null}
+
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
 
       <div className={classes.actions}>
         <Box

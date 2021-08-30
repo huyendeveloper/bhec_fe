@@ -5,6 +5,7 @@ const CommonService = {
   getPrefectures,
   getAddress,
   addAddress,
+  registerSeller,
 };
 
 const parserError = (errors) => {
@@ -35,6 +36,15 @@ async function addAddress(payload) {
     return parserError(errors);
   }
   return data;
+}
+
+async function registerSeller(payload) {
+  const [data, errors] = await api.post('/seller_register', payload);
+  const isSend = data?.status === 'Email sent';
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return {data: isSend, errors};
 }
 
 export default CommonService;
