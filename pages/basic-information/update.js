@@ -24,9 +24,8 @@ import {
 import React, {useState, useEffect} from 'react';
 
 import {Alert, ContentBlock, Header, Footer, Button, StyledForm} from '~/components';
-import {AuthService, CommonServices} from '~/services';
+import {AuthService, CommonService} from '~/services';
 const Auth = new AuthService();
-const SharedService = new CommonServices();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,7 +85,7 @@ export default function BasicInformationUpdate() {
   };
 
   const getListCity = async () => {
-    const res = await SharedService.getCities();
+    const res = await CommonService.getPrefectures();
     if (res && res.length) {
       setListCity(res);
     }
@@ -351,8 +350,8 @@ export default function BasicInformationUpdate() {
                               InputLabelProps={{shrink: false}}
                               value={value}
                               onChange={(date) => {
-                                const formatedDate = formatDate(date, 'yyyy/MM/dd');
-                                onChange(formatedDate);
+                                const formattedDate = formatDate(date, 'yyyy/MM/dd');
+                                onChange(formattedDate);
                               }}
                               autoOk={true}
                               error={Boolean(errors.dob)}

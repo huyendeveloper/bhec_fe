@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 
 import {Button, StyledForm} from '~/components';
-import {AddressService} from '~/services';
+import {CommonService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +20,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DeliveryForm = (props) => {
-  const {dataEdit, editMode, handleClose, prefectures, fetchData} = props;
+  const {dataEdit, editMode, handleClose, fetchData} = props;
+
+  const [prefectures, setPrefectures] = useState([]);
+  const fetchPrefectures = async () => {
+    const res = await CommonService.getPrefectures();
+    if (res && res[0]?.name) {
+      setPrefectures(res);
+    }
+  };
+
   const classes = useStyles();
   const [isAuthenticated, setIsAuthenticated] = useState();
   const theme = useTheme();
@@ -43,11 +52,12 @@ const DeliveryForm = (props) => {
 
   useEffect(() => {
     checkAuthenticated();
+    fetchPrefectures();
   }, []);
 
   const onSubmit = async (data) => {
     if (isAuthenticated) {
-      const result = await AddressService.createAddress(data);
+      const result = await CommonService.addAddress(data);
       if (result.status === 201) {
         // eslint-disable-next-line no-console
         console.log('success');
@@ -472,7 +482,6 @@ DeliveryForm.propTypes = {
   dataEdit: PropTypes.any.isRequired,
   editMode: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  prefectures: PropTypes.array.isRequired,
   fetchData: PropTypes.func.isRequired,
 };
 
