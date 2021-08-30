@@ -27,7 +27,7 @@ import {PaymentPopup} from '~/components/Payment';
 import {AdsWidget, DialogWidget, ProductWidget} from '~/components/Widgets';
 import {httpStatus} from '~/constants';
 import {cookieUtil} from '~/modules/cookieUtil';
-import {AddressService, PrefectureService, CartService, PaymentService, OrderService} from '~/services';
+import {CommonService, CartService, PaymentService, OrderService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -296,8 +296,6 @@ export default function OrderForm() {
   const [addressList, setAddressList] = useState(null);
   const [cardList, setCardList] = useState(null);
   const [cart, setCart] = useState([]);
-  const [prefectures, setPrefectures] = useState([]);
-
   const [address, setAddress] = useState(null);
   const [card, setCard] = useState(null);
   const [bill, setBill] = useState({});
@@ -336,7 +334,6 @@ export default function OrderForm() {
 
   const fetchData = () => {
     checkAuthenticated();
-    fetchDataPrefecture();
     calculateBill();
   };
 
@@ -350,7 +347,7 @@ export default function OrderForm() {
       getLocalData();
     } else {
       setIsAuthenticated(true);
-      const addresses = await AddressService.getAll();
+      const addresses = await CommonService.getAddress();
       setAddressList(addresses);
       fetchListCard();
       if (cartItems === []) {
@@ -368,11 +365,6 @@ export default function OrderForm() {
     } else {
       setCardList([]);
     }
-  };
-
-  const fetchDataPrefecture = async () => {
-    const prefectureList = await PrefectureService.getPrefectures();
-    setPrefectures(prefectureList);
   };
 
   const getLocalData = () => {
@@ -1343,15 +1335,12 @@ export default function OrderForm() {
             size={isTablet ? 'sm' : 'md'}
             title={'新しい住所を追加する'}
           >
-            {prefectures &&
             <DeliveryForm
               dataEdit={editData}
               editMode={editMode}
               handleClose={handleCloseDelivery}
-              prefectures={prefectures}
               fetchData={fetchData}
             />
-            }
           </DialogWidget>
 
           {openPaymentPopup &&
