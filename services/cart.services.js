@@ -7,7 +7,6 @@ const parserError = (errors) => {
 };
 
 export default class CartService {
-
   async getCarts() {
     const [data, errors] = await api.get('/carts');
     if (errors.length) {
