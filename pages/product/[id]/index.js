@@ -8,13 +8,14 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
 
-import {Header, Footer, Button, CategoryBlock, Search, ProductGallery, Breadcrumbs, QuantityBox} from '~/components';
+import {Header, Footer, Button, CategoryBlock, Search, ProductGallery, Breadcrumbs, QuantityBox, AlertMessageForSection} from '~/components';
 import {ProductWidget, RatingWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
 import {ProductService, CartService} from '~/services';
 const Product = new ProductService();
 const Cart = new CartService();
 import {cookieUtil} from '~/modules/cookieUtil';
+import {format as formatNumber} from '~/lib/number';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -189,12 +190,18 @@ const useStyles = makeStyles((theme) => ({
 function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProduct}) {
   const [session] = useSession();
   const [cartItems, setCartItems] = useState([]);
+  const [alerts, setAlerts] = useState(null);
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
+  const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const router = useRouter();
 
   const getCartAPI = async () => {
     const result = await Cart.getCarts();
 
-    //Set setCartItems from api data
-    if (result.cart_items.length > 0) {
+    if (result && result.cart_items?.length > 0) {
       const apiData = [];
       for (const item of result.cart_items) {
         const mapData = {
@@ -214,14 +221,18 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
   };
 
   useEffect(() => {
-    if (session) {
+    if (session?.accessToken) {
+      // if user authorized, get cart items via API
       getCartAPI();
     } else {
+      // get cart items from local data if anonymus
       const cookieData = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
       setCartItems(cookieData);
     }
   }, [session]);
 
+  // eslint-disable-next-line no-warning-comments
+  // TODO: create breadcrumb from product data
   const linkProps = [
     {
       id: 1,
@@ -238,12 +249,6 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
       linkLabel: '工芸品名',
     },
   ];
-  const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
-  const router = useRouter();
 
   const renderProduct = (productData) => {
     if (isMobile) {
@@ -317,7 +322,7 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
     );
   };
 
-  const handleAddCart = () => {
+  const addToCart = () => {
     const dataAdd = {
       product_id: productDetail.id,
       name: productDetail.name,
@@ -329,47 +334,63 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
       note: '',
     };
 
+    if (selectedQuantity === 0) {
+      setAlerts({
+        type: 'warning',
+        message: '購入する商品の数を選択してください。',
+      });
+      return false;
+    }
+
     //If cartItems empty set data to cookie and redirect to cart page
     if (!cartItems.length > 0) {
       cartItems.push(dataAdd);
       cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
-      router.push('/cart');//redirect to cart page
-      return;
+      return true;
     }
 
     //If the same seller -> add to cart and redirect to cart page
     const sameSeller = cartItems.find((item) => item.seller_id === sellerInfo.id);
-    if (sameSeller) {
-      const existItem = cartItems.find((item) => item.product_id === productDetail.id);
-      if (existItem) {
-        cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
-        router.push('/cart');
-        return;
-      }
+    if (!sameSeller) {
+      setAlerts({
+        type: 'warning',
+        message: 'カートに他の出品者からの商品があります。',
+      });
+      return false;
+    }
 
-      cartItems.push(dataAdd);
+    const existItem = cartItems.find((item) => item.product_id === productDetail.id);
+    if (existItem) {
       cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
+      return true;
+    }
+
+    cartItems.push(dataAdd);
+    cookieUtil.setCookie('cartItems', JSON.stringify(cartItems));
+    return true;
+  };
+
+  const handleQuantity = (event) => {
+    setSelectedQuantity(parseInt(event.target.value, 10));
+  };
+
+  const handleAddCart = () => {
+    if (addToCart()) {
       router.push('/cart');
-    } else {
-      // eslint-disable-next-line no-alert
-      window.alert('cannot add other seller');
     }
   };
 
-  const [selectedQuantity, setSelectedQuantity] = useState(0);
-  const handleQuantity = (event) => {
-    setSelectedQuantity(parseInt(event.target.value, 10));
+  const handleInstantBuyClick = () => {
+    if (addToCart()) {
+      router.push('/order-form');
+    }
   };
 
   /* eslint-disable max-lines */
   return (
     <div className={classes.root}>
       <Head>
-        <title>{'Product Detail - BH_EC'}</title>
-        <meta
-          name='description'
-          content='Generated by NextJs'
-        />
+        <title>{productDetail.name || 'Oshinagaki'}</title>
       </Head>
       <Header showMainMenu={false}/>
 
@@ -451,7 +472,7 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
             >
               <RatingWidget
                 readOnly={true}
-                rating={productDetail.rating}
+                rating={productDetail.rating || 0}
               />
               <span className={'noRating'}>{productDetail.no_rating}{'個の評価'}</span>
             </Box>
@@ -459,7 +480,7 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
             <Box
               component='div'
             >
-              <span className={'price'}>{currency.format(productDetail.price)}</span>
+              <span className={'price'}>{'¥ ' + formatNumber(parseInt(productDetail.price, 10))}</span>
               <span>{'（税込 / 送料別）'}</span>
             </Box>
 
@@ -560,6 +581,7 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
                 customColor='red'
                 customSize='medium'
                 customWidth='fullwidth'
+                onClick={handleInstantBuyClick}
                 startIcon={
                   <Image
                     src={'/img/icons/click.svg'}
@@ -724,6 +746,11 @@ function ProductDetail({productDetail, sellerInfo, sellerProduct, recommendProdu
         </Grid>
       </Container>
       <Footer/>
+
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </div >
   );
 }
