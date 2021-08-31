@@ -4,9 +4,8 @@ import Router from 'next/router';
 import {useEffect, useState} from 'react';
 
 import {ContentBlock, Header, Footer} from '~/components';
-import {AuthService, CommonServices} from '~/services';
+import {AuthService, CommonService} from '~/services';
 const Auth = new AuthService();
-const CommonService = new CommonServices();
 const useStyles = makeStyles((theme) => ({
   block: {
     width: '100%',
@@ -63,7 +62,7 @@ export default function BasicInformation() {
   };
 
   const getListCity = async () => {
-    const res = await CommonService.getCities();
+    const res = await CommonService.getPrefectures();
     if (res && res.length) {
       setListCity(res);
     }

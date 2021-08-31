@@ -95,11 +95,12 @@ const CartItem = () => {
 
   const getCartAPI = async () => {
     const result = await Cart.getCarts();
+    const cart_items = result?.cart_items ?? [];
 
     //Set setCartItems from api data
-    if (result.cart_items.length > 0) {
+    if (cart_items.length) {
       const apiData = [];
-      for (const item of result.cart_items) {
+      for (const item of cart_items) {
         const mapData = {
           product_id: item.product_id,
           name: item.product.name,
