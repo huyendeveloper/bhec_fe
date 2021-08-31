@@ -93,8 +93,8 @@ export default function RequestSucceeded() {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const router = useRouter();
   useEffect(() => {
-    if (router.type) {
-      setType(router.type);
+    if (router.query.type) {
+      setType(router.query.type);
     }
   }, []);
   return (
