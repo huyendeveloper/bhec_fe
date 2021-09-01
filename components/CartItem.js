@@ -1,7 +1,7 @@
 import React from 'react';
-import {Box, makeStyles, Grid, Icon, useMediaQuery, useTheme} from '@material-ui/core';
-import Image from 'next/image';
+import {Box, makeStyles, Grid, Icon, useMediaQuery, useTheme, Card, CardActionArea, CardMedia} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import {QuantityBox} from '~/components';
 import {format as formatNumber} from '~/lib/number';
@@ -80,6 +80,14 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  card: {
+    boxShadow: 'none',
+  },
+  bgImg: {
+    width: 170,
+    height: 112,
+    objectFit: 'contain',
+  },
 }));
 
 const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
@@ -101,22 +109,19 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           lg={6}
           className={'blockFirst'}
         >
-          <Box
-            component='div'
-            className={'thumbnail'}
-          >
-            {
-              item.thumbnail ? (
-                <Image
-                  src={`${item.thumbnail}`}
-                  width={170}
-                  height={112}
-                  alt={`${item.name}`}
-                />
-              ) : null
-            }
-
-          </Box>
+          <Card className={classes.card}>
+            <CardActionArea>
+              <CardMedia
+                className={clsx(item.thumb ? '' : classes.bgImg)}
+                component='img'
+                alt={item.name}
+                width={170}
+                height={112}
+                image={item.thumbnail ?? '/logo.png'}
+                title={item.name}
+              />
+            </CardActionArea>
+          </Card>
           {isMobile ? null : (
             <Box
               component='div'
@@ -154,7 +159,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
               </div>
             )}
             <div className='price'>
-              {'¥' + formatNumber(item.price)}
+              {'¥' + formatNumber(parseInt(item.price, 10))}
             </div>
           </Box>
           <Box

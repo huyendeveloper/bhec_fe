@@ -1,12 +1,16 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-useless-escape */
 import {ErrorMessage} from '@hookform/error-message';
 import {
   Checkbox,
   Divider,
+  // eslint-disable-next-line no-unused-vars
   FormControl,
   FormControlLabel,
   Grid,
+  // eslint-disable-next-line no-unused-vars
   InputBase,
+  // eslint-disable-next-line no-unused-vars
   Paper,
   Radio,
   RadioGroup,
@@ -134,6 +138,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       height: '9rem !important',
     },
+    '&:focus': {
+      outline: '2px solid #3f51b5',
+    },
   },
   row: {
     display: 'flex',
@@ -186,101 +193,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const recommendProducts = [
-  {
-    productId: 1,
-    name: '『大好評』小田原漆器についてご紹介しています。',
-    productThumb: '/img/products/product-01.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    price: 26600,
-    is_favorite_product: true,
-    seller_info: {
-      name: '小田原漆器',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-01.png',
-      introduction: '木地部門　伝統工芸士',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 2,
-    name: '『大好評』江戸べっ甲についてご紹介しています。',
-    productThumb: '/img/products/product-02.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-    price: 32800,
-    is_favorite_product: false,
-    seller_info: {
-      name: '磯貝 剛',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-02.png',
-      introduction: 'ベッ甲イソガイ　統括',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 3,
-    name: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
-    productThumb: '/img/products/product-03.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    price: 149300,
-    is_favorite_product: false,
-    seller_info: {
-      name: '林　文雄',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-03.png',
-      introduction: 'アートランド',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 4,
-    name: '『大好評』江戸節句人形についてご紹介しています。',
-    productThumb: '/img/products/product-04.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-    price: 184750,
-    is_favorite_product: false,
-    seller_info: {
-      name: '松崎光正',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-04.png',
-      introduction: '松崎人形',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-];
+// eslint-disable-next-line no-warning-comments
+// TODO: get products in same category with cart item
+const recommendProducts = [];
 
 export default function OrderForm() {
   const classes = useStyles();
   const theme = useTheme();
   const router = useRouter();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  // eslint-disable-next-line no-unused-vars
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
+  // eslint-disable-next-line no-unused-vars
   const [coupon] = useState('1');
   const [issueReceipt, setIssueReceipt] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -289,6 +215,8 @@ export default function OrderForm() {
   const [editMode] = useState(false);
   const [editData] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [isDirty, setIsDirty] = useState(false);
   const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
 
   const [orderData, setOrderData] = useState({});
@@ -296,7 +224,9 @@ export default function OrderForm() {
   const [addressList, setAddressList] = useState(null);
   const [cardList, setCardList] = useState(null);
   const [cart, setCart] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [address, setAddress] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [card, setCard] = useState(null);
   const [bill, setBill] = useState({});
 
@@ -308,11 +238,26 @@ export default function OrderForm() {
   } = useForm({criteriaMode: 'all'});
 
   useEffect(() => {
+    const cartItems = getCartItems();
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
+  }, []);
+
+  useEffect(() => {
+    const cartItems = getCartItems();
+    if (cartItems.length === 0) {
+      // redirect page if cart is empty
+      router.push('/cart');
+    }
+  }, [cart]);
+
+  useEffect(() => {
     fetchData();
 
     const handleRouteChange = () => {
       try {
-        if (!isConfirm) {
+        if (isDirty && !isConfirm) {
           // eslint-disable-next-line no-alert
           const sure = window.confirm('Are you sure about that?');
           if (!sure) {
@@ -339,13 +284,15 @@ export default function OrderForm() {
 
   const checkAuthenticated = async () => {
     const session = await getSession();
-    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+    const cartItems = getCartItems();
+
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
+
     setCart(cartItems);
 
-    if (session === null) {
-      setIsAuthenticated(false);
-      getLocalData();
-    } else {
+    if (session && session?.accessToken) {
       setIsAuthenticated(true);
       const addresses = await CommonService.getAddress();
       setAddressList(addresses);
@@ -355,6 +302,9 @@ export default function OrderForm() {
         cookieUtil.setCookie('cartItems', JSON.stringify(cartDetails));
         setCart(cartDetails);
       }
+    } else {
+      setIsAuthenticated(false);
+      getLocalData();
     }
   };
 
@@ -371,8 +321,8 @@ export default function OrderForm() {
     const addressLocal = JSON.parse(window.localStorage.getItem('address'));
     const cardLocal = JSON.parse(window.localStorage.getItem('card'));
 
-    setAddress(addressLocal);
-    setCard(cardLocal);
+    setAddressList([addressLocal]);
+    setCardList([cardLocal]);
   };
 
   const handleValidation = () => {
@@ -395,7 +345,7 @@ export default function OrderForm() {
     cartItems.forEach((item) => {
       const cartItem = {
         product_id: item.product_id,
-        quantity: item.quantity_user,
+        quantity: item.quantity,
         note: item.note || '',
       };
       newCart.push(cartItem);
@@ -456,8 +406,10 @@ export default function OrderForm() {
     setIsConfirm(true);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleChange = () => {
-    //
+    // eslint-disable-next-line no-warning-comments
+    // TODO: handle coupon change
   };
 
   const handleCloseDelivery = () => {
@@ -470,12 +422,14 @@ export default function OrderForm() {
   };
 
   const calculateBill = () => {
-    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
-    const total = cartItems.reduce((totalBill, item) => totalBill + (item.quantity_user * item.price), 0);
+    const cartItems = getCartItems();
+    const total = cartItems.reduce((totalBill, item) => totalBill + (item.quantity * item.price), 0);
     const billDetails = {
       totalBill: total,
-      ship: 0,
-      discount: 0,
+      // eslint-disable-next-line no-warning-comments
+      ship: 0, // TODO: retrieve shipping fee via API
+      // eslint-disable-next-line no-warning-comments
+      discount: 0, // TODO: calculate after coupon feature done
     };
     setBill(billDetails);
   };
@@ -497,8 +451,12 @@ export default function OrderForm() {
     setOpenPaymentPopup(false);
   };
 
+  const getCartItems = () => {
+    return cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
+  };
+
   return (
-    <DefaultLayout title={'Orders - BH_EC'}>
+    <DefaultLayout title={'ご注文フォーム'}>
       <div className={classes.root}>
         <ContentBlock
           title={'ご注文フォーム'}
@@ -554,7 +512,7 @@ export default function OrderForm() {
                         <TextField
                           id='email'
                           variant='outlined'
-                          placeholder='oshinagaki@gmail.com'
+                          placeholder='メールアドレス'
                           error={Boolean(errors.email)}
                           InputLabelProps={{shrink: false}}
                           name={name}
@@ -744,7 +702,7 @@ export default function OrderForm() {
                 themeStyle={'gray'}
                 title={'お届け先の住所'}
               >
-                {isAuthenticated && !isConfirm && addressList &&
+                {!isConfirm && addressList &&
                 <Controller
                   name={'addressShipping'}
                   control={control}
@@ -791,10 +749,6 @@ export default function OrderForm() {
                     )) : null;
                   }}
                 />
-
-                {!isAuthenticated && !isConfirm && address &&
-                  <div>{`${address.name}、${address.zipcode}、${address.province.name}${address.city}${address.address}`}</div>
-                }
 
                 {!isValid && !address &&
                   <p
@@ -847,19 +801,23 @@ export default function OrderForm() {
                         className={'labelRadioBtn'}
                       />
 
-                      <FormControlLabel
+                      {/* eslint-disable-next-line no-warning-comments */}
+                      {/* TODO: hide not-ready-yet feature */}
+                      {/* <FormControlLabel
                         value={'2'}
                         control={<Radio/>}
                         label={'UnionPay'}
                         className={'labelRadioBtn'}
-                      />
+                      />*/}
 
-                      <FormControlLabel
+                      {/* eslint-disable-next-line no-warning-comments */}
+                      {/* TODO: hide not-ready-yet feature */}
+                      {/* <FormControlLabel
                         value={'3'}
                         control={<Radio/>}
                         label={'コンビニ払い'}
                         className={'labelRadioBtn'}
-                      />
+                      /> */}
                     </RadioGroup>
                   )}
                 />
@@ -949,69 +907,71 @@ export default function OrderForm() {
                 }
               </BlockForm>
 
-              <BlockForm
-                themeStyle={'gray'}
-                title={'クーポン利用'}
-              >
-                {!isAuthenticated &&
-                <FormControl>
-                  <RadioGroup
-                    name={'coupon'}
-                    value={coupon}
-                    onChange={handleChange}
-                    className={classes.radioGroup}
-                  >
-                    <FormControlLabel
-                      value={'1'}
-                      control={<Radio/>}
-                      label={'クーポン名　300円　3月15日まで...'}
-                      className={'labelRadioBtn'}
-                    />
-
-                    <FormControlLabel
-                      value={'2'}
-                      control={<Radio/>}
-                      label={'クーポン名　5%　3月15日まで'}
-                      className={'labelRadioBtn'}
-                    />
-
-                    <FormControlLabel
-                      value={'3'}
-                      control={<Radio/>}
-                      label={'クーポン名　300円　3月15日まで'}
-                      className={'labelRadioBtn'}
-                    />
-
-                    <FormControlLabel
-                      value={'4'}
-                      control={<Radio/>}
-                      label={'クーポン名　5%　3月15日まで'}
-                      className={'labelRadioBtn'}
-                    />
-                  </RadioGroup>
-                </FormControl>
-                }
-
-                <Paper
-                  elevation={0}
-                  component='div'
-                  className={classes.inputBlock}
+              {/* eslint-disable-next-line no-warning-comments */}
+              {/* TODO: hide not-ready-yet feature */}
+              {/* <BlockForm
+                  themeStyle={'gray'}
+                  title={'クーポン利用'}
                 >
-                  <InputBase
-                    className={classes.input}
-                    placeholder='クーポンコード入力'
-                    inputProps={{'aria-label': 'search'}}
-                  />
-                  <Button
-                    variant='contained'
-                    type='submit'
-                    size='large'
-                    className={classes.btnApply}
+                  {!isAuthenticated &&
+                  <FormControl>
+                    <RadioGroup
+                      name={'coupon'}
+                      value={coupon}
+                      onChange={handleChange}
+                      className={classes.radioGroup}
+                    >
+                      <FormControlLabel
+                        value={'1'}
+                        control={<Radio/>}
+                        label={'クーポン名300円3月15日まで...'}
+                        className={'labelRadioBtn'}
+                      />
+
+                      <FormControlLabel
+                        value={'2'}
+                        control={<Radio/>}
+                        label={'クーポン名5%3月15日まで'}
+                        className={'labelRadioBtn'}
+                      />
+
+                      <FormControlLabel
+                        value={'3'}
+                        control={<Radio/>}
+                        label={'クーポン名300円3月15日まで'}
+                        className={'labelRadioBtn'}
+                      />
+
+                      <FormControlLabel
+                        value={'4'}
+                        control={<Radio/>}
+                        label={'クーポン名5%3月15日まで'}
+                        className={'labelRadioBtn'}
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  }
+
+                  <Paper
+                    elevation={0}
+                    component='div'
+                    className={classes.inputBlock}
                   >
-                    {'適用'}
-                  </Button>
-                </Paper>
-              </BlockForm>
+                    <InputBase
+                      className={classes.input}
+                      placeholder='クーポンコード入力'
+                      inputProps={{'aria-label': 'search'}}
+                    />
+                    <Button
+                      variant='contained'
+                      type='submit'
+                      size='large'
+                      className={classes.btnApply}
+                    >
+                      {'適用'}
+                    </Button>
+                  </Paper>
+                </BlockForm> */}
 
               <BlockForm
                 themeStyle={'gray'}
@@ -1190,7 +1150,9 @@ export default function OrderForm() {
                   <b>{currency.format(bill.ship)}</b>
                 </div>
 
-                <div
+                {/* eslint-disable-next-line no-warning-comments */}
+                {/* TODO: hide not-ready-yet feature */}
+                {/* <div
                   className={classes.row}
                 >
                   <div>
@@ -1204,7 +1166,7 @@ export default function OrderForm() {
                   </div>
 
                   <b>{`-${currency.format(bill.discount)}`}</b>
-                </div>
+                </div> */}
               </div>
 
               <Divider/>
@@ -1279,79 +1241,81 @@ export default function OrderForm() {
           </StyledForm>
         </ContentBlock>
 
-        <ContentBlock
-          title={'あなたにオススメの商品'}
-          bgColor='#faf6ef'
-          bgImage='/img/noise.png'
-        >
-          <Grid
-            container={true}
-            spacing={3}
-            className={classes.recommendedProducts}
+        {recommendProducts?.length > 0 && (
+          <ContentBlock
+            title={'あなたにオススメの商品'}
+            bgColor='#faf6ef'
+            bgImage='/img/noise.png'
           >
-            {recommendProducts.map((product) => (
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.recommendedProducts}
+            >
+              {recommendProducts.map((product) => (
+                <Grid
+                  key={product.productId}
+                  item={true}
+                  sm={4}
+                  xs={12}
+                >
+                  <ProductWidget
+                    data={product}
+                    heart={true}
+                    border={'borderNone'}
+                  />
+                </Grid>
+              ))}
+
               <Grid
-                key={product.productId}
                 item={true}
-                sm={4}
                 xs={12}
+                className={classes.ads}
               >
-                <ProductWidget
-                  data={product}
-                  heart={true}
-                  border={'borderNone'}
+                <AdsWidget
+                  imgSrc={'/img/ad/ad6.png'}
+                  imgWidth={'1140'}
+                  imgHeight={'192'}
                 />
               </Grid>
-            ))}
 
-            <Grid
-              item={true}
-              xs={12}
-              className={classes.ads}
-            >
-              <AdsWidget
-                imgSrc={'/img/ad/ad6.png'}
-                imgWidth={'1140'}
-                imgHeight={'192'}
-              />
+              <Grid
+                item={true}
+                xs={12}
+                className={classes.ads}
+              >
+                <AdsWidget
+                  imgSrc={'/img/ad/ad7.png'}
+                  imgWidth={'1140'}
+                  imgHeight={'192'}
+                />
+              </Grid>
             </Grid>
 
-            <Grid
-              item={true}
-              xs={12}
-              className={classes.ads}
+            <DialogWidget
+              open={openAddAddress}
+              handleClose={() => setOpenAddAddress(false)}
+              size={isTablet ? 'sm' : 'md'}
+              title={'新しい住所を追加する'}
             >
-              <AdsWidget
-                imgSrc={'/img/ad/ad7.png'}
-                imgWidth={'1140'}
-                imgHeight={'192'}
+              <DeliveryForm
+                dataEdit={editData}
+                editMode={editMode}
+                handleClose={handleCloseDelivery}
+                fetchData={fetchData}
               />
-            </Grid>
-          </Grid>
+            </DialogWidget>
 
-          <DialogWidget
-            open={openAddAddress}
-            handleClose={() => setOpenAddAddress(false)}
-            size={isTablet ? 'sm' : 'md'}
-            title={'新しい住所を追加する'}
-          >
-            <DeliveryForm
-              dataEdit={editData}
-              editMode={editMode}
-              handleClose={handleCloseDelivery}
-              fetchData={fetchData}
+            {openPaymentPopup &&
+            <PaymentPopup
+              open={openPaymentPopup}
+              handleClose={handleClosePaymentPopup}
+              style={{width: '80%'}}
+              createPaymentSuccess={createPaymentSuccess}
             />
-          </DialogWidget>
-
-          {openPaymentPopup &&
-          <PaymentPopup
-            open={openPaymentPopup}
-            handleClose={handleClosePaymentPopup}
-            style={{width: '80%'}}
-            createPaymentSuccess={createPaymentSuccess}
-          />
-          }
-        </ContentBlock>
+            }
+          </ContentBlock>
+        )}
       </div>
     </DefaultLayout>
   );

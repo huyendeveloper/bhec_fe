@@ -4,13 +4,20 @@ const OrderService = {
   createOrder,
 };
 
+// eslint-disable-next-line no-warning-comments
+// TODO: DRY me
+const parserError = (errors) => {
+  return errors[0].message.
+    split('\n').
+    map((error, i) => <div key={`err-${String(i)}`}>{error}</div>);
+};
+
 async function createOrder(body) {
-  const result = await api.post('/orders', body).then((res) => {
-    return res;
-  }).catch((error) => {
-    return error.response;
-  });
-  return result;
+  const [data, errors] = await api.post('/orders', body);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
 }
 
 export default OrderService;

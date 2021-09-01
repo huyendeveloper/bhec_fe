@@ -1,12 +1,14 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {Grid, Icon, TextField, Typography, useMediaQuery} from '@material-ui/core';
+import {Card, CardActionArea, CardMedia, Grid, Icon, IconButton, TextField, Typography, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
+import clsx from 'clsx';
 import 'date-fns';
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import React, {useRef} from 'react';
 import {Controller} from 'react-hook-form';
+
+import QuantityBox from './QuantityBox';
 
 import {cookieUtil} from '~/modules/cookieUtil';
 
@@ -23,11 +25,10 @@ const useStyles = makeStyles((theme) => ({
   deleteBtn: {
     justifyContent: 'center',
     display: 'flex',
-    alignItems: 'flex-end',
-    color: theme.palette.red.main,
+    alignItems: 'center',
     flexDirection: 'column',
-    '& .MuiSvgIcon-root': {
-      height: '3rem',
+    '& .MuiIconButton-label': {
+      color: theme.palette.red.main,
     },
   },
   productName: {
@@ -85,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
       color: '#8a8a8a !important',
       padding: 'auto',
     },
+    '& select': {
+      border: 'none !important',
+    },
   },
   selectHour: {
     background: theme.palette.white.main,
@@ -102,11 +106,20 @@ const useStyles = makeStyles((theme) => ({
   datePicker: {
     background: theme.palette.white.main,
   },
+  card: {
+    boxShadow: 'none',
+  },
+  bgImg: {
+    width: 170,
+    height: 112,
+    objectFit: 'contain',
+  },
 }));
 
 const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}) => {
   const classes = useStyles();
   const theme = useTheme();
+  // eslint-disable-next-line no-unused-vars
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const typingTimeoutRef = useRef(null);
@@ -116,8 +129,7 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
   const handleChangeQuantity = (e) => {
     const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
     let dataUpdate = cartItems.find((item) => item.product_id === data.product_id);
-    dataUpdate = {...dataUpdate, quantity_user: e.target.value};
-
+    dataUpdate = {...dataUpdate, quantity: e.target.value};
     const index = cartItems.findIndex((item) => item.product_id === dataUpdate.product_id);
     const newCart = [...cartItems];
     newCart[index] = dataUpdate;
@@ -165,19 +177,19 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
           sm={3}
           xs={4}
         >
-          <Image
-            src={'/img/products/product-01.png'}
-            width={
-              // eslint-disable-next-line no-nested-ternary
-              isMobile ? 87 : (isTablet ? 124 : 170)
-            }
-            height={
-              // eslint-disable-next-line no-nested-ternary
-              isMobile ? 56 : (isTablet ? 80 : 111)
-            }
-            layout='responsive'
-            alt={'icon'}
-          />
+          <Card className={classes.card}>
+            <CardActionArea>
+              <CardMedia
+                className={clsx(data.thumb ? '' : classes.bgImg)}
+                component='img'
+                alt={data.name}
+                width={170}
+                height={112}
+                image={data.thumbnail ?? '/logo.png'}
+                title={data.name}
+              />
+            </CardActionArea>
+          </Card>
         </Grid>
 
         <Grid
@@ -230,29 +242,12 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
             >
               <div className={classes.selectBox}>
                 <div className={classes.title}>{'数量'}</div>
-                <Controller
-                  name={`quantity${data.product_id}`}
-                  control={control}
-                  defaultValue={data.quantity_user}
-                  rules={{required: '必須項目です。'}}
-                  render={({field: {name, value, ref, onChange}}) => (
-                    <TextField
-                      label={''}
-                      variant='outlined'
-                      error={Boolean(errors.quantity)}
-                      InputLabelProps={{shrink: false}}
-                      name={name}
-                      value={value}
-                      type={'number'}
-                      InputProps={{inputProps: {min: 1, max: data.quantity}}}
-                      inputRef={ref}
-                      disabled={disabled}
-                      onChange={(e) => {
-                        onChange(e);
-                        handleChangeQuantity(e);
-                      }}
-                    />
-                  )}
+                <QuantityBox
+                  name={'productQuantity'}
+                  maximumQuantity={data.maximum_quantity}
+                  defaultValue={data.quantity}
+                  handleChange={handleChangeQuantity}
+                  disabled={disabled}
                 />
                 <ErrorMessage
                   errors={errors}
@@ -281,9 +276,13 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
           xs={1}
           className={classes.deleteBtn}
         >
-          <div className={classes.title}/>
+          <IconButton
+            aria-label='delete'
+            onClick={handleDelete}
+          >
+            <DeleteIcon/>
+          </IconButton>
 
-          <DeleteIcon onClick={handleDelete}/>
         </Grid>
 
         <Grid
