@@ -267,7 +267,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_name'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須雨'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
@@ -312,7 +312,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: '必須項目',
+                        required: '必須項目です。',
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
@@ -366,7 +366,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_expire'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須項目です'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
                           className={classes.inputPayment}

@@ -502,10 +502,10 @@ export default function OrderForm() {
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: 'この入力は必須です。',
+                        required: '必須項目です。',
                         pattern: {
                           value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                          message: 'メールアドレスが無効です。',
+                          message: '無効なメールアドレスです。',
                         },
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
@@ -556,7 +556,7 @@ export default function OrderForm() {
                       name='nickname'
                       control={control}
                       defaultValue={''}
-                      rules={{required: 'この入力は必須です。'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='nickname'
@@ -603,10 +603,10 @@ export default function OrderForm() {
                       control={control}
                       defaultValue={''}
                       rules={{
-                        required: 'この入力は必須です。',
+                        required: '必須項目です。',
                         validate: {
                           checkLength: (value) => {
-                            return value.length >= 6 || '6文字以上のパスワードをご入力ください！';
+                            return value.length >= 6 || '6文字以上で入力してください。';
                           },
                         },
                       }}
@@ -657,11 +657,11 @@ export default function OrderForm() {
                       control={control}
                       defaultValue={''}
                       rules={{
-                        required: 'この入力は必須です。',
+                        required: '必須項目です。',
                         validate: {
                           matchesPreviousPassword: (value) => {
                             const {password} = getValues();
-                            return password === value || 'パスワードは一致する必要があります！';
+                            return password === value || 'パスワードが一致しません。';
                           },
                         },
                       }}
@@ -707,10 +707,10 @@ export default function OrderForm() {
                   name={'addressShipping'}
                   control={control}
                   defaultValue={(addressList.length > 0) ? `${addressList[0].id}` : '0'}
-                  rules={{required: 'この入力は必須です。',
+                  rules={{required: '必須項目です。',
                     validate: {
                       checkSelected: (value) => {
-                        return value !== '0' || 'この入力は必須です。';
+                        return value !== '0' || '必須項目です。';
                       },
                     },
                   }}
@@ -754,7 +754,7 @@ export default function OrderForm() {
                   <p
                     className='inputErrorText'
                   >
-                    {'この入力は必須です。'}
+                    {'必須項目です。'}
                   </p>
                 }
 
@@ -786,7 +786,7 @@ export default function OrderForm() {
                   name={'payment_method'}
                   control={control}
                   defaultValue={'1'}
-                  rules={{required: 'この入力は必須です。'}}
+                  rules={{required: '必須項目です。'}}
                   render={({field: {onChange, value}}) => (
                     <RadioGroup
                       value={value}
@@ -833,10 +833,10 @@ export default function OrderForm() {
                   name={'creditCard'}
                   control={control}
                   defaultValue={(cardList.length > 0) ? `${cardList[0].id}` : '0'}
-                  rules={{required: 'この入力は必須です。',
+                  rules={{required: '必須項目です。',
                     validate: {
                       checkSelected: (value) => {
-                        return value !== '0' || 'この入力は必須です。';
+                        return value !== '0' || '必須項目です。';
                       },
                     },
                   }}
@@ -884,7 +884,7 @@ export default function OrderForm() {
                   <p
                     className='inputErrorText'
                   >
-                    {'この入力は必須です。'}
+                    {'必須項目です。'}
                   </p>
                 }
 
@@ -1049,7 +1049,7 @@ export default function OrderForm() {
                       defaultValue={''}
                       rules={{validate: {required: (value) => {
                         const {invoice_flag} = getValues();
-                        return (!invoice_flag || value.trim().length > 0) || 'この入力は必須です。';
+                        return (!invoice_flag || value.trim().length > 0) || '必須項目です。';
                       }}}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
