@@ -6,6 +6,7 @@ import {
   Box, CircularProgress, FormControl,
   Grid, Icon, NativeSelect,
   TextField,
+  TextareaAutosize,
   Link,
   useMediaQuery,
 } from '@material-ui/core';
@@ -54,8 +55,9 @@ const useStyles = makeStyles((theme) => ({
     '& .formBlockDescImage': {
       fontSize: '1rem',
     },
-    '& .inputEditor .MuiInputBase-input': {
-      height: '20rem',
+    '& .inputEditor': {
+      padding: '1rem',
+      width: '100%',
     },
     '& .formBlockExchange': {
       padding: '1.55rem',
@@ -328,8 +330,15 @@ export default function ContactPage() {
                   component='p'
                   className='formBlockNote'
                 >
-                  <span>{'法人のお客様は<'}</span>
-                  <span className='formBlockLink'>{'こちら'}</span>
+                  <span>{'法人のお客様は'}</span>
+                  <a
+                    href='mailto:oshinagaki@gmail.com'
+                    target='_blank'
+                    className='formBlockLink'
+                    rel='noreferrer'
+                  >
+                    {'こちら'}
+                  </a>
                   <span>{'から'}</span>
                 </Typography>}
               </div>
@@ -358,7 +367,7 @@ export default function ContactPage() {
                         name='name'
                         control={control}
                         defaultValue=''
-                        rules={{required: 'この入力は必須です。'}}
+                        rules={{required: '必須項目です。'}}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
                             id='name'
@@ -402,9 +411,9 @@ export default function ContactPage() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           pattern: {
-                            value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                            value: /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                             message: 'メールアドレスが無効です。',
                           },
                         }}
@@ -451,7 +460,7 @@ export default function ContactPage() {
                         name='contact_category_id'
                         control={control}
                         defaultValue=''
-                        rules={{required: 'この入力は必須です。'}}
+                        rules={{required: '必須項目です。'}}
                         render={({field: {name, value, ref}}) => (
                           <FormControl>
                             <NativeSelect
@@ -526,13 +535,13 @@ export default function ContactPage() {
                           name='description'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <TextField
-                              id='description'
-                              variant='outlined'
-                              error={Boolean(errors.description)}
-                              InputLabelProps={{shrink: false}}
+                            <TextareaAutosize
+                              minRows={10}
+                              maxRows={20}
+                              aria-label='maximum height'
+                              placeholder='内容を入力する'
                               name={name}
                               value={value}
                               inputRef={ref}

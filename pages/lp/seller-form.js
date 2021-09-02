@@ -175,7 +175,7 @@ export default function SellerForm() {
           control={control}
           defaultValue=''
           rules={{
-            required: 'この入力は必須です。',
+            required: '必須項目です。',
             pattern: {
               value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
               message: '無効な電話番号。',
@@ -231,7 +231,7 @@ export default function SellerForm() {
           control={control}
           defaultValue=''
           rules={{
-            required: 'この入力は必須です。',
+            required: '必須項目です。',
             pattern: {
               value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               message: 'メールアドレスが無効です。',
@@ -342,7 +342,7 @@ export default function SellerForm() {
                           name='name'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name'
@@ -392,7 +392,7 @@ export default function SellerForm() {
                           name='name_kana'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name_kana'
@@ -442,7 +442,7 @@ export default function SellerForm() {
                           name='dob'
                           control={control}
                           defaultValue={null}
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {value, onChange}}) => (
                             <KeyboardDatePicker
                               variant='inline'
@@ -498,7 +498,7 @@ export default function SellerForm() {
                           name='gender'
                           control={control}
                           defaultValue={'male'}
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {onChange, value}}) => (
                             <RadioGroup
                               value={value}
@@ -564,7 +564,7 @@ export default function SellerForm() {
                           name='company_name'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='company_name'
@@ -612,7 +612,7 @@ export default function SellerForm() {
                           name='company_address'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='company_address'
@@ -661,7 +661,7 @@ export default function SellerForm() {
                           name='zipcode'
                           control={control}
                           defaultValue='10000'
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='zipcode'
@@ -717,7 +717,7 @@ export default function SellerForm() {
                           name='city'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <FormControl>
                               <NativeSelect
@@ -772,7 +772,7 @@ export default function SellerForm() {
                           name='district'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='district'
@@ -820,7 +820,7 @@ export default function SellerForm() {
                           name='ward'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='ward'
@@ -898,7 +898,7 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{
-                            required: 'この入力は必須です。',
+                            required: '必須項目です。',
                             pattern: {
                               value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
                               message: '無効な電話番号。',
@@ -954,7 +954,7 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{
-                            required: 'この入力は必須です。',
+                            required: '必須項目です。',
                             pattern: {
                               value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                               message: 'メールアドレスが無効です。',
@@ -1149,7 +1149,7 @@ export default function SellerForm() {
                           name='product_sell'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='product_sell'
@@ -1199,7 +1199,7 @@ export default function SellerForm() {
                           name='time_sell'
                           control={control}
                           defaultValue={null}
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {value, onChange}}) => (
                             <KeyboardDatePicker
                               disableToolbar={true}

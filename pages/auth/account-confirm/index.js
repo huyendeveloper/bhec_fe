@@ -212,7 +212,7 @@ function AccountConfirm() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
