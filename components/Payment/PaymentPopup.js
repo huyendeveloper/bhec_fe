@@ -15,12 +15,14 @@ import {useForm, Controller} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';
 import Image from 'next/image';
+import {nanoid} from 'nanoid';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
 import {checkCreditCardType} from '~/shared/module';
 import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
+import {rules} from '~/lib/validator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,12 +182,13 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
+const PaymentPopup = ({open, onClose, onSubmit}) => {
   const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
-  const {control, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
+  const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
-  const onSubmit = async (data) => {
+
+  const handleSubmitClick = async (data) => {
     const body = {
       card_number: data.card_number.replace(/\s/g, ''),
       token_api_key: process.env.VERITRANS_TOKEN_API,
@@ -194,18 +197,29 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
       card_expire: data.card_expire.replace(/\s/g, ''),
     };
     const res = await registerPayment(body);
+
     if (res && res.status === httpStatus.SUCCESS) {
-      const bodyCreate = {
-        holder_name: data.card_name,
-        req_number: res.data.req_card_number,
+      const card = {
         token: res.data.token,
         expiration_date: data.card_expire.replace(/\s/g, ''),
+        holder_name: data.card_name,
+        req_number: res.data.req_card_number,
         card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
       };
-      const result = await PaymentService.createCard(bodyCreate);
-      if (result.status === 201) {
-        createPaymentSuccess();
-        handleClose();
+      const result = await PaymentService.authorize(card);
+      if (typeof result === 'undefined') {
+        setAlerts({
+          type: 'error',
+          message: 'カード登録が失敗しました。',
+        });
+      } else if (result.status === 200) {
+        if (typeof onSubmit === 'function') {
+          onSubmit({...card, id: nanoid(8)});
+        }
+        reset();
+        if (typeof onClose === 'function') {
+          onClose();
+        }
       } else {
         setAlerts({
           type: 'error',
@@ -223,7 +237,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
   return (
     <>
       <Dialog
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby='customized-dialog-title'
         open={open}
         maxWidth='lg'
@@ -231,7 +245,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
           root: classes.root,
         }}
       >
-        <DialogTitle onClose={handleClose}>
+        <DialogTitle onClose={onClose}>
           {'新しいクレジットカードを追加'}
         </DialogTitle>
         <DialogContent
@@ -239,9 +253,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
             root: classes.muiPaper,
           }}
         >
-          <StyledForm
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <StyledForm>
             <MuiPickersUtilsProvider
               utils={DateFnsUtils}
               locale={jaLocale}
@@ -267,7 +279,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_name'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須項目です。'}}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
@@ -312,7 +324,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: '必須項目です。',
+                        required: rules.required,
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
@@ -366,7 +378,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_expire'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須項目です。'}}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
                           className={classes.inputPayment}
@@ -413,7 +425,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: '必須項目です。',
+                        required: rules.required,
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
@@ -466,9 +478,9 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                 >
                   <Button
                     autoFocus={true}
-                    type='submit'
                     color='primary'
                     className={classes.submitButton}
+                    onClick={handleSubmit(handleSubmitClick)}
                   >
                     {'保存する'}
                   </Button>
@@ -489,7 +501,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
 
 PaymentPopup.propTypes = {
   open: PropTypes.bool,
-  handleClose: PropTypes.func,
-  createPaymentSuccess: PropTypes.func,
+  onClose: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 export default PaymentPopup;

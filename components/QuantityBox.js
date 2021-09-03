@@ -46,6 +46,9 @@ const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disable
         onChange={handleChange}
         disabled={disabled}
       >
+        <option
+          value={0}
+        >{'選択する'}</option>
         {quantityOption(maximumQuantity).map((quantity, index) => (
           <option
             key={String(index)}

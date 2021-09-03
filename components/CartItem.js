@@ -1,7 +1,9 @@
-import React from 'react';
-import {Box, makeStyles, Grid, Icon, useMediaQuery, useTheme, Card, CardActionArea, CardMedia} from '@material-ui/core';
-import PropTypes from 'prop-types';
+import {Box, Card, CardActionArea, CardMedia, Grid, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import {QuantityBox} from '~/components';
 import {format as formatNumber} from '~/lib/number';
@@ -94,11 +96,12 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const product = item.productDetail;
 
   return (
     <>
       <Grid
-        key={item.product_id}
+        key={product?.id}
         container={true}
         className={classes.cart}
       >
@@ -112,13 +115,13 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
-                className={clsx(item.thumb ? '' : classes.bgImg)}
+                className={clsx(product.images?.length > 0 ? '' : classes.bgImg)}
                 component='img'
-                alt={item.name}
+                alt={product?.name}
                 width={170}
                 height={112}
-                image={item.thumbnail ?? '/logo.png'}
-                title={item.name}
+                image={product.images?.length > 0 ? product.images[0]?.src : '/logo.png'}
+                title={product?.name}
               />
             </CardActionArea>
           </Card>
@@ -128,7 +131,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
               className={'productName'}
               textAlign={'left'}
             >
-              {item.name}
+              {product?.name}
             </Box>
           )}
         </Grid>
@@ -145,7 +148,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
               className={'productNameMobile'}
               textAlign={'left'}
             >
-              {item.name}
+              {product?.name}
             </Box>
           ) : null
           }
@@ -159,7 +162,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
               </div>
             )}
             <div className='price'>
-              {'¥' + formatNumber(parseInt(item.price, 10))}
+              {'¥' + formatNumber(parseInt(product?.price, 10))}
             </div>
           </Box>
           <Box
@@ -174,9 +177,9 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
             <div className={'quantity'}>
               <QuantityBox
                 name={'productQuantity'}
-                maximumQuantity={item.maximum_quantity}
+                maximumQuantity={product?.maximum_quantity ?? 10}
                 defaultValue={item.quantity}
-                handleChange={(event) => handleChangeQuantity(event, item.product_id)}
+                handleChange={(event) => handleChangeQuantity(event, product?.id)}
               />
             </div>
           </Box>
@@ -184,7 +187,13 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
             component='div'
             className={'delete'}
           >
-            <Icon onClick={() => handleRemove(item.product_id)}>{'delete'}</Icon>
+            <IconButton
+              aria-label='delete'
+              onClick={() => handleRemove(product?.id)}
+              style={{color: '#ba2636'}}
+            >
+              <DeleteIcon/>
+            </IconButton>
           </Box>
         </Grid>
       </Grid>

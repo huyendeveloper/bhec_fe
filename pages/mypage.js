@@ -2,10 +2,14 @@ import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {signOut} from 'next-auth/client';
 import Router from 'next/router';
+import {useSetRecoilState} from 'recoil';
 
 import {BoxLink, ButtonLink, ContentBlock, Notifications, UserAccount} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductWidget} from '~/components/Widgets';
+import {cartState} from '~/store/cartState';
+import {orderState} from '~/store/orderState';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles(() => ({
   userInfo: {
@@ -165,9 +169,15 @@ const recommendProducts = [
 
 export default function MyPage() {
   const classes = useStyles();
+  const setUser = useSetRecoilState(userState);
+  const setCart = useSetRecoilState(cartState);
+  const setOrder = useSetRecoilState(orderState);
 
   const actionButton = (item) => {
     if (item.id === 10) {
+      setUser({});
+      setCart({items: [], seller: null});
+      setOrder();
       signOut({redirect: true, callbackUrl: '/'});
     } else {
       Router.push({

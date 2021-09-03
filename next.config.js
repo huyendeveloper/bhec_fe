@@ -30,6 +30,10 @@ const moduleExports = {
       },
     ];
   },
+
+  images: {
+    domains: [process.env.AWS_S3_DOMAIN_NAME],
+  },
 };
 
 const SentryWebpackPluginOptions = {

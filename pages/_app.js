@@ -5,8 +5,11 @@ import {ThemeProvider} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {Provider} from 'next-auth/client';
 import NextNprogress from 'nextjs-progressbar';
+import {RecoilRoot} from 'recoil';
 
 import theme from '../theme';
+
+import DebugObserver from '~/store/debugObserver';
 
 const MyApp = (props) => {
   const {Component, pageProps} = props;
@@ -47,7 +50,13 @@ const MyApp = (props) => {
             height={3}
             showOnShallow={true}
           />
-          <Component {...pageProps}/>
+          <RecoilRoot>
+            <Component {...pageProps}/>
+
+            {/* eslint-disable-next-line no-warning-comments */}
+            {/* TODO: off this feature before publishing */}
+            <DebugObserver/>
+          </RecoilRoot>
         </ThemeProvider>
       </>
     </Provider>

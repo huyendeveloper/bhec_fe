@@ -1,12 +1,13 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {Box, FormControl, Grid, Icon, makeStyles, NativeSelect, TextField, useMediaQuery} from '@material-ui/core';
+import {Box, FormControl, Grid, makeStyles, NativeSelect, TextField, useMediaQuery} from '@material-ui/core';
 import {useTheme} from '@material-ui/core/styles';
-import {getSession} from 'next-auth/client';
+import {nanoid} from 'nanoid';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 
 import {Button, StyledForm} from '~/components';
+import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,10 +20,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeliveryForm = (props) => {
-  const {dataEdit, editMode, handleClose, fetchData} = props;
-
+const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   const [prefectures, setPrefectures] = useState([]);
+  const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    reset,
+  } = useForm({criteriaMode: 'all', defaultValues});
+
   const fetchPrefectures = async () => {
     const res = await CommonService.getPrefectures();
     if (res && res[0]?.name) {
@@ -30,50 +39,31 @@ const DeliveryForm = (props) => {
     }
   };
 
-  const classes = useStyles();
-  const [isAuthenticated, setIsAuthenticated] = useState();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm({criteriaMode: 'all'});
-
-  const checkAuthenticated = async () => {
-    const session = await getSession();
-    if (session == null) {
-      setIsAuthenticated(false);
-    } else {
-      setIsAuthenticated(true);
-    }
-  };
-
   useEffect(() => {
-    checkAuthenticated();
     fetchPrefectures();
   }, []);
 
-  const onSubmit = async (data) => {
-    if (isAuthenticated) {
-      const result = await CommonService.addAddress(data);
-      if (result.status === 201) {
-        // eslint-disable-next-line no-console
-        console.log('success');
-        fetchData();
-      }
-    } else {
-      const prefecture = prefectures.find((item) => Number(item.code) === Number(data.province_id));
-      window.localStorage.setItem('address', JSON.stringify({...data, province: prefecture}));
+  const handleSubmitClick = async (data) => {
+    const province = prefectures.find((item) => Number(item.code) === Number(data.province_id));
+    const address = {
+      ...data,
+      province,
+      id: nanoid(8),
+    };
+
+    if (typeof onSubmit === 'function') {
+      onSubmit(address);
     }
-    handleClose();
+    reset();
+    if (typeof onClose === 'function') {
+      onClose();
+    }
   };
 
   return (
     <>
       <div className={classes.root}>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <StyledForm>
           <>
             <div className='formBlock'>
               <div className='formBlockControls'>
@@ -97,12 +87,12 @@ const DeliveryForm = (props) => {
                     <Controller
                       name='name'
                       control={control}
-                      defaultValue={editMode ? dataEdit.name : ''}
-                      rules={{required: '必須項目です。'}}
+                      defaultValue={''}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='name'
-                          label='鈴木はなこ'
+                          label='氏名'
                           variant='outlined'
                           error={Boolean(errors.name)}
                           InputLabelProps={{shrink: false}}
@@ -122,7 +112,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -147,12 +136,12 @@ const DeliveryForm = (props) => {
                     <Controller
                       name='zipcode'
                       control={control}
-                      defaultValue={editMode ? dataEdit.zipcode : ''}
-                      rules={{required: '必須項目です。'}}
+                      defaultValue={''}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='zipcode'
-                          label={'3331234'}
+                          label={'1000000'}
                           variant='outlined'
                           error={Boolean(errors.zipcode)}
                           InputLabelProps={{shrink: false}}
@@ -172,7 +161,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -198,12 +186,7 @@ const DeliveryForm = (props) => {
                       name='province_id'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須項目です。',
-                        validate: {
-                          matchesPreviousPassword: (value) => {
-                            return value !== 0 || '必須項目です。';
-                          },
-                        }}}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
                           <NativeSelect
@@ -232,7 +215,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -257,12 +239,12 @@ const DeliveryForm = (props) => {
                     <Controller
                       name='city'
                       control={control}
-                      defaultValue={editMode ? dataEdit.city : ''}
-                      rules={{required: '必須項目です。'}}
+                      defaultValue={''}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='city'
-                          label='渋谷区渋谷'
+                          label='市区町村'
                           variant='outlined'
                           error={Boolean(errors.city)}
                           InputLabelProps={{shrink: false}}
@@ -282,7 +264,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -307,12 +288,12 @@ const DeliveryForm = (props) => {
                     <Controller
                       name='address'
                       control={control}
-                      defaultValue={editMode ? dataEdit.address : ''}
-                      rules={{required: '必須項目です。'}}
+                      defaultValue={''}
+                      rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='address'
-                          label=' 1-2-3 渋谷マンション101号室'
+                          label='番地・建物名'
                           variant='outlined'
                           error={Boolean(errors.city)}
                           InputLabelProps={{shrink: false}}
@@ -332,7 +313,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -359,7 +339,7 @@ const DeliveryForm = (props) => {
                       defaultValue=''
                       render={({field}) => (
                         <TextField
-                          label={'ABC株式会社'}
+                          label={'会社名'}
                           id='company_name'
                           variant='outlined'
                           InputLabelProps={{shrink: false}}
@@ -388,7 +368,7 @@ const DeliveryForm = (props) => {
                       defaultValue=''
                       render={({field}) => (
                         <TextField
-                          label={'ABC株式会社'}
+                          label={'部署名'}
                           id='department'
                           variant='outlined'
                           InputLabelProps={{shrink: false}}
@@ -415,19 +395,16 @@ const DeliveryForm = (props) => {
                     <Controller
                       name='tel'
                       control={control}
-                      defaultValue={editMode ? dataEdit.tel : ''}
+                      defaultValue={''}
                       rules={{
-                        required: '必須項目です。',
-                        pattern: {
-                          value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-                          message: '無効な電話番号。',
-                        },
+                        required: rules.required,
+                        pattern: rules.isPhoneNumber,
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='tel'
                           variant='outlined'
-                          label={'0123456708'}
+                          label={'0123456789'}
                           error={Boolean(errors.tel)}
                           InputLabelProps={{shrink: false}}
                           name={name}
@@ -446,7 +423,6 @@ const DeliveryForm = (props) => {
                             className='inputErrorText'
                             key={type}
                           >
-                            <Icon>{'warning_amber'}</Icon>
                             {message}
                           </p>
                         )) : null;
@@ -466,7 +442,7 @@ const DeliveryForm = (props) => {
                 variant='pill'
                 customColor='red'
                 customSize={isMobile ? 'small' : 'extraLarge'}
-                type='submit'
+                onClick={handleSubmit(handleSubmitClick)}
               >
                 {'保存する'}
               </Button>
@@ -479,14 +455,9 @@ const DeliveryForm = (props) => {
 };
 
 DeliveryForm.propTypes = {
-  dataEdit: PropTypes.any.isRequired,
-  editMode: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  fetchData: PropTypes.func.isRequired,
-};
-
-DeliveryForm.defaultProps = {
-  editMode: false,
+  defaultValues: PropTypes.object,
+  onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default DeliveryForm;

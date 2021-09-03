@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1))',
     position: 'relative',
-    zIndex: '9999999',
+    zIndex: '1001',
   },
   input: {
     marginLeft: theme.spacing(1),
