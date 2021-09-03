@@ -150,6 +150,9 @@ const useStyles = makeStyles((theme) => ({
     width: '33%',
     display: 'flex',
     justifyContent: 'center',
+    '&:last-child': {
+      border: 'none',
+    },
   },
 
   navigation: {
@@ -312,7 +315,7 @@ const Header = (props) => {
               </Link>
               <Link href={'/cart'}>
                 <a className={classes.linkPersonal}>
-                  <div className={`${classes.personalItem} ${classes.lastItem}`}>
+                  <div className={classes.personalItem}>
                     <Image
                       src='/img/icons/ic-cart.png'
                       alt='cart icon'
@@ -378,7 +381,7 @@ const Header = (props) => {
               </Link>
               <Link href={'/cart'}>
                 <a className={classes.linkPersonal}>
-                  <div className={`${classes.personalItem} ${classes.lastItem}`}>
+                  <div className={classes.personalItem}>
                     <Image
                       src='/img/icons/ic-cart.png'
                       alt='cart icon'

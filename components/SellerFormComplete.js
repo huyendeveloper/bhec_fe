@@ -34,7 +34,7 @@ const SellerFormComplete = () => {
 
       <AlertBox>
         <Image
-          src='/img/seller-thanks.png'
+          src='/img/male-character-happy.png'
           width={268}
           height={223}
           alt='出品者登録⼊⼒項⽬'

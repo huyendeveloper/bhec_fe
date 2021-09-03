@@ -5,14 +5,13 @@ import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import Router from 'next/router';
 
 import {httpStatus} from '~/constants';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {AlertMessageForSection, Header, Footer, ContentBlock, StyledForm} from '~/components';
+import {AlertMessageForSection, Header, Footer, ContentBlock, StyledForm, CompleteConfirmation} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -188,8 +187,9 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function ForgotPassword() {
+const ForgotPassword = () => {
   const [alerts, setAlerts] = useState(null);
+  const [isSuccess, setSuccess] = useState(false);
   const classes = useStyles();
   const {
     control,
@@ -200,10 +200,7 @@ function ForgotPassword() {
   const onSubmit = async (data) => {
     const res = await Auth.forgotPassword(data);
     if (res.status === httpStatus.SUCCESS) {
-      Router.push({
-        pathname: '/auth/request-succeeded',
-        query: {type: 'forgot'},
-      });
+      setSuccess(true);
     } else {
       setAlerts({
         type: 'error',
@@ -219,110 +216,111 @@ function ForgotPassword() {
         <div
           className='content'
         >
-          <ContentBlock
-            title='パスワードをお忘れの方'
-          >
-            <StyledForm onSubmit={handleSubmit(onSubmit)}>
-              <Container
-                maxWidth='lg'
-                className={classes.container}
-              >
-                <FormControl component='fieldset'/>
-                <Grid
-                  container={true}
-                  spacing={3}
-                  justifyContent='center'
+          {isSuccess ? <CompleteConfirmation type='forgot'/> : (
+            <ContentBlock
+              title='パスワードをお忘れの方'
+            >
+              <StyledForm onSubmit={handleSubmit(onSubmit)}>
+                <Container
+                  maxWidth='lg'
+                  className={classes.container}
                 >
-                  <div className={classes.content}>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <label
-                        htmlFor='email'
-                        className='formControlLabel'
+                  <FormControl component='fieldset'/>
+                  <Grid
+                    container={true}
+                    spacing={3}
+                    justifyContent='center'
+                  >
+                    <div className={classes.content}>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
                       >
-                        {'メールアドレス '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='email'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: '必須項目です。',
-                          pattern: {
-                            value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            message: 'メールアドレスが無効です。',
-                          },
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='email'
-                            variant='outlined'
-                            maxLength={254}
-                            error={Boolean(errors.email)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            onInput={(e) => {
-                              e.target.value = e.target.value.slice(0, 254);
-                            }}
-                            value={value}
-                            inputRef={ref}
-                            placeholder='oshinagaki@gmail.com'
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='email'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >
-                              {message}
-                            </p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <div className={classes.note}>{'ご登録されたメールアドレスにパスワード再設定のご案内が送信されます。 '}</div>
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                      style={{textAlign: 'center'}}
-                    >
-                      <Button
-                        variant='contained'
-                        type='submit'
-                        className={classes.btnSubmit}
-                      >{'送信する'}</Button>
-                    </Grid>
-                  </div>
-                </Grid>
-                <AlertMessageForSection
-                  alert={alerts}
-                  handleCloseAlert={() => setAlerts(null)}
-                />
-              </Container>
-            </StyledForm>
-          </ContentBlock>
+                        <label
+                          htmlFor='email'
+                          className='formControlLabel'
+                        >
+                          {'メールアドレス '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='email'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: '必須項目です。',
+                            pattern: {
+                              value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              message: 'メールアドレスが無効です。',
+                            },
+                          }}
+                          render={({field: {name, value, ref, onChange}}) => (
+                            <TextField
+                              id='email'
+                              variant='outlined'
+                              maxLength={254}
+                              error={Boolean(errors.email)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              onInput={(e) => {
+                                e.target.value = e.target.value.slice(0, 254);
+                              }}
+                              value={value}
+                              inputRef={ref}
+                              placeholder='oshinagaki@gmail.com'
+                              onChange={onChange}
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='email'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >
+                                {message}
+                              </p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
+                      >
+                        <div className={classes.note}>{'ご登録されたメールアドレスにパスワード再設定のご案内が送信されます。 '}</div>
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
+                        style={{textAlign: 'center'}}
+                      >
+                        <Button
+                          variant='contained'
+                          type='submit'
+                          className={classes.btnSubmit}
+                        >{'送信する'}</Button>
+                      </Grid>
+                    </div>
+                  </Grid>
+                  <AlertMessageForSection
+                    alert={alerts}
+                    handleCloseAlert={() => setAlerts(null)}
+                  />
+                </Container>
+              </StyledForm>
+            </ContentBlock>)}
         </div>
         <Footer/>
       </div>
     </>
   );
-}
+};
 
 export default ForgotPassword;
