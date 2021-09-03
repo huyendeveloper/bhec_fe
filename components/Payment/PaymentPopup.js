@@ -1,6 +1,7 @@
+/* eslint-disable max-lines */
 import React, {useState} from 'react';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
-import {Button, Typography, TextField, Grid, Dialog, IconButton, Snackbar} from '@material-ui/core';
+import {Button, Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
@@ -13,16 +14,12 @@ import {jaLocale} from 'date-fns';
 import {useForm, Controller} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';
-import MuiAlert from '@material-ui/lab/Alert';
 import Image from 'next/image';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
-
 import {checkCreditCardType} from '~/shared/module';
-
-import {StyledForm} from '~/components';
-
+import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
 
 const useStyles = makeStyles((theme) => ({
@@ -184,9 +181,7 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent);
 
 const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
-  const [errMessage, setErrMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
+  const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
   const {control, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
@@ -212,19 +207,17 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
         createPaymentSuccess();
         handleClose();
       } else {
-        setTypeMess('error');
-        setOpenMess(true);
-        setErrMessage('続行する前に、サインインまたはサインアップする必要があります。!');
+        setAlerts({
+          type: 'error',
+          message: 'カード登録が失敗しました。',
+        });
       }
     } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setErrMessage(res.data.message);
+      setAlerts({
+        type: 'error',
+        message: '入力したカード情報をご確認ください。',
+      });
     }
-  };
-
-  const handleCloseMess = () => {
-    setOpenMess(false);
   };
 
   return (
@@ -274,7 +267,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_name'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須雨'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
@@ -319,7 +312,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: '必須項目',
+                        required: '必須項目です。',
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
@@ -373,7 +366,7 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
                       name='card_expire'
                       control={control}
                       defaultValue=''
-                      rules={{required: '必須項目です'}}
+                      rules={{required: '必須項目です。'}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
                           className={classes.inputPayment}
@@ -485,20 +478,11 @@ const PaymentPopup = ({open, handleClose, createPaymentSuccess}) => {
           </StyledForm>
         </DialogContent>
       </Dialog>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={3000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {errMessage}
-        </MuiAlert>
-      </Snackbar>
+
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </>
   );
 };

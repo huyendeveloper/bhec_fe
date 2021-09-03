@@ -156,7 +156,7 @@ export default function BasicInformationUpdate() {
                           name='nickname'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='nickname'
@@ -200,7 +200,7 @@ export default function BasicInformationUpdate() {
                           name='name'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name'
@@ -245,7 +245,7 @@ export default function BasicInformationUpdate() {
                           name='name_kana'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name_kana'
@@ -290,7 +290,7 @@ export default function BasicInformationUpdate() {
                           name='gender'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {onChange, value}}) => (
                             <RadioGroup
                               value={value}
@@ -339,7 +339,7 @@ export default function BasicInformationUpdate() {
                           name='dob'
                           control={control}
                           defaultValue={null}
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {value, onChange}}) => (
                             <KeyboardDatePicker
                               disableToolbar={true}
@@ -399,7 +399,7 @@ export default function BasicInformationUpdate() {
                           name='zipcode'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='zipcode'
@@ -444,7 +444,7 @@ export default function BasicInformationUpdate() {
                           name='city'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <FormControl>
                               <NativeSelect
@@ -494,7 +494,7 @@ export default function BasicInformationUpdate() {
                           name='district'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='district'
@@ -538,7 +538,7 @@ export default function BasicInformationUpdate() {
                           name='office_room'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='office_room'
@@ -582,7 +582,7 @@ export default function BasicInformationUpdate() {
                           name='phone_no'
                           control={control}
                           defaultValue=''
-                          rules={{required: 'この入力は必須です。'}}
+                          rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='phone_no'

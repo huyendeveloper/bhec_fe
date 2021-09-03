@@ -80,7 +80,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
               name={`order_number${index}`}
               control={control}
               defaultValue=''
-              rules={{required: 'この入力は必須です。'}}
+              rules={{required: '必須項目です。'}}
               render={({field: {name, value, ref, onChange}}) => (
                 <TextField
                   id={`order_number${index}`}
@@ -125,7 +125,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
               name={`product_code${index}`}
               control={control}
               defaultValue=''
-              rules={{required: 'この入力は必須です。'}}
+              rules={{required: '必須項目です。'}}
               render={({field: {name, value, ref, onChange}}) => (
                 <TextField
                   id={`product_code${index}`}
@@ -170,7 +170,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
               name={`description${index}`}
               control={control}
               defaultValue=''
-              rules={{required: 'この入力は必須です。'}}
+              rules={{required: '必須項目です。'}}
               render={({field: {name, value, ref, onChange}}) => (
                 <TextField
                   id={`description${index}`}

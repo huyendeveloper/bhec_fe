@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const quantityOption = (quantity) => {
-  const arrQuantity = [{name: '選択する', value: '0'}];
+  const arrQuantity = [];
   for (let i = 1; i <= quantity; i++) {
     arrQuantity.push({name: i, value: i});
   }
   return arrQuantity;
 };
 
-const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange}) => {
+const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disabled}) => {
   const classes = useStyles();
 
   return (
@@ -44,6 +44,7 @@ const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange}) => {
         inputProps={{'aria-label': name}}
         defaultValue={defaultValue}
         onChange={handleChange}
+        disabled={disabled}
       >
         {quantityOption(maximumQuantity).map((quantity, index) => (
           <option
@@ -62,10 +63,11 @@ QuantityBox.propTypes = {
   maximumQuantity: PropTypes.number.isRequired,
   defaultValue: PropTypes.number,
   handleChange: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 QuantityBox.defaultProps = {
-
+  disabled: false,
 };
 
 export default QuantityBox;

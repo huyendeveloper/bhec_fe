@@ -197,7 +197,7 @@ function ChangePassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                         }}
                         render={({field: {name, value, ref, onChange}}) => (
                           <TextField
@@ -246,7 +246,7 @@ function ChangePassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             checkLengthPasswrod: () => {
                               const {password} = getValues();
@@ -301,7 +301,7 @@ function ChangePassword() {
                         control={control}
                         defaultValue=''
                         rules={{
-                          required: 'この入力は必須です。',
+                          required: '必須項目です。',
                           validate: {
                             matchesPreviousPassword: (value) => {
                               const {password} = getValues();
