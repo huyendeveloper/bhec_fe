@@ -32,7 +32,7 @@ const moduleExports = {
   },
 
   images: {
-    domains: [process.env.AWS_S3_DOMAIN_NAME],
+    domains: [`${process.env.AWS_S3_DOMAIN_NAME}`],
   },
 };
 
