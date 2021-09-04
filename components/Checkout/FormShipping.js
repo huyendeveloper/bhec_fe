@@ -43,14 +43,19 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
 
   const handleSubmitDeliveryForm = async (address) => {
-    setUser(produce((draft) => {
-      draft.addresses = draft.addresses ?? [];
-      draft.addresses.push(address);
-    }));
     if (user?.isAuthenticated) {
-      await CommonService.addAddress(address);
-      // eslint-disable-next-line no-warning-comments
-      // TODO: handler result
+      const response = await CommonService.addAddress(address);
+      if (response?.success) {
+        fetchAddresses();
+      } else {
+        // eslint-disable-next-line no-warning-comments
+        // TODO: handle error
+      }
+    } else {
+      setUser(produce((draft) => {
+        draft.addresses = draft.addresses ?? [];
+        draft.addresses.push(address);
+      }));
     }
   };
 
@@ -59,7 +64,7 @@ const FormShipping = ({isReadonly}) => {
   };
 
   const fetchAddresses = async () => {
-    const addresses = await CommonService.getAddress();
+    const addresses = await CommonService.getAddresses();
     if (addresses?.length > 0) {
       setUser(produce((draft) => {
         draft.addresses = addresses;

@@ -45,14 +45,13 @@ const FormCreditCard = ({isReadonly}) => {
   };
 
   const handleSubmitPayment = async (card) => {
-    setUser(produce((draft) => {
-      draft.cards = draft.cards ?? [];
-      draft.cards.push(card);
-    }));
     if (user?.isAuthenticated) {
-      await PaymentService.createCard(card);
-      // eslint-disable-next-line no-warning-comments
-      // TODO: handler result
+      fetchCards();
+    } else {
+      setUser(produce((draft) => {
+        draft.cards = draft.cards ?? [];
+        draft.cards.push(card);
+      }));
     }
   };
 

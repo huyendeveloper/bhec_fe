@@ -16,6 +16,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';
 import Image from 'next/image';
 import {nanoid} from 'nanoid';
+import {useRecoilValue} from 'recoil';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
@@ -23,6 +24,7 @@ import {checkCreditCardType} from '~/shared/module';
 import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
 import {rules} from '~/lib/validator';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -187,6 +189,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
   const classes = useStyles();
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
+  const user = useRecoilValue(userState);
 
   const handleSubmitClick = async (data) => {
     const body = {
@@ -206,30 +209,62 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         req_number: res.data.req_card_number,
         card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
       };
-      const result = await PaymentService.authorize(card);
-      if (typeof result === 'undefined') {
-        setAlerts({
-          type: 'error',
-          message: 'カード登録が失敗しました。',
-        });
-      } else if (result.status === 200) {
-        if (typeof onSubmit === 'function') {
-          onSubmit({...card, id: nanoid(8)});
-        }
-        reset();
-        if (typeof onClose === 'function') {
-          onClose();
-        }
+
+      if (user?.isAuthenticated) {
+        await addCard(card);
       } else {
-        setAlerts({
-          type: 'error',
-          message: 'カード登録が失敗しました。',
-        });
+        await authorizeCard(card);
       }
     } else {
       setAlerts({
         type: 'error',
         message: '入力したカード情報をご確認ください。',
+      });
+    }
+  };
+
+  const authorizeCard = async (card) => {
+    const response = await PaymentService.authorize(card);
+    if (typeof response === 'undefined') {
+      setAlerts({
+        type: 'error',
+        message: 'カード登録が失敗しました。',
+      });
+    } else if (response.status === httpStatus.SUCCESS) {
+      if (typeof onSubmit === 'function') {
+        onSubmit({...card, id: nanoid(8)});
+      }
+      reset();
+      if (typeof onClose === 'function') {
+        onClose();
+      }
+    } else {
+      setAlerts({
+        type: 'error',
+        message: 'カード登録が失敗しました。',
+      });
+    }
+  };
+
+  const addCard = async (card) => {
+    const response = await PaymentService.createCard(card);
+    if (typeof response === 'undefined') {
+      setAlerts({
+        type: 'error',
+        message: 'カード登録が失敗しました。',
+      });
+    } else if (response.data?.card) {
+      if (typeof onSubmit === 'function') {
+        onSubmit(card);
+      }
+      reset();
+      if (typeof onClose === 'function') {
+        onClose();
+      }
+    } else {
+      setAlerts({
+        type: 'error',
+        message: 'カード登録が失敗しました。',
       });
     }
   };
