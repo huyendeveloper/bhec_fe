@@ -1,11 +1,12 @@
 import {
   Table, TableBody, TableCell,
   TableContainer,
-  TableHead, TablePagination, TableRow,
+  TableHead, TablePagination, TableRow, Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Link from 'next/link';
 import {useState} from 'react';
+import PropTypes from 'prop-types';
 
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
@@ -83,82 +84,7 @@ const headCells = [
   'お支払い方法',
 ];
 
-const rows = [
-  {
-    id: 1234567890,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567891,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567892,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567893,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567894,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567895,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567896,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567897,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567898,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567899,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567900,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-  {
-    id: 1234567901,
-    dateTime: '2021/01/01 01:30',
-    price: 3000,
-    paymentMethod: 'クレジットカード',
-  },
-];
-
-const Orders = () => {
+const Orders = ({orders}) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
@@ -168,54 +94,67 @@ const Orders = () => {
   };
 
   return (
-    <DefaultLayout title={'Orders - BH_EC'}>
+    <DefaultLayout title={'注文確認'}>
       <ContentBlock
-        title={'基本情報'}
+        title={'注文確認'}
         bgImage='/img/noise.png'
         bgRepeat='repeat'
       >
-        <TableContainer className={classes.containerTable}>
-          <Table
-            className={classes.table}
-          >
-            <TableHead className={classes.tableHead}>
-              <TableRow>
-                {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell}
-                  >
-                    {headCell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
 
-            <TableBody className={classes.tableBody}>
-              {rows.slice(page * 10, 10 * (page + 1)).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>
-                    <Link href={`/orders/${row.id}`}><a className={classes.orderLink}>{row.id}</a></Link>
-                  </TableCell>
-                  <TableCell>{row.dateTime}</TableCell>
-                  <TableCell>{currency.format(row.price)}</TableCell>
-                  <TableCell>{row.paymentMethod}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {orders?.length ? (
+          <>
+            <TableContainer className={classes.containerTable}>
+              <Table
+                className={classes.table}
+              >
+                <TableHead className={classes.tableHead}>
+                  <TableRow>
+                    {headCells.map((headCell) => (
+                      <TableCell
+                        key={headCell}
+                      >
+                        {headCell}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-        <TablePagination
-          rowsPerPageOptions={[]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={10}
-          page={page}
-          onChangePage={handleChangePage}
-        />
+                <TableBody className={classes.tableBody}>
+                  {orders.slice(page * 10, 10 * (page + 1)).map((order) => (
+                    <TableRow key={order?.id}>
+                      <TableCell>
+                        <Link href={`/orders/${order?.id}`}><a className={classes.orderLink}>{order?.id}</a></Link>
+                      </TableCell>
+                      <TableCell>{order?.dateTime}</TableCell>
+                      <TableCell>{currency.format(order?.price)}</TableCell>
+                      <TableCell>{order?.paymentMethod}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            <TablePagination
+              rowsPerPageOptions={[]}
+              component='div'
+              count={orders.length}
+              rowsPerPage={10}
+              page={page}
+              onChangePage={handleChangePage}
+            />
+          </>
+        ) : <Typography align='center'>{'注文情報はありません。'}</Typography>}
       </ContentBlock>
     </DefaultLayout>
   );
 };
 
 export default Orders;
+
+Orders.propTypes = {
+  orders: PropTypes.array,
+};
+
+Orders.defaultProps = {
+  orders: [],
+};
