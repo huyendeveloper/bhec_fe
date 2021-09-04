@@ -67,15 +67,15 @@ const buttonLinks = [
 ];
 
 const boxLinks = [
-  {
-    image: '/img/icons/bill.png',
-    content: '注文確認',
-    url: '/orders',
-    colorLabel: '#54c0c0',
-  },
-
   // eslint-disable-next-line no-warning-comments
   // TODO: not implemented yet
+  // {
+  //   image: '/img/icons/bill.png',
+  //   content: '注文確認',
+  //   url: '/orders',
+  //   colorLabel: '#54c0c0',
+  // },
+
   // {
   //   image: '/img/icons/heart_fill.png',
   //   content: 'お気に入り商品',
@@ -109,9 +109,9 @@ export default function MyPage() {
   };
 
   const fetchUserInfo = async () => {
-    const profile = await AuthServiceInstance.getInfoUser();
+    const response = await AuthServiceInstance.getInfoUser();
     setUser(produce((draft) => {
-      draft.profile = profile;
+      draft.profile = response?.user;
     }));
   };
 
