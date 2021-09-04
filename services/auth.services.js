@@ -1,7 +1,7 @@
-import {axios} from '~/modules/axios';
 import {api} from '~/lib/api';
 
 const parserError = (errors) => {
+  // eslint-disable-next-line no-console
   console.log('errror', errors);
   return errors[0].message.
     split('\n').
@@ -10,7 +10,7 @@ const parserError = (errors) => {
 
 export default class AuthService {
   async loginByEmail(payload) {
-    const [data, errors] = await api.post('/users/sign_in', payload);
+    const [data, errors] = await api.post('/users/sign_in', payload, {progress: true});
     if (errors.length) {
       return parserError(errors);
     }
@@ -47,7 +47,7 @@ export default class AuthService {
   }
 
   async registerEmail(payload) {
-    const [data, errors] = await api.post('/users', payload);
+    const [data, errors] = await api.post('/users', payload, {progress: true});
     if (errors.length) {
       return parserError(errors);
     }
@@ -71,7 +71,7 @@ export default class AuthService {
   }
 
   async resetPassword(payload) {
-    const [data, errors] = await api.post('/users/reset_password', payload);
+    const [data, errors] = await api.post('/users/reset_password', payload, {progress: true});
     if (errors.length) {
       return parserError(errors);
     }
@@ -79,7 +79,7 @@ export default class AuthService {
   }
 
   async forgotPassword(payload) {
-    const [data, errors] = await api.post('/users/forgot_password', payload);
+    const [data, errors] = await api.post('/users/forgot_password', payload, {progress: true});
     if (errors.length) {
       return parserError(errors);
     }

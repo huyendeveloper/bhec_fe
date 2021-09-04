@@ -8,6 +8,7 @@ const axios = defaultAxios.create({
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE',
+    'Cache-Control': 'no-cache',
   },
 });
 

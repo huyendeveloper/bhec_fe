@@ -93,7 +93,7 @@ const Notifications = ({notifications}) => {
         }}
         className={classes.badge}
         badgeContent={
-          <div className={classes.notificationsNumber}>{20}</div>
+          notifications?.length ? (<div className={classes.notificationsNumber}>{notifications.length}</div>) : null
         }
       >
         <Avatar
@@ -122,7 +122,7 @@ const Notifications = ({notifications}) => {
 
               {(!notifications || notifications.length < 1) &&
               <div className={classes.noNotifications}>
-                {'You have no notifications'}
+                {'通知はありません。'}
               </div>}
             </List>
           </Fade>

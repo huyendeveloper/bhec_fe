@@ -3,6 +3,9 @@ import {Avatar, Input, Badge} from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import {useState} from 'react';
+import {useRecoilValue} from 'recoil';
+
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,9 +75,10 @@ const useStyles = makeStyles((theme) => ({
 
 const UserAccount = () => {
   const classes = useStyles();
+  const user = useRecoilValue(userState);
   const [changeNameStatus, setchangeNameStatus] = useState(false);
-  const [username, setUsername] = useState('Kurokawa Yoshio');
-  const [imagePreview, setImagePreview] = useState('/img/sellers/avatar.png');
+  const [username, setUsername] = useState(user.profile.user?.nickname ?? user.profile.user?.email);
+  const [imagePreview, setImagePreview] = useState(user.profile.user?.avatar_url ?? null);
 
   const handleUpdateStatus = () => {
     setchangeNameStatus(!changeNameStatus);
@@ -90,6 +94,7 @@ const UserAccount = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleChange = (e) => {
     const newImage = e.target.files[0];
 
@@ -99,6 +104,9 @@ const UserAccount = () => {
     };
 
     reader.readAsDataURL(newImage);
+
+    // eslint-disable-next-line no-warning-comments
+    // TODO: send new image to API for updating avatar
   };
 
   return (
@@ -112,8 +120,10 @@ const UserAccount = () => {
         className={classes.badge}
         badgeContent={
           <>
-            <Avatar
-              alt={'Remy Sharp'}
+            {/* eslint-disable-next-line no-warning-comments */}
+            {/* TODO: not ready yet */}
+            {/* <Avatar
+              alt={'アバター変更'}
               src={'/img/icons/camera.png'}
               className={classes.changeAvatarBtn}
             />
@@ -124,7 +134,7 @@ const UserAccount = () => {
               id='image'
               onChange={handleChange}
               className={classes.uploadInput}
-            />
+            /> */}
           </>
         }
       >
@@ -147,6 +157,10 @@ const UserAccount = () => {
               inputProps={{
                 'aria-label': 'username',
               }}
+
+              // eslint-disable-next-line no-warning-comments
+              // TODO: update nickname
+              disabled={true}
             />
 
             <DoneOutlineIcon className={classes.confirmIcon}/>

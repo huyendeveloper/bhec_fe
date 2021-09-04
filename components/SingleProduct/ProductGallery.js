@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
 
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -18,6 +17,9 @@ import SwiperCore, {
 SwiperCore.use([Navigation, Thumbs]);
 import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
+import {useRecoilValue} from 'recoil';
+
+import {productState} from '~/store/productState';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -39,8 +41,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ProductGallery = ({images}) => {
+const ProductGallery = () => {
   const classes = useStyles();
+  const product = useRecoilValue(productState);
+  const images = product?.productDetail?.images || [];
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   return (
@@ -62,6 +66,7 @@ const ProductGallery = ({images}) => {
                 layout='responsive'
                 width='558'
                 height='368'
+                objectFit='contain'
               />
             </SwiperSlide>
           )) : null}
@@ -84,6 +89,7 @@ const ProductGallery = ({images}) => {
                 layout='responsive'
                 width='99'
                 height='64'
+                objectFit='contain'
               />
             </SwiperSlide>
           )) : null}
@@ -91,16 +97,6 @@ const ProductGallery = ({images}) => {
       </div>
     </>
   );
-};
-
-ProductGallery.propTypes = {
-
-  // images: PropTypes.array.isRequired,
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      src: PropTypes.string.isRequired,
-    })).isRequired,
 };
 
 export default ProductGallery;

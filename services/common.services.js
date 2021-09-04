@@ -3,7 +3,7 @@ import {api} from '~/lib/api';
 
 const CommonService = {
   getPrefectures,
-  getAddress,
+  getAddresses,
   addAddress,
   registerSeller,
 };
@@ -22,7 +22,7 @@ async function getPrefectures() {
   return data;
 }
 
-async function getAddress() {
+async function getAddresses() {
   const [data, errors] = await api.get('/addresses');
   if (errors.length) {
     return parserError(errors);

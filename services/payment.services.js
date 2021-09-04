@@ -5,6 +5,7 @@ const PaymentService = {
   createCard,
   getDetailCard,
   deleteCard,
+  authorize,
 };
 
 async function getCards() {
@@ -36,6 +37,15 @@ async function getDetailCard(id) {
 
 async function deleteCard(id) {
   const result = await axios.delete(`/cards/${id}`).then((res) => {
+    return res;
+  }).catch((error) => {
+    return error.response;
+  });
+  return result;
+}
+
+async function authorize(body) {
+  const result = await axios.post('/cards/authorize_card_info', body).then((res) => {
     return res;
   }).catch((error) => {
     return error.response;

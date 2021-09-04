@@ -1,14 +1,16 @@
 /* eslint-disable no-useless-escape */
 import {
-  Grid, Typography, useMediaQuery,
+  Grid, Typography,
 } from '@material-ui/core';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
-import {useState} from 'react';
+import {useRouter} from 'next/router';
+import {useRecoilValue} from 'recoil';
 
-import {Button, ContentBlock, DeliveryForm} from '~/components';
+import {Button, ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
-import {AdsWidget, DialogWidget, ProductWidget} from '~/components/Widgets';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   orderSuccess: {
@@ -45,110 +47,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const recommendProducts = [
-  {
-    productId: 1,
-    name: '『大好評』小田原漆器についてご紹介しています。',
-    productThumb: '/img/products/product-01.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    price: 26600,
-    is_favorite_product: true,
-    seller_info: {
-      name: '小田原漆器',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-01.png',
-      introduction: '木地部門　伝統工芸士',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 2,
-    name: '『大好評』江戸べっ甲についてご紹介しています。',
-    productThumb: '/img/products/product-02.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-    price: 32800,
-    is_favorite_product: false,
-    seller_info: {
-      name: '磯貝 剛',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-02.png',
-      introduction: 'ベッ甲イソガイ　統括',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 3,
-    name: '『大好評』東京アンチモニー工芸品についてご紹介しています。',
-    productThumb: '/img/products/product-03.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    price: 149300,
-    is_favorite_product: false,
-    seller_info: {
-      name: '林　文雄',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-03.png',
-      introduction: 'アートランド',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-  {
-    productId: 4,
-    name: '『大好評』江戸節句人形についてご紹介しています。',
-    productThumb: '/img/products/product-04.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}],
-    price: 184750,
-    is_favorite_product: false,
-    seller_info: {
-      name: '松崎光正',
-      catch_phrase: '木地部門　伝統工芸士',
-      avatar: '/img/sellers/seller-04.png',
-      introduction: '松崎人形',
-    },
-    tags: [
-      {
-        id: 2,
-        name: '農薬節約栽培',
-      },
-    ],
-  },
-];
+// eslint-disable-next-line no-warning-comments
+// TODO: get recommended products via API
+const recommendProducts = [];
 
 export default function OrderForm() {
   const classes = useStyles();
-  const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
-  const [openAddAddress, setOpenAddAddress] = useState(false);
-  const [editMode] = useState(false);
-  const [editData] = useState({});
+  const user = useRecoilValue(userState);
+  const router = useRouter();
 
   return (
-    <DefaultLayout title='Order successded - BH_EC'>
+    <DefaultLayout title='ご注文完了'>
       <ContentBlock
         title={'ご注文フォーム'}
         bgImage='/img/noise.png'
       >
         <div className={classes.orderSuccess}>
           <Image
-            src={'/order-succes.png'}
+            src={'/img/female-character-happy.png'}
             width={181}
             height={320}
             alt={'icon'}
@@ -165,82 +81,75 @@ export default function OrderForm() {
               customColor={'white'}
               customBorder={'bdGray'}
               customSize={'extraLarge'}
+              onClick={() => router.push('/')}
             >
               {'ホームページに戻る'}
             </Button>
 
-            <Button
-              variant={'pill'}
-              customColor={'red'}
-              customSize={'extraLarge'}
-            >
-              {'注文一覧へ'}
-            </Button>
+            {user?.isAuthenticated && (
+              <Button
+                variant={'pill'}
+                customColor={'red'}
+                customSize={'extraLarge'}
+              >
+                {'注文一覧へ'}
+              </Button>
+            )}
           </div>
         </div>
       </ContentBlock>
 
-      <ContentBlock
-        title={'あなたにオススメの商品'}
-        bgColor='#faf6ef'
-        bgImage='/img/noise.png'
-      >
-        <Grid
-          container={true}
-          spacing={3}
-          className={classes.recommendedProducts}
+      {recommendProducts.length && (
+        <ContentBlock
+          title={'あなたにオススメの商品'}
+          bgColor='#faf6ef'
+          bgImage='/img/noise.png'
         >
-          {recommendProducts.map((product) => (
+          <Grid
+            container={true}
+            spacing={3}
+            className={classes.recommendedProducts}
+          >
+            {recommendProducts.map((product) => (
+              <Grid
+                key={product.productId}
+                item={true}
+                sm={4}
+              >
+                <ProductWidget
+                  data={product}
+                  heart={true}
+                  border={'borderNone'}
+                />
+              </Grid>
+            ))}
+
             <Grid
-              key={product.productId}
               item={true}
-              sm={4}
+              xs={12}
+              className={classes.ads}
             >
-              <ProductWidget
-                data={product}
-                heart={true}
-                border={'borderNone'}
+              <AdsWidget
+                imgSrc={'/img/ad/ad6.png'}
+                imgWidth={'1140'}
+                imgHeight={'192'}
               />
             </Grid>
-          ))}
 
-          <Grid
-            item={true}
-            xs={12}
-            className={classes.ads}
-          >
-            <AdsWidget
-              imgSrc={'/img/ad/ad6.png'}
-              imgWidth={'1140'}
-              imgHeight={'192'}
-            />
+            <Grid
+              item={true}
+              xs={12}
+              className={classes.ads}
+            >
+              <AdsWidget
+                imgSrc={'/img/ad/ad7.png'}
+                imgWidth={'1140'}
+                imgHeight={'192'}
+              />
+            </Grid>
           </Grid>
-
-          <Grid
-            item={true}
-            xs={12}
-            className={classes.ads}
-          >
-            <AdsWidget
-              imgSrc={'/img/ad/ad7.png'}
-              imgWidth={'1140'}
-              imgHeight={'192'}
-            />
-          </Grid>
-        </Grid>
-
-        <DialogWidget
-          open={openAddAddress}
-          handleClose={() => setOpenAddAddress(false)}
-          size={isTablet ? 'sm' : 'md'}
-          title={'新しい住所を追加する'}
-        >
-          <DeliveryForm
-            dataEdit={editData}
-            editMode={editMode}
-          />
-        </DialogWidget>
-      </ContentBlock>
+        </ContentBlock>
+      )}
     </DefaultLayout>
   );
 }

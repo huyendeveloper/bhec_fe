@@ -1,16 +1,19 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {Card, CardActionArea, CardMedia, Grid, Icon, IconButton, TextField, Typography, useMediaQuery} from '@material-ui/core';
+import {Card, CardActionArea, CardMedia, Grid, IconButton, TextField, Typography, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import clsx from 'clsx';
 import 'date-fns';
 import PropTypes from 'prop-types';
-import React, {useRef} from 'react';
+import React from 'react';
 import {Controller} from 'react-hook-form';
+import {useRecoilState} from 'recoil';
+import produce from 'immer';
 
 import QuantityBox from './QuantityBox';
 
-import {cookieUtil} from '~/modules/cookieUtil';
+import {format as formatNumber} from '~/lib/number';
+import {cartState} from '~/store/cartState';
 
 const useStyles = makeStyles((theme) => ({
   centerCell: {
@@ -116,53 +119,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}) => {
+const OrderFormItem = ({data, control, errors, disabled}) => {
   const classes = useStyles();
   const theme = useTheme();
-  // eslint-disable-next-line no-unused-vars
-  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const typingTimeoutRef = useRef(null);
+  const [cart, setCart] = useRecoilState(cartState);
 
-  const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
-
-  const handleChangeQuantity = (e) => {
-    const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
-    let dataUpdate = cartItems.find((item) => item.product_id === data.product_id);
-    dataUpdate = {...dataUpdate, quantity: e.target.value};
-    const index = cartItems.findIndex((item) => item.product_id === dataUpdate.product_id);
-    const newCart = [...cartItems];
-    newCart[index] = dataUpdate;
-
-    cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
-    calculateBill();
+  const handleChangeQuantity = (event) => {
+    const newQuantity = parseInt(event.target.value, 10);
+    if (newQuantity === 0) {
+      handleDelete();
+    } else {
+      const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
+      setCart(produce((draft) => {
+        draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
+      }));
+    }
   };
 
   const handleDelete = () => {
-    if (!disabled) {
-      const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
-
-      const newCart = cartItems.filter((item) => item.product_id !== data.product_id);
-      cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
-      setCart(newCart);
-      calculateBill();
-    }
+    setCart(produce((draft) => {
+      draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
+    }));
   };
 
-  const handleChangeNote = (e) => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-    typingTimeoutRef.current = setTimeout(() => {
-      const cartItems = cookieUtil.getCookie('cartItems') ? JSON.parse(cookieUtil.getCookie('cartItems')) : [];
-      let dataUpdate = cartItems.find((item) => item.product_id === data.product_id);
-      dataUpdate = {...dataUpdate, note: e.target.value};
-
-      const index = cartItems.findIndex((item) => item.product_id === dataUpdate.product_id);
-      const newCart = [...cartItems];
-      newCart[index] = dataUpdate;
-      cookieUtil.setCookie('cartItems', JSON.stringify(newCart));
-    }, 300);
+  const handleChangeNote = (event) => {
+    const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
+    setCart(produce((draft) => {
+      draft.items[itemIdx].note = event.target.value;
+    }));
   };
 
   return (
@@ -180,13 +165,13 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
-                className={clsx(data.thumb ? '' : classes.bgImg)}
+                className={clsx(data.productDetail.images?.length ? '' : classes.bgImg)}
                 component='img'
-                alt={data.name}
+                alt={data.productDetail.name}
                 width={170}
                 height={112}
-                image={data.thumbnail ?? '/logo.png'}
-                title={data.name}
+                image={data.productDetail.images?.length ? data.productDetail.images[0].src : '/logo.png'}
+                title={data.productDetail.name}
               />
             </CardActionArea>
           </Card>
@@ -213,7 +198,7 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
               <Typography
                 variant={'h6'}
                 className={classes.productName}
-              >{data.name}</Typography>
+              >{data.productDetail.name}</Typography>
             </Grid>
 
             <Grid
@@ -229,7 +214,7 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
               <Typography
                 variant={'h5'}
                 className={classes.price}
-              >{currency.format(data.price)}</Typography>
+              >{`¥${formatNumber(parseInt(data.productDetail.price, 10))}`}</Typography>
             </Grid>
 
             <Grid
@@ -244,21 +229,20 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
                 <div className={classes.title}>{'数量'}</div>
                 <QuantityBox
                   name={'productQuantity'}
-                  maximumQuantity={data.maximum_quantity}
+                  maximumQuantity={data.productDetail.maximum_quantity ?? 10}
                   defaultValue={data.quantity}
                   handleChange={handleChangeQuantity}
                   disabled={disabled}
                 />
                 <ErrorMessage
                   errors={errors}
-                  name={`quantity${data.product_id}`}
+                  name={`quantity${data.productDetail.id}`}
                   render={({messages}) => {
                     return messages ? Object.entries(messages).map(([type, message]) => (
                       <p
                         className='inputErrorText'
                         key={type}
                       >
-                        <Icon>{'warning_amber'}</Icon>
                         {message}
                       </p>
                     )) : null;
@@ -269,21 +253,23 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
           </Grid>
         </Grid>
 
-        <Grid
-          item={true}
-          md={1}
-          sm={1}
-          xs={1}
-          className={classes.deleteBtn}
-        >
-          <IconButton
-            aria-label='delete'
-            onClick={handleDelete}
+        {!disabled && (
+          <Grid
+            item={true}
+            md={1}
+            sm={1}
+            xs={1}
+            className={classes.deleteBtn}
           >
-            <DeleteIcon/>
-          </IconButton>
+            <IconButton
+              aria-label='delete'
+              onClick={handleDelete}
+            >
+              <DeleteIcon/>
+            </IconButton>
 
-        </Grid>
+          </Grid>
+        )}
 
         <Grid
           item={true}
@@ -304,9 +290,9 @@ const OrderFormItem = ({data, control, errors, setCart, calculateBill, disabled}
           className={classes.gridContainer}
         >
           <Controller
-            name={`note${data.product_id}`}
+            name={`note${data.productDetail.id}`}
             control={control}
-            defaultValue={data.note}
+            defaultValue={data.note ?? ''}
             render={({field: {name, value, ref, onChange}}) => (
               <TextField
                 label=''
@@ -333,8 +319,6 @@ OrderFormItem.propTypes = {
   data: PropTypes.object,
   control: PropTypes.any,
   errors: PropTypes.object,
-  setCart: PropTypes.func,
-  calculateBill: PropTypes.func,
   disabled: PropTypes.bool,
 };
 

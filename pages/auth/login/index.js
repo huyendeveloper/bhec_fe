@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
 import {useState, useEffect} from 'react';
@@ -9,6 +10,8 @@ import Router from 'next/router';
 import {signIn, signOut} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
+import produce from 'immer';
 
 import firebase from '../../../firebase';
 
@@ -18,6 +21,7 @@ import {AlertMessageForSection, StyledForm} from '~/components';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 import {DefaultLayout} from '~/components/Layouts';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -320,6 +324,7 @@ const Login = () => {
     handleSubmit,
     formState: {errors},
   } = useForm({criteriaMode: 'all'});
+  const setUser = useSetRecoilState(userState);
 
   const [alerts, setAlerts] = useState(null);
 
@@ -351,6 +356,9 @@ const Login = () => {
     }});
     if (res.id) {
       if (res.is_confirmed) {
+        setUser(produce((draft) => {
+          draft.isAuthenticated = true;
+        }));
         await signIn('credentials',
           {
             data: res,
@@ -383,6 +391,9 @@ const Login = () => {
           id_token: credential.idToken,
         });
         if (res.id) {
+          setUser(produce((draft) => {
+            draft.isAuthenticated = true;
+          }));
           await signIn('credentials',
             {
               data: res,
@@ -574,7 +585,6 @@ const Login = () => {
                     className={classes.grid}
                     name='email'
                     control={control}
-                    defaultValue={'user+1@example.com'}
                     rules={{
                       required: '必須項目です。',
                       pattern: {
