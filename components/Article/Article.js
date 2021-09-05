@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '1.313rem',
     },
   },
-  description: {
+  introduction: {
     fontStyle: 'normal',
     fontWeight: 'normal',
     fontSize: '0.875rem',
@@ -61,10 +61,10 @@ const Article = ({data}) => {
         m={isTablet ? 1 : 2}
       >
         <div className={classes.title}>{data.title}</div>
-        <div className={classes.description}>{data.description}</div>
+        <div className={classes.introduction}>{data.introduction}</div>
         <div className={classes.link}>
           <Link
-            href={'#'}
+            href={`/articles/${data.id}`}
           >
             {'続きを見る'}
             <span>

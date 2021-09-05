@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '0 0 1rem',
+    padding: '2rem 0 1rem',
     [theme.breakpoints.down('sm')]: {
       padding: '2.5rem 0',
     },
@@ -89,7 +89,7 @@ const CategoryBlock = ({title, category, categoryLink, bgColor, bgImage, bgRepea
         ) : null}
         {category && category !== '' ? (
           <Link
-            href={`/products/${categoryLink}`}
+            href={`/products?category=${categoryLink}`}
             className={classes.linkName}
             passHref={true}
           >
