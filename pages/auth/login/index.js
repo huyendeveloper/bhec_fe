@@ -380,7 +380,7 @@ const Login = () => {
   };
 
   const responseGoogle = async (response) => {
-    if (response.accessToken) {
+    if (response.tokenId) {
       const res = await Auth.loginBySNS({
         type: 'gg',
         id_token: response.tokenId,
