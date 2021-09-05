@@ -1,9 +1,13 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import clsx from 'clsx';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 
-import {ContentBlock, OrderItem} from '~/components';
+import {Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {order as orderConstants} from '~/constants';
+import {format as formatNumber} from '~/lib/number';
+import {OrderService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -70,227 +74,199 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '1.5rem',
     },
   },
+  actionButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 }));
-
-const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
-
-const order = {
-  id: 1234567890,
-  orderDate: '2021/01/01 01:30',
-  username: '鈴木はなこ',
-  postCode: '〒150-0043',
-  address: '東京都渋谷区道玄坂2-29-1',
-  addressNo: '渋谷マンション101号',
-  phone: '090-0000-0000',
-  paymentMethod: 'クレジットカード',
-  shippingMethod: 'クール便',
-  productSubtotal: 3000,
-  shippingFee: 300,
-  totalAmount: 3300,
-  discount: 200,
-  orderDetails: [
-    {
-      id: 1,
-      productId: 'p123456',
-      name: '何個もパクパク「種ごと丸ごときんかん」ミニサイズ計2kg',
-      image: '/img/products/product-01.png',
-      url: '#',
-      tags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-      price: 300,
-      owner: {
-        id: 3214,
-        name: '小田原漆器',
-        avatar: '/img/sellers/seller-01.png',
-        introduction: '木地部門　伝統工芸士',
-      },
-      quantity: 123,
-      trackingNum: '01234567980',
-      transportType: 'ヤマト運輸',
-      status: 1,
-    },
-    {
-      id: 2,
-      productId: 2,
-      name: '『大好評』江戸べっ甲についてご紹介しています。',
-      image: '/img/products/product-02.png',
-      url: '#',
-      tags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-      price: 26600,
-      owner: {
-        id: 3217,
-        name: '小田原漆器',
-        avatar: '/img/sellers/seller-02.png',
-        introduction: '木地部門　伝統工芸士',
-      },
-      quantity: 20,
-      trackingNum: '01234567980',
-      transportType: 'ヤマト運輸',
-      status: 2,
-    },
-  ],
-};
 
 const OrdersDetail = () => {
   const classes = useStyles();
-  const {id, orderDate, username, postCode, address, addressNo, phone, paymentMethod, shippingMethod, productSubtotal, shippingFee, totalAmount, discount, orderDetails} = order;
+  const router = useRouter();
+  const [order, setOrder] = useState();
+
+  const fetchOrder = async () => {
+    const orderId = router.query?.id;
+    const response = await OrderService.getOrderDetail(orderId);
+    setOrder(response?.order);
+  };
+
+  useEffect(() => {
+    fetchOrder();
+  }, []);
+
   return (
-    <DefaultLayout title={'Order Detail - BH_EC'}>
-      <ContentBlock
-        title={'注文詳細'}
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-        paddingBot={'1.438rem'}
-      >
-        <Grid
-          container={true}
-          spacing={0}
-          className={classes.orderDetail}
+    <DefaultLayout title={'注文詳細'}>
+
+      {order && (
+        <ContentBlock
+          title={'注文詳細'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+          paddingBot={'1.438rem'}
         >
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'注文番号'}</h4>
-            </Grid>
-            <Grid
-              item={true}
-              sm={9}
-              xs={8}
-            >
-              {id}
-            </Grid>
-          </div>
+          <Grid
+            container={true}
+            spacing={0}
+            className={classes.orderDetail}
+          >
+            <div className={classes.row}>
+              <Grid
+                item={true}
+                sm={3}
+                xs={4}
+              >
+                <h4>{'注文番号'}</h4>
+              </Grid>
+              <Grid
+                item={true}
+                sm={9}
+                xs={8}
+              >
+                {order?.order_number}
+              </Grid>
+            </div>
 
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'注文日時'}</h4>
-            </Grid>
-            <Grid
-              item={true}
-              sm={9}
-              xs={8}
-            >
-              {orderDate}
-            </Grid>
-          </div>
+            <div className={classes.row}>
+              <Grid
+                item={true}
+                sm={3}
+                xs={4}
+              >
+                <h4>{'注文日時'}</h4>
+              </Grid>
+              <Grid
+                item={true}
+                sm={9}
+                xs={8}
+              >
+                {order?.created_at}
+              </Grid>
+            </div>
 
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'お届け先住所'}</h4>
-            </Grid>
-            <Grid
-              item={true}
-              sm={9}
-              xs={8}
-              className={classes.multiLine}
-            >
-              {username}<br/>
-              {postCode}<br/>
-              {address}<br/>
-              {addressNo}<br/>
-              {phone}
-            </Grid>
-          </div>
+            <div className={classes.row}>
+              <Grid
+                item={true}
+                sm={3}
+                xs={4}
+              >
+                <h4>{'お届け先住所'}</h4>
+              </Grid>
+              <Grid
+                item={true}
+                sm={9}
+                xs={8}
+                className={classes.multiLine}
+              >
+                {order.address?.name}<br/>
+                {order.address?.zipcode}<br/>
+                {order.address?.city}{order.address?.address}<br/>
+                {order.address?.company_name}&nbsp;&nbsp;{order.address?.department}<br/>
+                {order.address?.tel}
+              </Grid>
+            </div>
 
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'決済方法'}</h4>
-            </Grid>
-            <Grid
-              item={true}
-              sm={9}
-              xs={8}
-            >
-              {paymentMethod}
-            </Grid>
-          </div>
+            <div className={classes.row}>
+              <Grid
+                item={true}
+                sm={3}
+                xs={4}
+              >
+                <h4>{'決済方法'}</h4>
+              </Grid>
+              <Grid
+                item={true}
+                sm={9}
+                xs={8}
+              >
+                {orderConstants.paymentMethods.find((p) => p.id === order?.payment_method)?.label}
+              </Grid>
+            </div>
 
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'配送方法'}</h4>
-            </Grid>
-            <Grid
-              item={true}
-              sm={9}
-              xs={8}
-            >
-              {shippingMethod}
-            </Grid>
-          </div>
-
-          <div className={classes.row}>
-            <Grid
-              item={true}
-              sm={3}
-              xs={4}
-            >
-              <h4>{'配送方法'}</h4>
-              <div className={classes.secondLevelTitle}>
-                {'商品の小計'}<br/>
-                {'配送料'}<br/>
-                {'注文合計'}<br/>
-                {'クーポン利用'}<br/>
+            {order.admin_note?.length > 0 && (
+              <div className={classes.row}>
+                <Grid
+                  item={true}
+                  sm={3}
+                  xs={4}
+                >
+                  <h4>{'配送情報'}</h4>
+                </Grid>
+                <Grid
+                  item={true}
+                  sm={9}
+                  xs={8}
+                />
               </div>
-              <h4>{'ご請求金額'}</h4>
-            </Grid>
+            )}
 
-            <Grid
-              item={true}
-              sm={4}
-              xs={4}
-            >
-              <br/>
-              <div className={classes.multiLine}>
-                {currency.format(productSubtotal)}<br/>
-                {currency.format(shippingFee)}<br/>
-                {currency.format(totalAmount)}<br/>
-                {'- ' + currency.format(discount)}<br/>
-              </div>
-              <h4>
-                {currency.format(
-                  productSubtotal + shippingFee +
-                    (totalAmount - discount),
-                )}
-              </h4>
-            </Grid>
+            <div className={classes.row}>
+              <Grid
+                item={true}
+                sm={3}
+                xs={4}
+              >
+                <h4>{'購入明細書'}</h4>
+                <div className={classes.secondLevelTitle}>
+                  {'商品の小計'}<br/>
+                  {'配送料'}<br/>
+                  {'クーポン利用'}<br/>
+                </div>
+                <h4>{'ご請求金額'}</h4>
+              </Grid>
 
-            <Grid
-              item={true}
-              sm={5}
-              xs={4}
-              className={classes.buttons}
+              <Grid
+                item={true}
+                sm={4}
+                xs={4}
+              >
+                <br/>
+                <div className={classes.multiLine}>
+                  {`¥${formatNumber(parseInt(order?.net_amount, 10))}`}<br/>
+                  {`¥${formatNumber(parseInt(order?.shipping_fee, 10))}`}<br/>
+                  {order?.shipping_fee > 0 ? `-¥${formatNumber(parseInt(order?.discount, 10))}` : '割引無し'}<br/>
+                </div>
+                <h4>
+                  {`¥${formatNumber(parseInt(order?.total_amount, 10))}`}
+                </h4>
+              </Grid>
+
+              {/* eslint-disable-next-line no-warning-comments */}
+              {/* TODO: not implemented yet */}
+              {/* <Grid
+                item={true}
+                sm={5}
+                xs={4}
+                className={classes.buttons}
+              >
+                <button className={clsx(classes.button, classes.whiteButton)}>{'領収書発行'}</button>
+                <button className={classes.button}>{'再発行'}</button>
+              </Grid> */}
+            </div>
+          </Grid>
+
+          {order?.cart?.cart_items?.map((item) => (
+            <OrderItem
+              key={`orderDetail-${item.id}`}
+              item={item}
+              status={order?.cart?.status}
+            />
+          ))}
+
+          <div className={classes.actionButtons}>
+            <Button
+              variant={'pill'}
+              customColor={'white'}
+              customBorder={'bdGray'}
+              customSize={'extraLarge'}
+              onClick={() => router.push('/orders')}
             >
-              <button className={clsx(classes.button, classes.whiteButton)}>{'領収書発行'}</button>
-              <button className={classes.button}>{'再発行'}</button>
-            </Grid>
+              {'注文一覧へ'}
+            </Button>
           </div>
-        </Grid>
-
-        {orderDetails.map((detail) => (
-          <OrderItem
-            key={`orderDetail-${detail.productId}`}
-            data={detail}
-          />
-        ))}
-      </ContentBlock>
+        </ContentBlock>
+      )}
     </DefaultLayout>
   );
 };

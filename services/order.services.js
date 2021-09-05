@@ -1,7 +1,10 @@
 import {api} from '~/lib/api';
+import {clean} from '~/lib/object';
 
 const OrderService = {
   createOrder,
+  getOrders,
+  getOrderDetail,
 };
 
 // eslint-disable-next-line no-warning-comments
@@ -12,8 +15,33 @@ const parserError = (errors) => {
     map((error, i) => <div key={`err-${String(i)}`}>{error}</div>);
 };
 
-async function createOrder(body) {
-  const [data, errors] = await api.post('/orders', body);
+async function createOrder(payload) {
+  const [data, errors] = await api.post('/orders', payload);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function getOrders(payload) {
+  const DEFAULT_PER_PAGE = 10;
+  const cleanPayload = clean(payload);
+  const activeParam = {
+    per_page: DEFAULT_PER_PAGE,
+    page: 1,
+  };
+  if (payload?.page) {
+    activeParam.page = parseInt(payload.page, 10);
+  }
+  const [data, errors] = await api.get('/orders', {...cleanPayload, ...activeParam});
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function getOrderDetail(id) {
+  const [data, errors] = await api.get(`/orders/${id}`);
   if (errors.length) {
     return parserError(errors);
   }
