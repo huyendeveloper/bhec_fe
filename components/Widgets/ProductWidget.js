@@ -12,7 +12,7 @@ import {Avatar, Chip, Link} from '@material-ui/core';
 import Image from 'next/image';
 import clsx from 'clsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     position: 'relative',
     marginBottom: '5.063rem',
@@ -34,31 +34,24 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.375rem',
     marginBottom: '0.75rem',
-    color: theme.palette.black.light,
+    color: '#333',
   },
   productTags: {
     marginBottom: '1rem',
     '& > div': {
       height: '16px',
       borderRadius: '4px',
-      backgroundColor: theme.productWidget.tag.backgroundColor,
+      backgroundColor: '#8a8a8a',
 
       '& span': {
         fontSize: '10px',
         fontWeight: 'bold',
-        color: theme.productWidget.tag.textColor,
+        color: '#f1f1f1',
       },
       '&:not(:last-child)': {
         marginRight: '0.5rem',
       },
-
-      [theme.breakpoints.down('sm')]: {
-        marginBottom: '5px',
-      },
     },
-  },
-  productTagHighlight: {
-    backgroundColor: `${theme.productWidget.tag.highlightColor} !important`,
   },
   productPrice: {
     fontSize: '1.25rem',
@@ -68,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   productSellerAction: {
-    borderTop: `1px solid ${theme.productWidget.seller.sepColor}`,
+    borderTop: '1px solid #f1ebdf',
     position: 'absolute',
     bottom: '0',
     right: '0',
@@ -78,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: '0.5rem',
-    color: theme.productWidget.seller.textColor,
+    color: '#000',
     '&:hover': {
       textDecoration: 'none',
     },
@@ -134,7 +127,7 @@ const ProductWidget = ({variant, data, heart, border}) => {
       </CardActionArea>
       <CardContent>
         <Link
-          href={`/product/${product.id}`}
+          href={`/products/${product.id}`}
           className={clsx(classes.linkName)}
         >
           <Typography

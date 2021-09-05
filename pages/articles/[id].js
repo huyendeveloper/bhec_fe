@@ -1,377 +1,296 @@
-import {Grid, Container, InputBase, Paper, Button, Chip, Breadcrumbs as MuiBreadcrumbs, Typography, Link} from '@material-ui/core';
-import React, {useState, useEffect} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
-import SearchIcon from '@material-ui/icons/Search';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
-import {articleDetail} from '~/mock/article';
-import {Header, Footer, ContentBlock} from '~/components';
-import {ArticleDetail, ArticleDetailProduct} from '~/components/Article';
-import {ArticleWidget, ProductWidget, TopBannerWidget} from '~/components/Widgets';
+import {Box, Chip, Container, Grid, makeStyles, Typography} from '@material-ui/core';
+
+import {useRouter} from 'next/router';
+
+import moment from 'moment';
+
+import {DefaultLayout} from '~/components/Layouts';
+import {ArticleService, ProductService} from '~/services';
+import {Breadcrumbs, ContentBlock, Search, Button} from '~/components';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: '3rem 0',
-  },
-
-  title: {
-    fontSize: '2rem',
-    lineHeight: '3rem',
-    fontWeight: 'bold',
-    margin: '1rem 0',
-  },
-
-  label: {
-    fontSize: '1rem',
-    lineHeight: '2rem',
-    fontWeight: 'bold',
-  },
-
-  titleStyle: {
-    margin: 0,
-  },
-  chipItem: {
-    borderRadius: 'unset',
-    marginRight: '1rem',
-    background: theme.chipItem.borderColor,
-    color: 'white',
-  },
-
-  articleImage: {
+  root: {},
+  container: {
     width: '100%',
+    paddingBottom: '0.125rem',
   },
-  paper: {
-    padding: '0px',
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    flex: 1,
-  },
-  iconButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 28,
-    margin: 4,
-  },
-  breadcrumbs: {
-    alignItems: 'center',
-    display: 'flex',
-    height: '3.375rem',
-    '& .MuiBreadcrumbs-separator': {
-      color: theme.palette.black.default,
-      fontWeight: 'bold',
-      fontSize: '0.75rem',
-      lineHeight: '0.875rem',
+  topContainer: {
+    paddingTop: '2rem',
+    paddingBottom: '2rem',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
     },
   },
-  link: {
-    color: theme.palette.black.default,
-    fontWeight: 'bold',
-    fontSize: '0.75rem',
-    lineHeight: '0.875rem',
+  breadcrumbs: {
+    padding: '4rem 0 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: '2rem 0 0',
+    },
   },
-
-  tagHeader: {
+  chipList: {
+    marginBottom: 16,
     textAlign: 'center',
-    marginBottom: '2rem',
   },
-
-  divChip: {
-    marginBottom: '1rem',
+  chipItem: {
+    marginRight: 16,
+    background: theme.chipItem.borderColor,
+    color: theme.palette.background.default,
+    borderRadius: 2,
+    height: 16,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
-
-  dateArticle: {
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: '1rem',
-    lineHeight: '19px',
+  createdAt: {
+    textAlign: 'center',
+    marginBottom: 28,
   },
-  description: {
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: '0.9rem',
-    lineHeight: '1.5rem',
+  thumbnail: {
+    textAlign: 'center',
+    marginBottom: 32,
   },
-  contentArticle: {
-    padding: '1rem 0 2rem 0',
-    width: '80%',
-    borderBottom: `1px solid ${theme.blockContact.borderColor}`,
+  body: {
+    marginBottom: theme.spacing(6),
+  },
+  buttons: {
+    textAlign: 'center',
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
   },
 }));
 
-const linkProps = [
-  {
-    id: 1,
-    linkLabel: 'ホーム',
-    linkUrl: '/',
-  },
-  {
-    id: 2,
-    linkLabel: '記事一覧',
-    linkUrl: '/article',
-  },
-  {
-    id: 3,
-    linkLabel: '記事詳細',
-    linkUrl: '/article',
-  },
-];
+const ProductServiceInstance = new ProductService();
 
-function generateBlog(article) {
-  if (article) {
-    if (article.blogType === 1) {
-      return article.blogs.map((blog) =>
-        (
-          <ArticleDetail
-            {...blog}
-            key='column'
-          />
-        ),
-      );
-    }
-    return article.blogs.map((blog) =>
-      (
-        <ArticleDetailProduct
-          {...blog}
-          key='row'
-        />
-      ),
-    );
-  }
-
-  return article.blogs.map((blog) =>
-    (
-      <ArticleDetail
-        {...blog}
-        key='row'
-      />
-    ),
-  );
-}
-
-function generateRelated(article) {
-  if (article && article.related && article.related.length) {
-    if (article.blogType === 1) {
-      return article.related.map((r) =>
-        (
-          <Grid
-            item={true}
-            xs={6}
-            sm={4}
-            md={4}
-            key={article.id}
-          >
-            <ArticleWidget
-              article={r}
-            />
-          </Grid>
-        ),
-      );
-    }
-  }
-  return article.related.map((r) =>
-    (
-      <Grid
-        item={true}
-        xs={6}
-        sm={4}
-        md={4}
-        key={r.id}
-      >
-        <ProductWidget
-          data={r}
-          heart={true}
-        />
-      </Grid>
-    ),
-  );
-}
-
-function ArticleDetailPage() {
+const SingleArticle = ({article, shortcodes, refinedHTML}) => {
   const classes = useStyles();
-  const [article, setArticle] = useState();
+  const router = useRouter();
+  const [linkProps, setLinkProps] = useState([]);
+
+  const toArchivePage = (tag) => {
+    router.push(`/articles?tag=${tag}`);
+  };
+
+  const renderShortcodes = async () => {
+    for (let i = 0; i < shortcodes.length; i++) {
+      const shortcode = shortcodes[i];
+      const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
+      let match;
+      const products = [];
+      // eslint-disable-next-line no-cond-assign
+      while (match = shortcodeRegex.exec(shortcode)) {
+        const productIds = match[1].replace(/ /g, '').split(',');
+        for (let j = 0; j < productIds.length; j++) {
+          const id = productIds[j];
+          // eslint-disable-next-line no-await-in-loop
+          const response = await ProductServiceInstance.getProductDetail(id);
+          if (response?.product_detail) {
+            products.push({
+              ...response?.product_detail,
+              seller_info: response?.seller_info,
+              tags: response?.product_detail.tags,
+            });
+          }
+        }
+      }
+      ReactDOM.render(
+        <Grid
+          container={true}
+          spacing={3}
+          style={{
+            justifyContent: 'center',
+            margin: '16px auto',
+          }}
+        >
+          {products?.map((item) => (
+            <Grid
+              key={item.id}
+              item={true}
+              sm={4}
+              xs={6}
+            >
+              <ProductWidget
+                data={item}
+                heart={false}
+                border={'borderNone'}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        , document.getElementById(`js-shorcode-${i}`));
+    }
+  };
 
   useEffect(() => {
-    // console.log(articleDetail);
-    setArticle(articleDetail);
+    setLinkProps(
+      [
+        {
+          id: 1,
+          linkLabel: 'ホーム',
+          linkUrl: '/',
+        },
+        {
+          id: 2,
+          linkLabel: '記事一覧',
+          linkUrl: '/articles',
+        },
+        {
+          id: 3,
+          linkLabel: article?.title,
+        },
+      ],
+    );
+
+    renderShortcodes();
   }, []);
 
   return (
-    <>
-      <section className={classes.root}>
-
-        <Header showMainMenu={false}/>
-        <div
-          className='content'
-          style={{marginBottom: '3rem'}}
+    <DefaultLayout title={`${article?.title}`}>
+      <Container
+        maxWidth='lg'
+      >
+        <Grid
+          container={true}
+          spacing={0}
+          className={classes.breadcrumbs}
         >
-          <Container>
-            <Grid
-              container={true}
-              spacing={3}
-              justifyContent='center'
-              maxWidth={'lg'}
-            >
-              <Grid
-                item={true}
-                xs={12}
-              >
-                <MuiBreadcrumbs
-                  className={classes.breadcrumbs}
-                  separator={'＞'}
-                >
-                  {linkProps.map((item) => (
-                    item.linkUrl ? (
-                      <Link
-                        key={item.id}
-                        className={classes.link}
-                        href={item.linkUrl}
-                      >
-                        {item.linkLabel}
-                      </Link>
-                    ) : (
-                      <Typography
-                        key={item.id}
-                        className={classes.link}
-                      >
-                        {item.linkLabel}
-                      </Typography>
-                    )
-                  ))}
-                </MuiBreadcrumbs>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-              >
-                <Paper
-                  component='form'
-                  className={classes.paper}
-                >
-                  <SearchIcon style={{marginLeft: '1rem'}}/>
-                  <InputBase
-                    className={classes.input}
-                    placeholder='検索キーワードを入力してください'
-                    inputProps={{'aria-label': 'search'}}
-                  />
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    type='submit'
-                    size='large'
-                  >
-                    {'検索'}
-                  </Button>
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
-          <ContentBlock
-            title='『大好評』小田原漆器についてご紹いてご紹介しています。'
+          <Grid
+            item={true}
+            xs={12}
+            md={12}
+            lg={12}
           >
-            <Grid
-              container={true}
-              justifyContent='center'
-              className={classes.tagHeader}
-            >
-              <Grid
-                item={true}
-                xs={12}
-                className={classes.divChip}
-              >
-                <Chip
-                  label='送料無料'
-                  className={classes.chipItem}
-                />
-                <Chip
-                  label='農薬節約栽培'
-                  className={classes.chipItem}
-                />
-                <Chip
-                  label='期間限定'
-                  className={classes.chipItem}
-                />
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-              >
-                <div className={classes.dateArticle}>{'2021/02/17'}</div>
-              </Grid>
-            </Grid>
-            <Grid
-              container={true}
-              spacing={3}
-              justifyContent='center'
-            >
-              <Grid
-                item={true}
-                xs={12}
-              >
-                <Image
-                  className={classes.articleImage}
-                  width={946}
-                  height={544}
-                  src='/img/article/article_detail_banner.png'
-                  alt='support'
-                  layout='responsive'
-                />
-              </Grid>
-              <div className={classes.contentArticle}>
-                <Grid
-                  item={true}
-                  xs={12}
-                >
-                  <span lassName={classes.description}>{'株式会社Branding House（以下「当社」という）は、ユーザーおよび当社に関係する皆様からお預かりする個人情報を厳格に保護し、適切に取扱うことが当社運営上の重要課題であると認識しております。ユーザーが、当社の運営するウェブサイト「OSHINAGAKI」（以下「本サービス」）という）を利用した場合、下記のプライバシーポリシーに同意されたものとみなします。当社は、個人情報の保護に適用される法令、ガイドラインおよびその他の規範を遵守するとともに、個人情報保護方針を定めその保護に努めます。'}</span>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                >
-                  {article && generateBlog(article)}
-                </Grid>
-              </div>
-              <Grid
-                item={true}
-                xs={12}
-              >
-                {article &&
-                  <ContentBlock
-                    title={article.blogType === 1 ? '関連の記事' : '関連の商品'}
-                    key={article.id}
-                  >
-                    <Grid
-                      container={true}
-                      spacing={3}
-                      justifyContent='center'
-                    >
-                      {article && article.related.length && generateRelated(article)}
-                    </Grid>
-                  </ContentBlock>
-                }
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-              >
-                <TopBannerWidget
-                  imgSrc='/img/article/banner.png'
-                  imgAlt='Article Banner'
-                  imgWidth={1140}
-                  imgHeight={192}
-                />
-              </Grid>
-            </Grid>
-          </ContentBlock>
-        </div>
-        <Footer/>
-      </section>
-    </>
-  );
-}
+            <Breadcrumbs linkProps={linkProps}/>
+          </Grid>
+        </Grid>
+      </Container>
 
-export default ArticleDetailPage;
+      <Container
+        maxWidth='lg'
+        className={classes.topContainer}
+      >
+        <Search/>
+      </Container>
+
+      <ContentBlock
+        title={article?.title}
+        bgImage={'/img/noise.png'}
+        bgRepeat={'repeat'}
+      >
+
+        <div className={classes.chipList}>
+          {article.tags?.map((tag) => {
+            return (
+              <>
+                <Chip
+                  key={`${tag}-${article?.id}`}
+                  label={tag?.name}
+                  className={classes.chipItem}
+                  onClick={() => toArchivePage(tag?.name_kana)}
+                />
+              </>
+            );
+          })}
+        </div>
+
+        <Typography className={classes.createdAt}>{moment(article?.created_at).format('YYYY/MM/DD')}</Typography>
+
+        {article?.image_url && (
+          <Box
+            className={classes.thumbnail}
+          >
+            <Image
+              src={article?.image_url ?? '/logo.png'}
+              layout='intrinsic'
+              width={946}
+              height={554}
+              alt={article?.title}
+              objectFit='contain'
+            />
+          </Box>
+        )}
+
+        <Box>
+          <div
+            className={classes.body}
+            dangerouslySetInnerHTML={{
+              __html: refinedHTML,
+            }}
+          />
+        </Box>
+
+        <div className={classes.buttons}>
+          <Button
+            variant={'pill'}
+            customColor={'white'}
+            customBorder={'bdGray'}
+            customSize={'extraLarge'}
+            onClick={() => router.push('/articles')}
+          >
+            {'記事に戻る'}
+          </Button>
+        </div>
+
+        <AdsWidget
+          imgSrc={'/img/ad/ad5.png'}
+          imgWidth={'1140'}
+          imgHeight={'192'}
+        />
+      </ContentBlock>
+    </DefaultLayout>
+  );
+};
+
+SingleArticle.propTypes = {
+  article: PropTypes.object,
+  shortcodes: PropTypes.array,
+  refinedHTML: PropTypes.string,
+};
+
+SingleArticle.defaultProps = {
+  shortcodes: [],
+  refinedHTML: '',
+};
+
+export default SingleArticle;
+
+export async function getServerSideProps({params}) {
+  const {id} = params;
+  const response = await ArticleService.getArticleDetail(id);
+  if (!response?.id) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const rawHTML = response?.description;
+  const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
+  let match;
+  let refinedHTML = rawHTML;
+  const shortcodes = [];
+  let shortcodeIdx = 0;
+  // eslint-disable-next-line no-cond-assign
+  while (match = productsRegrex.exec(rawHTML)) {
+    const shortcode = match[0];
+    shortcodes.push(shortcode);
+
+    // replace shortcode by div container
+    // then, render shortcode to container in client side
+    refinedHTML = refinedHTML.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
+    shortcodeIdx++;
+  }
+
+  return {
+    props: {
+      article: {
+        ...response,
+      },
+      shortcodes,
+      refinedHTML,
+    },
+  };
+}

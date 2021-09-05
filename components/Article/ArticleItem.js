@@ -1,11 +1,13 @@
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Chip, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
 import Image from 'next/image';
+import {useRouter} from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
-
+  root: {
+    margin: theme.spacing(4),
+  },
   articleLabel: {
     fontSize: '1rem',
     lineHeight: '2rem',
@@ -21,7 +23,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '1rem',
     background: theme.chipItem.borderColor,
     color: theme.palette.background.default,
-    borderRadius: '4px',
+    borderRadius: 2,
+    height: 16,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 
   articleImage: {
@@ -43,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
 
-  description: {
+  introduction: {
     fontFamily: theme.font.default,
     fontStyle: 'normal',
     fontWeight: 'normal',
@@ -57,32 +62,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ArticleItem = ({id, image, title, tags = [], description}) => {
+const ArticleItem = ({item}) => {
   const classes = useStyles();
+  const router = useRouter();
 
-  function toDetailPage(article_id) {
-    Router.push({
-      pathname: `/article/${article_id}`,
-    });
-  }
+  const toDetailPage = (article_id) => {
+    router.push(`/articles/${article_id}`);
+  };
+
+  const toArchivePage = (tag) => {
+    router.push(`/articles?tag=${tag}`);
+  };
 
   return (
-    <>
+    <Grid
+      container={true}
+      className={classes.root}
+    >
       <Grid
         item={true}
         xs={12}
         sm={4}
         md={4}
-        key={`article-left-${id}`}
+        key={`article-left-${item?.id}`}
       >
         <div>
           <Image
             className={classes.articleImage}
-            src={image}
+            src={item.thumb_url ?? '/logo.png'}
             width={364}
             height={208}
-            alt='support'
-            onClick={() => toDetailPage(id)}
+            alt={item?.title}
+            objectFit='cover'
+            onClick={() => toDetailPage(item?.id)}
           />
         </div>
       </Grid>
@@ -91,45 +103,44 @@ const ArticleItem = ({id, image, title, tags = [], description}) => {
         xs={12}
         sm={8}
         md={8}
-        key={`article-right-${id}`}
+        key={`article-right-${item?.id}`}
       >
         <div justifyContent='left'>
           <Typography
             variant={'h3'}
             className={classes.articleLabel}
-            onClick={() => toDetailPage(id)}
-          >{title}</Typography>
+            onClick={() => toDetailPage(item?.id)}
+          >{item?.title}</Typography>
           <div className={classes.chipList}>
-            {tags.map((tag) => {
+            {item.tags?.map((tag) => {
               return (
                 <>
                   <Chip
-                    key={`${tag}-${id}`}
-                    label={tag}
+                    key={`${tag}-${item?.id}`}
+                    label={tag?.name}
                     className={classes.chipItem}
-                    onClick={() => toDetailPage(id)}
+                    onClick={() => toArchivePage(tag?.name_kana)}
                   />
                 </>
               );
             })}
           </div>
-          <div className={classes.description}>{description}</div>
-          <div className={classes.seeMore}>
+          <div className={classes.introduction}>{item?.introduction}</div>
+          <div
+            className={classes.seeMore}
+            onClick={() => toDetailPage(item?.id)}
+          >
             <span className={classes.text}>{'もっと見る'}</span>
             {'>'}
           </div>
         </div>
       </Grid>
-    </>
+    </Grid>
   );
 };
 
 ArticleItem.propTypes = {
-  id: PropTypes.number,
-  tags: PropTypes.array,
-  image: PropTypes.string,
-  title: PropTypes.string,
-  description: PropTypes.string,
+  item: PropTypes.object,
 };
 
 export default ArticleItem;

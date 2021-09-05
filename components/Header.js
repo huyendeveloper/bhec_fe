@@ -185,25 +185,28 @@ const useStyles = makeStyles((theme) => ({
 
 const listNavigation = [
   {
-    name: '伝統の一品',
-    url: '/products/伝統の一品',
+    name: '伝統工芸品',
+    url: '/products?category=traditional_craft',
   },
   {
     name: '食品・飲料',
-    url: '/products/食品・飲料',
+    url: '/products?category=food_and_beverage',
   },
   {
     name: 'ライフスタイル',
-    url: '/products/ライフスタイル',
+    url: '/products?category=lifestyle',
   },
   {
     name: 'ブログ',
-    url: '/',
+    url: '/articles',
   },
-  {
-    name: 'お買い物ガイド',
-    url: '/',
-  },
+
+  // eslint-disable-next-line no-warning-comments
+  // TODO: not implemented yet
+  // {
+  //   name: 'お買い物ガイド',
+  //   url: '/',
+  // },
 ];
 
 const Header = (props) => {
@@ -236,7 +239,7 @@ const Header = (props) => {
                 <div className={classes.icNav}>
                   <Image
                     src='/menu.png'
-                    alt='BH_EC nav Logo'
+                    alt='おしながき'
                     width={24}
                     height={24}
                   />
@@ -249,7 +252,7 @@ const Header = (props) => {
                 <a className='next-link'>
                   <Image
                     src='/logo.png'
-                    alt='BH_EC Logo'
+                    alt='おしながき'
                     width={logoWidth}
                     height={logoHeight}
                   />
