@@ -17,6 +17,7 @@ const {withSentryConfig} = require('@sentry/nextjs');
 const moduleExports = {
   reactStrictMode: false,
   env: {
+    GOOGLE_ID: process.env.GOOGLE_ID,
     VERITRANS_TOKEN_SERVER_ENDPOINT: process.env.VERITRANS_TOKEN_SERVER_ENDPOINT,
     VERITRANS_TOKEN_API: process.env.VERITRANS_TOKEN_API,
     API_DEFAULT_ENDPOINT: process.env.API_DEFAULT_ENDPOINT,

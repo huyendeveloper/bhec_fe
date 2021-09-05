@@ -13,7 +13,7 @@ import {
 import Typography from '@material-ui/core/Typography';
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
-
+import {useSession} from 'next-auth/client';
 import ImageUploading from 'react-images-uploading';
 
 import clsx from 'clsx';
@@ -140,7 +140,7 @@ const products = [
 export default function ContactPage() {
   const theme = useTheme();
   const classes = useStyles();
-
+  const [session] = useSession();
   const {control, handleSubmit, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -148,6 +148,7 @@ export default function ContactPage() {
   const [valueProductImages, setValueProductImages] = useState({});
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
+  const [isLoggined, setIsLoggined] = useState(false);
   const [listContactCategory, setListContactCategory] = useState([]);
   const [typeContact, setTypeContact] = useState();
   const [listProduct, setListProduct] = useState(products);
@@ -156,9 +157,12 @@ export default function ContactPage() {
   const [requestNo, setRequestNo] = useState();
 
   useEffect(() => {
+    if (session?.accessToken) {
+      setIsLoggined(true);
+    }
     setValue('contact_category_id', 1, {shouldValidate: true});
     getListContactCategory();
-  }, []);
+  }, [session]);
 
   const getListContactCategory = async () => {
     const result = await Contact.getContactCategories();
@@ -308,40 +312,42 @@ export default function ContactPage() {
               >{'法人'}</div>
             </div>
             <div className='formBlock'>
-              <div
-                className='formBlockHeader'
-                style={{marginBottom: '2rem'}}
-              >
-                <Typography
-                  component='h3'
-                  className='formBlockTitle'
+              {isLoggined &&
+                <div
+                  className='formBlockHeader'
+                  style={{marginBottom: '2rem'}}
                 >
-                  {tabActive === 1 ? '個人のお客様用フォーム' : '法人のお客様用フォーム'}
-                </Typography>
-                <Typography
-                  component='p'
-                  className='formBlockDesc'
-                >
-                  {'入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。'}
-                </Typography>
-
-                {tabActive === 2 &&
-                <Typography
-                  component='p'
-                  className='formBlockNote'
-                >
-                  <span>{'法人のお客様は'}</span>
-                  <a
-                    href='mailto:oshinagaki@gmail.com'
-                    target='_blank'
-                    className='formBlockLink'
-                    rel='noreferrer'
+                  <Typography
+                    component='h3'
+                    className='formBlockTitle'
                   >
-                    {'こちら'}
-                  </a>
-                  <span>{'から'}</span>
-                </Typography>}
-              </div>
+                    {tabActive === 1 ? '個人のお客様用フォーム' : '法人のお客様用フォーム'}
+                  </Typography>
+                  <Typography
+                    component='p'
+                    className='formBlockDesc'
+                  >
+                    {'入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。'}
+                  </Typography>
+
+                  {tabActive === 2 &&
+                  <Typography
+                    component='p'
+                    className='formBlockNote'
+                  >
+                    <span>{'法人のお客様は'}</span>
+                    <a
+                      href='mailto:oshinagaki@gmail.com'
+                      target='_blank'
+                      className='formBlockLink'
+                      rel='noreferrer'
+                    >
+                      {'こちら'}
+                    </a>
+                    <span>{'から'}</span>
+                  </Typography>}
+                </div>
+              }
             </div>
             {tabActive === 1 && <StyledForm onSubmit={handleSubmit(onSubmit)}>
               {/* SECOND BLOCK */}

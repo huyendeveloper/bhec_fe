@@ -12,8 +12,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
 import produce from 'immer';
-
-import firebase from '../../../firebase';
+import {GoogleLogin} from 'react-google-login';
 
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
 import {AlertMessageForSection, StyledForm} from '~/components';
@@ -380,36 +379,31 @@ const Login = () => {
     }
   };
 
-  function googleAuth() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope(process.env.NEXT_PUBLIC_FIREBASE_SCOPE);
-    firebase.auth().signInWithPopup(provider).then(async (result) => {
-      const credential = result.credential;
-      if (credential.idToken) {
-        const res = await Auth.loginBySNS({
-          type: 'gg',
-          id_token: credential.idToken,
+  const responseGoogle = async (response) => {
+    if (response.tokenId) {
+      const res = await Auth.loginBySNS({
+        type: 'gg',
+        id_token: response.tokenId,
+      });
+      if (res.id) {
+        setUser(produce((draft) => {
+          draft.isAuthenticated = true;
+        }));
+        await signIn('credentials',
+          {
+            data: res,
+            token: res.access_token,
+            callbackUrl: `${window.location.origin}`,
+          },
+        );
+      } else {
+        setAlerts({
+          type: 'error',
+          message: '無効なユーザーです。管理者にお問い合わせください',
         });
-        if (res.id) {
-          setUser(produce((draft) => {
-            draft.isAuthenticated = true;
-          }));
-          await signIn('credentials',
-            {
-              data: res,
-              token: res.access_token,
-              callbackUrl: `${window.location.origin}`,
-            },
-          );
-        } else {
-          setAlerts({
-            type: 'error',
-            message: '無効なユーザーです。管理者にお問い合わせください',
-          });
-        }
       }
-    });
-  }
+    }
+  };
 
   return (
     <DefaultLayout title='Login - Oshinagaki Store'>
@@ -464,20 +458,28 @@ const Login = () => {
                     setIdToken={setIdToken}
                     login={false}
                   />
-                  <div
-                    className={classes.loginMethod}
-                    onClick={() => googleAuth()}
-                  >
-                    <Image
-                      src='/ic-google.png'
-                      width='32'
-                      height='32'
-                      alt=''
-                    />
-                    <div
-                      className={classes.labelLogin + ' ' + classes.labelGoogle}
-                    >{'Google で会員登録'}</div>
-                  </div>
+                  <GoogleLogin
+                    clientId={process.env.GOOGLE_ID}
+                    render={(renderProps) => (
+                      <div
+                        className={classes.loginMethod}
+                        onClick={renderProps.onClick}
+                      >
+                        <Image
+                          src='/ic-google.png'
+                          width='32'
+                          height='32'
+                          alt=''
+                        />
+                        <div
+                          className={classes.labelLogin + ' ' + classes.labelGoogle}
+                        >{'Google で会員登録'}</div>
+                      </div>
+                    )}
+                    onSuccess={responseGoogle}
+                    cookiePolicy={'single_host_origin'}
+                    isSignedIn={false}
+                  />
                   <div
                     className={classes.loginMethod}
                     onClick={() => goToRegisterEmail()}
@@ -547,18 +549,28 @@ const Login = () => {
                     setIdToken={setIdToken}
                     login={true}
                   />
-                  <div className={classes.loginMethod}>
-                    <Image
-                      src='/ic-google.png'
-                      width='32'
-                      height='32'
-                      alt=''
-                    />
-                    <div
-                      className={classes.labelLogin + ' ' + classes.labelGoogle}
-                      onClick={() => googleAuth()}
-                    >{'Google でログイン'}</div>
-                  </div>
+                  <GoogleLogin
+                    clientId={process.env.GOOGLE_ID}
+                    render={(renderProps) => (
+                      <div
+                        className={classes.loginMethod}
+                        onClick={renderProps.onClick}
+                      >
+                        <Image
+                          src='/ic-google.png'
+                          width='32'
+                          height='32'
+                          alt=''
+                        />
+                        <div
+                          className={classes.labelLogin + ' ' + classes.labelGoogle}
+                        >{'Google で会員登録'}</div>
+                      </div>
+                    )}
+                    onSuccess={responseGoogle}
+                    cookiePolicy={'single_host_origin'}
+                    isSignedIn={false}
+                  />
                 </div>
               </Grid>
               <Grid
