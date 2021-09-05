@@ -4,12 +4,15 @@ import {
   TableHead, TablePagination, TableRow, Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import moment from 'moment';
 import Link from 'next/link';
-import {useState} from 'react';
-import PropTypes from 'prop-types';
+import {useEffect, useState} from 'react';
 
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {order as orderConstants} from '~/constants';
+import {format as formatNumber} from '~/lib/number';
+import {OrderService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   containerTable: {
@@ -84,19 +87,29 @@ const headCells = [
   'お支払い方法',
 ];
 
-const Orders = ({orders}) => {
+const Orders = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
-  const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
+  const [orders, setOrders] = useState();
+  const PER_PAGE = 10;
 
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
 
+  const fetchOrders = async () => {
+    const response = await OrderService.getOrders({per_page: PER_PAGE});
+    setOrders(response?.orders);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
-    <DefaultLayout title={'注文確認'}>
+    <DefaultLayout title={'注文一覧'}>
       <ContentBlock
-        title={'注文確認'}
+        title={'注文一覧'}
         bgImage='/img/noise.png'
         bgRepeat='repeat'
       >
@@ -120,14 +133,14 @@ const Orders = ({orders}) => {
                 </TableHead>
 
                 <TableBody className={classes.tableBody}>
-                  {orders.slice(page * 10, 10 * (page + 1)).map((order) => (
+                  {orders.slice(page * PER_PAGE, PER_PAGE * (page + 1)).map((order) => (
                     <TableRow key={order?.id}>
                       <TableCell>
-                        <Link href={`/orders/${order?.id}`}><a className={classes.orderLink}>{order?.id}</a></Link>
+                        <Link href={`/orders/${order?.id}`}><a className={classes.orderLink}>{order?.order_number}</a></Link>
                       </TableCell>
-                      <TableCell>{order?.dateTime}</TableCell>
-                      <TableCell>{currency.format(order?.price)}</TableCell>
-                      <TableCell>{order?.paymentMethod}</TableCell>
+                      <TableCell>{moment(order?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                      <TableCell>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</TableCell>
+                      <TableCell>{orderConstants.paymentMethods?.find((p) => p.id === order.payment_method)?.label}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -138,9 +151,9 @@ const Orders = ({orders}) => {
               rowsPerPageOptions={[]}
               component='div'
               count={orders.length}
-              rowsPerPage={10}
+              rowsPerPage={PER_PAGE}
               page={page}
-              onChangePage={handleChangePage}
+              onPageChange={handleChangePage}
             />
           </>
         ) : <Typography align='center'>{'注文情報はありません。'}</Typography>}
@@ -150,11 +163,3 @@ const Orders = ({orders}) => {
 };
 
 export default Orders;
-
-Orders.propTypes = {
-  orders: PropTypes.array,
-};
-
-Orders.defaultProps = {
-  orders: [],
-};

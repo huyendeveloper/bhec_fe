@@ -97,11 +97,10 @@ const ProductNotFound = () => {
     </Box>);
 };
 
-const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
+const ArchiveProduct = ({products, categories, pages}) => {
   const classes = useStyles();
-  const {pagination, products} = fetchData;
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(pagination.page);
+  const [currentPage, setCurrentPage] = useState(pages);
   const [isAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -118,20 +117,20 @@ const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
     },
     {
       id: 2,
-      linkLabel: `${category}一覧`,
+      linkLabel: `${categories[0]?.name_kana ?? '商品'}一覧`,
     },
   ];
 
   const changePage = (e, pageNumber) => {
     setCurrentPage(pageNumber);
     router.push({
-      pathname: '/products/[category]',
+      pathname: '/products',
       query: {...router.query, page: pageNumber},
     });
   };
 
   return (
-    <DefaultLayout title={`BH_EC-${category}`}>
+    <DefaultLayout title={`${categories[0]?.name_kana ?? '商品'}一覧`}>
       <Container
         maxWidth='lg'
       >
@@ -159,16 +158,16 @@ const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
       </Container>
 
       <ContentBlock
-        title={category}
+        title={`${categories[0]?.name_kana ?? '商品'}一覧`}
         bgImage={'/img/noise.png'}
         bgRepeat={'repeat'}
       >
-        { products.length > 0 ? (
+        { products?.length > 0 ? (
           <Grid
             container={true}
             spacing={3}
           >
-            {products.map((item) => (
+            {products?.map((item) => (
               <Grid
                 key={item.id}
                 item={true}
@@ -185,9 +184,9 @@ const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
             ))}
           </Grid>) : <ProductNotFound/>
         }
-        { products.length && pagination?.number_of_page > 0 &&
+        { products?.length && pages > 0 &&
           <Pagination
-            count={pagination.number_of_page}
+            count={pages}
             variant={'outlined'}
             color={'primary'}
             size={'large'}
@@ -206,21 +205,29 @@ const ProductCategory = ({fetchData, category = '伝統工芸品'}) => {
   );
 };
 
-ProductCategory.propTypes = {
-  fetchData: PropTypes.object,
-  category: PropTypes.string,
+export default ArchiveProduct;
+
+ArchiveProduct.propTypes = {
+  products: PropTypes.array.isRequired,
+  categories: PropTypes.array,
+  pages: PropTypes.number,
 };
 
-export async function getServerSideProps({query, params}) {
-  const {category} = params;
-  const fetchData = await Product.getProducts(query);
+ArchiveProduct.defaultProps = {
+  products: [],
+  categories: [],
+  pages: 0,
+};
+
+export async function getServerSideProps({query}) {
+  const queryParams = {...query, per_page: 12};
+  const response = await Product.getProducts(queryParams);
 
   return {
-    props: {fetchData, category},
+    props: {
+      products: response.products ?? [],
+      categories: response.categories ?? [],
+      pages: response.pages ?? 0,
+    },
   };
 }
-
-ProductCategory.defaultProps = {
-};
-
-export default ProductCategory;

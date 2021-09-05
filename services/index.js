@@ -1,3 +1,4 @@
+export {default as ArticleService} from './article.services';
 export {default as AuthService} from './auth.services';
 export {default as CartService} from './cart.services';
 export {default as CommonService} from './common.services';

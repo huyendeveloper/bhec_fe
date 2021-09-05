@@ -1,8 +1,9 @@
+import {Avatar, Badge, Input} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {Avatar, Input, Badge} from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
-import {useState} from 'react';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 
 import {userState} from '~/store/userState';
@@ -77,8 +78,9 @@ const UserAccount = () => {
   const classes = useStyles();
   const user = useRecoilValue(userState);
   const [changeNameStatus, setchangeNameStatus] = useState(false);
-  const [username, setUsername] = useState(user.profile.user?.nickname ?? user.profile.user?.email);
-  const [imagePreview, setImagePreview] = useState(user.profile.user?.avatar_url ?? null);
+  const [username, setUsername] = useState();
+  const [imagePreview, setImagePreview] = useState();
+  const router = useRouter();
 
   const handleUpdateStatus = () => {
     setchangeNameStatus(!changeNameStatus);
@@ -108,6 +110,15 @@ const UserAccount = () => {
     // eslint-disable-next-line no-warning-comments
     // TODO: send new image to API for updating avatar
   };
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setUsername(user?.profile?.nickname ?? user?.profile?.email);
+      setImagePreview(user?.profile?.avatar_url);
+    } else {
+      router.push('/auth/login');
+    }
+  }, [user]);
 
   return (
     <div className={classes.root}>

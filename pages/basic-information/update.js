@@ -14,7 +14,8 @@ import PropTypes from 'prop-types';
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
 import DateFnsUtils from '@date-io/date-fns';
-import {jaLocale, format as formatDate} from 'date-fns';
+import {format as formatDate} from 'date-fns';
+import {ja as jaLocale} from 'date-fns/locale';
 import Router from 'next/router';
 import {
   MuiPickersUtilsProvider,

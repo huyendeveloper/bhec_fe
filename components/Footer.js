@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-warning-comments */
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
@@ -6,9 +7,11 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
 import Zoom from '@material-ui/core/Zoom';
-import {Box, Icon, Link, Grid, Divider} from '@material-ui/core';
+import {Box, Icon, Grid, Divider, Link} from '@material-ui/core';
 
 import {SnsWidget} from './Widgets';
+
+import {ProductService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,79 +97,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }), {name: 'MuiScrollBar_InFooter'});
 
-const linkFooter = [
-  {
-    label: '伝統の逸品',
-    url: '/',
-    linkChild: [
-      {label: '漆器・漆工芸', url: '/'},
-      {label: '陶磁器', url: '/'},
-      {label: '染め物', url: '/'},
-      {label: '織物', url: '/'},
-      {label: '木工品', url: '/'},
-      {label: '金工品', url: '/'},
-      {label: 'ガラス工芸', url: '/'},
-      {label: '人形', url: '/'},
-      {label: 'その他', url: '/'},
-    ],
-  },
-  {
-    label: '食品・飲料',
-    url: '/',
-    linkChild: [
-      {label: '農産物', url: '/'},
-      {label: '水産物', url: '/'},
-      {label: '畜産物', url: '/'},
-      {label: '加工食品', url: '/'},
-    ],
-  },
-  {
-    label: 'ライフスタイル',
-    url: '/',
-    linkChild: [
-      {label: 'キッチン', url: '/'},
-      {label: '文具・玩具', url: '/'},
-      {label: 'ファッション', url: '/'},
-      {label: 'ヘルス・ビューティー', url: '/'},
-    ],
-  },
-  {
-    label: 'ブログ',
-    url: '/',
-    linkChild: [],
-  },
-  {
-    label: 'お買い物ガイド',
-    url: '/',
-    linkChild: [
-      {label: '注文', url: '/'},
-      {label: 'お支払い', url: '/'},
-      {label: '配送', url: '/'},
-      {label: 'クーポン', url: '/'},
-      {label: '会員登録・ログイン', url: '/'},
-      {label: 'その他', url: '/'},
-      {label: 'よくある質問', url: '/'},
-    ],
-  },
-  {
-    label: '会員登録',
-    url: '/',
-    linkChild: [
-      {label: '新規会員登録', url: '/'},
-      {label: 'ログイン', url: '/'},
-      {label: 'マイページ', url: '/'},
-    ],
-  },
-  {
-    label: '出品者応募',
-    url: '/',
-    linkChild: [
-      {label: '出品者応募フォーム', url: '/'},
-      {label: '出品者ログイン', url: '/'},
-    ],
-  },
-];
-
 function ScrollTop(props) {
   const {children, window} = props;
   const classes = useStyles();
@@ -213,11 +143,87 @@ ScrollTop.propTypes = {
   window: PropTypes.func,
 };
 
+const ProductServiceInstance = new ProductService();
+
 const Footer = (props) => {
   const theme = useTheme();
   const isTablet = theme.breakpoints.down('sm');
   const isMobile = theme.breakpoints.down('sm');
   const classes = useStyles();
+  const defaultLinkFoots = [
+    {
+      label: 'ブログ',
+      url: '/articles',
+      linkChild: [],
+    },
+
+    // TODO: link not fixed yet
+    // {
+    //   label: 'お買い物ガイド',
+    //   url: '/',
+    //   linkChild: [
+    //     {label: '注文', url: '/'},
+    //     {label: 'お支払い', url: '/'},
+    //     {label: '配送', url: '/'},
+    //     {label: 'クーポン', url: '/'},
+    //     {label: '会員登録・ログイン', url: '/'},
+    //     {label: 'その他', url: '/'},
+    //     {label: 'よくある質問', url: '/'},
+    //   ],
+    // },
+    {
+      label: '会員登録',
+      url: '/',
+      linkChild: [
+        {label: 'マイページ', url: '/mypage'},
+      ],
+    },
+    {
+      label: '出品者応募',
+      url: '/',
+      linkChild: [
+        {label: '出品者応募フォーム', url: '/lp/seller-form'},
+        {label: '出品者ログイン', url: 'https://partners.oshinagaki-store.com/seller/login'},
+      ],
+    },
+  ];
+  const [linkFooter, setLinkFooter] = useState(defaultLinkFoots);
+
+  const fetchCategories = async () => {
+    const response = await ProductServiceInstance.getCategories();
+    if (response?.categories) {
+      const categories = response.categories;
+      const links = [];
+      categories.forEach((category) => {
+        const subCategories = category.child_categories ?? [];
+        const linkChild = [];
+        // eslint-disable-next-line max-nested-callbacks
+        subCategories.forEach((sub) => {
+          linkChild.push(
+            {
+              label: sub?.name_kana,
+              url: `/products?category=${sub?.name}`,
+            },
+          );
+        });
+        links.push({
+          label: category?.name_kana,
+          url: `/products?category=${category?.name}`,
+          linkChild,
+        });
+      });
+
+      defaultLinkFoots.forEach((link) => {
+        links.push(link);
+      });
+      setLinkFooter(links);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <footer>
@@ -236,7 +242,7 @@ const Footer = (props) => {
                     isMobile ? 163 : (isTablet ? 170 : 218)
                   }
                   height={isTablet ? 48 : 64}
-                  alt={'Footer logo'}
+                  alt={'おしながき'}
                 />
               </Link>
 
@@ -248,46 +254,69 @@ const Footer = (props) => {
               >
                 {linkFooter && linkFooter.length > 0 ? linkFooter.map((link, index) => {
                   return (
-                    <>
-                      <Grid
-                        item={true}
-                        lg={2}
-                        md={6}
-                        xs={3}
-                        key={`${link.label}-${String(index)}`}
-                        className={classes.grid}
-                      >
+                    <Grid
+                      item={true}
+                      lg={2}
+                      md={6}
+                      xs={3}
+                      key={`${link.label}-${String(index)}`}
+                      className={classes.grid}
+                    >
+                      {link?.url ? (
+                        <Link
+                          href={link.url}
+                          color='inherit'
+                        >
+                          <span
+                            className={classes.parentLabel}
+                          >
+                            {link.label}
+                          </span>
+                        </Link>
+                      ) : (
                         <span
                           className={classes.parentLabel}
                         >
                           {link.label}
                         </span>
-                        <Grid
-                          container={true}
-                          className={classes.gridChildLabel}
-                          style={{marginTop: '1.5rem'}}
-                        >
-                          {link.linkChild && link.linkChild.length > 0 ? link.linkChild.map((c, i) => {
-                            return (
-                              <>
-                                <Grid
-                                  item={true}
-                                  xs={12}
-                                  key={`${link.label}-${c.label}-${String(i)}`}
-                                  style={{textAlign: 'left', marginBottom: '0.6875rem'}}
+                      )}
+
+                      <Grid
+                        container={true}
+                        className={classes.gridChildLabel}
+                        style={{marginTop: '1.5rem'}}
+                      >
+                        {link.linkChild && link.linkChild.length > 0 ? link.linkChild.map((c, i) => {
+                          return (
+                            <Grid
+                              item={true}
+                              xs={12}
+                              key={`${link.label}-${c.label}-${String(i)}`}
+                              style={{textAlign: 'left', marginBottom: '0.6875rem'}}
+                            >
+                              {c?.url ? (
+                                <Link
+                                  href={c.url}
+                                  color='inherit'
                                 >
                                   <span
                                     className={classes.childLabel}
                                   >
                                     {c.label}
                                   </span>
-                                </Grid>
-                              </>
-                            );
-                          }) : null}
-                        </Grid>
+                                </Link>
+                              ) : (
+                                <span
+                                  className={classes.childLabel}
+                                >
+                                  {c.label}
+                                </span>
+                              )}
+                            </Grid>
+                          );
+                        }) : null}
                       </Grid>
-                    </>
+                    </Grid>
                   );
                 }) : null}
               </Grid>
@@ -300,12 +329,20 @@ const Footer = (props) => {
                   xs={12}
                   className={classes.lastGrid}
                 >
-                  <span>{'会社概要'}</span>
+                  <Link
+                    href='/about'
+                    color='inherit'
+                  >
+                    <span>{'会社概要'}</span>
+                  </Link>
                   <Divider
                     orientation='vertical'
                     className={classes.divider}
                   />
+
+                  {/* TODO: link not fixed yet */}
                   <span>{'プライバシーポリシー'}</span>
+
                 </Grid>
               </Grid>
             </Box>

@@ -1,14 +1,9 @@
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
-import Image from 'next/image';
 import {
-  Button,
-  Grid,
-  Stepper,
-  Step,
-  StepLabel,
-  useMediaQuery,
+  Grid, Step, StepLabel, Stepper, useMediaQuery,
 } from '@material-ui/core';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import Image from 'next/image';
+import PropTypes from 'prop-types';
 
 import {order} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
@@ -151,19 +146,24 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = Object.values(order.label);
 
-const OrderItem = ({data}) => {
-  const {name, image, productId, price, quantity, trackingNum, transportType, status} = data;
+const OrderItem = ({item, status}) => {
   const classes = useStyles();
-  const isDelivered = () => status === order.status.arrival;
+
+  // eslint-disable-next-line no-warning-comments
+  // TODO: not implemented yet
+  // eslint-disable-next-line no-unused-vars
+  const isDelivered = false;
 
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  return (
+  const product = item?.product;
+
+  return item ? (
     <div className={classes.root}>
       <div className={classes.productName}>
-        {name}
+        {product?.name}
       </div>
 
       <Grid
@@ -179,16 +179,17 @@ const OrderItem = ({data}) => {
         >
           {isMobile ? (
             <Image
-              src={image}
+              src={product.thumb_url ?? '/logo.png'}
               width={500}
               height={200}
               layout={'responsive'}
               className={classes.productThumb}
-              alt={name}
+              objectFit='contain'
+              alt={product?.name}
             />
           ) : (
             <Image
-              src={image}
+              src={product.thumb_url ?? '/logo.png'}
               width={
                 (isTablet ? 146 : 195)
               }
@@ -197,10 +198,12 @@ const OrderItem = ({data}) => {
               }
               layout={'intrinsic'}
               className={classes.productThumb}
-              alt={name}
+              objectFit='contain'
+              alt={product?.name}
             />
           )}
         </Grid>
+
         <Grid
           item={true}
           md={9}
@@ -208,26 +211,31 @@ const OrderItem = ({data}) => {
           xs={12}
           className={classes.buttonList}
         >
-          <Button
+          {/* eslint-disable-next-line no-warning-comments */}
+          {/* TODO: not implemented yet */}
+          {/* <Button
             variant='contained'
             href='/'
-            disabled={!isDelivered()}
             className={classes.btnBuyAgain}
+            disabled={!isDelivered()}
+
           >
             {'再度購入'}
           </Button>
           <Button
             variant='contained'
-            href={`/reviews/${productId}`}
+            href={`/reviews/${item?.id}`}
+            >
             disabled={!isDelivered()}
-          >
+
             {'レビューを書く'}
           </Button>
           <Button
             variant='contained'
             href='/'
+            >
             disabled={!isDelivered()}
-          >
+
             {'返品・交換'}
           </Button>
           <Button
@@ -235,8 +243,7 @@ const OrderItem = ({data}) => {
             href='/'
           >
             {'お問い合わせ'}
-          </Button>
-
+          </Button> */}
         </Grid>
 
         <Grid
@@ -256,25 +263,30 @@ const OrderItem = ({data}) => {
           sm={9}
           className={classes.multiLine}
         >
-          <div>{productId}</div>
-          <div>{quantity}</div>
-          <div>{'¥' + formatNumber(price)}</div>
-          <div>{'¥' + formatNumber(price * quantity)}</div>
+          <div>{product?.id}</div>
+          <div>{item?.quantity}</div>
+          <div>{`¥${formatNumber(parseInt(product?.price, 10))}`}</div>
+          <div>{`¥${formatNumber(parseInt(item?.price, 10))}`}</div>
+
+          {/* eslint-disable-next-line no-warning-comments */}
+          {/* TODO: not implemented yet */}
           {!isMobile && (
             <Stepper
               activeStep={status}
               alternativeLabel={true}
               className={classes.stepper}
             >
-              {steps.map((item) => (
-                <Step key={item}>
-                  <StepLabel>{item}</StepLabel>
+              {steps.map((step) => (
+                <Step key={step}>
+                  <StepLabel>{step}</StepLabel>
                 </Step>
               ))}
             </Stepper>
           )}
         </Grid>
 
+        {/* eslint-disable-next-line no-warning-comments */}
+        {/* TODO: not implemented yet */}
         {isMobile && (
           <Grid
             item={true}
@@ -285,41 +297,22 @@ const OrderItem = ({data}) => {
               alternativeLabel={true}
               className={classes.stepper}
             >
-              {steps.map((item) => (
-                <Step key={item}>
-                  <StepLabel>{item}</StepLabel>
+              {steps.map((step) => (
+                <Step key={step}>
+                  <StepLabel>{step}</StepLabel>
                 </Step>
               ))}
             </Stepper>
           </Grid>
         )}
-
-        <Grid
-          item={true}
-          sm={3}
-          xs={4}
-        >
-          <h4>
-            {'出品者のメモ'}
-          </h4>
-        </Grid>
-        <Grid
-          item={true}
-          sm={9}
-          xs={8}
-          className={classes.multiLine}
-        >
-          <div>{'追跡番号'}</div>
-          <div>{trackingNum || null }</div>
-          <div>{transportType}</div>
-        </Grid>
       </Grid>
     </div>
-  );
+  ) : <></>;
 };
 
 OrderItem.propTypes = {
-  data: PropTypes.object,
+  item: PropTypes.object,
+  status: PropTypes.any,
 };
 
 export default OrderItem;
