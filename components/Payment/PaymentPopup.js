@@ -10,7 +10,7 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import {jaLocale} from 'date-fns';
+import {ja as jaLocale} from 'date-fns/locale';
 import {useForm, Controller} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';

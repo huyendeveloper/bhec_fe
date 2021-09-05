@@ -12,7 +12,6 @@ import 'swiper/swiper.min.css';
 import {ProductService, ArticleService} from '~/services';
 
 const ProductServiceInstance = new ProductService();
-const ArticleServiceInstance = new ArticleService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -257,7 +256,7 @@ export const getServerSideProps = async () => {
   const lifestyle = lstProduct3?.products?.length ? lstProduct3.products : [];
 
   // articles
-  const articles = await ArticleServiceInstance.getArticles({limit: '6'});
+  const articles = await ArticleService.getArticles({limit: '6'});
 
   return {
     props: {
