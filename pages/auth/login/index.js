@@ -380,6 +380,8 @@ const Login = () => {
   };
 
   const responseGoogle = async (response) => {
+    // eslint-disable-next-line no-console
+    console.log(response);
     if (response.tokenId) {
       const res = await Auth.loginBySNS({
         type: 'gg',
@@ -477,6 +479,7 @@ const Login = () => {
                       </div>
                     )}
                     onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                     isSignedIn={false}
                   />
@@ -568,6 +571,7 @@ const Login = () => {
                       </div>
                     )}
                     onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                     isSignedIn={false}
                   />
