@@ -91,6 +91,7 @@ export default function OrderForm() {
                 variant={'pill'}
                 customColor={'red'}
                 customSize={'extraLarge'}
+                onClick={() => router.push('/orders')}
               >
                 {'注文一覧へ'}
               </Button>

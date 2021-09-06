@@ -101,7 +101,6 @@ const FormShipping = ({isReadonly}) => {
                     onChange={onChange}
                     className={classes.radioGroup}
                     style={{marginBottom: '2.563rem'}}
-                    disabled={isReadonly}
                   >
                     {user.addresses?.map((item, index) => (
                       <FormControlLabel
@@ -110,6 +109,7 @@ const FormShipping = ({isReadonly}) => {
                         control={<Radio/>}
                         label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item.province.name}${item.city}${item.address}`}
                         className={'labelRadioBtn'}
+                        disabled={isReadonly}
                       />
                     ))}
                   </RadioGroup>
