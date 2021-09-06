@@ -36,7 +36,7 @@ const Alert = ({children, title, color, severity, ...props}) => {
           {title}
         </AlertTitle>
       )}
-      {children?.length && <span className={colorClass}>{children}</span>}
+      {children?.length > 0 && <span className={colorClass}>{children}</span>}
     </MuiAlert>
   );
 };

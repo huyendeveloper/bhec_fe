@@ -99,7 +99,7 @@ export default function OrderForm() {
         </div>
       </ContentBlock>
 
-      {recommendProducts.length && (
+      {recommendProducts.length > 0 && (
         <ContentBlock
           title={'あなたにオススメの商品'}
           bgColor='#faf6ef'
@@ -118,7 +118,6 @@ export default function OrderForm() {
               >
                 <ProductWidget
                   data={product}
-                  heart={true}
                   border={'borderNone'}
                 />
               </Grid>

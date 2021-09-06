@@ -174,7 +174,6 @@ export default function FavoriteProducts() {
                 >
                   <ProductWidget
                     data={product}
-                    heart={true}
                     border={'borderNone'}
                   />
                 </Grid>

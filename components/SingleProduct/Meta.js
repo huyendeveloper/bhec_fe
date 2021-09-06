@@ -17,7 +17,7 @@ const Meta = () => {
       <TableContainer>
         <Table className={'table'}>
           <TableBody>
-            {shippingType.length && (
+            {shippingType.length > 0 && (
               <TableRow>
                 <TableCell
                   component='th'
@@ -28,7 +28,7 @@ const Meta = () => {
                 <TableCell align='left'>{shippingType}</TableCell>
               </TableRow>
             )}
-            {shippingDate.length && (
+            {shippingDate.length > 0 && (
               <TableRow>
                 <TableCell
                   component='th'
@@ -39,7 +39,7 @@ const Meta = () => {
                 <TableCell align='left'>{shippingDate}</TableCell>
               </TableRow>
             )}
-            {shippingDays.length && (
+            {shippingDays.length > 0 && (
               <TableRow>
                 <TableCell
                   component='th'

@@ -98,15 +98,15 @@ const Checkout = () => {
 
     let orderDetails = {
       products,
-      payment_method: order.payment_method,
-      invoice_flag: order.invoice_flag ? 1 : 0,
-      invoice_fullname: order.invoice_fullname,
-      invoice_note: order.invoice_note,
-      note: order.note,
+      payment_method: order?.payment_method,
+      invoice_flag: order?.invoice_flag ? 1 : 0,
+      invoice_fullname: order?.invoice_fullname,
+      invoice_note: order?.invoice_note,
+      note: order?.note,
     };
 
-    const shippingAddress = user.addresses?.find((a) => a.id === order.addressShipping);
-    const card = user.cards?.find((c) => c.id === order.creditCard);
+    const shippingAddress = user.addresses?.find((a) => a.id === order?.addressShipping);
+    const card = user.cards?.find((c) => c.id === order?.creditCard);
 
     if (!user?.isAuthenticated) {
       orderDetails = {
@@ -120,7 +120,7 @@ const Checkout = () => {
           company_name: shippingAddress?.company_name,
           department: shippingAddress?.department,
           tel: shippingAddress?.tel,
-          province: {name: shippingAddress.province?.name},
+          province: {name: shippingAddress?.province?.name},
         },
         card: {
           expiration_date: card?.expiration_date,
@@ -130,10 +130,10 @@ const Checkout = () => {
           cvc_code: card?.cvc_code,
         },
         user: {
-          email: order.email,
-          nickname: order.nickname,
+          email: order?.email,
+          nickname: order?.nickname,
           password: order.password,
-          password_confirmation: order.confirm,
+          password_confirmation: order?.confirm,
         },
       };
     }
@@ -141,8 +141,8 @@ const Checkout = () => {
     if (user?.isAuthenticated) {
       orderDetails = {
         ...orderDetails,
-        address_id: order.addressShipping,
-        card_id: order.creditCard,
+        address_id: order?.addressShipping,
+        card_id: order?.creditCard,
         address: shippingAddress,
         card,
       };

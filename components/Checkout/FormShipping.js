@@ -8,6 +8,7 @@ import {useRecoilState} from 'recoil';
 
 import produce from 'immer';
 
+import {rules} from '~/lib/validator';
 import {BlockForm, Button, ConnectForm, DeliveryForm} from '~/components';
 import {DialogWidget} from '~/components/Widgets';
 import {userState} from '~/store/userState';
@@ -90,13 +91,9 @@ const FormShipping = ({isReadonly}) => {
               <Controller
                 name={'addressShipping'}
                 control={control}
-                defaultValue={'0'}
-                rules={{required: '必須項目です。',
-                  validate: {
-                    checkSelected: (value) => {
-                      return value !== '' || '必須項目です。';
-                    },
-                  },
+                defaultValue={''}
+                rules={{
+                  required: rules.required,
                 }}
                 render={({field: {onChange, value}}) => (
                   <RadioGroup
