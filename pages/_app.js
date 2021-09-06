@@ -8,6 +8,7 @@ import NextNprogress from 'nextjs-progressbar';
 import {RecoilRoot} from 'recoil';
 
 import theme from '../theme';
+import './../styles/globals.css';
 
 import DebugObserver from '~/store/debugObserver';
 
