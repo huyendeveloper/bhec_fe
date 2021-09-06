@@ -61,9 +61,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '4px',
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
-    [theme.breakpoints.down('lg')]: {
-      margin: '3rem 0',
-    },
+    margin: '2rem 0',
   },
 }));
 

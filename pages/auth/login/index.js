@@ -1,9 +1,8 @@
 /* eslint-disable max-lines */
-/* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
 import {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
+import {Box, Container, Grid, FormControl, Button, Typography, CircularProgress} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
 import Router from 'next/router';
@@ -318,6 +317,7 @@ const Login = () => {
   const [open, setOpen] = useState(false);
   const [setPayload] = useState(null);
   const [setIdToken] = useState(null);
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -348,12 +348,14 @@ const Login = () => {
   }
 
   const onSubmit = async (data) => {
+    setLoading(true);
     setAlerts(null);
     const res = await Auth.loginByEmail({user: {
       email: data.email.trim(),
       password: data.password.trim(),
     }});
     if (res.id) {
+      setLoading(false);
       if (res.is_confirmed) {
         setUser(produce((draft) => {
           draft.isAuthenticated = true;
@@ -372,6 +374,7 @@ const Login = () => {
         });
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: '無効なメールアドレス/パスワードの組み合わせです。',
@@ -697,8 +700,16 @@ const Login = () => {
                   <Button
                     variant='contained'
                     type='submit'
+                    disabled={loading}
                     className={classes.btnSubmit}
-                  >{'ログイン'}</Button>
+                  >
+                    {'ログイン'}
+                    {loading ? (
+                      <CircularProgress
+                        size={24}
+                      />
+                    ) : null}
+                  </Button>
                 </div>
               </Grid>
               <Grid
