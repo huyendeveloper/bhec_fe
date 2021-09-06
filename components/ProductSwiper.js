@@ -26,7 +26,6 @@ const ProductSwiper = ({items}) => {
           >
             <ProductWidget
               data={item}
-              heart={true}
             />
           </SwiperSlide>
         ))}
@@ -48,7 +47,6 @@ const ProductSwiper = ({items}) => {
           >
             <ProductWidget
               data={item}
-              heart={true}
             />
           </SwiperSlide>
         ))}
@@ -71,7 +69,6 @@ const ProductSwiper = ({items}) => {
         >
           <ProductWidget
             data={item}
-            heart={true}
           />
         </Grid>
       ))}

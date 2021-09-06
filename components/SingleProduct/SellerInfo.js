@@ -1,5 +1,4 @@
-import {Avatar, Box, Container, Grid, makeStyles, Typography, useMediaQuery, useTheme} from '@material-ui/core';
-import {Swiper, SwiperSlide} from 'swiper/react';
+import {Avatar, Box, Container, Grid, makeStyles, Typography} from '@material-ui/core';
 import React from 'react';
 import {useRecoilValue} from 'recoil';
 
@@ -88,81 +87,6 @@ const SellerInfo = () => {
   const classes = useStyles();
   const product = useRecoilValue(productState);
   const sellerInfo = product?.sellerInfo;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-
-  const renderProductItems = (items) => {
-    if (isMobile) {
-      return (
-        <Swiper
-          slidesPerView={'auto'}
-          spaceBetween={24}
-          pagination={{
-            clickable: true,
-          }}
-          className='productSwiper'
-        >
-          {items.map((item, index) => (
-            <SwiperSlide
-              style={{width: '70%'}}
-              key={String(index)}
-            >
-              <ProductWidget
-                data={item}
-                heart={true}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      );
-    } else if (isTablet) {
-      return (
-        <Swiper
-          slidesPerView={3}
-          spaceBetween={24}
-          pagination={{
-            clickable: true,
-          }}
-          className='productSwiper'
-        >
-          {items.map((item, index) => (
-            <SwiperSlide
-              style={{width: '90%'}}
-              key={String(index)}
-            >
-              <ProductWidget
-                data={item}
-                heart={true}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      );
-    }
-    return (
-      <Grid
-        container={true}
-        justifyContent='center'
-        spacing={3}
-      >
-        {items.map((item, index) => (
-          <Grid
-            key={String(index)}
-            item={true}
-            xs={12}
-            sm={4}
-            md={4}
-          >
-            <ProductWidget
-              data={item}
-              heart={true}
-            />
-          </Grid>
-        ))}
-      </Grid>
-    );
-  };
 
   return sellerInfo ? (
     <>
@@ -264,27 +188,67 @@ const SellerInfo = () => {
         </Grid>
       </Container>
 
-      <div className={classes.categoryBlock}>
-        <CategoryBlock
-          category='この生産者の商品'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          {renderProductItems(product?.sellerProduct)}
-        </CategoryBlock>
-      </div>
+      {product?.sellerProduct?.length > 0 && (
+        <div className={classes.categoryBlock}>
+          <CategoryBlock
+            category='この生産者の商品'
+            bgImage='/img/noise.png'
+            bgRepeat='repeat'
+            mixBlendMode='multiply'
+          >
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {product?.sellerProduct?.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </CategoryBlock>
+        </div>
+      )}
 
-      <div className={classes.categoryBlock}>
-        <CategoryBlock
-          category='オススメ商品'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          {renderProductItems(product?.recommendProduct)}
-        </CategoryBlock>
-      </div>
+      {product?.recommendProduct?.length > 0 && (
+        <div className={classes.categoryBlock}>
+          <CategoryBlock
+            category='オススメ商品'
+            bgImage='/img/noise.png'
+            bgRepeat='repeat'
+            mixBlendMode='multiply'
+          >
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {product?.recommendProduct?.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </CategoryBlock>
+        </div>
+      )}
     </>
   ) : <></>;
 };

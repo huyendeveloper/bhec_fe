@@ -82,8 +82,10 @@ const FormCreditCard = ({isReadonly}) => {
               <Controller
                 name={'creditCard'}
                 control={control}
-                defaultValue={'0'}
-                rules={{required: rules.required}}
+                defaultValue={''}
+                rules={{
+                  required: rules.required,
+                }}
                 render={({field: {onChange, value}}) => (
                   <RadioGroup
                     value={value}

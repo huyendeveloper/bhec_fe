@@ -206,7 +206,6 @@ export default function OrderForm() {
                 >
                   <ProductWidget
                     data={product}
-                    heart={true}
                     border={'borderNone'}
                   />
                 </Grid>

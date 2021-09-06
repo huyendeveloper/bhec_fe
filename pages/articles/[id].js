@@ -115,7 +115,6 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
             >
               <ProductWidget
                 data={item}
-                heart={false}
                 border={'borderNone'}
               />
             </Grid>

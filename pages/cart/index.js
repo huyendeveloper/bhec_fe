@@ -1,4 +1,4 @@
-import {Box, Container, Grid, Typography, useMediaQuery, useTheme} from '@material-ui/core';
+import {Box, Container, Grid, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import produce from 'immer';
 import {useSession} from 'next-auth/client';
@@ -7,12 +7,10 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import React, {useEffect} from 'react';
 import {useRecoilState} from 'recoil';
-import {Swiper, SwiperSlide} from 'swiper/react';
 
-import {Button, CartItem, CategoryBlock, ContentBlock, Footer, Header} from '~/components';
-import {ProductWidget} from '~/components/Widgets';
-import {cartState} from '~/store/cartState';
+import {Button, CartItem, CategoryBlock, ContentBlock, Footer, Header, ProductSwiper} from '~/components';
 import {CartService} from '~/services';
+import {cartState} from '~/store/cartState';
 
 const CartServiceInstance = new CartService();
 
@@ -64,9 +62,6 @@ const recommendProducts = [];
 
 export default function Cart() {
   const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [session] = useSession();
   const router = useRouter();
 
@@ -104,78 +99,6 @@ export default function Cart() {
         draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
       }));
     }
-  };
-
-  const renderProduct = () => {
-    if (isMobile) {
-      return (
-        <Swiper
-          slidesPerView={'auto'}
-          spaceBetween={24}
-          pagination={{
-            clickable: true,
-          }}
-          className='productSwiper'
-        >
-          {recommendProducts.map((product, index) => (
-            <SwiperSlide
-              style={{width: '70%'}}
-              key={String(index)}
-            >
-              <ProductWidget
-                data={product}
-                heart={true}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      );
-    } else if (isTablet) {
-      return (
-        <Swiper
-          slidesPerView={2.5}
-          spaceBetween={24}
-          pagination={{
-            clickable: true,
-          }}
-          className='productSwiper'
-        >
-          {recommendProducts.map((product, index) => (
-            <SwiperSlide
-              style={{width: '90%'}}
-              key={String(index)}
-            >
-              <ProductWidget
-                data={product}
-                heart={true}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      );
-    }
-    return (
-      <Grid
-        container={true}
-        justifyContent='center'
-        spacing={3}
-      >
-        {recommendProducts.map((product, index) => (
-          <Grid
-            key={String(index)}
-            item={true}
-            xs={12}
-            sm={4}
-            md={3}
-          >
-            <ProductWidget
-              data={product}
-              heart={true}
-            />
-          </Grid>
-        ))}
-      </Grid>
-    );
   };
 
   const handleGoToOrderClick = () => {
@@ -301,7 +224,7 @@ export default function Cart() {
           bgRepeat='repeat'
           mixBlendMode='multiply'
         >
-          {renderProduct()}
+          <ProductSwiper items={recommendProducts}/>
         </CategoryBlock>
       )}
 

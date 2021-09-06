@@ -213,7 +213,6 @@ const SearchPage = ({query, searchResult}) => {
                 >
                   <ProductWidget
                     data={product}
-                    heart={true}
                     border={'borderNone'}
                   />
                 </Grid>

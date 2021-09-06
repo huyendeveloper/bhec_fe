@@ -67,15 +67,15 @@ const buttonLinks = [
 ];
 
 const boxLinks = [
+  {
+    image: '/img/icons/bill.png',
+    content: '注文確認',
+    url: '/orders',
+    colorLabel: '#54c0c0',
+  },
+
   // eslint-disable-next-line no-warning-comments
   // TODO: not implemented yet
-  // {
-  //   image: '/img/icons/bill.png',
-  //   content: '注文確認',
-  //   url: '/orders',
-  //   colorLabel: '#54c0c0',
-  // },
-
   // {
   //   image: '/img/icons/heart_fill.png',
   //   content: 'お気に入り商品',
@@ -110,6 +110,16 @@ export default function MyPage() {
 
   const fetchUserInfo = async () => {
     const response = await AuthServiceInstance.getInfoUser();
+    if (!response?.user) {
+      // has smt wrong to fetch user info
+      // logout then redirect back to login
+      setUser({});
+      setCart({items: [], seller: null});
+      setOrder();
+      signOut({redirect: true, callbackUrl: '/auth/login'});
+      return;
+    }
+
     setUser(produce((draft) => {
       draft.profile = response?.user;
     }));
@@ -191,7 +201,7 @@ export default function MyPage() {
               >
                 <ProductWidget
                   data={product}
-                  heart={true}
+                  heart={false}
                   border={'borderNone'}
                 />
               </Grid>

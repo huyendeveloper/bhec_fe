@@ -101,7 +101,6 @@ const ArchiveProduct = ({products, categories, pages}) => {
   const classes = useStyles();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(pages);
-  const [isAuthenticated] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -177,14 +176,13 @@ const ArchiveProduct = ({products, categories, pages}) => {
               >
                 <ProductWidget
                   data={item}
-                  heart={isAuthenticated}
                   border={'borderNone'}
                 />
               </Grid>
             ))}
           </Grid>) : <ProductNotFound/>
         }
-        { products?.length && pages > 0 &&
+        { products?.length > 0 && pages > 0 &&
           <Pagination
             count={pages}
             variant={'outlined'}
