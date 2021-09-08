@@ -474,7 +474,7 @@ const Login = () => {
                         />
                         <div
                           className={classes.labelLogin + ' ' + classes.labelGoogle}
-                        >{'Google で会員登録'}</div>
+                        >{'Google でログイン'}</div>
                       </div>
                     )}
                     onSuccess={responseGoogle}

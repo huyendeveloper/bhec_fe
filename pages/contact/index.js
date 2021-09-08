@@ -198,6 +198,7 @@ export default function ContactPage() {
       ...valueProductImages,
       [`productImages${index}`]: imageList,
     });
+    setValue(`productImages${index}`, imageDataUrls);
   };
 
   const onChangeType = (e) => {
@@ -244,20 +245,28 @@ export default function ContactPage() {
   );
 
   const onSubmit = async (data) => {
+    setLoading(true);
     if (Number.parseInt(data.contact_category_id, 10) !== 5) {
       const bodyFormData = new FormData();
       bodyFormData.append('contact_category_id', data.contact_category_id);
       bodyFormData.append('name', data.name);
       bodyFormData.append('email', data.email);
       bodyFormData.append('description', data.description);
-      bodyFormData.append('images', data.images);
+      if (data.images && data.images.length) {
+        data.images.forEach((img) => {
+          bodyFormData.append('images[]', img);
+        });
+      }
       const configHeader = {
         'Content-Type': 'multipart/form-data',
       };
       const res = await Contact.createContact(bodyFormData, configHeader);
       if (res.id) {
+        setLoading(false);
         setOpen(true);
         setRequestNo(res.request_no);
+      } else {
+        setLoading(false);
       }
     } else if (Number.parseInt(data.contact_category_id, 10) === 5) {
       const bodyFormData = new FormData();
@@ -270,16 +279,23 @@ export default function ContactPage() {
       const res = await Contact.createContact(bodyFormData, configHeader);
       if (res) {
         setRequestNo(res.request_no);
-        const body = new FormData();
         listProduct.forEach(async (item, index) => {
+          const body = new FormData();
           body.append('contact_id', res.id);
           body.append('order_number', data[`order_number${index}`]);
           body.append('product_code', data[`product_code${index}`]);
           body.append('description', data[`description${index}`]);
-          body.append('images', valueProductImages[`productImages${index}`]);
+          if (data[`productImages${index}`] && data[`productImages${index}`].length) {
+            data[`productImages${index}`].forEach((img) => {
+              body.append('images[]', img);
+            });
+          }
           const result = await Contact.createContactProduct(body, configHeader);
           if (result) {
+            setLoading(false);
             setOpen(true);
+          } else {
+            setLoading(false);
           }
         });
       }
