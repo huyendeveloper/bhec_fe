@@ -93,7 +93,6 @@ const FormCreditCard = ({isReadonly}) => {
                     onChange={onChange}
                     className={classes.radioGroup}
                     style={{marginBottom: '2.563rem'}}
-                    disabled={isReadonly}
                   >
                     {user.cards?.map((item) => (
                       <FormControlLabel
@@ -102,6 +101,7 @@ const FormCreditCard = ({isReadonly}) => {
                         control={<Radio/>}
                         label={`${item.card_type} ${item.holder_name} ${item.req_number}`}
                         className={'labelRadioBtn'}
+                        disabled={isReadonly}
                       />
                     ))}
                   </RadioGroup>
