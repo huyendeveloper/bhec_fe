@@ -5,9 +5,9 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import {Header, Footer, ContentBlock} from '~/components';
 import {PaymentService} from '~/services';
+const Payment = new PaymentService();
 import {PaymentWidget} from '~/components/Widgets';
 import {DeletePaymentPopup, PaymentPopup} from '~/components/Payment';
-import {httpStatus} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -136,9 +136,9 @@ function PaymentMethod() {
   }, []);
 
   const getListCard = async () => {
-    const res = await PaymentService.getCards();
-    if (res.status === httpStatus.SUCCESS) {
-      setListPayment(res.data.cards);
+    const res = await Payment.getCards();
+    if (res && res.cards && res.cards.length) {
+      setListPayment(res.cards);
     } else {
       setListPayment([]);
     }
@@ -258,9 +258,9 @@ function PaymentMethod() {
         {openUpdatePopup &&
         <PaymentPopup
           open={openUpdatePopup}
-          handleClose={handleCloseUpdatePopup}
+          onClose={handleCloseUpdatePopup}
           style={{width: '80%'}}
-          createPaymentSuccess={createPaymentSuccess}
+          onSubmit={createPaymentSuccess}
           dataUpdate={dataUpdate}
         />
         }
