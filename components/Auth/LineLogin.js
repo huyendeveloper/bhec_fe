@@ -9,8 +9,11 @@ import qs from 'qs';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import {signIn} from 'next-auth/client';
+import produce from 'immer';
+import {useSetRecoilState} from 'recoil';
 
 import {httpStatus} from '~/constants';
+import {userState} from '~/store/userState';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
@@ -56,6 +59,7 @@ const LineLogin = ({
   login,
 }) => {
   const classes = useStyles();
+  const setUser = useSetRecoilState(userState);
   const lineLogin = () => {
     const query = querystring.stringify({
       response_type: 'code',
@@ -105,6 +109,9 @@ const LineLogin = ({
             client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
           });
           if (result && result.access_token) {
+            setUser(produce((draft) => {
+              draft.isAuthenticated = true;
+            }));
             await signIn('credentials',
               {
                 data: result,

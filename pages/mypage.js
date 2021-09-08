@@ -55,14 +55,13 @@ const buttonLinks = [
   // TODO: not implemented yet
   // {id: 1, label: '基本情報', url: '/basic-information'},
   // {id: 2, label: 'お届け先情報', url: '/delivery-info'},
-  // {id: 3, label: '決済方法', url: '/payment-method'},
   // {id: 4, label: '割引クーポン', url: '/'},
   // {id: 5, label: 'お問い合わせ一覧', url: '/contact'},
   // {id: 6, label: 'フォロー中の出品者一覧', url: '/'},
   // {id: 7, label: '返品/交換申請', url: '/'},
   // {id: 8, label: '返品/交換一覧', url: '/'},
   // {id: 9, label: 'パスワードを変更', url: '/'},
-
+  {id: 3, label: '決済方法', url: '/payment-method'},
   {id: 10, label: 'ログアウト', url: '/'},
 ];
 

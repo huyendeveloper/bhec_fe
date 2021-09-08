@@ -12,6 +12,7 @@ import {rules} from '~/lib/validator';
 import {PaymentPopup} from '~/components/Payment';
 import {userState} from '~/store/userState';
 import {PaymentService} from '~/services';
+const Payment = new PaymentService();
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -56,10 +57,10 @@ const FormCreditCard = ({isReadonly}) => {
   };
 
   const fetchCards = async () => {
-    const res = await PaymentService.getCards();
-    if (res.data.cards?.length > 0) {
+    const res = await Payment.getCards();
+    if (res.cards?.length > 0) {
       setUser(produce((draft) => {
-        draft.cards = res.data.cards;
+        draft.cards = res.cards;
       }));
     }
   };

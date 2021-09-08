@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-/* eslint-disable no-alert */
 /* eslint-disable no-useless-escape */
 import {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
@@ -380,6 +379,8 @@ const Login = () => {
   };
 
   const responseGoogle = async (response) => {
+    // eslint-disable-next-line no-console
+    console.log(response);
     if (response.tokenId) {
       const res = await Auth.loginBySNS({
         type: 'gg',
@@ -477,6 +478,7 @@ const Login = () => {
                       </div>
                     )}
                     onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                     isSignedIn={false}
                   />
@@ -568,6 +570,7 @@ const Login = () => {
                       </div>
                     )}
                     onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                     isSignedIn={false}
                   />
@@ -694,7 +697,9 @@ const Login = () => {
                     variant='contained'
                     type='submit'
                     className={classes.btnSubmit}
-                  >{'ログイン'}</Button>
+                  >
+                    {'ログイン'}
+                  </Button>
                 </div>
               </Grid>
               <Grid

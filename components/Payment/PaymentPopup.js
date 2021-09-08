@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import React, {useState} from 'react';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
-import {Button, Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
+import {Button, Typography, TextField, Grid, Dialog, IconButton, CircularProgress} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ import {useRecoilValue} from 'recoil';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
+const Payment = new PaymentService();
 import {checkCreditCardType} from '~/shared/module';
 import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
@@ -187,11 +188,13 @@ const DialogContent = withStyles((theme) => ({
 const PaymentPopup = ({open, onClose, onSubmit}) => {
   const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const user = useRecoilValue(userState);
 
   const handleSubmitClick = async (data) => {
+    setLoading(true);
     const body = {
       card_number: data.card_number.replace(/\s/g, ''),
       token_api_key: process.env.VERITRANS_TOKEN_API,
@@ -200,7 +203,6 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
       card_expire: data.card_expire.replace(/\s/g, ''),
     };
     const res = await registerPayment(body);
-
     if (res && res.status === httpStatus.SUCCESS) {
       const card = {
         token: res.data.token,
@@ -224,13 +226,15 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
   };
 
   const authorizeCard = async (card) => {
-    const response = await PaymentService.authorize(card);
+    const response = await Payment.authorize(card);
     if (typeof response === 'undefined') {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: 'カード登録が失敗しました。',
       });
     } else if (response.status === httpStatus.SUCCESS) {
+      setLoading(false);
       if (typeof onSubmit === 'function') {
         onSubmit({...card, id: nanoid(8)});
       }
@@ -239,6 +243,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         onClose();
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: 'カード登録が失敗しました。',
@@ -247,13 +252,15 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
   };
 
   const addCard = async (card) => {
-    const response = await PaymentService.createCard(card);
+    const response = await Payment.createCard(card);
     if (typeof response === 'undefined') {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: 'カード登録が失敗しました。',
       });
-    } else if (response.data?.card) {
+    } else if (response?.card) {
+      setLoading(false);
       if (typeof onSubmit === 'function') {
         onSubmit(card);
       }
@@ -262,6 +269,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         onClose();
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: 'カード登録が失敗しました。',
@@ -516,8 +524,14 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                     color='primary'
                     className={classes.submitButton}
                     onClick={handleSubmit(handleSubmitClick)}
+                    disabled={loading}
                   >
                     {'保存する'}
+                    {loading ? (
+                      <CircularProgress
+                        size={24}
+                      />
+                    ) : null}
                   </Button>
                 </Grid>
               </>
