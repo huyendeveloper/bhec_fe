@@ -1,9 +1,9 @@
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Image from 'next/image';
-import {useState, useEffect} from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import {useMediaQuery} from '@material-ui/core';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import Image from 'next/image';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,13 +62,13 @@ const useStyles = makeStyles((theme) => ({
 
 const ImageDropzone = ({index, image, setImages, removeImage}) => {
   const classes = useStyles();
-  const [haveError, setHaveError] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [haveError, setHaveError] = React.useState(false);
+  const [imagePreview, setImagePreview] = React.useState(null);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (image) {
       const reader = new FileReader();
 

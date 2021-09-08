@@ -1,18 +1,17 @@
-import React, {useEffect, useState} from 'react';
-
-import PropTypes from 'prop-types';
-import {Controller} from 'react-hook-form';
-import {FormControlLabel, makeStyles, Radio, RadioGroup, useMediaQuery, useTheme} from '@material-ui/core';
 import {ErrorMessage} from '@hookform/error-message';
-import {useRecoilState} from 'recoil';
-
+import {FormControlLabel, makeStyles, Radio, RadioGroup, useMediaQuery, useTheme} from '@material-ui/core';
 import produce from 'immer';
+import PropTypes from 'prop-types';
+import React, {useEffect} from 'react';
+import {Controller} from 'react-hook-form';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
-import {rules} from '~/lib/validator';
 import {BlockForm, Button, ConnectForm, DeliveryForm} from '~/components';
 import {DialogWidget} from '~/components/Widgets';
-import {userState} from '~/store/userState';
+import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -40,10 +39,13 @@ const FormShipping = ({isReadonly}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
-  const [openAddAddress, setOpenAddAddress] = useState(false);
+  const [openAddAddress, setOpenAddAddress] = React.useState(false);
   const [user, setUser] = useRecoilState(userState);
+  const [loaded, setLoaded] = React.useState(false);
+  const setLoading = useSetRecoilState(loadingState);
 
   const handleSubmitDeliveryForm = async (address) => {
+    setLoading(true);
     if (user?.isAuthenticated) {
       const response = await CommonService.addAddress(address);
       if (response?.success) {
@@ -58,6 +60,7 @@ const FormShipping = ({isReadonly}) => {
         draft.addresses.push(address);
       }));
     }
+    setLoading(false);
   };
 
   const handleCloseDelivery = () => {
@@ -77,6 +80,7 @@ const FormShipping = ({isReadonly}) => {
     if (user?.isAuthenticated) {
       fetchAddresses();
     }
+    setLoaded(true);
   }, []);
 
   return (
@@ -102,7 +106,7 @@ const FormShipping = ({isReadonly}) => {
                     className={classes.radioGroup}
                     style={{marginBottom: '2.563rem'}}
                   >
-                    {user.addresses?.map((item, index) => (
+                    {loaded && user.addresses?.map((item, index) => (
                       <FormControlLabel
                         key={`address-${item?.id}`}
                         value={`${item?.id}`}

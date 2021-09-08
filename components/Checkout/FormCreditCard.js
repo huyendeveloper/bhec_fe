@@ -12,6 +12,7 @@ import {rules} from '~/lib/validator';
 import {PaymentPopup} from '~/components/Payment';
 import {userState} from '~/store/userState';
 import {PaymentService} from '~/services';
+
 const Payment = new PaymentService();
 
 const useStyles = makeStyles(() => ({
@@ -40,6 +41,7 @@ const FormCreditCard = ({isReadonly}) => {
   const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
 
   const [user, setUser] = useRecoilState(userState);
+  const [loaded, setLoaded] = React.useState(false);
 
   const handleClosePaymentPopup = () => {
     setOpenPaymentPopup(false);
@@ -69,6 +71,7 @@ const FormCreditCard = ({isReadonly}) => {
     if (user?.isAuthenticated) {
       fetchCards();
     }
+    setLoaded(true);
   }, []);
 
   return (
@@ -94,7 +97,7 @@ const FormCreditCard = ({isReadonly}) => {
                     className={classes.radioGroup}
                     style={{marginBottom: '2.563rem'}}
                   >
-                    {user.cards?.map((item) => (
+                    {loaded && user.cards?.map((item) => (
                       <FormControlLabel
                         key={`card-${item?.id}`}
                         value={`${item?.id}`}

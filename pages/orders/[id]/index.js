@@ -1,6 +1,7 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {useRouter} from 'next/router';
+import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 
 import {Button, ContentBlock, OrderItem} from '~/components';
@@ -81,14 +82,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrdersDetail = () => {
+export async function getServerSideProps({params}) {
+  const {id} = params;
+  return {
+    props: {id},
+  };
+}
+
+const OrdersDetail = ({id}) => {
   const classes = useStyles();
   const router = useRouter();
   const [order, setOrder] = useState();
 
   const fetchOrder = async () => {
-    const orderId = router.query?.id;
-    const response = await OrderService.getOrderDetail(orderId);
+    const response = await OrderService.getOrderDetail(id);
     setOrder(response?.order);
   };
 
@@ -269,6 +276,10 @@ const OrdersDetail = () => {
       )}
     </DefaultLayout>
   );
+};
+
+OrdersDetail.propTypes = {
+  id: PropTypes.number.isRequired,
 };
 
 export default OrdersDetail;
