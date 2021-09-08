@@ -9,6 +9,7 @@ import React from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
 import produce from 'immer';
+import Swal from 'sweetalert2';
 
 import QuantityBox from './QuantityBox';
 
@@ -138,9 +139,25 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
   };
 
   const handleDelete = () => {
-    setCart(produce((draft) => {
-      draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
-    }));
+    Swal.fire({
+      title: 'カートから削除',
+      text: 'この商品をカートから削除してもよろしいですか。',
+      showCancelButton: true,
+      reverseButtons: true,
+      cancelButtonText: 'キャンセル',
+      confirmButtonText: 'ボタン',
+      backdrop: false,
+      customClass: {
+        container: 'swal2-warning',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCart(produce((draft) => {
+          // eslint-disable-next-line max-nested-callbacks
+          draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
+        }));
+      }
+    });
   };
 
   const handleChangeNote = (event) => {
