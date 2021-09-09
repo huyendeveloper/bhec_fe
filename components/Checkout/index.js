@@ -3,12 +3,11 @@ import router from 'next/router';
 
 import React, {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import {AlertMessageForSection, StyledForm} from '..';
 import Button from '../Button';
 
-// eslint-disable-next-line no-unused-vars
 import FormCreditCard from './FormCreditCard';
 import FormInvoice from './FormInvoice';
 import FormNote from './FormNote';
@@ -22,6 +21,7 @@ import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 import {cartState} from '~/store/cartState';
 import {OrderService} from '~/services';
+import {loadingState} from '~/store/loadingState';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -52,6 +52,8 @@ const Checkout = () => {
   const [cart, setCart] = useRecoilState(cartState);
   const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const setLoading = useSetRecoilState(loadingState);
 
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving checkout
@@ -86,6 +88,7 @@ const Checkout = () => {
   };
 
   const handleSendOrderClick = async () => {
+    setLoading(true);
     const products = [];
     cart.items?.forEach((item) => {
       const product = {
@@ -164,13 +167,20 @@ const Checkout = () => {
         message: '注文処理が失敗しました。',
       });
     }
+    setLoading(false);
   };
+
+  React.useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <FormProvider {...methods}>
       <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
         <>
-          {!user?.isAuthenticated && (
+          {!isAuthenticated && (
             <FormSignup isReadonly={isReadonly}/>
           )}
 

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import React, {useState} from 'react';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
-import {Button, Typography, TextField, Grid, Dialog, IconButton, CircularProgress} from '@material-ui/core';
+import {Button, Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {usePaymentInputs} from 'react-payment-inputs';
 import Image from 'next/image';
 import {nanoid} from 'nanoid';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
@@ -26,6 +26,7 @@ import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
 import {rules} from '~/lib/validator';
 import {userState} from '~/store/userState';
+import {loadingState} from '~/store/loadingState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -188,10 +189,10 @@ const DialogContent = withStyles((theme) => ({
 const PaymentPopup = ({open, onClose, onSubmit}) => {
   const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
-  const [loading, setLoading] = useState(false);
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const user = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
 
   const handleSubmitClick = async (data) => {
     setLoading(true);
@@ -524,14 +525,8 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                     color='primary'
                     className={classes.submitButton}
                     onClick={handleSubmit(handleSubmitClick)}
-                    disabled={loading}
                   >
                     {'保存する'}
-                    {loading ? (
-                      <CircularProgress
-                        size={24}
-                      />
-                    ) : null}
                   </Button>
                 </Grid>
               </>
