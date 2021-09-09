@@ -15,7 +15,7 @@ import {GoogleLogin} from 'react-google-login';
 
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
 import {AlertMessageForSection, StyledForm} from '~/components';
-
+import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 import {DefaultLayout} from '~/components/Layouts';
@@ -317,6 +317,7 @@ const Login = () => {
   const [open, setOpen] = useState(false);
   const [setPayload] = useState(null);
   const [setIdToken] = useState(null);
+  const setLoading = useSetRecoilState(loadingState);
   const {
     control,
     handleSubmit,
@@ -335,19 +336,21 @@ const Login = () => {
   };
 
   function forgotPass() {
+    setLoading(true);
     Router.push({
       pathname: '/auth/forgot',
     });
   }
 
   function goToRegisterEmail() {
+    setLoading(true);
     Router.push({
       pathname: '/auth/register-email',
     });
   }
 
   const onSubmit = async (data) => {
-    setAlerts(null);
+    setLoading(true);
     const res = await Auth.loginByEmail({user: {
       email: data.email.trim(),
       password: data.password.trim(),
@@ -364,21 +367,26 @@ const Login = () => {
             callbackUrl: `${window.location.origin}`,
           },
         );
+
+        setLoading(false);
       } else {
+        setLoading(false);
         Router.push({
           pathname: '/auth/account-confirm',
           query: {token: res.access_token},
         });
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
-        message: '無効なメールアドレス/パスワードの組み合わせです。',
+        message: '無効なユーザーです。管理者にお問い合わせください',
       });
     }
   };
 
   const responseGoogle = async (response) => {
+    setLoading(true);
     // eslint-disable-next-line no-console
     console.log(response);
     if (response.tokenId) {
@@ -397,7 +405,9 @@ const Login = () => {
             callbackUrl: `${window.location.origin}`,
           },
         );
+        setLoading(false);
       } else {
+        setLoading(false);
         setAlerts({
           type: 'error',
           message: '無効なユーザーです。管理者にお問い合わせください',

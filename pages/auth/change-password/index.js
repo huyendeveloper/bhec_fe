@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button, Snackbar} from '@material-ui/core';
+import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-
+import {useSetRecoilState} from 'recoil';
 import Router from 'next/router';
-import MuiAlert from '@material-ui/lab/Alert';
 
+import {DefaultLayout} from '~/components/Layouts';
 import {httpStatus} from '~/constants';
-
+import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {StyledForm, ContentBlock, Header, Footer} from '~/components';
+import {StyledForm, ContentBlock, AlertMessageForSection} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -137,31 +137,35 @@ function ChangePassword() {
     formState: {errors},
     getValues,
   } = useForm({criteriaMode: 'all'});
-  const [errMessage, setErrMessage] = useState();
-  const [openMess, setOpenMess] = useState(false);
-  const [typeMess, setTypeMess] = useState('success');
-
+  const setLoading = useSetRecoilState(loadingState);
+  const [alerts, setAlerts] = useState(null);
   const onSubmit = async (data) => {
+    setLoading(true);
+    setAlerts(null);
     const res = await Auth.changePassword(data);
     if (res.status === httpStatus.SUCCESS) {
-      Router.push({
-        pathname: '/mypage',
+      setLoading(false);
+      setAlerts({
+        type: 'success',
+        message: 'パスワードを正常に変更する',
       });
+      setTimeout(() => {
+        Router.push({
+          pathname: '/mypage',
+        });
+      }, 1000);
     } else {
-      setTypeMess('error');
-      setOpenMess(true);
-      setErrMessage(res);
+      setLoading(false);
+      setAlerts({
+        type: 'error',
+        message: res,
+      });
     }
   };
 
-  const handleCloseMess = () => {
-    setOpenMess(false);
-  };
-
   return (
-    <>
+    <DefaultLayout title='ChangePassword - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
         >
@@ -356,23 +360,12 @@ function ChangePassword() {
             </StyledForm>
           </ContentBlock>
         </div>
-        <Footer/>
       </div>
-      <Snackbar
-        open={openMess}
-        autoHideDuration={6000}
-        onClose={handleCloseMess}
-        elevation={6}
-        variant='filled'
-      >
-        <MuiAlert
-          onClose={handleCloseMess}
-          severity={typeMess}
-        >
-          {errMessage}
-        </MuiAlert>
-      </Snackbar>
-    </>
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
+    </DefaultLayout>
   );
 }
 

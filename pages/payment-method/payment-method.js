@@ -2,12 +2,15 @@ import {Container, Grid, Typography, Icon, Snackbar} from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
+import {useSetRecoilState} from 'recoil';
 
-import {Header, Footer, ContentBlock} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
+import {ContentBlock} from '~/components';
 import {PaymentService} from '~/services';
 const Payment = new PaymentService();
 import {PaymentWidget} from '~/components/Widgets';
 import {DeletePaymentPopup, PaymentPopup} from '~/components/Payment';
+import {loadingState} from '~/store/loadingState';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -130,16 +133,20 @@ function PaymentMethod() {
   const [message, setMessage] = useState();
   const [openMess, setOpenMess] = useState(false);
   const [typeMess, setTypeMess] = useState('success');
+  const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
     getListCard();
   }, []);
 
   const getListCard = async () => {
+    setLoading(true);
     const res = await Payment.getCards();
     if (res && res.cards && res.cards.length) {
+      setLoading(false);
       setListPayment(res.cards);
     } else {
+      setLoading(false);
       setListPayment([]);
     }
   };
@@ -191,9 +198,8 @@ function PaymentMethod() {
   };
 
   return (
-    <>
+    <DefaultLayout title='Payment Method - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
           style={{marginBottom: '3rem'}}
@@ -254,7 +260,6 @@ function PaymentMethod() {
             </Container>
           </ContentBlock>
         </div>
-        <Footer/>
         {openUpdatePopup &&
         <PaymentPopup
           open={openUpdatePopup}
@@ -288,7 +293,7 @@ function PaymentMethod() {
           {message}
         </MuiAlert>
       </Snackbar>
-    </>
+    </DefaultLayout>
   );
 }
 

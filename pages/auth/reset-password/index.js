@@ -6,13 +6,15 @@ import TextField from '@material-ui/core/TextField';
 import Router, {useRouter} from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
+import {loadingState} from '~/store/loadingState';
 import {httpStatus} from '~/constants';
-
+import {DefaultLayout} from '~/components/Layouts';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {AlertMessageForSection, StyledForm, ContentBlock, Header, Footer} from '~/components';
+import {AlertMessageForSection, StyledForm, ContentBlock} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -146,6 +148,7 @@ function RequestPassword() {
   const classes = useStyles();
   const router = useRouter();
   const [alerts, setAlerts] = useState(null);
+  const setLoading = useSetRecoilState(loadingState);
   const {
     control,
     handleSubmit,
@@ -154,6 +157,7 @@ function RequestPassword() {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
+    setLoading(true);
     setAlerts(null);
     const body = {
       ...data,
@@ -161,6 +165,7 @@ function RequestPassword() {
     };
     const res = await Auth.resetPassword(body);
     if (res.status === httpStatus.SUCCESS) {
+      setLoading(false);
       setAlerts({
         type: 'success',
         message: 'パスワード再設定成功',
@@ -169,8 +174,9 @@ function RequestPassword() {
         Router.push({
           pathname: '/auth/login',
         });
-      }, 2000);
+      }, 1000);
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: res,
@@ -179,9 +185,8 @@ function RequestPassword() {
   };
 
   return (
-    <>
+    <DefaultLayout title='ResetPassword - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
         >
@@ -339,9 +344,8 @@ function RequestPassword() {
             </StyledForm>
           </ContentBlock>
         </div>
-        <Footer/>
       </div>
-    </>
+    </DefaultLayout>
   );
 }
 

@@ -14,7 +14,7 @@ import {useSetRecoilState} from 'recoil';
 
 import {httpStatus} from '~/constants';
 import {userState} from '~/store/userState';
-
+import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 const maxAge = 120;
@@ -60,6 +60,7 @@ const LineLogin = ({
 }) => {
   const classes = useStyles();
   const setUser = useSetRecoilState(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const lineLogin = () => {
     const query = querystring.stringify({
       response_type: 'code',
@@ -84,6 +85,7 @@ const LineLogin = ({
     const query = urlParts.query;
     const hasCodeProperty = Object.prototype.hasOwnProperty.call(query, 'code');
     if (hasCodeProperty) {
+      setLoading(true);
       const reqBody = {
         grant_type: 'authorization_code',
         code: query.code,
@@ -119,6 +121,7 @@ const LineLogin = ({
                 callbackUrl: `${window.location.origin}`,
               },
             );
+            setLoading(false);
           }
         }
         if (setPayload) {
@@ -126,6 +129,7 @@ const LineLogin = ({
         }
 
         try {
+          setLoading(false);
           const decodedIdToken = jwt.verify(res.data.id_token, clientSecret, {
             algorithms: ['HS256'],
             audience: clientID.toString(),
@@ -137,9 +141,10 @@ const LineLogin = ({
             setIdToken(decodedIdToken);
           }
         } catch (err) {
-          // If token is invalid.
+          setLoading(false);
         }
       }).catch(() => {
+        setLoading(false);
         return false;
       });
     }
@@ -147,7 +152,7 @@ const LineLogin = ({
 
   useEffect(() => {
     getAccessToken(window.location.href);
-  });
+  }, []);
 
   return (
     <div>

@@ -171,7 +171,6 @@ const Search = ({query = {}}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-
   useEffect(() => {
     getInitData();
   }, []);
