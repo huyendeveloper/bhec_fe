@@ -24,9 +24,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     paddingTop: '2rem',
     paddingBottom: '1rem',
-    [theme.breakpoints.up('md')]: {
-      paddingTop: '4rem',
-    },
   },
   news: {
     [theme.breakpoints.up('lg')]: {
