@@ -139,6 +139,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderRadius: '4px',
     padding: '10px',
+    color: theme.palette.black3.main,
     cursor: 'pointer',
   },
 
@@ -426,9 +427,7 @@ const Search = ({query = {}}) => {
             <div className={classes.searchBox}>
               <Grid
                 container={true}
-                spacing={3}
                 maxWidth={'lg'}
-                style={{padding: '1rem'}}
               >
                 {tags && tags.length ? tags.map((tag) => {
                   return (
@@ -436,9 +435,10 @@ const Search = ({query = {}}) => {
                       <Grid
                         item={true}
                         xs={6}
+                        sm={3}
                         md={2}
                         key={tag.name}
-                        style={{marginBottom: '1rem'}}
+                        style={{marginBottom: '1rem', padding: '10px'}}
                       >
                         <span
                           className={clsx(classes.tagLabel, isActiveTag(tag.id) ? classes.active : '')}
