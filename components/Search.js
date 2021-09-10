@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'normal',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
+    color: theme.palette.black3.main,
     cursor: 'pointer',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.8125rem',
