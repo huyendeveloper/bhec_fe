@@ -90,12 +90,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50px',
     width: '100%',
-    padding: '1.5rem',
+    padding: '1.5rem 3rem',
     background: 'white',
   },
 
   childCategory: {
-    margin: '1rem',
+    margin: '0.5rem 0 0 1rem',
   },
 
   parentCategoryLabel: {
@@ -105,6 +105,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.3125rem',
+    },
   },
   childCategoryLabel: {
     fontFamily: theme.font.default,
@@ -113,12 +117,16 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8125rem',
+      lineHeight: '1.1875rem',
+    },
   },
   active: {
     fontFamily: theme.font.default,
     background: theme.expanded.borderColor,
     borderRadius: '4px',
-    padding: '10px 15px',
+    padding: '8px 15px',
     fontWeight: 'bold',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
@@ -362,9 +370,7 @@ const Search = ({query = {}}) => {
             <div className={classes.searchBox}>
               <Grid
                 container={true}
-                spacing={3}
                 maxWidth={'lg'}
-                style={{padding: '1rem'}}
               >
                 {listCategory && listCategory.length > 0 ? listCategory.map((category) => {
                   return (
@@ -372,7 +378,8 @@ const Search = ({query = {}}) => {
                       <Grid
                         item={true}
                         xs={6}
-                        md={3}
+                        sm={3}
+                        md={2}
                         key={`${category.name}-${category.id}`}
                       >
                         <span
@@ -383,7 +390,6 @@ const Search = ({query = {}}) => {
                         </span>
                         <Grid
                           container={true}
-                          spacing={3}
                           className={classes.childCategory}
                         >
                           {category.child_categories && category.child_categories.length > 0 ? category.child_categories.map((c) => {
@@ -393,6 +399,7 @@ const Search = ({query = {}}) => {
                                   item={true}
                                   xs={12}
                                   key={`${c.name}-${c.id}`}
+                                  style={{marginBottom: '1rem'}}
                                 >
                                   <span
                                     className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
