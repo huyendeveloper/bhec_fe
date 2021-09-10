@@ -25,6 +25,11 @@ const DefaultLayout = ({title, metaDescription, children}) => {
   const classes = useStyles();
   const [loading, setLoading] = useRecoilState(loadingState);
   const [, loadingPage] = useSession();
+  const [toggleNav, setToggleNav] = useSession(false);
+
+  const changeToggleNav = () => {
+    setToggleNav(!toggleNav);
+  };
 
   React.useEffect(() => {
     setLoading(loadingPage);
@@ -32,22 +37,29 @@ const DefaultLayout = ({title, metaDescription, children}) => {
 
   return (
     <div className={classes.root}>
-      <Head>
-        <title>{title}</title>
-        <meta
-          name='description'
-          content={metaDescription}
+      <div className={classes.content}>
+        <Head>
+          <title>{title}</title>
+          <meta
+            name='description'
+            content={metaDescription}
+          />
+        </Head>
+
+        <Header
+          showMainMenu={false}
+          changeToggleNav={changeToggleNav}
         />
-      </Head>
 
-      <Header showMainMenu={false}/>
+        <div className='content'>
+          {children}
+        </div>
 
-      <div className='content'>
-        {children}
+        <Footer/>
       </div>
-
-      <Footer/>
-
+      {toggleNav && <div className={classes.nav}>
+        {'33'}
+      </div>}
       <Backdrop
         className={classes.backdrop}
         open={loading}

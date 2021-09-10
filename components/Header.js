@@ -217,6 +217,7 @@ const Header = (props) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
   const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
+  const {changeToggleNav} = props;
 
   const displaySameRow = isMobile ? false : (!isTablet);
 
@@ -236,7 +237,10 @@ const Header = (props) => {
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
               {!displaySameRow && (
-                <div className={classes.icNav}>
+                <div
+                  className={classes.icNav}
+                  onClick={changeToggleNav}
+                >
                   <Image
                     src='/menu.png'
                     alt='おしながき'
@@ -411,6 +415,7 @@ const Header = (props) => {
 
 Header.propTypes = {
   showMainMenu: PropTypes.bool.isRequired,
+  changeToggleNav: PropTypes.func,
 };
 
 Header.defaultProps = {

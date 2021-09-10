@@ -5,15 +5,15 @@ import {useSession} from 'next-auth/client';
 import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {Button, CartItem, CategoryBlock, ContentBlock, Footer, Header, ProductSwiper} from '~/components';
-import {CartService} from '~/services';
+import {CartService, ProductService} from '~/services';
 import {cartState} from '~/store/cartState';
 
+const Product = new ProductService();
 const CartServiceInstance = new CartService();
-
 const useStyles = makeStyles((theme) => ({
   bgBanner: {
     backgroundImage: 'url(/img/noise.png)',
@@ -58,14 +58,13 @@ const useStyles = makeStyles((theme) => ({
 
 // eslint-disable-next-line no-warning-comments
 // TODO: get products in same category with cart item
-const recommendProducts = [];
-
 export default function Cart() {
   const classes = useStyles();
   const [session] = useSession();
   const router = useRouter();
 
   const [cart, setCart] = useRecoilState(cartState);
+  const [recommendProducts, setRecommendProducts] = useState([]);
 
   const updateRemoteCart = async (items) => {
     const payload = [];
@@ -79,6 +78,20 @@ export default function Cart() {
     await CartServiceInstance.addCart({products: payload});
     // eslint-disable-next-line no-warning-comments
     // TODO: should display success/failed result as
+  };
+
+  const getListRecommendProducts = async () => {
+    const query = {
+      page: 1,
+      per_page: 3,
+    };
+    if (cart.items.length) {
+      query.category = cart.items[0].productDetail?.categories?.map((item) => item.name).join(',');
+    }
+    const result = await Product.getProducts(query);
+    if (result && result.products && result.products.length) {
+      setRecommendProducts(result.products);
+    }
   };
 
   const handleRemove = (id) => {
@@ -111,6 +124,7 @@ export default function Cart() {
     if (session?.accessToken) {
       updateRemoteCart(cart.items);
     }
+    getListRecommendProducts();
   }, [cart, session]);
 
   /* eslint-disable max-lines */
