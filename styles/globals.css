@@ -1,7 +1,7 @@
 .swal2-popup {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2) !important;
-  border-radius: 0.25rem !important;
   padding-bottom: 2.5rem !important;
+  border-radius: 0.25rem !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2) !important;
 }
 
 .swal2-title {
@@ -29,15 +29,15 @@
 }
 
 .swal2-actions > button {
-  margin: 0 0.75rem;
   width: 10.625rem;
   height: 3rem;
-  border-radius: 2.813rem !important;
+  margin: 0 0.75rem;
   font-weight: 700;
+  border-radius: 2.813rem !important;
 }
 
 .swal2-actions > .swal2-cancel {
-  border: 1px solid #333333 !important;
   color: #333333 !important;
-  background-color: #fff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #333333 !important;
 }

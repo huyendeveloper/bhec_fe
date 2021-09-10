@@ -36,6 +36,23 @@ const useStyles = makeStyles((theme) => ({
   advertisements: {
     backgroundImage: 'url("/img/noise.png")',
     padding: '3rem 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: '2.2625rem 1.625rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '2.5rem 0',
+    },
+  },
+  lastBlock: {
+    marginBottom: '4rem',
+  },
+  blockAds: {
+    [theme.breakpoints.down('sm')]: {
+      padding: '0 3.25rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: 'initial',
+    },
   },
 }));
 
@@ -199,6 +216,7 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
           bgImage='/img/noise.png'
           bgRepeat='repeat'
           mixBlendMode='multiply'
+          padding='2rem 0 4rem 0'
         >
           <ProductSwiper items={lifestyle}/>
         </CategoryBlock>) : null
@@ -206,7 +224,10 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
 
       {/* Ads */}
       <div className={classes.advertisements}>
-        <Container maxWidth='lg'>
+        <Container
+          maxWidth='lg'
+          className={classes.blockAds}
+        >
           <Grid
             container={true}
             spacing={3}
@@ -256,7 +277,11 @@ export const getServerSideProps = async () => {
   const lifestyle = lstProduct3?.products?.length ? lstProduct3.products : [];
 
   // articles
-  const articles = await ArticleService.getArticles({limit: '6'});
+  let articles = [];
+  const result = await ArticleService.getArticles({limit: 3});
+  if (result && result.data) {
+    articles = result.data;
+  }
 
   return {
     props: {

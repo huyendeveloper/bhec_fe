@@ -14,7 +14,7 @@ const AdsWidget = ({imgSrc, imgAlt, imgWidth, imgHeight}) => {
           <Image
             src={imgSrc}
             alt={imgAlt}
-            layout={'responsive'}
+            layout={'intrinsic'}
             width={imgWidth}
             height={imgHeight}
           />

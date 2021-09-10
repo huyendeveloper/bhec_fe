@@ -15,7 +15,7 @@ const parserError = (errors) => {
 };
 
 async function getArticles(payload) {
-  const DEFAULT_PER_PAGE = 12;
+  const DEFAULT_PER_PAGE = 3;
   const cleanPayload = clean(payload);
   const activeParam = {
     per_page: DEFAULT_PER_PAGE,
@@ -32,7 +32,6 @@ async function getArticles(payload) {
   if (payload?.page) {
     activeParam.page = parseInt(payload.page, 10);
   }
-
   // eslint-disable-next-line no-warning-comments
   // TODO: GET /articles returns response in different format
   // eslint-disable-next-line no-unused-vars

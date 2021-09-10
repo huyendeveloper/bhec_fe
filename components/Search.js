@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
     },
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
+    fontWeight: 700,
     width: '6.063rem',
     height: '3rem',
     [theme.breakpoints.down('xs')]: {
