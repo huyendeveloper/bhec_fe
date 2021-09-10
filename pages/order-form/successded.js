@@ -6,11 +6,15 @@ import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {useRecoilValue} from 'recoil';
+import {useEffect, useState} from 'react';
 
 import {Button, ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import {userState} from '~/store/userState';
+import {ProductService} from '~/services';
+
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   orderSuccess: {
@@ -49,12 +53,27 @@ const useStyles = makeStyles((theme) => ({
 
 // eslint-disable-next-line no-warning-comments
 // TODO: get recommended products via API
-const recommendProducts = [];
 
 export default function OrderForm() {
   const classes = useStyles();
   const user = useRecoilValue(userState);
   const router = useRouter();
+  const [recommendProducts, setRecommendProducts] = useState([]);
+
+  const getListRecommendProducts = async () => {
+    const query = {
+      page: 1,
+      per_page: 3,
+    };
+    const result = await Product.getProducts(query);
+    if (result && result.products && result.products.length) {
+      setRecommendProducts(result.products);
+    }
+  };
+
+  useEffect(() => {
+    getListRecommendProducts();
+  }, []);
 
   return (
     <DefaultLayout title='ご注文完了'>
