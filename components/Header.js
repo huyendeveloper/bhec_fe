@@ -65,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolBarPlaceholder: {
-    [theme.breakpoints.up('xs')]: {
-      minHeight: 48,
-      height: 48,
+    height: 80,
+    [theme.breakpoints.down('sm')]: {
+      height: 130,
     },
-    [theme.breakpoints.up('md')]: {
-      height: 80,
+    [theme.breakpoints.down('xs')]: {
+      height: 96,
     },
   },
   toolBarPersonal: {
@@ -405,9 +405,6 @@ const Header = (props) => {
       </HideOnScroll>
       <Toolbar
         className={classes.toolBarPlaceholder}
-        style={{
-          height: displaySameRow ? '80px' : '112px',
-        }}
       />
     </>
   );
