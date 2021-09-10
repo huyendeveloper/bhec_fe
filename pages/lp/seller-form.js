@@ -1192,7 +1192,7 @@ export default function SellerForm() {
                           htmlFor='time_sell'
                           className='formControlLabel'
                         >
-                          {'出品予定時期 '}
+                          {'出品予定の時期 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
