@@ -2,9 +2,12 @@ import {Grid, Typography, Button, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Router from 'next/router';
 import {useEffect, useState} from 'react';
+import {useSetRecoilState} from 'recoil';
 
-import {ContentBlock, Header, Footer} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
+import {ContentBlock} from '~/components';
 import {AuthService, CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
 const Auth = new AuthService();
 const useStyles = makeStyles((theme) => ({
   block: {
@@ -48,6 +51,7 @@ export default function BasicInformation() {
   const classes = useStyles();
   const [user, setUser] = useState({});
   const [listCity, setListCity] = useState([]);
+  const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
     getListCity();
@@ -55,9 +59,13 @@ export default function BasicInformation() {
   }, []);
 
   const getDetailUser = async () => {
+    setLoading(true);
     const res = await Auth.getInfoUser();
     if (res.user) {
+      setLoading(false);
       setUser(res.user);
+    } else {
+      setLoading(false);
     }
   };
 
@@ -80,15 +88,14 @@ export default function BasicInformation() {
   };
 
   function updateInfo() {
+    setLoading(true);
     Router.push({
       pathname: '/basic-information/update',
     });
   }
 
   return (
-    <>
-      <Header showMainMenu={false}/>
-
+    <DefaultLayout title='Info - Oshinagaki Store'>
       <div className='content'>
         <ContentBlock
           title={'基本情報'}
@@ -182,7 +189,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { user.name_kana ? <span>{user.name_kana}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
+                { user && user.name_kana ? <span>{user.name_kana}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
               </Grid>
             </div>
 
@@ -252,7 +259,7 @@ export default function BasicInformation() {
                 { user.zipcode || user.city || user.district ? <>
                   <span>{user.zipcode}</span>
                   <br/>
-                  {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)).name}</span> : ''}
+                  {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
                   <br/>
                   <span>{user.district}</span>
                   <br/>
@@ -277,7 +284,6 @@ export default function BasicInformation() {
         </ContentBlock>
       </div>
 
-      <Footer/>
-    </>
+    </DefaultLayout>
   );
 }

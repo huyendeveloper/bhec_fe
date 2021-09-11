@@ -99,7 +99,10 @@ export default function MyPage() {
       setUser({});
       setCart({items: [], seller: null});
       setOrder();
-      signOut({redirect: true, callbackUrl: '/'});
+      signOut({redirect: false});
+      Router.push({
+        pathname: 'auth/login',
+      });
     } else {
       Router.push({
         pathname: item.url,
@@ -115,7 +118,10 @@ export default function MyPage() {
       setUser({});
       setCart({items: [], seller: null});
       setOrder();
-      signOut({redirect: true, callbackUrl: '/auth/login'});
+      signOut({redirect: false});
+      Router.push({
+        pathname: 'auth/login',
+      });
       return;
     }
 

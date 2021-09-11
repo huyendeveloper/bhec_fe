@@ -5,13 +5,15 @@ import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
+import {DefaultLayout} from '~/components/Layouts';
 import {httpStatus} from '~/constants';
-
+import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {AlertMessageForSection, Header, Footer, ContentBlock, StyledForm, CompleteConfirmation} from '~/components';
+import {AlertMessageForSection, ContentBlock, StyledForm, CompleteConfirmation} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -191,6 +193,7 @@ const ForgotPassword = () => {
   const [alerts, setAlerts] = useState(null);
   const [isSuccess, setSuccess] = useState(false);
   const classes = useStyles();
+  const setLoading = useSetRecoilState(loadingState);
   const {
     control,
     handleSubmit,
@@ -198,21 +201,23 @@ const ForgotPassword = () => {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const res = await Auth.forgotPassword(data);
     if (res.status === httpStatus.SUCCESS) {
+      setLoading(false);
       setSuccess(true);
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
-        message: res,
+        message: 'アカウントが存在しません',
       });
     }
   };
 
   return (
-    <>
+    <DefaultLayout title='ForgotPassword - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
         >
@@ -317,9 +322,8 @@ const ForgotPassword = () => {
               </StyledForm>
             </ContentBlock>)}
         </div>
-        <Footer/>
       </div>
-    </>
+    </DefaultLayout>
   );
 };
 
