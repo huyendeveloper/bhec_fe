@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     color: theme.palette.text.primary,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    position: 'absolute',
   },
   toolBar: {
     backgroundColor: '#fff',
@@ -220,6 +221,8 @@ const Header = (props) => {
 
   const displaySameRow = isMobile ? false : (!isTablet);
 
+  const {setOpenNav, openNav} = props;
+
   const classes = useStyles();
 
   useEffect(() => {
@@ -232,19 +235,30 @@ const Header = (props) => {
     <>
       <div id='back-to-top-anchor'/>
       <HideOnScroll {...props}>
-        <AppBar className={classes.appBar}>
+        <AppBar
+          className={classes.appBar}
+        >
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
               {!displaySameRow && (
                 <div
                   className={classes.icNav}
+                  onClick={() => setOpenNav(!openNav)}
                 >
-                  <Image
-                    src='/menu.png'
-                    alt='おしながき'
-                    width={24}
-                    height={24}
-                  />
+                  {openNav ?
+                    <Image
+                      src='/ic-toggle-nav.png'
+                      alt='メニュー'
+                      width={20}
+                      height={20}
+                    /> :
+                    <Image
+                      src='/menu.png'
+                      alt='メニュー'
+                      width={24}
+                      height={24}
+                    />
+                  }
                 </div>
               )}
               <Link
@@ -410,6 +424,8 @@ const Header = (props) => {
 
 Header.propTypes = {
   showMainMenu: PropTypes.bool.isRequired,
+  setOpenNav: PropTypes.func,
+  openNav: PropTypes.bool,
 };
 
 Header.defaultProps = {

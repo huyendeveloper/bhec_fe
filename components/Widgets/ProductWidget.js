@@ -12,7 +12,7 @@ import {Avatar, Chip, Link} from '@material-ui/core';
 import Image from 'next/image';
 import clsx from 'clsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     height: '100%',
     display: 'flex',
@@ -43,12 +43,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 50,
     backgroundSize: 'cover',
     width: '100%',
-    [theme.breakpoints.down('sm')]: {
-      width: 'auto',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: 'auto',
-    },
   },
   productName: {
     fontWeight: 'bold',
