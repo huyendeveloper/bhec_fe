@@ -2,8 +2,8 @@ import {Container, Grid} from '@material-ui/core';
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {ContentBlock, Header, Footer} from '~/components';
-
+import {ContentBlock} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
 const useStyles = makeStyles((theme) => ({
   content: {
     fontStyle: 'normal',
@@ -21,9 +21,8 @@ const Policy = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <DefaultLayout title='Policy - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
           style={{marginBottom: '3rem'}}
@@ -120,9 +119,8 @@ const Policy = () => {
             </Container>
           </ContentBlock>
         </div>
-        <Footer/>
       </div>
-    </>
+    </DefaultLayout>
   );
 };
 

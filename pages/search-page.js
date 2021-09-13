@@ -7,8 +7,9 @@ import {useState, useEffect} from 'react';
 
 import {clean} from '~/lib/object';
 
-import {Header, Footer, ContentBlock, Search} from '~/components';
+import {ContentBlock, Search} from '~/components';
 import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
+import {DefaultLayout} from '~/components/Layouts';
 
 import {ProductService} from '~/services';
 const Product = new ProductService();
@@ -143,111 +144,110 @@ const SearchPage = ({query, searchResult}) => {
   };
 
   return (
-    <div className={classes.root}>
-      <Header showMainMenu={false}/>
-
-      <div className='content'>
-        <Container>
-          <Grid
-            container={true}
-            spacing={3}
-            justifyContent='center'
-            maxWidth={'lg'}
-          >
-            <Grid
-              item={true}
-              xs={12}
-            >
-              <MuiBreadcrumbs
-                className={classes.breadcrumbs}
-                separator={'＞'}
-              >
-                {linkProps.map((item) => (
-                  item.linkUrl ? (
-                    <Link
-                      key={`link-${item.id}`}
-                      className={classes.link}
-                      href={item.linkUrl}
-                      color='textPrimary'
-                    >
-                      {item.linkLabel}
-                    </Link>
-                  ) : (
-                    <Typography
-                      key={`textLink-${item.id}`}
-                      className={classes.link}
-                    >
-                      {item.linkLabel}
-                    </Typography>
-                  )
-                ))}
-              </MuiBreadcrumbs>
-            </Grid>
-            <Grid
-              item={true}
-              xs={12}
-            >
-              <Search query={{category, tag, keyword}}/>
-            </Grid>
-          </Grid>
-        </Container>
-        <ContentBlock
-          title={message}
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          <Box
-            m={'0 auto'}
-          >
+    <DefaultLayout title='Search Result - Oshinagaki Store'>
+      <div className={classes.root}>
+        <div className='content'>
+          <Container>
             <Grid
               container={true}
               spacing={3}
-              className={classes.favoriteProducts}
+              justifyContent='center'
+              maxWidth={'lg'}
             >
-              {products.length > 0 && products.map((product) => (
-                <Grid
-                  key={`product${product.id}`}
-                  item={true}
-                  md={4}
+              <Grid
+                item={true}
+                xs={12}
+              >
+                <MuiBreadcrumbs
+                  className={classes.breadcrumbs}
+                  separator={'＞'}
                 >
-                  <ProductWidget
-                    data={product}
-                    border={'borderNone'}
-                  />
-                </Grid>
-              ))}
+                  {linkProps.map((item) => (
+                    item.linkUrl ? (
+                      <Link
+                        key={`link-${item.id}`}
+                        className={classes.link}
+                        href={item.linkUrl}
+                        color='textPrimary'
+                      >
+                        {item.linkLabel}
+                      </Link>
+                    ) : (
+                      <Typography
+                        key={`textLink-${item.id}`}
+                        className={classes.link}
+                      >
+                        {item.linkLabel}
+                      </Typography>
+                    )
+                  ))}
+                </MuiBreadcrumbs>
+              </Grid>
+              <Grid
+                item={true}
+                xs={12}
+              >
+                <Search query={{category, tag, keyword}}/>
+              </Grid>
             </Grid>
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-              style={{marginBottom: '2rem'}}
+          </Container>
+          <ContentBlock
+            title={message}
+            bgImage='/img/noise.png'
+            bgRepeat='repeat'
+            mixBlendMode='multiply'
+          >
+            <Box
+              m={'0 auto'}
             >
-              { products.length && pagination?.number_of_page > 0 &&
-                <Pagination
-                  count={pagination.number_of_page}
-                  variant={'outlined'}
-                  color={'primary'}
-                  size={'large'}
-                  defaultPage={1}
-                  onChange={changePage}
-                  className={classes.pagination}
+              <Grid
+                container={true}
+                spacing={3}
+                className={classes.favoriteProducts}
+              >
+                {products.length > 0 && products.map((product) => (
+                  <Grid
+                    key={`product${product.id}`}
+                    item={true}
+                    md={4}
+                  >
+                    <ProductWidget
+                      data={product}
+                      border={'borderNone'}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              <Grid
+                item={true}
+                xs={12}
+                md={12}
+                style={{marginBottom: '2rem'}}
+              >
+                { products.length && pagination?.number_of_page > 0 &&
+                  <Pagination
+                    count={pagination.number_of_page}
+                    variant={'outlined'}
+                    color={'primary'}
+                    size={'large'}
+                    defaultPage={1}
+                    onChange={changePage}
+                    className={classes.pagination}
+                  />
+                }
+                <TopBannerWidget
+                  variant='titleBanner'
+                  imgSrc='/img/banner-favorite1.png'
+                  imgWidth={1140}
+                  imgHeight={192}
+                  imgAlt='Seller Form'
                 />
-              }
-              <TopBannerWidget
-                variant='titleBanner'
-                imgSrc='/img/banner-favorite1.png'
-                imgWidth={1140}
-                imgHeight={192}
-                imgAlt='Seller Form'
-              />
-            </Grid>
-          </Box>
-        </ContentBlock>
+              </Grid>
+            </Box>
+          </ContentBlock>
+        </div>
       </div>
-      <Footer/>
-    </div>
+    </DefaultLayout>
   );
 };
 

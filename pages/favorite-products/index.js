@@ -2,9 +2,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box, Select, MenuItem, FormControl, InputLabel} from '@material-ui/core';
 import {useState} from 'react';
 
-import {Header, Footer, ContentBlock} from '~/components';
+import {ContentBlock} from '~/components';
 import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
-
+import {DefaultLayout} from '~/components/Layouts';
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
     marginTop: '2rem',
@@ -118,98 +118,97 @@ export default function FavoriteProducts() {
   };
 
   return (
-    <div className={'page'}>
-      <Header showMainMenu={false}/>
-
-      <div className='content'>
-        <ContentBlock
-          title='お気に入り商品'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          <Box
-            m={'0 auto'}
+    <DefaultLayout title='Favorite Product - Oshinagaki Store'>
+      <div className={'page'}>
+        <div className='content'>
+          <ContentBlock
+            title='お気に入り商品'
+            bgImage='/img/noise.png'
+            bgRepeat='repeat'
+            mixBlendMode='multiply'
           >
-            <Grid
-              container={true}
-              spacing={3}
-              className={classes.favouriteProducts}
+            <Box
+              m={'0 auto'}
             >
+              <Grid
+                container={true}
+                spacing={3}
+                className={classes.favouriteProducts}
+              >
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                  className={classes.gridFilter}
+                >
+                  <FormControl
+                    variant='outlined'
+                    className={classes.formControl}
+                  >
+                    <InputLabel>{'フィルター'}</InputLabel>
+                    <Select
+                      value={age}
+                      onChange={handleChange}
+                      label='フィルター'
+                    >
+                      <MenuItem value=''>
+                        <em>{'None'}</em>
+                      </MenuItem>
+                      <MenuItem value={1}>{'ガラス工芸'}</MenuItem>
+                      <MenuItem value={2}>{'農産物'}</MenuItem>
+                      <MenuItem value={3}>{'水産物'}</MenuItem>
+                      <MenuItem value={4}>{'畜産物'}</MenuItem>
+                      <MenuItem value={5}>{'キッチン'}</MenuItem>
+                      <MenuItem value={6}>{'文具・玩具'}</MenuItem>
+                      <MenuItem value={7}>{'ファッション'}</MenuItem>
+                      <MenuItem value={8}>{'ヘルス・ビューティー'}</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                {favoriteProducts.map((product) => (
+                  <Grid
+                    key={product.productId}
+                    item={true}
+                    md={4}
+                  >
+                    <ProductWidget
+                      data={product}
+                      border={'borderNone'}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
               <Grid
                 item={true}
                 xs={12}
                 md={12}
-                className={classes.gridFilter}
+                style={{marginBottom: '2rem'}}
               >
-                <FormControl
-                  variant='outlined'
-                  className={classes.formControl}
-                >
-                  <InputLabel>{'フィルター'}</InputLabel>
-                  <Select
-                    value={age}
-                    onChange={handleChange}
-                    label='フィルター'
-                  >
-                    <MenuItem value=''>
-                      <em>{'None'}</em>
-                    </MenuItem>
-                    <MenuItem value={1}>{'ガラス工芸'}</MenuItem>
-                    <MenuItem value={2}>{'農産物'}</MenuItem>
-                    <MenuItem value={3}>{'水産物'}</MenuItem>
-                    <MenuItem value={4}>{'畜産物'}</MenuItem>
-                    <MenuItem value={5}>{'キッチン'}</MenuItem>
-                    <MenuItem value={6}>{'文具・玩具'}</MenuItem>
-                    <MenuItem value={7}>{'ファッション'}</MenuItem>
-                    <MenuItem value={8}>{'ヘルス・ビューティー'}</MenuItem>
-                  </Select>
-                </FormControl>
+                <TopBannerWidget
+                  variant='titleBanner'
+                  imgSrc='/img/banner-favorite1.png'
+                  imgWidth={1140}
+                  imgHeight={192}
+                  imgAlt='Seller Form'
+                />
               </Grid>
-              {favoriteProducts.map((product) => (
-                <Grid
-                  key={product.productId}
-                  item={true}
-                  md={4}
-                >
-                  <ProductWidget
-                    data={product}
-                    border={'borderNone'}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-              style={{marginBottom: '2rem'}}
-            >
-              <TopBannerWidget
-                variant='titleBanner'
-                imgSrc='/img/banner-favorite1.png'
-                imgWidth={1140}
-                imgHeight={192}
-                imgAlt='Seller Form'
-              />
-            </Grid>
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-            >
-              <TopBannerWidget
-                variant='titleBanner'
-                imgSrc='/img/banner-favorite2.png'
-                imgWidth={1140}
-                imgHeight={192}
-                imgAlt='Seller Form'
-              />
-            </Grid>
-          </Box>
-        </ContentBlock>
+              <Grid
+                item={true}
+                xs={12}
+                md={12}
+              >
+                <TopBannerWidget
+                  variant='titleBanner'
+                  imgSrc='/img/banner-favorite2.png'
+                  imgWidth={1140}
+                  imgHeight={192}
+                  imgAlt='Seller Form'
+                />
+              </Grid>
+            </Box>
+          </ContentBlock>
+        </div>
       </div>
-      <Footer/>
-    </div>
+    </DefaultLayout>
   );
 }

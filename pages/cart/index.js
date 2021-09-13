@@ -2,13 +2,13 @@ import {Box, Container, Grid, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import produce from 'immer';
 import {useSession} from 'next-auth/client';
-import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
 
-import {Button, CartItem, CategoryBlock, ContentBlock, Footer, Header, ProductSwiper} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
+import {Button, CartItem, CategoryBlock, ContentBlock, ProductSwiper} from '~/components';
 import {CartService, ProductService} from '~/services';
 import {cartState} from '~/store/cartState';
 
@@ -134,12 +134,7 @@ export default function Cart() {
 
   /* eslint-disable max-lines */
   return (
-    <>
-      <Head>
-        <title>{'カート'}</title>
-      </Head>
-      <Header showMainMenu={false}/>
-
+    <DefaultLayout title='Cart - Oshinagaki Store'>
       {/* Cart */}
       <ContentBlock
         bgImage='/img/noise.png'
@@ -288,8 +283,6 @@ export default function Cart() {
           </Grid>
         </Container>
       </div>
-
-      <Footer/>
-    </>
+    </DefaultLayout>
   );
 }
