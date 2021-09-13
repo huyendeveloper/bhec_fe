@@ -1,8 +1,16 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {FormProvider, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
-import {Button, ReviewProduct, ReviewsBlock, ReviewShop} from '~/components';
+import {AlertMessageForSection, Button, ReviewProduct, ReviewsBlock, ReviewShop, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {ProductService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+
+const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,65 +34,133 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const product = {
-  productId: 2,
-  productName: '何個もパクパク「種ごと丸ごときんかん」ミニサイズ計2kg',
-  productThumb: '/img/products/product-02.png',
-  productUrl: '#',
-  productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-  productPrice: 32800,
-  productRate: 3.5,
-  productOwner: {
-    name: '小田原漆器',
-    avatar: '/img/sellers/seller1.jpg',
-    introduction: 'ベッ甲イソガイ　統括',
-    rate: 3.5,
-  },
-};
+export async function getServerSideProps({params}) {
+  const {id} = params;
+  const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+  if (!res?.product_detail?.id) {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      productDetail: res.product_detail,
+      sellerInfo: res.seller_info,
+    },
+  };
+}
 
-const ReviewsDetail = () => {
+const ReviewsDetail = (props) => {
   const classes = useStyles();
+  const {productDetail, sellerInfo} = props;
+  const {handleSubmit, ...methods} = useForm({criteriaMode: 'all'});
+  const [images, setImages] = React.useState([]);
+  const [alerts, setAlerts] = React.useState(null);
+  const setLoading = useSetRecoilState(loadingState);
+
+  const addImage = (index, newImage) => {
+    if ((index + 1) > images.length) {
+      setImages([...images, newImage]);
+    } else {
+      const newImages = [...images];
+      newImages[index] = newImage;
+      setImages(newImages);
+    }
+  };
+
+  const removeImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
+  const handleConfirmClick = async (data) => {
+    setLoading(true);
+    const reviewData = {
+      ...data,
+      rating_product: Number(data?.rating_product),
+      rating_seller: Number(data?.rating_seller),
+      product_id: productDetail?.id,
+      seller_id: sellerInfo?.id,
+      product_images: images,
+    };
+    const response = await ProductServiceInstance.reviewProduct(reviewData);
+    if (response?.success) {
+      setAlerts({
+        type: 'success',
+        message: '成功したレビュー。',
+      });
+    } else {
+      setAlerts({
+        type: 'error',
+        message: 'レビューに失敗しました。',
+      });
+    }
+    setLoading(false);
+  };
 
   return (
-    <DefaultLayout title='Review - BH_EC'>
-      <ReviewsBlock
-        title={'商品レビューを書く'}
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-      >
-        <ReviewProduct product={product}/>
-      </ReviewsBlock>
-
-      <ReviewsBlock
-        title={'店舗レビューを書く'}
-      >
-        <ReviewShop productOwner={product.productOwner}/>
-      </ReviewsBlock>
-
-      <Grid
-        container={true}
-        spacing={0}
-      >
-        <Grid
-          item={true}
-          xs={12}
-          md={12}
-          lg={12}
-        >
-          <div className={classes.container}>
-            <Button
-              variant={'pill'}
-              customColor={'red'}
-              customSize={'medium'}
-              customWidth={'fullwidth'}
+    <DefaultLayout title='商品レビューを書く - BH_EC'>
+      <FormProvider {...methods}>
+        <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
+          <>
+            <ReviewsBlock
+              title={'商品レビューを書く'}
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
             >
-              {'投稿'}
-            </Button>
-          </div>
-        </Grid>
-      </Grid>
+              <ReviewProduct
+                product={productDetail}
+                images={images}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            </ReviewsBlock>
+
+            <ReviewsBlock
+              title={'店舗レビューを書く'}
+            >
+              <ReviewShop productOwner={sellerInfo}/>
+            </ReviewsBlock>
+
+            <Grid
+              container={true}
+              spacing={0}
+            >
+              <Grid
+                item={true}
+                xs={12}
+                md={12}
+                lg={12}
+              >
+                <div className={classes.container}>
+                  <Button
+                    variant={'pill'}
+                    customColor={'red'}
+                    customSize={'medium'}
+                    customWidth={'fullwidth'}
+                    type='submit'
+                  >
+                    {'投稿'}
+                  </Button>
+                </div>
+              </Grid>
+            </Grid>
+          </>
+        </StyledForm>
+      </FormProvider>
+
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </DefaultLayout>
   );
+};
+
+ReviewsDetail.propTypes = {
+  productDetail: PropTypes.object.isRequired,
+  sellerInfo: PropTypes.object.isRequired,
 };
 
 export default ReviewsDetail;
