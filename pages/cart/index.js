@@ -88,9 +88,14 @@ export default function Cart() {
     if (cart.items.length) {
       query.category = cart.items[0].productDetail?.categories?.map((item) => item.name).join(',');
     }
+    if (cart.items.length && cart.items[0]?.sellerInfo) {
+      query.seller_ids = cart.items[0]?.sellerInfo?.id;
+    }
     const result = await Product.getProducts(query);
     if (result && result.products && result.products.length) {
       setRecommendProducts(result.products);
+    } else {
+      setRecommendProducts([]);
     }
   };
 
