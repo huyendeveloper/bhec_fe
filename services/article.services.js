@@ -15,10 +15,10 @@ const parserError = (errors) => {
 };
 
 async function getArticles(payload) {
-  const DEFAULT_PER_PAGE = 3;
+  const DEFAULT_PER_PAGE = 12;
   const cleanPayload = clean(payload);
   const activeParam = {
-    per_page: DEFAULT_PER_PAGE,
+    per_page: payload.per_page || DEFAULT_PER_PAGE,
     page: 1,
   };
   let {tag} = cleanPayload;

@@ -275,7 +275,7 @@ export const getServerSideProps = async () => {
 
   // articles
   let articles = [];
-  const result = await ArticleService.getArticles({limit: 3});
+  const result = await ArticleService.getArticles({limit: 3, per_page: 3});
   if (result && result.data) {
     articles = result.data;
   }
