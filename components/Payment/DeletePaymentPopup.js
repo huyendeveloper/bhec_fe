@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
-import {Button, Typography, Grid, IconButton, Dialog, CircularProgress} from '@material-ui/core';
+import {Button, Typography, Grid, IconButton, Dialog} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
 import {Close} from '@material-ui/icons';
 import Image from 'next/image';
+import {useSetRecoilState} from 'recoil';
 
 import {httpStatus} from '~/constants';
-
+import {loadingState} from '~/store/loadingState';
 import {PaymentService} from '~/services';
 const Payment = new PaymentService();
 const useStyles = makeStyles((theme) => ({
@@ -164,7 +165,7 @@ const DialogContent = withStyles((theme) => ({
 
 const DeletePaymentPopup = ({open, handleClose, idRemove, actionFinish}) => {
   const classes = useStyles();
-  const [loading, setLoading] = useState(false);
+  const setLoading = useSetRecoilState(loadingState);
 
   const onSubmit = async () => {
     setLoading(true);
@@ -237,14 +238,8 @@ const DeletePaymentPopup = ({open, handleClose, idRemove, actionFinish}) => {
               type='submit'
               className={classes.submitButton}
               onClick={() => onSubmit()}
-              disabled={loading}
             >
               {'削除する'}
-              {loading ? (
-                <CircularProgress
-                  size={24}
-                />
-              ) : null}
             </Button>
           </Grid>
         </DialogContent>

@@ -6,11 +6,14 @@ import {Container, Grid, FormControl, Button, Link} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
+import {DefaultLayout} from '~/components/Layouts';
+import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {AlertMessageForSection, StyledForm, ContentBlock, Header, Footer, CompleteConfirmation} from '~/components';
+import {AlertMessageForSection, StyledForm, ContentBlock, CompleteConfirmation} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -146,6 +149,7 @@ function RegisterEmail() {
   const classes = useStyles();
   const [alerts, setAlerts] = useState(null);
   const [isSuccess, setSuccess] = useState(false);
+  const setLoading = useSetRecoilState(loadingState);
   const {
     control,
     handleSubmit,
@@ -154,14 +158,17 @@ function RegisterEmail() {
   } = useForm({criteriaMode: 'all'});
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const res = await Auth.registerEmail({
       user: {
         ...data,
       },
     });
     if (res.id) {
+      setLoading(false);
       setSuccess(true);
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: '無効なメールアドレス/パスワードの組み合わせです。',
@@ -170,9 +177,8 @@ function RegisterEmail() {
   };
 
   return (
-    <>
+    <DefaultLayout title='Register Email - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={true}/>
         <div
           className='content'
         >
@@ -396,13 +402,12 @@ function RegisterEmail() {
               </StyledForm>
             </ContentBlock>)}
         </div>
-        <Footer/>
       </div>
       <AlertMessageForSection
         alert={alerts}
         handleCloseAlert={() => setAlerts(null)}
       />
-    </>
+    </DefaultLayout>
   );
 }
 

@@ -3,23 +3,25 @@ import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {
-  Box, CircularProgress, FormControl,
+  Box, FormControl,
   Grid, Icon, NativeSelect,
   TextField,
   TextareaAutosize,
   Link,
   useMediaQuery,
 } from '@material-ui/core';
+import {useSetRecoilState} from 'recoil';
 import Typography from '@material-ui/core/Typography';
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
 import {useSession} from 'next-auth/client';
 import ImageUploading from 'react-images-uploading';
-
 import clsx from 'clsx';
 import React, {useState, useEffect} from 'react';
 
-import {ContentBlock, Header, Footer, Button, StyledForm} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
+import {loadingState} from '~/store/loadingState';
+import {ContentBlock, Button, StyledForm} from '~/components';
 import {ContactService} from '~/services';
 const Contact = new ContactService();
 import {ContactProduct, ThanksPopup} from '~/components/Contact';
@@ -145,11 +147,10 @@ export default function ContactPage() {
   const [session] = useSession();
   const {control, handleSubmit, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const setLoading = useSetRecoilState(loadingState);
   const [productImages, setProductImages] = useState([]);
   const [valueProductImages, setValueProductImages] = useState({});
   // eslint-disable-next-line no-unused-vars
-  const [loading, setLoading] = useState(false);
   const [isLoggined, setIsLoggined] = useState(false);
   const [listContactCategory, setListContactCategory] = useState([]);
   const [typeContact, setTypeContact] = useState();
@@ -200,6 +201,7 @@ export default function ContactPage() {
       ...valueProductImages,
       [`productImages${index}`]: imageList,
     });
+    setValue(`productImages${index}`, imageDataUrls);
   };
 
   const onChangeType = (e) => {
@@ -246,20 +248,28 @@ export default function ContactPage() {
   );
 
   const onSubmit = async (data) => {
+    setLoading(true);
     if (Number.parseInt(data.contact_category_id, 10) !== 5) {
       const bodyFormData = new FormData();
       bodyFormData.append('contact_category_id', data.contact_category_id);
       bodyFormData.append('name', data.name);
       bodyFormData.append('email', data.email);
       bodyFormData.append('description', data.description);
-      bodyFormData.append('images', data.images);
+      if (data.images && data.images.length) {
+        data.images.forEach((img) => {
+          bodyFormData.append('images[]', img);
+        });
+      }
       const configHeader = {
         'Content-Type': 'multipart/form-data',
       };
       const res = await Contact.createContact(bodyFormData, configHeader);
       if (res.id) {
+        setLoading(false);
         setOpen(true);
         setRequestNo(res.request_no);
+      } else {
+        setLoading(false);
       }
     } else if (Number.parseInt(data.contact_category_id, 10) === 5) {
       const bodyFormData = new FormData();
@@ -272,16 +282,23 @@ export default function ContactPage() {
       const res = await Contact.createContact(bodyFormData, configHeader);
       if (res) {
         setRequestNo(res.request_no);
-        const body = new FormData();
         listProduct.forEach(async (item, index) => {
+          const body = new FormData();
           body.append('contact_id', res.id);
           body.append('order_number', data[`order_number${index}`]);
           body.append('product_code', data[`product_code${index}`]);
           body.append('description', data[`description${index}`]);
-          body.append('images', valueProductImages[`productImages${index}`]);
+          if (data[`productImages${index}`] && data[`productImages${index}`].length) {
+            data[`productImages${index}`].forEach((img) => {
+              body.append('images[]', img);
+            });
+          }
           const result = await Contact.createContactProduct(body, configHeader);
           if (result) {
+            setLoading(false);
             setOpen(true);
+          } else {
+            setLoading(false);
           }
         });
       }
@@ -289,278 +306,109 @@ export default function ContactPage() {
   };
 
   return (
-    <div className={classes.root}>
-      <Header showMainMenu={false}/>
-
-      <div className='content'>
-        <ContentBlock
-          title='お問い合わせフォーム'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          <Box
-            m={'0 auto'}
-            width={isTablet ? '100%' : '48rem'}
+    <DefaultLayout title='Contact - Oshinagaki Store'>
+      <div className={classes.root}>
+        <div className='content'>
+          <ContentBlock
+            title='お問い合わせフォーム'
+            bgImage='/img/noise.png'
+            bgRepeat='repeat'
+            mixBlendMode='multiply'
           >
-            <div className={classes.tab}>
-              <div
-                className={`${classes.tabItem}  ${tabActive === 1 ? classes.active : ''}`}
-                onClick={() => setTabActive(1)}
-              >{'個人'}</div>
-              <div
-                className={clsx(classes.tabItem, tabActive === 2 ? classes.active : '')}
-                onClick={() => setTabActive(2)}
-              >{'法人'}</div>
-            </div>
-            <div className='formBlock'>
-              {isLoggined &&
+            <Box
+              m={'0 auto'}
+              width={isTablet ? '100%' : '48rem'}
+            >
+              <div className={classes.tab}>
                 <div
-                  className='formBlockHeader'
-                  style={{marginBottom: '2rem'}}
-                >
-                  <Typography
-                    component='h3'
-                    className='formBlockTitle'
-                  >
-                    {tabActive === 1 ? '個人のお客様用フォーム' : ''}
-                  </Typography>
-                  <Typography
-                    component='p'
-                    className='formBlockDesc'
-                  >
-                    {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。' : ''}
-                  </Typography>
-
-                  {tabActive === 2 &&
-                  <Typography
-                    component='p'
-                    className='formBlockNote'
-                  >
-                    <span>{'法人のお客様は'}</span>
-                    <a
-                      href='mailto:oshinagaki@gmail.com'
-                      target='_blank'
-                      className='formBlockLink'
-                      rel='noreferrer'
-                    >
-                      {'こちら'}
-                    </a>
-                    <span>{'から'}</span>
-                  </Typography>}
-                </div>
-              }
-            </div>
-            {tabActive === 1 && <StyledForm onSubmit={handleSubmit(onSubmit)}>
-              {/* SECOND BLOCK */}
+                  className={`${classes.tabItem}  ${tabActive === 1 ? classes.active : ''}`}
+                  onClick={() => setTabActive(1)}
+                >{'個人'}</div>
+                <div
+                  className={clsx(classes.tabItem, tabActive === 2 ? classes.active : '')}
+                  onClick={() => setTabActive(2)}
+                >{'法人'}</div>
+              </div>
               <div className='formBlock'>
-                <div className='formBlockControls'>
-                  <Grid
-                    container={true}
-                    spacing={3}
+                {isLoggined &&
+                  <div
+                    className='formBlockHeader'
+                    style={{marginBottom: '2rem'}}
                   >
-                    {/* STORE NAME */}
-                    <Grid
-                      item={true}
-                      xs={12}
+                    <Typography
+                      component='h3'
+                      className='formBlockTitle'
                     >
-                      <label
-                        htmlFor='name'
-                        className='formControlLabel'
-                      >
-                        {'氏名 '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='name'
-                        control={control}
-                        defaultValue=''
-                        rules={{required: '必須項目です。'}}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='name'
-                            variant='outlined'
-                            error={Boolean(errors.name)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            placeholder={'鈴木はなこ'}
-                            inputRef={ref}
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='name'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >{`⚠ ${message}`}</p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
+                      {tabActive === 1 ? '個人のお客様用フォーム' : ''}
+                    </Typography>
+                    <Typography
+                      component='p'
+                      className='formBlockDesc'
                     >
-                      <label
-                        htmlFor='email'
-                        className='formControlLabel'
-                      >
-                        {'メールアドレス '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='email'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: '必須項目です。',
-                          pattern: {
-                            value: /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            message: 'メールアドレスが無効です。',
-                          },
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='email'
-                            variant='outlined'
-                            error={Boolean(errors.email)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            inputRef={ref}
-                            placeholder={'oshinagaki@gmail.com'}
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='email'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >{`⚠ ${message}`}</p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      md={12}
-                    >
-                      <label
-                        htmlFor='contact_category_id'
-                        className='formControlLabel'
-                      >
-                        {'種別 '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='contact_category_id'
-                        control={control}
-                        defaultValue=''
-                        rules={{required: '必須項目です。'}}
-                        render={({field: {name, value, ref}}) => (
-                          <FormControl>
-                            <NativeSelect
-                              className={errors.contact_category_id ? 'selectBoxError' : ''}
-                              name={name}
-                              value={value}
-                              inputRef={ref}
-                              onChange={onChangeType}
-                            >
-                              {listContactCategory.map((c, index) => (
-                                <option
-                                  key={String(index)}
-                                  value={c.id}
-                                >{c.name}</option>
-                              ))}
-                            </NativeSelect>
-                          </FormControl>
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='contact_category_id'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >{`⚠ ${message}`}</p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    {typeContact === 5 &&
-                      <>
-                        {ExchangeRender}
-                        <div className='addProductDiv'>
-                          <Icon
-                            className='icAdd'
-                            onClick={() => addProduct()}
-                          >{'add_box'}</Icon>
-                          <div className='desc'>
-                            <Typography
-                              component='p'
-                              className='formBlockTitleImage'
-                            >
-                              {'商品を追加する'}
-                            </Typography>
-                            <Typography
-                              component='p'
-                              className='formBlockDescImage'
-                            >
-                              {'商品を3つまで追加することができます。'}
-                            </Typography>
-                          </div>
-                        </div>
-                      </>
-                    }
+                      {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。' : ''}
+                    </Typography>
 
-                    {typeContact !== 5 &&
+                    {tabActive === 2 &&
+                    <Typography
+                      component='p'
+                      className='formBlockNote'
+                    >
+                      <span>{'法人のお客様は'}</span>
+                      <a
+                        href='mailto:oshinagaki@gmail.com'
+                        target='_blank'
+                        className='formBlockLink'
+                        rel='noreferrer'
+                      >
+                        {'こちら'}
+                      </a>
+                      <span>{'から'}</span>
+                    </Typography>}
+                  </div>
+                }
+              </div>
+              {tabActive === 1 && <StyledForm onSubmit={handleSubmit(onSubmit)}>
+                {/* SECOND BLOCK */}
+                <div className='formBlock'>
+                  <div className='formBlockControls'>
+                    <Grid
+                      container={true}
+                      spacing={3}
+                    >
+                      {/* STORE NAME */}
                       <Grid
                         item={true}
                         xs={12}
                       >
                         <label
-                          htmlFor='description'
+                          htmlFor='name'
                           className='formControlLabel'
                         >
-                          {'問い合わせ内容 '}
+                          {'氏名 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='description'
+                          name='name'
                           control={control}
                           defaultValue=''
                           rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
-                            <TextareaAutosize
-                              minRows={10}
-                              maxRows={20}
-                              aria-label='maximum height'
-                              placeholder='内容を入力する'
+                            <TextField
+                              id='name'
+                              variant='outlined'
+                              error={Boolean(errors.name)}
+                              InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
+                              placeholder={'鈴木はなこ'}
                               inputRef={ref}
                               onChange={onChange}
-                              className='inputEditor'
                             />
                           )}
                         />
                         <ErrorMessage
                           errors={errors}
-                          name='description'
+                          name='name'
                           render={({messages}) => {
                             return messages ? Object.entries(messages).map(([type, message]) => (
                               <p
@@ -570,152 +418,314 @@ export default function ContactPage() {
                             )) : null;
                           }}
                         />
-                      </Grid>}
-                  </Grid>
-                </div>
-              </div>
-              {typeContact !== 5 && <div className='formBlock'>
-                <div className='formBlockHeader'>
-                  <Typography
-                    component='h3'
-                    className='formBlockTitleImage'
-                  >
-                    {'画像アップロード（任意）'}
-                  </Typography>
-                  <Typography
-                    component='p'
-                    className='formBlockDescImage'
-                  >
-                    {'5MB未満の画像(jpg, png)をアップロードすることができます。'}
-                  </Typography>
-                </div>
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                      >
+                        <label
+                          htmlFor='email'
+                          className='formControlLabel'
+                        >
+                          {'メールアドレス '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='email'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: '必須項目です。',
+                            pattern: {
+                              value: /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              message: 'メールアドレスが無効です。',
+                            },
+                          }}
+                          render={({field: {name, value, ref, onChange}}) => (
+                            <TextField
+                              id='email'
+                              variant='outlined'
+                              error={Boolean(errors.email)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              inputRef={ref}
+                              placeholder={'oshinagaki@gmail.com'}
+                              onChange={onChange}
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='email'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >{`⚠ ${message}`}</p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        md={12}
+                      >
+                        <label
+                          htmlFor='contact_category_id'
+                          className='formControlLabel'
+                        >
+                          {'種別 '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='contact_category_id'
+                          control={control}
+                          defaultValue=''
+                          rules={{required: '必須項目です。'}}
+                          render={({field: {name, value, ref}}) => (
+                            <FormControl>
+                              <NativeSelect
+                                className={errors.contact_category_id ? 'selectBoxError' : ''}
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChangeType}
+                              >
+                                {listContactCategory.map((c, index) => (
+                                  <option
+                                    key={String(index)}
+                                    value={c.id}
+                                  >{c.name}</option>
+                                ))}
+                              </NativeSelect>
+                            </FormControl>
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='contact_category_id'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >{`⚠ ${message}`}</p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      {typeContact === 5 &&
+                        <>
+                          {ExchangeRender}
+                          <div className='addProductDiv'>
+                            <Icon
+                              className='icAdd'
+                              onClick={() => addProduct()}
+                            >{'add_box'}</Icon>
+                            <div className='desc'>
+                              <Typography
+                                component='p'
+                                className='formBlockTitleImage'
+                              >
+                                {'商品を追加する'}
+                              </Typography>
+                              <Typography
+                                component='p'
+                                className='formBlockDescImage'
+                              >
+                                {'商品を3つまで追加することができます。'}
+                              </Typography>
+                            </div>
+                          </div>
+                        </>
+                      }
 
-                <div className='formBlockControls'>
-                  <ImageUploading
-                    multiple={true}
-                    value={productImages}
-                    onChange={onProductImagesChange}
-                    maxNumber={maxNumber}
-                    dataURLKey='data_url'
-                  >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageUpdate,
-                      onImageRemove,
-                      dragProps,
-                    }) => {
-                      return (
-                        <div className='imageUploadWrapper'>
-                          {Array.from({length: maxNumber}, (x, i) => i).map((index) => {
-                            const uploadedImage = imageList[index];
-                            if (uploadedImage) {
+                      {typeContact !== 5 &&
+                        <Grid
+                          item={true}
+                          xs={12}
+                        >
+                          <label
+                            htmlFor='description'
+                            className='formControlLabel'
+                          >
+                            {'問い合わせ内容 '}
+                            <span className='formControlRequired'>{'*'}</span>
+                          </label>
+                          <Controller
+                            name='description'
+                            control={control}
+                            defaultValue=''
+                            rules={{required: '必須項目です。'}}
+                            render={({field: {name, value, ref, onChange}}) => (
+                              <TextareaAutosize
+                                minRows={10}
+                                maxRows={20}
+                                aria-label='maximum height'
+                                placeholder='内容を入力する'
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                                className='inputEditor'
+                              />
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name='description'
+                            render={({messages}) => {
+                              return messages ? Object.entries(messages).map(([type, message]) => (
+                                <p
+                                  className='inputErrorText'
+                                  key={type}
+                                >{`⚠ ${message}`}</p>
+                              )) : null;
+                            }}
+                          />
+                        </Grid>}
+                    </Grid>
+                  </div>
+                </div>
+                {typeContact !== 5 && <div className='formBlock'>
+                  <div className='formBlockHeader'>
+                    <Typography
+                      component='h3'
+                      className='formBlockTitleImage'
+                    >
+                      {'画像アップロード（任意）'}
+                    </Typography>
+                    <Typography
+                      component='p'
+                      className='formBlockDescImage'
+                    >
+                      {'5MB未満の画像(jpg, png)をアップロードすることができます。'}
+                    </Typography>
+                  </div>
+
+                  <div className='formBlockControls'>
+                    <ImageUploading
+                      multiple={true}
+                      value={productImages}
+                      onChange={onProductImagesChange}
+                      maxNumber={maxNumber}
+                      dataURLKey='data_url'
+                    >
+                      {({
+                        imageList,
+                        onImageUpload,
+                        onImageUpdate,
+                        onImageRemove,
+                        dragProps,
+                      }) => {
+                        return (
+                          <div className='imageUploadWrapper'>
+                            {Array.from({length: maxNumber}, (x, i) => i).map((index) => {
+                              const uploadedImage = imageList[index];
+                              if (uploadedImage) {
+                                return (
+                                  <div
+                                    key={`imageUploadItem_${index}`}
+                                    className={'imageUploadItem'}
+                                  >
+                                    <Image
+                                      onClick={() => onImageUpdate(index)}
+                                      src={uploadedImage.data_url}
+                                      width={78}
+                                      height={80}
+                                      alt={`Image upload ${index + 1}`}
+                                    />
+                                    <button
+                                      type='button'
+                                      className='imageUploadRemove'
+                                      onClick={() => onImageRemove(index)}
+                                    ><Icon>{'close'}</Icon></button>
+                                  </div>
+                                );
+                              }
                               return (
-                                <div
-                                  key={`imageUploadItem_${index}`}
-                                  className={'imageUploadItem'}
+                                <button
+                                  key={`imgUploadBtn_${index}`}
+                                  type='button'
+                                  onClick={onImageUpload}
+                                  className='imageUploadBtn'
+                                  {...dragProps}
                                 >
                                   <Image
-                                    onClick={() => onImageUpdate(index)}
-                                    src={uploadedImage.data_url}
-                                    width={78}
+                                    src='/img/btn-upload.png'
+                                    width={80}
                                     height={80}
-                                    alt={`Image upload ${index + 1}`}
+                                    alt='Image upload'
                                   />
-                                  <button
-                                    type='button'
-                                    className='imageUploadRemove'
-                                    onClick={() => onImageRemove(index)}
-                                  ><Icon>{'close'}</Icon></button>
-                                </div>
+                                </button>
                               );
-                            }
-                            return (
-                              <button
-                                key={`imgUploadBtn_${index}`}
-                                type='button'
-                                onClick={onImageUpload}
-                                className='imageUploadBtn'
-                                {...dragProps}
-                              >
-                                <Image
-                                  src='/img/btn-upload.png'
-                                  width={80}
-                                  height={80}
-                                  alt='Image upload'
-                                />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      );
-                    }}
-                  </ImageUploading>
-                </div>
-              </div>}
-              <Box
-                textAlign='center'
-                mt={5}
-              >
-                <Grid
-                  container={true}
-                  spacing={3}
+                            })}
+                          </div>
+                        );
+                      }}
+                    </ImageUploading>
+                  </div>
+                </div>}
+                <Box
+                  textAlign='center'
+                  mt={5}
                 >
                   <Grid
-                    xs={12}
-                    sm={6}
-                    md={6}
-                    item={true}
+                    container={true}
+                    spacing={3}
                   >
-                    <Link
-                      href='/'
+                    <Grid
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      item={true}
+                    >
+                      <Link
+                        href='/'
+                      >
+                        <Button
+                          variant='pill'
+                          customSize='extraLarge'
+                          className={classes.btnPrev}
+                        >
+                          {'前のページへ戻る'}
+                        </Button>
+                      </Link>
+                    </Grid>
+                    <Grid
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      item={true}
                     >
                       <Button
                         variant='pill'
+                        customColor='red'
                         customSize='extraLarge'
-                        className={classes.btnPrev}
+                        type='submit'
+                        className={classes.btnSubmit}
                       >
-                        {'前のページへ戻る'}
+                        {'フォーム内容確認'}
                       </Button>
-                    </Link>
+                    </Grid>
                   </Grid>
-                  <Grid
-                    xs={12}
-                    sm={6}
-                    md={6}
-                    item={true}
-                  >
-                    <Button
-                      variant='pill'
-                      customColor='red'
-                      customSize='extraLarge'
-                      type='submit'
-                      disabled={loading}
-                      className={classes.btnSubmit}
-                    >
-                      {'フォーム内容確認'}
-                      {loading ? (
-                        <CircularProgress
-                          size={24}
-                        />
-                      ) : null}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            </StyledForm>}
-          </Box>
-        </ContentBlock>
+                </Box>
+              </StyledForm>}
+            </Box>
+          </ContentBlock>
+        </div>
+        {open &&
+          <ThanksPopup
+            open={open}
+            requestNo={requestNo}
+            handleClose={handleClose}
+            style={{width: '80%'}}
+          />
+        }
       </div>
-      <Footer/>
-      {open &&
-        <ThanksPopup
-          open={open}
-          requestNo={requestNo}
-          handleClose={handleClose}
-          style={{width: '80%'}}
-        />
-      }
-    </div>
+    </DefaultLayout>
   );
 }
