@@ -245,20 +245,12 @@ const Header = (props) => {
                   className={classes.icNav}
                   onClick={() => setOpenNav(!openNav)}
                 >
-                  {openNav ?
-                    <Image
-                      src='/ic-toggle-nav.png'
-                      alt='メニュー'
-                      width={20}
-                      height={20}
-                    /> :
-                    <Image
-                      src='/menu.png'
-                      alt='メニュー'
-                      width={24}
-                      height={24}
-                    />
-                  }
+                  <Image
+                    src={openNav ? '/ic-toggle-nav.png' : '/menu.png'}
+                    alt='メニュー'
+                    width={openNav ? 20 : 24}
+                    height={openNav ? 20 : 24}
+                  />
                 </div>
               )}
               <Link
