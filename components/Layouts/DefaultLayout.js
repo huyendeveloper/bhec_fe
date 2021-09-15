@@ -60,7 +60,7 @@ const listNavigation = [
     url: '/products?category=lifestyle',
   },
   {
-    name: 'ブログ',
+    name: '特集',
     url: '/articles',
   },
 

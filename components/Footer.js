@@ -152,7 +152,7 @@ const Footer = (props) => {
   const classes = useStyles();
   const defaultLinkFoots = [
     {
-      label: 'ブログ',
+      label: '特集',
       url: '/articles',
       linkChild: [],
     },
