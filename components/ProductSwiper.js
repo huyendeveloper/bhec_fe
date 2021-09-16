@@ -56,7 +56,7 @@ const ProductSwiper = ({items}) => {
   return (
     <Grid
       container={true}
-      justifyContent='center'
+      justifyContent={items.length > 3 ? 'center' : 'flex-start'}
       spacing={3}
     >
       {items?.map((item, index) => (

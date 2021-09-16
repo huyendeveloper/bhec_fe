@@ -12,6 +12,8 @@ import {Avatar, Chip, Link} from '@material-ui/core';
 import Image from 'next/image';
 import clsx from 'clsx';
 
+import theme from '~/theme';
+
 const useStyles = makeStyles(() => ({
   root: {
     position: 'relative',
@@ -59,6 +61,7 @@ const useStyles = makeStyles(() => ({
     lineHeight: '1.875rem',
     display: 'flex',
     justifyContent: 'space-between',
+    color: theme.palette.black3.main,
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
@@ -110,11 +113,11 @@ const ProductWidget = ({variant, data, heart, border}) => {
 
   return (
     <Card className={clsx(classes.root, classes[border])}>
-      <CardActionArea>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName)}
-        >
+      <Link
+        href={`/product/${product.id}`}
+        className={clsx(classes.linkName)}
+      >
+        <CardActionArea>
           <CardMedia
             component='img'
             alt={product.name}
@@ -123,13 +126,8 @@ const ProductWidget = ({variant, data, heart, border}) => {
             image={product.thumb_url ?? '/logo.png'}
             title={product.name}
           />
-        </Link>
-      </CardActionArea>
-      <CardContent>
-        <Link
-          href={`/products/${product.id}`}
-          className={clsx(classes.linkName)}
-        >
+        </CardActionArea>
+        <CardContent>
           <Typography
             gutterBottom={true}
             component='h3'
@@ -137,44 +135,42 @@ const ProductWidget = ({variant, data, heart, border}) => {
           >
             {product.name}
           </Typography>
-        </Link>
+          <div className={classes.productTags}>
+            {tags && tags.length > 0 ? tags.map((tag, index) => {
+              return (
+                <Chip
+                  key={String(index)}
+                  size='small'
+                  label={tag.name}
+                />
+              );
+            }) : null}
+          </div>
 
-        <div className={classes.productTags}>
-          {tags && tags.length > 0 ? tags.map((tag, index) => {
-            return (
-              <Chip
-                key={String(index)}
-                size='small'
-                label={tag.name}
-              />
-            );
-          }) : null}
-        </div>
-
-        <div className={classes.productPrice}>
-          {currency.format(product.price)}
-          {heart &&
-            (product.is_favorite_product ? (
-              <Image
-                src={'/img/icons/fill-heart.svg'}
-                width={27}
-                height={24}
-                alt={'heart'}
-              />
-            ) : (
-              <Image
-                src={'/img/icons/ountline-heart.svg'}
-                width={27}
-                height={24}
-                alt={'heart'}
-              />
-            ))}
-        </div>
-      </CardContent>
-
+          <div className={classes.productPrice}>
+            {currency.format(product.price)}
+            {heart &&
+              (product.is_favorite_product ? (
+                <Image
+                  src={'/img/icons/fill-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                />
+              ) : (
+                <Image
+                  src={'/img/icons/ountline-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                />
+              ))}
+          </div>
+        </CardContent>
+      </Link>
       <CardActions className={classes.productSellerAction}>
         <Link
-          href={'#'}
+          href={seller ? `/seller/${seller.id}` : '#'}
           className={classes.productSeller}
         >
           <Avatar
