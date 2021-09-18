@@ -16,7 +16,6 @@ import {DefaultLayout} from '~/components/Layouts';
 import {Search, CategoryBlock, ProductSwiper} from '~/components';
 import 'swiper/swiper.min.css';
 import {SellerService, ProductService} from '~/services';
-import {ProductWidget} from '~/components/Widgets';
 import {userState} from '~/store/userState';
 const ProductServiceInstance = new ProductService();
 const SellerInstance = new SellerService();
@@ -170,7 +169,7 @@ const linkProps = [
 const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_beverage}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(seller?.followed || false);
   const [user] = useRecoilState(userState);
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -199,30 +198,7 @@ const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_be
           }
         }
       }
-      ReactDOM.render(
-        <Grid
-          container={true}
-          spacing={3}
-          style={{
-            justifyContent: 'center',
-            margin: '16px auto',
-          }}
-        >
-          {products?.map((item) => (
-            <Grid
-              key={item.id}
-              item={true}
-              sm={4}
-              xs={6}
-            >
-              <ProductWidget
-                data={item}
-                border={'borderNone'}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        , document.getElementById(`js-shorcode-${i}`));
+      ReactDOM.render(<ProductSwiper items={products}/>, document.getElementById(`js-shorcode-${i}`));
     }
   };
 
@@ -357,8 +333,7 @@ const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_be
                     </Typography>
                     <Rating
                       name='read-only'
-                      value={2}
-                      precision={0.5}
+                      value={seller?.rating || 0}
                       readOnly={true}
                       emptyIcon={<StarBorderIcon fontSize='inherit'/>}
                     />
