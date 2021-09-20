@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import React, {useEffect, useState} from 'react';
 import {Container, Grid, Breadcrumbs as MuiBreadcrumbs, useTheme, Button, useMediaQuery, Link, Typography, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -166,41 +167,18 @@ const linkProps = [
   },
 ];
 
-const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_beverage}) => {
+const Seller = ({traditional_craft, food_and_beverage}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [isFollowing, setIsFollowing] = useState(seller?.followed || false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [seller, setSeller] = useState();
+  const [refinedHTML, setRefinedHTML] = useState();
   const [user] = useRecoilState(userState);
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const avatarWidth = isMobile ? 72 : (isTablet ? 80 : 128);
   const avatarHeight = isMobile ? 72 : (isTablet ? 80 : 128);
   const router = useRouter();
-  const renderShortcodes = async () => {
-    for (let i = 0; i < shortcodes.length; i++) {
-      const shortcode = shortcodes[i];
-      const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
-      let match;
-      const products = [];
-      // eslint-disable-next-line no-cond-assign
-      while (match = shortcodeRegex.exec(shortcode)) {
-        const productIds = match[1].replace(/ /g, '').split(',');
-        for (let j = 0; j < productIds.length; j++) {
-          const id = productIds[j];
-          // eslint-disable-next-line no-await-in-loop
-          const response = await ProductServiceInstance.getProductDetail(id);
-          if (response?.product_detail) {
-            products.push({
-              ...response?.product_detail,
-              seller_info: response?.seller_info,
-              tags: response?.product_detail.tags,
-            });
-          }
-        }
-      }
-      ReactDOM.render(<ProductSwiper items={products}/>, document.getElementById(`js-shorcode-${i}`));
-    }
-  };
 
   const toggleFollow = async () => {
     if (user?.isAuthenticated) {
@@ -238,8 +216,60 @@ const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_be
     }
   };
 
+  const getSellerInfo = async () => {
+    const {id} = router.query;
+    const response = await SellerInstance.geSellerDetail(id);
+    if (!response?.seller?.id) {
+      return {
+        notFound: true,
+      };
+    }
+    setSeller(response?.seller);
+    setIsFollowing(response?.seller?.followed);
+    const rawHTML = response?.seller?.description;
+    const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
+    let match;
+    let refinedHTMLGenerate = rawHTML;
+    const shortcodesGenerate = [];
+    let shortcodeIdx = 0;
+    // eslint-disable-next-line no-cond-assign
+    while (match = productsRegrex.exec(rawHTML)) {
+      const shortcode = match[0];
+      shortcodesGenerate.push(shortcode);
+
+      // replace shortcode by div container
+      // then, render shortcode to container in client side
+      refinedHTMLGenerate = refinedHTMLGenerate.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
+      shortcodeIdx++;
+    }
+    setRefinedHTML(refinedHTMLGenerate);
+    for (let i = 0; i < shortcodesGenerate.length; i++) {
+      const shortcode = shortcodesGenerate[i];
+      const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
+      let matchProd;
+      const products = [];
+      // eslint-disable-next-line no-cond-assign
+      while (matchProd = shortcodeRegex.exec(shortcode)) {
+        const productIds = matchProd[1].replace(/ /g, '').split(',');
+        for (let j = 0; j < productIds.length; j++) {
+          const idProduct = productIds[j];
+          // eslint-disable-next-line no-await-in-loop
+          const result = await ProductServiceInstance.getProductDetail(idProduct);
+          if (result?.product_detail) {
+            products.push({
+              ...result?.product_detail,
+              seller_info: result?.seller_info,
+              tags: result?.product_detail.tags,
+            });
+          }
+        }
+      }
+      ReactDOM.render(<ProductSwiper items={products}/>, document.getElementById(`js-shorcode-${i}`));
+    }
+  };
+
   useEffect(() => {
-    renderShortcodes();
+    getSellerInfo();
   }, []);
   return (
     <DefaultLayout title='TopPage - Oshinagaki Store'>
@@ -415,23 +445,18 @@ const Seller = ({seller, shortcodes, refinedHTML, traditional_craft, food_and_be
 };
 
 Seller.propTypes = {
-  seller: PropTypes.object,
-  shortcodes: PropTypes.array,
-  refinedHTML: PropTypes.string,
   traditional_craft: PropTypes.array,
   food_and_beverage: PropTypes.array,
 };
 
 Seller.defaultProps = {
-  shortcodes: [],
-  refinedHTML: '',
   traditional_craft: [],
   food_and_beverage: [],
 };
 
 export default Seller;
 
-export async function getServerSideProps({params}) {
+export async function getServerSideProps() {
   //traditional_craft
   const lstProduct1 = await ProductServiceInstance.getProducts({category: 'traditional_craft', limit: '4'});
   const traditional_craft = lstProduct1?.products?.length ? lstProduct1.products : [];
@@ -439,38 +464,8 @@ export async function getServerSideProps({params}) {
   //food_and_beverage
   const lstProduct2 = await ProductServiceInstance.getProducts({category: 'food_and_beverage', limit: '4'});
   const food_and_beverage = lstProduct2?.products?.length ? lstProduct2.products : [];
-  const {id} = params;
-  const response = await SellerInstance.geSellerDetail(id);
-  if (!response?.seller?.id) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const rawHTML = response?.seller?.description;
-  const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
-  let match;
-  let refinedHTML = rawHTML;
-  const shortcodes = [];
-  let shortcodeIdx = 0;
-  // eslint-disable-next-line no-cond-assign
-  while (match = productsRegrex.exec(rawHTML)) {
-    const shortcode = match[0];
-    shortcodes.push(shortcode);
-
-    // replace shortcode by div container
-    // then, render shortcode to container in client side
-    refinedHTML = refinedHTML.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
-    shortcodeIdx++;
-  }
-
   return {
     props: {
-      seller: {
-        ...response?.seller,
-      },
-      shortcodes,
-      refinedHTML,
       traditional_craft,
       food_and_beverage,
     },
