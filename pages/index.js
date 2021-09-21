@@ -1,17 +1,26 @@
-import React from 'react';
+import url from 'url';
+
+import React, {useEffect} from 'react';
 import {Container, Grid, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
+import {useSetRecoilState} from 'recoil';
+import axios from 'axios';
+import qs from 'qs';
+import produce from 'immer';
+import {signIn} from 'next-auth/client';
 
+import {httpStatus} from '~/constants';
+import {userState} from '~/store/userState';
 import {DefaultLayout} from '~/components/Layouts';
 import {Slider, Search, CategoryBlock, ContentBlock, ProductSwiper} from '~/components';
 import {Article} from '~/components/Article';
 import {AdsWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
-import {ProductService, ArticleService} from '~/services';
-
+import {ProductService, ArticleService, AuthService} from '~/services';
+const Auth = new AuthService();
 const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
@@ -58,6 +67,11 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
   const classes = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.down('lg'));
+  const setUser = useSetRecoilState(userState);
+  const redirectURI = process.env.NEXT_PUBLIC_LINE_REDIRECT_URL;
+  const clientID = process.env.NEXT_PUBLIC_LINE_CLIENT_ID;
+  const clientSecret = process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET;
+
   const slideData = [
     {
       id: 1,
@@ -68,6 +82,57 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
       img: '/img/video-banner.png',
     },
   ];
+
+  useEffect(() => {
+    getAccessToken(window.location.href);
+  }, []);
+
+  const getAccessToken = (callbackURL) => {
+    const urlParts = url.parse(callbackURL, true);
+    const query = urlParts.query;
+    const hasCodeProperty = Object.prototype.hasOwnProperty.call(query, 'code');
+    if (hasCodeProperty) {
+      const reqBody = {
+        grant_type: 'authorization_code',
+        code: query.code,
+        redirect_uri: redirectURI,
+        client_id: clientID,
+        client_secret: clientSecret,
+      };
+      const reqConfig = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      };
+      axios.post(
+        'https://api.line.me/oauth2/v2.1/token',
+        qs.stringify(reqBody),
+        reqConfig,
+      ).then(async (res) => {
+        if (res.status === httpStatus.SUCCESS) {
+          const result = await Auth.loginBySNS({
+            type: 'line',
+            id_token: res.data.id_token,
+            client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
+          });
+          if (result && result.access_token) {
+            setUser(produce((draft) => {
+              draft.isAuthenticated = true;
+            }));
+            await signIn('credentials',
+              {
+                data: result,
+                token: result.access_token,
+                redirect: false,
+              },
+            );
+          }
+        }
+      }).catch(() => {
+        return false;
+      });
+    }
+  };
 
   return (
     <DefaultLayout title='TopPage - Oshinagaki Store'>
