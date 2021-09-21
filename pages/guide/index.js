@@ -2,8 +2,8 @@ import {Container, Grid, Typography} from '@material-ui/core';
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {ContentBlock, Header, Footer} from '~/components';
-
+import {ContentBlock} from '~/components';
+import {DefaultLayout} from '~/components/Layouts';
 const useStyles = makeStyles(() => ({
 
   title: {
@@ -27,9 +27,8 @@ function Guide() {
   const classes = useStyles();
 
   return (
-    <>
+    <DefaultLayout title='Guide - Oshinagaki Store'>
       <div className={classes.root}>
-        <Header showMainMenu={false}/>
         <div
           className='content'
         >
@@ -201,9 +200,8 @@ function Guide() {
             </Container>
           </ContentBlock>
         </div>
-        <Footer/>
       </div>
-    </>
+    </DefaultLayout>
   );
 }
 

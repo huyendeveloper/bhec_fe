@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CategoryBlock = ({title, category, categoryLink, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
+const CategoryBlock = ({title, category, categoryLink, bgColor, bgImage, bgRepeat, mixBlendMode, children, padding}) => {
   const classes = useStyles();
 
   return (
@@ -79,6 +79,7 @@ const CategoryBlock = ({title, category, categoryLink, bgColor, bgImage, bgRepea
         backgroundRepeat: bgRepeat || 'no-repeat',
         backgroundImage: bgImage && bgImage !== '' ? `url("${bgImage}")` : 'none',
         mixBlendMode: mixBlendMode || 'unset',
+        padding,
       }}
     >
       <Container>
@@ -116,6 +117,7 @@ CategoryBlock.propTypes = {
   category: PropTypes.string,
   categoryLink: PropTypes.string,
   children: PropTypes.any,
+  padding: PropTypes.string,
 };
 
 export default CategoryBlock;

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
-import {Button, IconButton, Divider, Paper, useTheme, useMediaQuery, Grid} from '@material-ui/core';
+import {Button, IconButton, Divider, Paper, useTheme, useMediaQuery, Grid, ClickAwayListener} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
     },
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
+    fontWeight: 700,
     width: '6.063rem',
     height: '3rem',
     [theme.breakpoints.down('xs')]: {
@@ -89,12 +90,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50px',
     width: '100%',
-    padding: '1.5rem',
+    padding: '1.5rem 3rem',
     background: 'white',
   },
 
   childCategory: {
-    margin: '1rem',
+    margin: '0.5rem 0 0 1rem',
   },
 
   parentCategoryLabel: {
@@ -104,6 +105,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.3125rem',
+    },
   },
   childCategoryLabel: {
     fontFamily: theme.font.default,
@@ -111,13 +116,18 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'normal',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
+    color: theme.palette.black3.main,
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8125rem',
+      lineHeight: '1.1875rem',
+    },
   },
   active: {
     fontFamily: theme.font.default,
     background: theme.expanded.borderColor,
     borderRadius: '4px',
-    padding: '10px 15px',
+    padding: '8px 15px',
     fontWeight: 'bold',
     fontSize: '0.875rem',
     lineHeight: '1.4rem',
@@ -129,6 +139,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderRadius: '4px',
     padding: '10px',
+    color: theme.palette.black3.main,
     cursor: 'pointer',
   },
 
@@ -210,6 +221,14 @@ const Search = ({query = {}}) => {
       }, []);
     }
     return res;
+  };
+
+  const handleClickAwayCategory = () => {
+    toggleCategory(false);
+  };
+
+  const handleClickAwayTag = () => {
+    toggleTag(false);
   };
 
   const isActiveCategory = (id) => (currentCategory?.id === id);
@@ -347,87 +366,93 @@ const Search = ({query = {}}) => {
           {'検索'}
         </Button>
 
-        {isExpandedCategory && <div className={classes.searchBox}>
-          <Grid
-            container={true}
-            spacing={3}
-            maxWidth={'lg'}
-            style={{padding: '1rem'}}
-          >
-            {listCategory && listCategory.length > 0 ? listCategory.map((category) => {
-              return (
-                <>
-                  <Grid
-                    item={true}
-                    xs={6}
-                    md={3}
-                    key={`${category.name}-${category.id}`}
-                  >
-                    <span
-                      className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
-                      onClick={() => onSelectCategory(category)}
-                    >
-                      {category.name_kana}
-                    </span>
-                    <Grid
-                      container={true}
-                      spacing={3}
-                      className={classes.childCategory}
-                    >
-                      {category.child_categories && category.child_categories.length > 0 ? category.child_categories.map((c) => {
-                        return (
-                          <>
-                            <Grid
-                              item={true}
-                              xs={12}
-                              key={`${c.name}-${c.id}`}
-                            >
-                              <span
-                                className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
-                                onClick={() => onSelectCategory(c)}
-                              >
-                                {c.name_kana}
-                              </span>
-                            </Grid>
-                          </>
-                        );
-                      }) : null}
-                    </Grid>
-                  </Grid>
-                </>
-              );
-            }) : null}
-          </Grid>
-        </div>}
-        {isExpandedTag && <div className={classes.searchBox}>
-          <Grid
-            container={true}
-            spacing={3}
-            maxWidth={'lg'}
-            style={{padding: '1rem'}}
-          >
-            {tags && tags.length ? tags.map((tag) => {
-              return (
-                <>
-                  <Grid
-                    item={true}
-                    xs={6}
-                    md={2}
-                    key={tag.name}
-                    style={{marginBottom: '1rem'}}
-                  >
-                    <span
-                      className={clsx(classes.tagLabel, isActiveTag(tag.id) ? classes.active : '')}
-                      onClick={() => onSelectTag(tag)}
-                    >
-                      {tag.name}
-                    </span>
-                  </Grid>
-                </>
-              );
-            }) : null}
-          </Grid>
-        </div>}
+        {isExpandedCategory &&
+          <ClickAwayListener onClickAway={handleClickAwayCategory}>
+            <div className={classes.searchBox}>
+              <Grid
+                container={true}
+                maxWidth={'lg'}
+              >
+                {listCategory && listCategory.length > 0 ? listCategory.map((category) => {
+                  return (
+                    <>
+                      <Grid
+                        item={true}
+                        xs={6}
+                        sm={3}
+                        md={2}
+                        key={`${category.name}-${category.id}`}
+                      >
+                        <span
+                          className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
+                          onClick={() => onSelectCategory(category)}
+                        >
+                          {category.name_kana}
+                        </span>
+                        <Grid
+                          container={true}
+                          className={classes.childCategory}
+                        >
+                          {category.child_categories && category.child_categories.length > 0 ? category.child_categories.map((c) => {
+                            return (
+                              <>
+                                <Grid
+                                  item={true}
+                                  xs={12}
+                                  key={`${c.name}-${c.id}`}
+                                  style={{marginBottom: '1rem'}}
+                                >
+                                  <span
+                                    className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
+                                    onClick={() => onSelectCategory(c)}
+                                  >
+                                    {c.name_kana}
+                                  </span>
+                                </Grid>
+                              </>
+                            );
+                          }) : null}
+                        </Grid>
+                      </Grid>
+                    </>
+                  );
+                }) : null}
+              </Grid>
+            </div>
+          </ClickAwayListener>
+        }
+        {isExpandedTag &&
+          <ClickAwayListener onClickAway={handleClickAwayTag}>
+            <div className={classes.searchBox}>
+              <Grid
+                container={true}
+                maxWidth={'lg'}
+              >
+                {tags && tags.length ? tags.map((tag) => {
+                  return (
+                    <>
+                      <Grid
+                        item={true}
+                        xs={6}
+                        sm={3}
+                        md={2}
+                        key={tag.name}
+                        style={{marginBottom: '1rem', padding: '10px'}}
+                      >
+                        <span
+                          className={clsx(classes.tagLabel, isActiveTag(tag.id) ? classes.active : '')}
+                          onClick={() => onSelectTag(tag)}
+                        >
+                          {tag.name}
+                        </span>
+                      </Grid>
+                    </>
+                  );
+                }) : null}
+              </Grid>
+            </div>
+          </ClickAwayListener>
+        }
       </Paper>
     </>
   );

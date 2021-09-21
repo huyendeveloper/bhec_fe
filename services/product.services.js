@@ -13,7 +13,7 @@ export default class ProductService {
     const DEFAULT_PER_PAGE = 12;
     const cleanPayload = clean(payload);
     const activeParam = {
-      per_page: DEFAULT_PER_PAGE,
+      per_page: payload.per_page || DEFAULT_PER_PAGE,
       page: 1,
     };
     let {category, tag} = cleanPayload;

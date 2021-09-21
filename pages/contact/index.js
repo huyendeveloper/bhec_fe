@@ -97,6 +97,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '4px 0px 0px 4px',
+    fontWeight: '700',
+    fontSize: '1rem',
     background: '#FFFFFF',
     border: `1px solid ${theme.blockContact.borderColor}`,
     boxSizing: 'border-box',
@@ -337,13 +339,13 @@ export default function ContactPage() {
                       component='h3'
                       className='formBlockTitle'
                     >
-                      {tabActive === 1 ? '個人のお客様用フォーム' : '法人のお客様用フォーム'}
+                      {tabActive === 1 ? '個人のお客様用フォーム' : ''}
                     </Typography>
                     <Typography
                       component='p'
                       className='formBlockDesc'
                     >
-                      {'入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。'}
+                      {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。' : ''}
                     </Typography>
 
                     {tabActive === 2 &&
