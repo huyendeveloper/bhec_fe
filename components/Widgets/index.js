@@ -10,3 +10,4 @@ export {default as SnsWidget} from './SnsWidget';
 export {default as SpecificationsWidget} from './SpecificationsWidget';
 export {default as StepWidget} from './StepWidget';
 export {default as TopBannerWidget} from './TopBannerWidget';
+export {default as SellerWidget} from './SellerWidget';
