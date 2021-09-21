@@ -5,6 +5,8 @@ const CommonService = {
   getPrefectures,
   getAddresses,
   addAddress,
+  updateAddress,
+  deleteAddress,
   registerSeller,
 };
 
@@ -32,6 +34,22 @@ async function getAddresses() {
 
 async function addAddress(payload) {
   const [data, errors] = await api.post('/addresses', payload);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function updateAddress(payload, id) {
+  const [data, errors] = await api.patch(`/addresses/${id}`, payload);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function deleteAddress(id) {
+  const [data, errors] = await api.delete(`/addresses/${id}`);
   if (errors.length) {
     return parserError(errors);
   }
