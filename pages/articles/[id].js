@@ -230,7 +230,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
             customSize={'extraLarge'}
             onClick={() => router.push('/articles')}
           >
-            {'記事に戻る'}
+            {'記事一覧に戻る'}
           </Button>
         </div>
 

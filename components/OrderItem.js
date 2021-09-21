@@ -266,7 +266,7 @@ const OrderItem = ({item, status}) => {
           <div>{product?.id}</div>
           <div>{item?.quantity}</div>
           <div>{`¥${formatNumber(parseInt(product?.price, 10))}`}</div>
-          <div>{`¥${formatNumber(parseInt(item?.price, 10))}`}</div>
+          <div>{`¥${formatNumber(parseInt(item?.quantity * product?.price, 10))}`}</div>
 
           {/* eslint-disable-next-line no-warning-comments */}
           {/* TODO: not implemented yet */}

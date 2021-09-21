@@ -1,79 +1,76 @@
-import React, {useEffect} from 'react';
+import {Box, Grid, Icon} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import produce from 'immer';
 import Image from 'next/image';
-import {Box, useMediaQuery, Grid, useTheme, Icon} from '@material-ui/core';
+import React, {useEffect} from 'react';
+import {useRecoilState, useSetRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
 
-import {ContentBlock, Button, DeliveryForm} from '~/components';
-import {DialogWidget} from '~/components/Widgets';
+import {AlertMessageForSection, Button, ContentBlock, DeliveryForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {DialogWidget} from '~/components/Widgets';
+import {httpStatus} from '~/constants';
+import {CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
+
 const useStyles = makeStyles((theme) => ({
+  addresses: {
+    marginBottom: '2rem',
+  },
   address: {
-    [theme.breakpoints.down('lg')]: {
-      padding: '2rem 2rem',
-      marginBottom: '2rem',
-    },
-    [theme.breakpoints.down('md')]: {
-      padding: '1.5rem 1rem',
-      marginBottom: '1rem',
+    padding: '2rem',
+    borderRadius: '0.25rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1.5rem',
     },
     [theme.breakpoints.down('xs')]: {
-      padding: '1.5rem 0.5rem 1.5rem 1rem',
-      marginBottom: '1rem',
-    },
-    '& .blockFirst': {
       display: 'flex',
-      color: '#333333',
-      '& .adrNo': {
-        fontSize: '1rem',
-        lineHeight: '1.5rem',
-        fontWeight: 'bold',
-      },
-      '& .adrInfo': {
-        fontSize: '0.875rem',
-        lineHeight: '1.375rem',
-        fontWeight: 'normal',
-        paddingLeft: '7.125rem',
-
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: '3.1rem',
-        },
+      padding: '1.5rem 1rem',
+    },
+  },
+  default: {
+    background: theme.palette.gray.light,
+    border: `1px solid ${theme.palette.gray.main}`,
+  },
+  active: {
+    background: theme.palette.white.main,
+    border: `1px solid ${theme.palette.orange.light}`,
+  },
+  idAddress: {
+    fontSize: '1rem',
+    lineHeight: '1.5rem',
+    color: theme.palette.black.light,
+  },
+  addressInfo: {
+    lineHeight: '1.375rem',
+    color: theme.palette.black.light,
+  },
+  actions: {
+    display: 'flex',
+    justifyContent: 'end',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start',
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'space-around',
+      marginTop: '1.25rem',
+    },
+    '& button': {
+      margin: '0 0 1rem 1rem',
+      height: 'fit-content',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: '0',
       },
     },
-    '& .blockSecond': {
-      display: 'flex',
-      justifyContent: 'flex-end',
+    '& button:first-child': {
       [theme.breakpoints.down('sm')]: {
-        justifyContent: 'flex-start',
-        paddingTop: '1rem',
-      },
-      '& button:first-child': {
-        lineHeight: '1.313rem',
-        marginRight: '1rem',
-        [theme.breakpoints.down('sm')]: {
-          minWidth: '8.5rem',
-          padding: '0.594rem 0.5rem',
-        },
-        [theme.breakpoints.down('xs')]: {
-          marginRight: '0.5rem',
-        },
-      },
-      '& button:last-child': {
-        marginLeft: '1rem',
-        [theme.breakpoints.down('xs')]: {
-          marginLeft: '0.5rem',
-        },
+        minWidth: '8.5rem',
+        padding: '0.594rem 0.5rem',
       },
     },
   },
-  borderActive: {
-    border: '1px solid #EEE0B5',
-    background: '#FFFFFF',
-  },
-  borderDefault: {
-    border: '1px solid #DBDBDB',
-    background: '#F8F8F8',
-  },
-  btnAddress: {
+  btnAdd: {
     '& .MuiButton-label': {
       justifyContent: 'left',
     },
@@ -90,227 +87,306 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const data = [
-  {
-    id: 1,
-    name: '鈴木はなこ1',
-    district: '東京都渋谷区道玄坂2-29-1',
-    zipcode: '150-0043',
-    office_room: '渋谷マンション101号',
-    phone_no: '090-1234-5678',
-    isPrimary: true,
-  },
-  {
-    id: 2,
-    name: '鈴木はなこ2',
-    district: '東京都渋谷区道玄坂2-29-1',
-    zipcode: '150-0043',
-    office_room: '渋谷マンション101号',
-    phone_no: '090-1234-5678',
-    isPrimary: false,
-  },
-  {
-    id: 3,
-    name: '鈴木はなこ3',
-    district: '東京都渋谷区道玄坂2-29-1',
-    zipcode: '150-0043',
-    office_room: '渋谷マンション101号',
-    phone_no: '090-1234-5678',
-    isPrimary: false,
-  },
-];
-
 const DeliveryInfo = () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [open, setOpen] = React.useState(false);
   const [editMode, setEditMode] = React.useState(false);
   const [editData, setEditData] = React.useState({});
-  const [rowId, setRowId] = React.useState(0);
+  const [user, setUser] = useRecoilState(userState);
+  const [loaded, setLoaded] = React.useState(false);
+  const setLoading = useSetRecoilState(loadingState);
+  const [alerts, setAlerts] = React.useState(null);
 
-  const handleClickOpen = () => {
+  const handleSubmit = (address) => {
+    if (editMode) {
+      updateDelivery(address, editData.id);
+    } else {
+      addDelivery(address);
+    }
+  };
+
+  const addDelivery = async (address) => {
+    setLoading(true);
+    if (user?.isAuthenticated) {
+      const response = await CommonService.addAddress(address);
+      if (response) {
+        fetchAddresses();
+      } else {
+        setAlerts({
+          type: 'error',
+          message: '住所を追加できませんでした。',
+        });
+      }
+    } else {
+      setUser(produce((draft) => {
+        draft.addresses = draft.addresses ?? [];
+        draft.addresses.push(address);
+      }));
+    }
+    setLoading(false);
+  };
+
+  const updateDelivery = async (address, id) => {
+    setLoading(true);
+    if (user?.isAuthenticated) {
+      const response = await CommonService.updateAddress(address, id);
+      if (response?.success) {
+        fetchAddresses();
+      } else {
+        // eslint-disable-next-line no-warning-comments
+        // TODO: handle error
+      }
+    } else {
+      setUser(produce((draft) => {
+        draft.addresses = draft.addresses ?? [];
+        draft.addresses.push(address);
+      }));
+    }
+    setLoading(false);
+  };
+
+  const handleClickOpenAdd = () => {
+    setEditData({});
+    setEditMode(false);
     setOpen(true);
   };
+
+  const handleClickOpenUpdate = (adr) => {
+    setEditData(adr);
+    setEditMode(true);
+    setOpen(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
     setEditMode(false);
     setEditData({});
   };
 
-  useEffect(() => {
-    if (editMode) {
-      setEditData(data[rowId]);
+  const fetchAddresses = async () => {
+    const addresses = await CommonService.getAddresses();
+    if (addresses?.length > 0) {
+      setUser(produce((draft) => {
+        draft.addresses = addresses;
+      }));
+    } else {
+      setUser(produce((draft) => {
+        draft.addresses = [];
+      }));
     }
-  }, [editMode, rowId]);
+  };
+
+  const handleClickDefault = async (adr) => {
+    const newAddress = {...adr, is_default: 1};
+    updateDelivery(newAddress, newAddress?.id);
+  };
+
+  const handleClickDelete = (id) => {
+    Swal.fire({
+      title: '削除します。よろしいですか？',
+      text: '削除したデータは元に戻りません。',
+      showCancelButton: true,
+      reverseButtons: true,
+      cancelButtonText: 'キャンセル',
+      confirmButtonText: 'ボタン',
+      backdrop: false,
+      customClass: {
+        container: 'swal2-warning',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteDelivery(id);
+      }
+    });
+  };
+
+  const deleteDelivery = async (id) => {
+    setLoading(true);
+    const res = await CommonService.deleteAddress(id);
+    if (res.status === httpStatus.SUCCESS) {
+      setLoading(false);
+      handleClose();
+      fetchAddresses();
+    } else {
+      //
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      fetchAddresses();
+    }
+    setLoaded(true);
+  }, []);
 
   return (
-    <DefaultLayout title='Delivery Info - Oshinagaki Store'>
+    <DefaultLayout title={'お届け先情報'}>
       <ContentBlock
         title='お届け先情報'
         bgImage='/img/noise.png'
         bgRepeat='repeat'
         mixBlendMode='multiply'
       >
-        {data.map((adr) => (
-          <Grid
-            key={adr.id}
-            container={true}
-            className={adr.isPrimary ? (classes.address + ' ' + classes.borderActive) : (classes.address + ' ' + classes.borderDefault)}
-          >
+        <div className={classes.addresses}>
+          {loaded && user.addresses?.map((adr) => (
             <Grid
-              item={true}
-              xs={12}
-              sm={6}
-              lg={6}
-              className={'blockFirst'}
+              key={adr.id}
+              container={true}
+              spacing={8}
             >
-              <Box
-                component='div'
-                className={'adrNo'}
+              <Grid
+                item={true}
+                xs={12}
               >
-                {`住所 ${adr.id}`}
-              </Box>
-              <Box
-                component='div'
-                className={'adrInfo'}
-              >
-                {adr.name} <br/>
-                {`〒${adr.zipcode}`} <br/>
-                {adr.district} <br/>
-                {adr.office_room} <br/>
-                {adr.phone_no}
-              </Box>
-            </Grid>
-            <Grid
-              item={true}
-              xs={12}
-              sm={6}
-              lg={6}
-              className={'blockSecond'}
-            >
-              <Box
-                component='div'
-              >
-                {
-                  adr.isPrimary ? (
-                    <Button
-                      variant='contained'
-                      customColor='yellow'
-                      customSize='small'
-                      startIcon={
-                        <Image
-                          src={'/img/icons/ready.svg'}
-                          width={20}
-                          height={20}
-                          alt={'touch'}
-                        />}
+                <Grid
+                  container={true}
+                  spacing={0}
+                  className={adr.is_default === 1 ? clsx(classes.address, classes.active) : clsx(classes.address, classes.default)}
+                >
+                  <Grid
+                    item={true}
+                    xs={3}
+                    sm={2}
+                  >
+                    <b className={classes.idAddress}>
+                      {`住所 ${adr.id}`}
+                    </b>
+                  </Grid>
+
+                  <Grid
+                    item={true}
+                    xs={9}
+                    sm={4}
+                  >
+                    <Box
+                      component='div'
+                      className={classes.addressInfo}
                     >
-                      {'設定中の住所'}
-                    </Button>
-                  ) : (
+                      {adr.name} <br/>
+                      {`〒${adr.zipcode}`} <br/>
+                      {`${adr.province.name}${adr.city}`} <br/>
+                      {adr.address} <br/>
+                      {adr.tel}
+                    </Box>
+                  </Grid>
+
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={6}
+                    className={classes.actions}
+                  >
+                    {adr.is_default === 1 ? (
+                      <Button
+                        variant='contained'
+                        customColor='yellow'
+                        customSize='small'
+                      >
+                        {'設定中の住所'}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant='contained'
+                        customColor='white'
+                        customSize='small'
+                        customBorder='bdGray'
+                        startIcon={
+                          <Image
+                            src={'/img/icons/ready_line.svg'}
+                            width={17}
+                            height={17}
+                            alt={'touch'}
+                          />}
+                        onClick={() => {
+                          handleClickDefault(adr);
+                        }}
+                      >
+                        {'この住所に設定'}
+                      </Button>
+                    )}
+
                     <Button
                       variant='contained'
+                      customSize='tiny'
                       customColor='white'
-                      customSize='small'
                       customBorder='bdGray'
                       startIcon={
                         <Image
-                          src={'/img/icons/ready_line.svg'}
+                          src={'/img/icons/edit.svg'}
                           width={20}
                           height={20}
                           alt={'touch'}
                         />}
+                      onClick={() => {
+                        handleClickOpenUpdate(adr);
+                      }}
                     >
-                      {'設定中の住所'}
+                      {'編集'}
                     </Button>
-                  )
-                }
 
-                <Button
-                  variant='contained'
-                  customSize='tiny'
-                  customColor='white'
-                  customBorder='bdGray'
-                  startIcon={
-                    <Image
-                      src={'/img/icons/edit.svg'}
-                      width={20}
-                      height={20}
-                      alt={'touch'}
-                    />}
-                  onClick={() => {
-                    setRowId(parseInt(`${adr.id}`, 10) - 1);
-                    setEditMode(true);
-                    handleClickOpen();
-                  }}
-                >
-                  {'編集'}
-                </Button>
-                <Button
-                  variant='contained'
-                  customColor='whiteRed'
-                  customSize='tiny'
-                  customBorder='bdRed'
-                  startIcon={
-                    <Icon>{'delete'}</Icon>
-                  }
-                >
-                  {'削除'}
-                </Button>
-              </Box>
-
+                    <Button
+                      variant='contained'
+                      customColor='whiteRed'
+                      customSize='tiny'
+                      customBorder='bdRed'
+                      startIcon={
+                        <Icon>{'delete'}</Icon>
+                      }
+                      onClick={() => {
+                        handleClickDelete(adr.id);
+                      }}
+                    >
+                      {'削除'}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
-          </Grid>
-        ))}
+          ))}
+        </div>
 
-        <Grid
-          container={true}
-          spacing={0}
-        >
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-            lg={12}
+        <div className={classes.btnAdd}>
+          <Button
+            variant='contained'
+            customColor='white'
+            customSize='medium'
+            customBorder='bdBlack'
+            startIcon={
+              <div style={{marginRight: '0.5rem', display: 'flex'}}>
+                <Image
+                  src={'/img/icons/btn_add.svg'}
+                  width={32}
+                  height={32}
+                  alt={'btn_add'}
+                />
+              </div>}
+            onClick={handleClickOpenAdd}
           >
-            <Box
-              textAlign={isMobile ? 'center' : 'left'}
-              className={classes.btnAddress}
-            >
-              <Button
-                variant='contained'
-                customColor='white'
-                customSize='extraLarge'
-                customBorder='bdBlack'
-                startIcon={
-                  <Image
-                    src={'/img/icons/btn_add.svg'}
-                    width={32}
-                    height={32}
-                    alt={'btn_add'}
-                  />}
-                onClick={handleClickOpen}
-              >
-                {'新しい住所を追加'}
-              </Button>
-            </Box>
-
-          </Grid>
-        </Grid>
+            {'新しい住所を追加'}
+          </Button>
+        </div>
       </ContentBlock>
+
       <DialogWidget
         open={open}
-        handleClose={handleClose}
         size={'lg'}
         title={'新しい住所を追加する'}
+        handleClose={handleClose}
       >
         <DeliveryForm
-          dataEdit={editData}
+          defaultValues={editMode ? editData : null}
+          onSubmit={handleSubmit}
           editMode={editMode}
+          onClose={handleClose}
         />
       </DialogWidget>
+
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </DefaultLayout>
   );
 };
