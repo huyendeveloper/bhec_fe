@@ -126,7 +126,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '4px 0px 0px 4px',
-    fontWeight: '700',
     fontSize: '1rem',
     background: '#FFFFFF',
     border: `1px solid ${theme.blockContact.borderColor}`,
