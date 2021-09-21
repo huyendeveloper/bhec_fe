@@ -28,8 +28,8 @@ import {ContactProduct, ThanksPopup} from '~/components/Contact';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
-    [theme.breakpoints.up('xs')]: {
-      margin: '-1.5rem',
+    [theme.breakpoints.down('sm')]: {
+      margin: '-0.5rem',
     },
     '& .formBlockHeader': {
       [theme.breakpoints.down('xs')]: {
@@ -396,42 +396,44 @@ export default function ContactPage() {
                 >{'法人'}</div>
               </div>
               <div style={{marginBottom: '1rem'}}>
-                {isLoggined &&
-                  <div
-                    className='formBlockHeader'
-                    style={{marginBottom: '2rem'}}
-                  >
-                    <Typography
-                      component='h3'
-                      className='formBlockTitle'
+                <div className={classes.block}>
+                  {isLoggined &&
+                    <div
+                      className='formBlockHeader'
+                      style={{marginBottom: '2rem'}}
                     >
-                      {tabActive === 1 ? '個人のお客様用フォーム' : ''}
-                    </Typography>
-                    <Typography
-                      component='p'
-                      className='formBlockDesc'
-                    >
-                      {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【送信】をクリックしてください。' : ''}
-                    </Typography>
-
-                    {tabActive === 2 &&
-                    <Typography
-                      component='p'
-                      className='formBlockNote'
-                    >
-                      <span>{'法人のお客様は'}</span>
-                      <a
-                        href='mailto:oshinagaki@gmail.com'
-                        target='_blank'
-                        className='formBlockLink'
-                        rel='noreferrer'
+                      <Typography
+                        component='h3'
+                        className='formBlockTitle'
                       >
-                        {'こちら'}
-                      </a>
-                      <span>{'から'}</span>
-                    </Typography>}
-                  </div>
-                }
+                        {tabActive === 1 ? '個人のお客様用フォーム' : ''}
+                      </Typography>
+                      <Typography
+                        component='p'
+                        className='formBlockDesc'
+                      >
+                        {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【フォーム内容確認】をクリックしてください。' : ''}
+                      </Typography>
+
+                      {tabActive === 2 &&
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
+                        >
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
+                    </div>
+                  }
+                </div>
               </div>
               {tabActive === 1 && <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 {/* SECOND BLOCK */}
@@ -773,7 +775,7 @@ export default function ContactPage() {
                           customSize='extraLarge'
                           className={classes.btnPrev}
                         >
-                          {'前のページへ戻る'}
+                          {'TOPページへ戻る'}
                         </Button>
                       </Link>
                     </Grid>
