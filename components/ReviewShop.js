@@ -1,10 +1,11 @@
-import {Grid, Avatar, useMediaQuery, TextareaAutosize as Textarea} from '@material-ui/core';
+import {Avatar, Grid, TextareaAutosize, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {Controller} from 'react-hook-form';
 
+import {Button, ConnectForm} from '~/components';
 import {RatingWidget} from '~/components/Widgets';
-import {Button} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -118,97 +119,116 @@ const ReviewShop = ({productOwner}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <div className={classes.root}>
-      <Grid
-        container={true}
-        spacing={0}
-      >
-        <Grid
-          item={true}
-          sm={12}
-        >
-          <Grid
-            container={true}
-            spacing={0}
-          >
+    <ConnectForm>
+      {({control}) => {
+        return (
+          <div className={classes.root}>
             <Grid
-              item={true}
-              md={2}
-
-              style={{marginBottom: isMobile ? '1.5rem' : (isTablet ? '1.625rem' : '2.125rem')}}
+              container={true}
+              spacing={0}
             >
-              <Avatar
-                alt={productOwner.name}
-                src={productOwner.avatar}
-                className={classes.avatar}
-              />
-            </Grid>
-            <Grid
-              item={true}
-              md={10}
-              style={{marginLeft: isTablet ? '1rem' : null}}
-            >
-              <h2
-                className={classes.productName}
+              <Grid
+                item={true}
+                sm={12}
               >
-                {productOwner.name}
-              </h2>
+                <Grid
+                  container={true}
+                  spacing={0}
+                >
+                  <Grid
+                    item={true}
+                    md={2}
 
-              <Button
-                customColor={'yellow'}
-                customSize={'small'}
+                    style={{marginBottom: isMobile ? '1.5rem' : (isTablet ? '1.625rem' : '2.125rem')}}
+                  >
+                    <Avatar
+                      alt={productOwner.name}
+                      src={productOwner.avatar_url}
+                      className={classes.avatar}
+                    />
+                  </Grid>
+                  <Grid
+                    item={true}
+                    md={10}
+                    style={{marginLeft: isTablet ? '1rem' : null}}
+                  >
+                    <h2
+                      className={classes.productName}
+                    >
+                      {productOwner.name}
+                    </h2>
+
+                    <Button
+                      customColor={'yellow'}
+                      customSize={'small'}
+                    >
+                      {'フォロー中'}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+                xs={12}
               >
-                {'フォロー中'}
-              </Button>
+                <h3>{'店舗の満足度'}</h3>
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+                xs={12}
+              >
+                <div className={classes.stars}>
+                  <RatingWidget
+                    readOnly={false}
+                    nameRating={'rating_seller'}
+                  />
+
+                  <span className={classes.guideRating}>{'星をクリックして入力してください'}</span>
+                </div>
+              </Grid>
+
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+              >
+                <h3>{'レビュー内容'}</h3>
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+              >
+                <Controller
+                  name='content_review_seller'
+                  control={control}
+                  defaultValue={''}
+                  render={({field: {name, value, onChange}}) => (
+                    <TextareaAutosize
+                      variant='outlined'
+                      name={name}
+                      value={value}
+                      onChange={onChange}
+                      placeholder={'気に入ったこと/気に入らなかったことは何ですか？この製品をどのように使いましたか？'}
+                      className={classes.reviewComment}
+                    />
+                  )}
+                />
+
+                <p className={classes.guide}>
+                  {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
+                </p>
+              </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-          xs={12}
-        >
-          <h3>{'店舗の満足度'}</h3>
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-          xs={12}
-        >
-          <div className={classes.stars}>
-            <RatingWidget readOnly={false}/>
-
-            <span className={classes.guideRating}>{'星をクリックして入力してください'}</span>
           </div>
-        </Grid>
-
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-        >
-          <h3>{'レビュー内容'}</h3>
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-        >
-          <Textarea
-            placeholder={'気に入ったこと/気に入らなかったことは何ですか？この製品をどのように使いましたか？'}
-            maxRows={6}
-            className={classes.reviewComment}
-          />
-
-          <p className={classes.guide}>
-            {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
-          </p>
-        </Grid>
-      </Grid>
-    </div>
+        );
+      }}
+    </ConnectForm>
   );
 };
 

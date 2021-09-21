@@ -1,11 +1,12 @@
+import {Grid, TextareaAutosize, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {React, useState} from 'react';
-import {Grid, useMediaQuery, TextareaAutosize as Textarea} from '@material-ui/core';
-import PropTypes from 'prop-types';
 import Image from 'next/image';
+import PropTypes from 'prop-types';
+import {React} from 'react';
+import {Controller} from 'react-hook-form';
 
+import {ConnectForm, ImageDropzone} from '~/components';
 import {RatingWidget} from '~/components/Widgets';
-import {ImageDropzone} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,161 +130,166 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewProduct = ({product}) => {
+const ReviewProduct = ({product, images, addImage, removeImage}) => {
   const classes = useStyles();
-  const [images, setImages] = useState([]);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const handleSetImages = (index, newImage) => {
-    if ((index + 1) > images.length) {
-      setImages([...images, newImage]);
-    } else {
-      const newImages = [...images];
-      newImages[index] = newImage;
-      setImages(newImages);
-    }
-  };
-
-  const handleRemoveImage = (index) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
-  };
-
   return (
-    <div className={classes.root}>
-      <Grid
-        container={true}
-        spacing={0}
-        className={classes.container}
-      >
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-          xs={4}
-          className={classes.imageProduct}
-          style={{paddingRight: isMobile ? '1rem' : '1.5rem'}}
-        >
-          <Image
-            src={product.productThumb}
-            width={
-              isMobile ? 121 : (isTablet ? 145 : 170)
-            }
-            height={
-              isMobile ? 80 : (isTablet ? 96 : 112)
-            }
-            layout={'responsive'}
-            alt={product.productName}
-            className={classes.productThumb}
-          />
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-          xs={8}
-        >
-          <h2 className={classes.productName}>
-            {product.productName}
-          </h2>
-        </Grid>
+    <ConnectForm>
+      {({control}) => {
+        return (
+          <div className={classes.root}>
+            <Grid
+              container={true}
+              spacing={0}
+              className={classes.container}
+            >
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+                xs={4}
+                className={classes.imageProduct}
+                style={{paddingRight: isMobile ? '1rem' : '1.5rem'}}
+              >
+                <Image
+                  src={'/img/products/product-02.png'}
+                  width={
+                    isMobile ? 121 : (isTablet ? 145 : 170)
+                  }
+                  height={
+                    isMobile ? 80 : (isTablet ? 96 : 112)
+                  }
+                  layout={'responsive'}
+                  alt={product.name}
+                  className={classes.productThumb}
+                />
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+                xs={8}
+              >
+                <h2 className={classes.productName}>
+                  {product.name}
+                </h2>
+              </Grid>
 
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-          xs={12}
-        >
-          <h3>{'注文番号'}</h3>
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-          xs={12}
-        >
-          <div className={classes.stars}>
-            <RatingWidget readOnly={false}/>
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+                xs={12}
+              >
+                <h3>{'注文番号'}</h3>
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+                xs={12}
+              >
+                <div className={classes.stars}>
+                  <RatingWidget
+                    readOnly={false}
+                    nameRating={'rating_product'}
+                  />
 
-            <span className={classes.guideRating}>{'星をクリックして入力してください'}</span>
+                  <span className={classes.guideRating}>{'星をクリックして入力してください'}</span>
+                </div>
+              </Grid>
+
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+                xs={12}
+              >
+                <h3>{'レビュー内容'}</h3>
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+                xs={12}
+              >
+                <Controller
+                  name='content_review_product'
+                  control={control}
+                  defaultValue={''}
+                  render={({field: {name, value, onChange}}) => (
+                    <TextareaAutosize
+                      variant='outlined'
+                      name={name}
+                      value={value}
+                      onChange={onChange}
+                      placeholder={'気に入ったこと/気に入らなかったことは何ですか？この製品をどのように使いましたか？'}
+                      className={classes.reviewComment}
+                    />
+                  )}
+                />
+
+                <p className={classes.guide}>
+                  {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
+                </p>
+              </Grid>
+
+              <Grid
+                item={true}
+                md={2}
+                sm={3}
+              >
+                <h3>{'画像アップロード（任意）'}</h3>
+              </Grid>
+              <Grid
+                item={true}
+                md={10}
+                sm={9}
+              >
+                <p
+                  className={classes.guide}
+                  style={{color: '#333333', margin: (isMobile ? '0 0 1.5rem' : (isTablet ? '0 0 1.25rem' : '0 0 1.688rem'))}}
+                >
+                  {'5MB未満の画像(jpg, png)を3枚までアップロードすることができます。'}
+                </p>
+
+                <div className={classes.dropzoneImage}>
+                  {images.map((item, index) => (
+                    <ImageDropzone
+                      key={String(index)}
+                      index={index}
+                      image={item}
+                      setImages={addImage}
+                      removeImage={removeImage}
+                    />
+                  ))}
+
+                  {images.length < 3 &&
+                    <ImageDropzone
+                      index={images.length}
+                      image={null}
+                      setImages={addImage}
+                      removeImage={removeImage}
+                    />
+                  }
+                </div>
+              </Grid>
+            </Grid>
           </div>
-        </Grid>
-
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-          xs={12}
-        >
-          <h3>{'レビュー内容'}</h3>
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-          xs={12}
-        >
-          <Textarea
-            placeholder={'気に入ったこと/気に入らなかったことは何ですか？この製品をどのように使いましたか？'}
-            maxRows={6}
-            className={classes.reviewComment}
-          />
-
-          <p className={classes.guide}>
-            {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
-          </p>
-        </Grid>
-
-        <Grid
-          item={true}
-          md={2}
-          sm={3}
-        >
-          <h3>{'画像アップロード（任意）'}</h3>
-        </Grid>
-        <Grid
-          item={true}
-          md={10}
-          sm={9}
-        >
-          <p
-            className={classes.guide}
-            style={{color: '#333333', margin: (isMobile ? '0 0 1.5rem' : (isTablet ? '0 0 1.25rem' : '0 0 1.688rem'))}}
-          >
-            {'5MB未満の画像(jpg, png)を3枚までアップロードすることができます。'}
-          </p>
-
-          <div className={classes.dropzoneImage}>
-            {images.map((item, index) => (
-              <ImageDropzone
-                key={String(index)}
-                index={index}
-                image={item}
-                setImages={handleSetImages}
-                removeImage={handleRemoveImage}
-              />
-            ))}
-
-            {images.length < 3 &&
-              <ImageDropzone
-                index={images.length}
-                image={null}
-                setImages={handleSetImages}
-                removeImage={handleRemoveImage}
-              />
-            }
-          </div>
-        </Grid>
-      </Grid>
-    </div>
+        );
+      }}
+    </ConnectForm>
   );
 };
 
 ReviewProduct.propTypes = {
   product: PropTypes.object,
+  images: PropTypes.array,
+  addImage: PropTypes.func,
+  removeImage: PropTypes.func,
 };
 
 ReviewProduct.defaultProps = {
