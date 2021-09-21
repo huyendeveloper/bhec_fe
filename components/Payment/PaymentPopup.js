@@ -327,7 +327,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
-                          label='SUZUKI HANAKO'
+                          label='TARO YAMADA'
                           variant='outlined'
                           error={Boolean(errors.card_name)}
                           InputLabelProps={{shrink: false}}
@@ -372,16 +372,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
+                          {...getCardNumberProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          placeholder={'0000 - 0000 - 0000 - 0000'}
+                          placeholder={'カード番号'}
                           error={Boolean(errors.card_number)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
-                          {...getCardNumberProps({onChange})}
                         />
                       )}
                     />
@@ -425,16 +425,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
+                          {...getExpiryDateProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          label={'MM/YY'}
+                          placeholder={'月/年'}
                           error={Boolean(errors.card_expire)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
-                          {...getExpiryDateProps({onChange})}
                         />
                       )}
                     />

@@ -16,20 +16,35 @@ import theme from '~/theme';
 
 const useStyles = makeStyles(() => ({
   root: {
-    position: 'relative',
-    marginBottom: '5.063rem',
     height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+
+    '& .MuiCardContent-root': {
+      flex: '1 1 auto',
+    },
+    '& .MuiCardActionArea-root': {
+      flex: '0 1 auto',
+      display: 'flex',
+    },
   },
   linkName: {
+    width: '100%',
     '&:hover': {
       textDecoration: 'none',
     },
+  },
+  linkNameImage: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bgImg: {
     height: '100%',
     backgroundColor: '#DBDBDB',
     padding: 50,
     backgroundSize: 'cover',
+    width: '100%',
   },
   productName: {
     fontWeight: 'bold',
@@ -65,10 +80,6 @@ const useStyles = makeStyles(() => ({
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
-    position: 'absolute',
-    bottom: '0',
-    right: '0',
-    left: '0',
   },
   productSeller: {
     display: 'flex',

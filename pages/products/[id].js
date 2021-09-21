@@ -1,14 +1,13 @@
 import {Container, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Head from 'next/head';
 import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
 
-import {Breadcrumbs, Footer, Header, Search, SingleProduct} from '~/components';
+import {Breadcrumbs, Search, SingleProduct} from '~/components';
 import {productState} from '~/store/productState';
 import {ProductService} from '~/services';
-
+import {DefaultLayout} from '~/components/Layouts';
 const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
@@ -72,68 +71,64 @@ function ProductDetail(props) {
   }, [linkProps, product]);
 
   return (
-    <div className={classes.root}>
-      <Head>
-        <title>{product?.productDetail?.name || 'Oshinagaki'}</title>
-      </Head>
-      <Header showMainMenu={false}/>
+    <DefaultLayout title='Products - Oshinagaki Store'>
+      <div className={classes.root}>
+        {/* Breadcrumbs */}
+        {linkProps && (
+          <Container
+            maxWidth='lg'
+          >
+            <Grid
+              container={true}
+              spacing={0}
+              className={classes.breadcrumbs}
+            >
+              <Grid
+                item={true}
+                xs={12}
+                md={12}
+                lg={12}
+              >
+                <Breadcrumbs linkProps={linkProps}/>
+              </Grid>
+            </Grid>
+          </Container>
+        )}
 
-      {/* Breadcrumbs */}
-      {linkProps && (
+        {/* Search */}
         <Container
           maxWidth='lg'
+          className={classes.topContainer}
         >
+          <Search/>
+        </Container>
+
+        {/* Product details */}
+        <SingleProduct/>
+
+        {/* Banner */}
+        <Container maxWidth='lg'>
           <Grid
             container={true}
-            spacing={0}
-            className={classes.breadcrumbs}
+            className={classes.banner}
           >
             <Grid
               item={true}
               xs={12}
               md={12}
-              lg={12}
             >
-              <Breadcrumbs linkProps={linkProps}/>
+              <Image
+                src={'/img/banner-botton.png'}
+                alt='banner bottom'
+                layout={'responsive'}
+                width={'1140'}
+                height={'192'}
+              />
             </Grid>
           </Grid>
         </Container>
-      )}
-
-      {/* Search */}
-      <Container
-        maxWidth='lg'
-        className={classes.topContainer}
-      >
-        <Search/>
-      </Container>
-
-      {/* Product details */}
-      <SingleProduct/>
-
-      {/* Banner */}
-      <Container maxWidth='lg'>
-        <Grid
-          container={true}
-          className={classes.banner}
-        >
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-          >
-            <Image
-              src={'/img/banner-botton.png'}
-              alt='banner bottom'
-              layout={'responsive'}
-              width={'1140'}
-              height={'192'}
-            />
-          </Grid>
-        </Grid>
-      </Container>
-      <Footer/>
-    </div >
+      </div >
+    </DefaultLayout>
   );
 }
 

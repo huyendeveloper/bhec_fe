@@ -2,11 +2,14 @@ import {
   Grid,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Checkout, ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
+import {ProductService} from '~/services';
+
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -170,10 +173,25 @@ const useStyles = makeStyles((theme) => ({
 
 // eslint-disable-next-line no-warning-comments
 // TODO: get products in same category with cart item
-const recommendProducts = [];
 
 export default function OrderForm() {
   const classes = useStyles();
+  const [recommendProducts, setRecommendProducts] = useState([]);
+
+  const getListRecommendProducts = async () => {
+    const query = {
+      page: 1,
+      per_page: 3,
+    };
+    const result = await Product.getProducts(query);
+    if (result && result.products && result.products.length) {
+      setRecommendProducts(result.products);
+    }
+  };
+
+  useEffect(() => {
+    getListRecommendProducts();
+  }, []);
 
   return (
     <DefaultLayout title={'ご注文フォーム'}>

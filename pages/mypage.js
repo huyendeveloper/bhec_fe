@@ -3,17 +3,18 @@ import {makeStyles} from '@material-ui/core/styles';
 import produce from 'immer';
 import {signOut} from 'next-auth/client';
 import Router from 'next/router';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import {BoxLink, ButtonLink, ContentBlock, Notifications, UserAccount} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductWidget} from '~/components/Widgets';
-import {AuthService} from '~/services';
+import {AuthService, ProductService} from '~/services';
 import {cartState} from '~/store/cartState';
 import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
+const Product = new ProductService();
 const AuthServiceInstance = new AuthService();
 
 const useStyles = makeStyles(() => ({
@@ -85,13 +86,13 @@ const boxLinks = [
 
 // eslint-disable-next-line no-warning-comments
 // TODO: retrieve recommend products via API
-const recommendProducts = [];
 
 export default function MyPage() {
   const classes = useStyles();
   const [user, setUser] = useRecoilState(userState);
   const setCart = useSetRecoilState(cartState);
   const setOrder = useSetRecoilState(orderState);
+  const [recommendProducts, setRecommendProducts] = useState([]);
 
   const actionButton = (item) => {
     if (item.id === 10) {
@@ -107,6 +108,17 @@ export default function MyPage() {
       Router.push({
         pathname: item.url,
       });
+    }
+  };
+
+  const getListRecommendProducts = async () => {
+    const query = {
+      page: 1,
+      per_page: 3,
+    };
+    const result = await Product.getProducts(query);
+    if (result && result.products && result.products.length) {
+      setRecommendProducts(result.products);
     }
   };
 
@@ -134,6 +146,7 @@ export default function MyPage() {
     if (user?.isAuthenticated) {
       fetchUserInfo();
     }
+    getListRecommendProducts();
   }, []);
 
   return (

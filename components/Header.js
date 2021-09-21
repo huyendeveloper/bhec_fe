@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     color: theme.palette.text.primary,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    position: 'absolute',
   },
   toolBar: {
     backgroundColor: '#fff',
@@ -65,12 +66,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolBarPlaceholder: {
-    [theme.breakpoints.up('xs')]: {
-      minHeight: 48,
-      height: 48,
+    height: 80,
+    [theme.breakpoints.down('sm')]: {
+      height: 130,
     },
-    [theme.breakpoints.up('md')]: {
-      height: 80,
+    [theme.breakpoints.down('xs')]: {
+      height: 96,
     },
   },
   toolBarPersonal: {
@@ -197,7 +198,7 @@ const listNavigation = [
     url: '/products?category=lifestyle',
   },
   {
-    name: 'ブログ',
+    name: '特集',
     url: '/articles',
   },
 
@@ -220,6 +221,8 @@ const Header = (props) => {
 
   const displaySameRow = isMobile ? false : (!isTablet);
 
+  const {setOpenNav, openNav} = props;
+
   const classes = useStyles();
 
   useEffect(() => {
@@ -232,16 +235,21 @@ const Header = (props) => {
     <>
       <div id='back-to-top-anchor'/>
       <HideOnScroll {...props}>
-        <AppBar className={classes.appBar}>
+        <AppBar
+          className={classes.appBar}
+        >
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
               {!displaySameRow && (
-                <div className={classes.icNav}>
+                <div
+                  className={classes.icNav}
+                  onClick={() => setOpenNav(!openNav)}
+                >
                   <Image
-                    src='/menu.png'
-                    alt='おしながき'
-                    width={24}
-                    height={24}
+                    src={openNav ? '/ic-toggle-nav.png' : '/menu.png'}
+                    alt='メニュー'
+                    width={openNav ? 20 : 24}
+                    height={openNav ? 20 : 24}
                   />
                 </div>
               )}
@@ -401,9 +409,6 @@ const Header = (props) => {
       </HideOnScroll>
       <Toolbar
         className={classes.toolBarPlaceholder}
-        style={{
-          height: displaySameRow ? '80px' : '112px',
-        }}
       />
     </>
   );
@@ -411,6 +416,8 @@ const Header = (props) => {
 
 Header.propTypes = {
   showMainMenu: PropTypes.bool.isRequired,
+  setOpenNav: PropTypes.func,
+  openNav: PropTypes.bool,
 };
 
 Header.defaultProps = {

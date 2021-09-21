@@ -21,7 +21,7 @@ const ProductSwiper = ({items}) => {
       >
         {items?.map((item, index) => (
           <SwiperSlide
-            style={{width: '70%'}}
+            style={{width: '70%', height: 'auto'}}
             key={String(index)}
           >
             <ProductWidget
@@ -42,7 +42,7 @@ const ProductSwiper = ({items}) => {
       >
         {items?.map((item, index) => (
           <SwiperSlide
-            style={{width: '90%'}}
+            style={{width: '90%', height: 'auto'}}
             key={String(index)}
           >
             <ProductWidget

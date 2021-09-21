@@ -67,4 +67,12 @@ export default class ProductService {
     }
     return data;
   }
+
+  async reviewProduct(payload) {
+    const [data, errors] = await api.post('/reviews', payload);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }
