@@ -1,20 +1,21 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {Card, CardActionArea, CardMedia, Grid, IconButton, TextField, Typography, useMediaQuery} from '@material-ui/core';
+import {Card, CardActionArea, CardMedia, FormControl, Grid, IconButton, NativeSelect, Typography, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import clsx from 'clsx';
 import 'date-fns';
+import produce from 'immer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
-import produce from 'immer';
 import Swal from 'sweetalert2';
 
 import QuantityBox from './QuantityBox';
 
 import {format as formatNumber} from '~/lib/number';
 import {cartState} from '~/store/cartState';
+import {times} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
   centerCell: {
@@ -120,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderFormItem = ({data, control, errors, disabled}) => {
+const OrderFormItem = ({data, control, errors, disabled, index, defaultNote}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -136,6 +137,13 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
         draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
       }));
     }
+  };
+
+  const handleChangeNote = (event) => {
+    const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
+    setCart(produce((draft) => {
+      draft.items[itemIdx].note = event.target.value;
+    }));
   };
 
   const handleDelete = () => {
@@ -158,13 +166,6 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
         }));
       }
     });
-  };
-
-  const handleChangeNote = (event) => {
-    const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
-    setCart(produce((draft) => {
-      draft.items[itemIdx].note = event.target.value;
-    }));
   };
 
   return (
@@ -245,7 +246,7 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
               <div className={classes.selectBox}>
                 <div className={classes.title}>{'数量'}</div>
                 <QuantityBox
-                  name={'productQuantity'}
+                  name={`quantity${data.productDetail.id}`}
                   maximumQuantity={data.productDetail.maximum_quantity ?? 10}
                   defaultValue={data.quantity}
                   handleChange={handleChangeQuantity}
@@ -284,7 +285,6 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
             >
               <DeleteIcon/>
             </IconButton>
-
           </Grid>
         )}
 
@@ -307,23 +307,37 @@ const OrderFormItem = ({data, control, errors, disabled}) => {
           className={classes.gridContainer}
         >
           <Controller
+            name={`product_id${data.productDetail.id}`}
+            control={control}
+            defaultValue={data.productDetail.id}
+            render={() => (<div>{''}</div>)}
+          />
+
+          <Controller
             name={`note${data.productDetail.id}`}
             control={control}
-            defaultValue={data.note ?? ''}
+            defaultValue={defaultNote || '指定なし'}
             render={({field: {name, value, ref, onChange}}) => (
-              <TextField
-                label=''
-                variant='outlined'
-                InputLabelProps={{shrink: false}}
-                name={name}
-                value={value}
-                onChange={(e) => {
-                  onChange(e);
-                  handleChangeNote(e);
-                }}
-                inputRef={ref}
-                disabled={disabled}
-              />
+              <FormControl>
+                <NativeSelect
+                  className={errors.note ? 'selectBoxError' : ''}
+                  name={name}
+                  value={value}
+                  inputRef={ref}
+                  onChange={(e) => {
+                    onChange(e);
+                    handleChangeNote(e);
+                  }}
+                  disabled={disabled}
+                >
+                  {times.map((time) => (
+                    <option
+                      key={time.value}
+                      value={time.value}
+                    >{time.value}</option>
+                  ))}
+                </NativeSelect>
+              </FormControl>
             )}
           />
         </Grid>
@@ -337,6 +351,8 @@ OrderFormItem.propTypes = {
   control: PropTypes.any,
   errors: PropTypes.object,
   disabled: PropTypes.bool,
+  index: PropTypes.number,
+  defaultNote: PropTypes.string,
 };
 
 export default OrderFormItem;

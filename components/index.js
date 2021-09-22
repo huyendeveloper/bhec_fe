@@ -10,6 +10,7 @@ export {default as CartItem} from './CartItem';
 export {default as CategoryBlock} from './CategoryBlock';
 export {default as Checkout} from './Checkout';
 export {default as CompleteConfirmation} from './CompleteConfirmation';
+export {default as ConfirmCheckout} from './ConfirmCheckout';
 export {default as ConnectForm} from './ConnectForm';
 export {default as ThanksPopup} from './Contact/ThanksPopup';
 export {default as ContentBlock} from './ContentBlock';

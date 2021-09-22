@@ -13,6 +13,7 @@ import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import {userState} from '~/store/userState';
 import {ProductService} from '~/services';
+import {orderState} from '~/store/orderState';
 
 const Product = new ProductService();
 
@@ -59,6 +60,7 @@ export default function OrderForm() {
   const user = useRecoilValue(userState);
   const router = useRouter();
   const [recommendProducts, setRecommendProducts] = useState([]);
+  const order = useRecoilValue(orderState);
 
   const getListRecommendProducts = async () => {
     const query = {
@@ -93,6 +95,13 @@ export default function OrderForm() {
             variant={'h5'}
             className={classes.thanks}
           >{'ご購入ありがとうございます。'}</Typography>
+
+          {order?.order_number &&
+            <Typography
+              variant={'h5'}
+              className={classes.thanks}
+            >{`注文番号: ${order?.order_number}` || ''}</Typography>
+          }
 
           <div className={classes.buttons}>
             <Button

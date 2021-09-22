@@ -8,6 +8,8 @@ const CommonService = {
   updateAddress,
   deleteAddress,
   registerSeller,
+  getAddress,
+  getPrefectureByZipcode,
 };
 
 const parserError = (errors) => {
@@ -63,6 +65,22 @@ async function registerSeller(payload) {
     return parserError(errors);
   }
   return {data: isSend, errors};
+}
+
+async function getAddress(id) {
+  const [data, errors] = await api.get(`/addresses/${id}`);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function getPrefectureByZipcode(zipcode) {
+  const [data, errors] = await api.get(`http://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zipcode}`);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
 }
 
 export default CommonService;
