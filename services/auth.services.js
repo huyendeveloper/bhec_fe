@@ -15,14 +15,6 @@ export default class AuthService {
     return data;
   }
 
-  async getProductByID({id}) {
-    const [data, errors] = await api.get(`/products/${id}`);
-    if (errors.length) {
-      return parserError(errors);
-    }
-    return data;
-  }
-
   async loginByLine(payload) {
     const [data, errors] = await api.post('/users/line', payload);
     if (errors.length) {
