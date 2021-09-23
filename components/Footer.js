@@ -1,4 +1,3 @@
-/* eslint-disable no-warning-comments */
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
@@ -57,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '700',
     color: theme.palette.black3.main,
     marginBottom: '1.5rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+    },
   },
 
   childLabel: {
@@ -64,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.4rem',
     color: theme.palette.black4.main,
     marginBottom: '0.6875rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
   },
 
   grid: {
@@ -112,7 +117,6 @@ function ScrollTop(props) {
   });
 
   const handleClick = (event) => {
-    // eslint-disable-next-line no-console
     const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
 
     if (anchor) {
@@ -157,6 +161,7 @@ const Footer = (props) => {
       linkChild: [],
     },
 
+    // eslint-disable-next-line no-warning-comments
     // TODO: link not fixed yet
     // {
     //   label: 'お買い物ガイド',
@@ -222,6 +227,7 @@ const Footer = (props) => {
 
   useEffect(() => {
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -340,6 +346,7 @@ const Footer = (props) => {
                     className={classes.divider}
                   />
 
+                  {/* eslint-disable-next-line no-warning-comments */}
                   {/* TODO: link not fixed yet */}
                   <span>{'プライバシーポリシー'}</span>
 

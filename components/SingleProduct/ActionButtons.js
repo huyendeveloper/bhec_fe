@@ -91,9 +91,7 @@ const ActionButtons = () => {
           {'カートに入れる'}
         </Button>
 
-        {/* eslint-disable-next-line no-warning-comments */}
-        {/* TODO: not implemented yet */}
-        {/* <Button
+        <Button
           variant='contained'
           customColor='whiteRed'
           customSize='medium'
@@ -107,7 +105,7 @@ const ActionButtons = () => {
             />}
         >
           {'お気に入り'}
-        </Button> */}
+        </Button>
       </Box>
 
       <Box
@@ -121,8 +119,8 @@ const ActionButtons = () => {
           startIcon={
             <Image
               src={'/img/icons/click.svg'}
-              width={24}
-              height={26}
+              width={32}
+              height={32}
               alt={'touch'}
             />}
         >

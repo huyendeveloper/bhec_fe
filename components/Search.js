@@ -185,6 +185,7 @@ const Search = ({query = {}}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   useEffect(() => {
     getInitData();
+    // eslint-disable-next-line
   }, []);
 
   const getInitData = async () => {

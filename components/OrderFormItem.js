@@ -351,7 +351,6 @@ OrderFormItem.propTypes = {
   control: PropTypes.any,
   errors: PropTypes.object,
   disabled: PropTypes.bool,
-  index: PropTypes.number,
   defaultNote: PropTypes.string,
 };
 

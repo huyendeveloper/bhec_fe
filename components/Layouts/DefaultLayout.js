@@ -83,6 +83,7 @@ const DefaultLayout = ({title, metaDescription, children}) => {
 
   React.useEffect(() => {
     setLoading(loadingPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingPage]);
 
   const clickOutSide = () => {
@@ -103,11 +104,11 @@ const DefaultLayout = ({title, metaDescription, children}) => {
       {openNav && (isTablet || isMobile) &&
         <ClickAwayListener onClickAway={() => clickOutSide()}>
           <div className={classes.nav}>
-            {listNavigation.map((nav, index) =>
+            {listNavigation.map((nav) =>
               (
                 <Link
                   href={nav.url}
-                  key={index}
+                  key={nav.name}
                   style={{marginBottom: '2rem'}}
                 >
                   <a className={classes.naviLink}>

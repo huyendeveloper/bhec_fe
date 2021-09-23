@@ -5,6 +5,8 @@ import {useRecoilValue} from 'recoil';
 import CategoryBlock from '../CategoryBlock';
 import {ProductWidget} from '../Widgets';
 
+import {Button} from '..';
+
 import {productState} from '~/store/productState';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,17 +23,27 @@ const useStyles = makeStyles((theme) => ({
         marginRight: '0.75rem',
         width: '5rem',
         height: '5rem',
+        [theme.breakpoints.down('xs')]: {
+          width: '4rem',
+          height: '4rem',
+        },
       },
       '& .name': {
         fontSize: '1rem',
         lineHeight: '1.5rem',
         fontWeight: 'bold',
+        [theme.breakpoints.down('sm')]: {
+          fontSize: '0.875rem',
+        },
       },
       '& .profileLink': {
         fontSize: '0.875rem',
         lineHeight: '1.313rem',
         marginTop: '3px',
         fontWeight: 'normal',
+        [theme.breakpoints.down('sm')]: {
+          fontSize: '0.813rem',
+        },
       },
     },
     '& .action': {
@@ -52,11 +64,17 @@ const useStyles = makeStyles((theme) => ({
     padding: '2rem 0 3rem',
     fontSize: '0.875rem',
     lineHeight: '1.375rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
   },
   description: {
     padding: '2rem 0 3rem',
     fontSize: '0.875rem',
     lineHeight: '1.375rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
   },
   sellerPost: {
     textAlign: 'left',
@@ -80,6 +98,23 @@ const useStyles = makeStyles((theme) => ({
   },
   categoryBlock: {
     margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
   },
 }));
 
@@ -130,9 +165,7 @@ const SellerInfo = () => {
             </Box>
           </Grid>
 
-          {/* eslint-disable-next-line no-warning-comments */}
-          {/* TODO: not implemented yet: follow seller + goto seller profile */}
-          {/* <Grid
+          <Grid
             item={true}
             xs={12}
             sm={6}
@@ -158,7 +191,7 @@ const SellerInfo = () => {
                 {'プロフィールを見る'}
               </Button>
             </Box>
-          </Grid> */}
+          </Grid>
 
           <Grid
             item={true}
@@ -211,6 +244,7 @@ const SellerInfo = () => {
                   <ProductWidget
                     data={item}
                     border={'borderNone'}
+                    heart={true}
                   />
                 </Grid>
               ))}
@@ -242,6 +276,7 @@ const SellerInfo = () => {
                   <ProductWidget
                     data={item}
                     border={'borderNone'}
+                    heart={true}
                   />
                 </Grid>
               ))}

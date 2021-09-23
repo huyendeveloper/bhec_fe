@@ -11,7 +11,9 @@ import {
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
+import {useRecoilValue} from 'recoil';
 
+import {userState} from '~/store/userState';
 import {SelectBox} from '~/components';
 
 function HideOnScroll(props) {
@@ -218,6 +220,7 @@ const Header = (props) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
   const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
+  const user = useRecoilValue(userState);
 
   const displaySameRow = isMobile ? false : (!isTablet);
 
@@ -226,9 +229,10 @@ const Header = (props) => {
   const classes = useStyles();
 
   useEffect(() => {
-    if (session?.accessToken) {
+    if (user?.isAuthenticated) {
       setAuthenticated(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, session]);
 
   return (
@@ -268,11 +272,11 @@ const Header = (props) => {
               </Link>
             </div>
             {!isTablet && !isMobile && <div className={classes.navigation}>
-              {listNavigation.map((nav, index) =>
+              {listNavigation.map((nav) =>
                 (
                   <Link
                     href={nav.url}
-                    key={index}
+                    key={nav.name}
                   >
                     <a className={classes.naviLink}>
                       {nav.name}
@@ -352,15 +356,17 @@ const Header = (props) => {
             <div className={classes.personalAction}>
               {isAuthenticated &&
               <Link href={'/mypage'}>
-                <div className={classes.personalItem}>
-                  <Image
-                    src='/img/icons/ic-user.png'
-                    alt='user icon'
-                    width={24}
-                    height={24}
-                  />
-                  {'マイページ'}
-                </div>
+                <a>
+                  <div className={classes.personalItem}>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
+                    {'マイページ'}
+                  </div>
+                </a>
               </Link>
               }
               {!isAuthenticated &&

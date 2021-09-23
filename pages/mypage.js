@@ -147,6 +147,7 @@ export default function MyPage() {
       fetchUserInfo();
     }
     getListRecommendProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

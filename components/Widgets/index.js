@@ -1,6 +1,7 @@
 export {default as AdsWidget} from './AdsWidget';
 export {default as ArticleWidget} from './ArticleWidget';
 export {default as DialogWidget} from './DialogWidget';
+export {default as ErrorMessageWidget} from './ErrorMessageWidget';
 export {default as FaqsWidget} from './FaqsWidget';
 export {default as FeatureWidget} from './FeatureWidget';
 export {default as PaymentWidget} from './PaymentWidget';

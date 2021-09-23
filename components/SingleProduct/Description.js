@@ -11,7 +11,6 @@ const Description = () => {
   return description.length ? (
     <Box
       component='div'
-      m={4}
       dangerouslySetInnerHTML={{__html: `${description}`}}
     />
   ) : <></>;

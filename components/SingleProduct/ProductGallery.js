@@ -1,43 +1,62 @@
+import {useMediaQuery, useTheme} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import Image from 'next/image';
 import React, {useState} from 'react';
-
-// Import Swiper React components
-import {Swiper, SwiperSlide} from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/swiper.min.css';
+import {useRecoilValue} from 'recoil';
 import 'swiper/components/navigation/navigation.min.css';
 import 'swiper/components/thumbs/thumbs.min.css';
-
-// import Swiper core and required modules
 import SwiperCore, {
   Navigation, Thumbs,
 } from 'swiper/core';
+import {Swiper, SwiperSlide} from 'swiper/react';
 
-// install Swiper modules
-SwiperCore.use([Navigation, Thumbs]);
-import {makeStyles} from '@material-ui/core/styles';
-import Image from 'next/image';
-import {useRecoilValue} from 'recoil';
-
+import 'swiper/swiper.min.css';
 import {productState} from '~/store/productState';
 
-const useStyles = makeStyles(() => ({
+SwiperCore.use([Navigation, Thumbs]);
+
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: '0px',
   },
   thumbnail: {
-    borderRadius: 4,
     paddingBottom: '1rem',
   },
   preview: {
-    borderRadius: 4,
+    borderRadius: '0.25rem',
     '& div.swiper-slide': {
-      opacity: 0.4,
+      opacity: 1,
+      borderRadius: '0.25rem',
+      width: '6.188rem !important',
+      height: '4rem',
+      [theme.breakpoints.down('xs')]: {
+        width: '3.875rem !important',
+        height: '2.5rem',
+      },
+    },
+    '& div.swiper-slide img': {
+      objectFit: 'cover !important',
+      borderRadius: '0.25rem',
     },
     '& div.swiper-slide-thumb-active': {
-      opacity: 1,
+      opacity: 0.4,
       border: '1px solid #BA2636',
     },
+    [theme.breakpoints.down('sm')]: {
+      '& .swiper-wrapper': {
+        justifyContent: 'center',
+      },
+    },
+  },
+  bgImg: {
+    backgroundColor: '#DBDBDB',
+    padding: '10% !important',
+    objectFit: 'scale-down !important',
+    borderRadius: '0.25rem',
+  },
+  productThumb: {
+    objectFit: 'cover !important',
+    borderRadius: '0.25rem',
   },
 }));
 
@@ -46,6 +65,8 @@ const ProductGallery = () => {
   const product = useRecoilValue(productState);
   const images = product?.productDetail?.images || [];
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <>
@@ -63,13 +84,26 @@ const ProductGallery = () => {
               <Image
                 src={img.src}
                 alt='banner top'
-                layout='responsive'
                 width='558'
                 height='368'
                 objectFit='contain'
+                className={classes.productThumb}
+                // eslint-disable-next-line no-undefined
+                layout={isTablet ? 'responsive' : undefined}
               />
             </SwiperSlide>
-          )) : null}
+          )) : (
+            <Image
+              src='/logo.png'
+              alt='banner top'
+              width='558'
+              height='368'
+              objectFit='contain'
+              className={classes.bgImg}
+              // eslint-disable-next-line no-undefined
+              layout={isTablet ? 'responsive' : undefined}
+            />
+          )}
         </Swiper>
         <Swiper
           onSwiper={setThumbsSwiper}
