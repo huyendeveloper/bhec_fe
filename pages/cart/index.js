@@ -130,6 +130,7 @@ export default function Cart() {
       updateRemoteCart(cart.items);
     }
     getListRecommendProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, session]);
 
   /* eslint-disable max-lines */

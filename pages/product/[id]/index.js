@@ -11,25 +11,27 @@ import {DefaultLayout} from '~/components/Layouts';
 const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    position: 'relative',
+  content: {
+    padding: '2rem 0 0 0',
+    backgroundColor: '#f8f8f8',
+    backgroundRepeat: 'repeat',
     backgroundImage: 'url("/img/noise.png")',
-  },
-  breadcrumbs: {
-    padding: '4rem 0 0',
+    mixBlendMode: 'multiply',
     [theme.breakpoints.down('sm')]: {
-      padding: '2rem 0 0',
-    },
-  },
-  topContainer: {
-    paddingTop: '2rem',
-    paddingBottom: '2rem',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
+      padding: '1.5rem 0 0 0',
     },
   },
   banner: {
     padding: '2rem 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0 0 2.5rem',
+    },
+  },
+  searchBox: {
+    marginBottom: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '1.5rem',
+    },
   },
 }));
 
@@ -72,34 +74,14 @@ function ProductDetail(props) {
 
   return (
     <DefaultLayout title='Product Detail - Oshinagaki Store'>
-      <div className={classes.root}>
-        {/* Breadcrumbs */}
-        {linkProps && (
-          <Container
-            maxWidth='lg'
-          >
-            <Grid
-              container={true}
-              spacing={0}
-              className={classes.breadcrumbs}
-            >
-              <Grid
-                item={true}
-                xs={12}
-                md={12}
-                lg={12}
-              >
-                <Breadcrumbs linkProps={linkProps}/>
-              </Grid>
-            </Grid>
-          </Container>
-        )}
+      <div className={classes.content}>
+        <Container className={classes.searchBox}>
+          {/* Breadcrumbs */}
+          {linkProps && (
+            <Breadcrumbs linkProps={linkProps}/>
+          )}
 
-        {/* Search */}
-        <Container
-          maxWidth='lg'
-          className={classes.topContainer}
-        >
+          {/* Search */}
           <Search/>
         </Container>
 
@@ -107,7 +89,7 @@ function ProductDetail(props) {
         <SingleProduct/>
 
         {/* Banner */}
-        <Container maxWidth='lg'>
+        <Container>
           <Grid
             container={true}
             className={classes.banner}

@@ -76,6 +76,7 @@ const ConfirmCheckout = () => {
   React.useEffect(() => {
     fetchAddressData();
     fetchCardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving ConfirmCheckout
@@ -195,6 +196,7 @@ const ConfirmCheckout = () => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

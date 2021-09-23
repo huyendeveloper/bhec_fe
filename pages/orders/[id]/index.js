@@ -101,6 +101,7 @@ const OrdersDetail = ({id}) => {
 
   useEffect(() => {
     fetchOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -7,14 +7,26 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.black,
     fontSize: '0.813rem',
     lineHeight: '1.188rem',
+    margin: '0 0 1.688rem',
+    [theme.breakpoints.down('sm')]: {
+      margin: '0 0 1.25rem',
+    },
 
     '& .MuiBreadcrumbs-separator': {
+      color: theme.palette.black.light,
       fontWeight: 'bold',
+      fontSize: '0.875rem',
+      lineHeight: '1.313rem',
     },
-    '& a': {
-      color: theme.palette.common.black,
-      fontWeight: 'bold',
+    '& .MuiBreadcrumbs-li:last-child > p': {
+      fontWeight: 'normal',
     },
+  },
+  link: {
+    color: theme.palette.black.light,
+    fontWeight: 'bold',
+    fontSize: '0.875rem',
+    lineHeight: '1.313rem',
   },
 }));
 
@@ -31,6 +43,7 @@ const Breadcrumbs = ({linkProps}) => {
           <Link
             key={item.id}
             href={item.linkUrl}
+            className={classes.link}
           >
             {item.linkLabel}
           </Link>
@@ -38,6 +51,7 @@ const Breadcrumbs = ({linkProps}) => {
           <Typography
             key={item.id}
             variant={'inherit'}
+            className={classes.link}
           >
             {item.linkLabel}
           </Typography>

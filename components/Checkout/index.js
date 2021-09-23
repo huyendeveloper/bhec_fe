@@ -83,6 +83,7 @@ const Checkout = () => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -134,6 +134,7 @@ const SearchPage = ({query}) => {
     return () => {
       // return an anonymous clean up function
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, currentPage]);
 
   const changePage = async (e, pageNumber) => {

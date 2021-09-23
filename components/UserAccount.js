@@ -118,6 +118,7 @@ const UserAccount = () => {
     } else {
       router.push('/auth/login');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (

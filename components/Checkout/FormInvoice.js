@@ -44,6 +44,7 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
 
   React.useEffect(() => {
     setInvoice_flag(order?.invoice_flag === 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

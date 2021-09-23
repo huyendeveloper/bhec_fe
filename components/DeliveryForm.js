@@ -1,4 +1,3 @@
-import {ErrorMessage} from '@hookform/error-message';
 import {Box, FormControl, Grid, makeStyles, NativeSelect, TextField, useMediaQuery} from '@material-ui/core';
 import {useTheme} from '@material-ui/core/styles';
 import {nanoid} from 'nanoid';
@@ -12,6 +11,7 @@ import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {isFullWidth} from '~/lib/text';
+import {ErrorMessageWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +50,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
 
   useEffect(() => {
     fetchPrefectures();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmitClick = async (data) => {
@@ -126,23 +127,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         />
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='name'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END NAME*/}
-
                   {/*ZIP CODE*/}
                   <Grid
                     item={true}
@@ -176,23 +166,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         />
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='zipcode'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END ZIP CODE*/}
-
                   {/*PROVINCE*/}
                   <Grid
                     item={true}
@@ -230,23 +209,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         </FormControl>
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='province_id'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END PROVINCE*/}
-
                   {/*CITY*/}
                   <Grid
                     item={true}
@@ -284,23 +252,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         />
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='city'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END CITY*/}
-
                   {/*ADDRESS DETAIL*/}
                   <Grid
                     item={true}
@@ -338,23 +295,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         />
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='address'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END ADDRESS DETAIL*/}
-
                   {/*COMPANY NAME*/}
                   <Grid
                     item={true}
@@ -383,7 +329,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     />
                   </Grid>
                   {/*END COMPANY NAME*/}
-
                   {/*DEPARTMENT NAME*/}
                   <Grid
                     item={true}
@@ -412,7 +357,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     />
                   </Grid>
                   {/*END DEPARTMENT NAME*/}
-
                   {/*PHONE NUMBER*/}
                   <Grid
                     item={true}
@@ -448,23 +392,12 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         />
                       )}
                     />
-                    <ErrorMessage
+                    <ErrorMessageWidget
                       errors={errors}
                       name='tel'
-                      render={({messages}) => {
-                        return messages ? Object.entries(messages).map(([type, message]) => (
-                          <p
-                            className='inputErrorText'
-                            key={type}
-                          >
-                            {message}
-                          </p>
-                        )) : null;
-                      }}
                     />
                   </Grid>
                   {/*END PHONE NUMBER*/}
-
                 </Grid>
               </div>
             </div>

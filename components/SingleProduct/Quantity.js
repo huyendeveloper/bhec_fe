@@ -38,6 +38,8 @@ const Quantity = () => {
                   value={product?.quantity ?? 0}
                   maximumQuantity={maximumQuantity}
                   handleChange={handleQuantityChange}
+                  width={'170px'}
+                  height={'40px'}
                 />
               </TableCell>
             </TableRow>

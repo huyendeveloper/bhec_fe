@@ -8,7 +8,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: '2rem 0 1rem',
     [theme.breakpoints.down('sm')]: {
-      padding: '2.5rem 0',
+      padding: '2.5rem 0 1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '0 0 1.5rem',
     },
   },
   title: {
