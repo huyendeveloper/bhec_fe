@@ -151,6 +151,10 @@ const theme = createTheme({
       textColor: '#000',
     },
   },
+  btnFollow: {
+    backgroundColor: '#E6B422',
+    isFollowing: '#54c0c0',
+  },
   styledForm: {
     formControl: {
       borderColor: '#bebebe',

@@ -114,7 +114,7 @@ const UserAccount = () => {
   useEffect(() => {
     if (user?.isAuthenticated) {
       setUsername(user?.profile?.nickname ?? user?.profile?.email);
-      setImagePreview(user?.profile?.avatar_url);
+      setImagePreview(user?.profile?.avatar);
     } else {
       router.push('/auth/login');
     }
