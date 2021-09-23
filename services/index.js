@@ -6,3 +6,4 @@ export {default as ContactService} from './contact.services';
 export {default as OrderService} from './order.services';
 export {default as PaymentService} from './payment.services';
 export {default as ProductService} from './product.services';
+export {default as SellerService} from './seller.services';

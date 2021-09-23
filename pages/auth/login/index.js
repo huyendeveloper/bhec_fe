@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
 import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
-import Router from 'next/router';
+import Router, {useRouter} from 'next/router';
 import {signIn, signOut} from 'next-auth/client';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
@@ -317,6 +317,7 @@ const Login = () => {
   const [open, setOpen] = useState(false);
   const [setPayload] = useState(null);
   const [setIdToken] = useState(null);
+  const router = useRouter();
   const setLoading = useSetRecoilState(loadingState);
   const {
     control,
@@ -364,7 +365,7 @@ const Login = () => {
           {
             data: res,
             token: res.access_token,
-            callbackUrl: `${window.location.origin}`,
+            callbackUrl: router?.query?.callbackUrl || `${window.location.origin}`,
           },
         );
 

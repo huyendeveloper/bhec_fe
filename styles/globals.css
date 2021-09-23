@@ -22,6 +22,14 @@ div.swal2-container {
   background-color: #ba2636 !important;
 }
 
+.swal2-warning-1 .swal2-title {
+  color: #e6b422;
+}
+
+.swal2-warning-1 .swal2-confirm {
+  background-color: #e6b422 !important;
+}
+
 .swal2-html-container {
   margin: 1rem 0 1.5rem !important;
   font-size: 0.875rem !important;

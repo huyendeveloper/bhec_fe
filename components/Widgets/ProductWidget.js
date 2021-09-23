@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.875rem',
     display: 'flex',
     justifyContent: 'space-between',
+    color: theme.palette.black3.main,
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
@@ -204,7 +205,7 @@ const ProductWidget = ({variant, data, heart, border, handleLike}) => {
 
         <CardActions className={classes.productSellerAction}>
           <Link
-            href={'#'}
+            href={seller ? `/seller/${seller.id}` : '#'}
             className={classes.productSeller}
           >
             <Avatar

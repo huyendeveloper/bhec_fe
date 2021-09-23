@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderFormItem = ({data, control, errors, disabled, index, defaultNote}) => {
+const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
