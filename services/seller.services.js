@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {api} from '~/lib/api';
 
 const parserError = (errors) => {
@@ -8,7 +7,7 @@ const parserError = (errors) => {
 };
 
 export default class SellerService {
-  async geSellerDetail(id) {
+  async getSellerDetail(id) {
     const [data, errors] = await api.get(`/sellers/${id}`);
     if (errors.length) {
       return parserError(errors);
@@ -26,6 +25,14 @@ export default class SellerService {
 
   async unFollowSeller(payload) {
     const [data, errors] = await api.post('/users/unfollow', payload);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
+  async getSellersFollowed(params) {
+    const [data, errors] = await api.get('/users/list_followed_seller', params);
     if (errors.length) {
       return parserError(errors);
     }
