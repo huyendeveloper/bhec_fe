@@ -137,11 +137,11 @@ const ProductWidget = ({variant, data, heart, border, handleLike}) => {
 
   return (
     <Card className={clsx(classes.root, classes[border])}>
-      <CardActionArea>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName, classes.linkNameImage)}
-        >
+      <Link
+        href={`/products/${product.id}`}
+        className={clsx(classes.linkName)}
+      >
+        <CardActionArea>
           <CardMedia
             component='img'
             alt={product.name}
@@ -150,13 +150,8 @@ const ProductWidget = ({variant, data, heart, border, handleLike}) => {
             image={product.thumb_url ?? '/logo.png'}
             title={product.name}
           />
-        </Link>
-      </CardActionArea>
-      <CardContent>
-        <Link
-          href={`/products/${product.id}`}
-          className={clsx(classes.linkName)}
-        >
+        </CardActionArea>
+        <CardContent>
           <Typography
             gutterBottom={true}
             component='h3'
@@ -164,44 +159,49 @@ const ProductWidget = ({variant, data, heart, border, handleLike}) => {
           >
             {product.name}
           </Typography>
-        </Link>
-      </CardContent>
-      <div className={classes.subContent}>
-        <CardContent>
-          <div className={classes.productTags}>
-            {tags && tags.length > 0 ? tags.map((tag, index) => {
-              return (
-                <Chip
-                  key={String(index)}
-                  size='small'
-                  label={tag.name}
-                />
-              );
-            }) : null}
-          </div>
-
-          <div className={classes.productPrice}>
-            {currency.format(product.price)}
-            {heart &&
-              (product.is_favorite_product ? (
-                <Image
-                  src={'/img/icons/fill-heart.svg'}
-                  width={27}
-                  height={24}
-                  alt={'heart'}
-                  onClick={() => handleLikeProduct(false)}
-                />
-              ) : (
-                <Image
-                  src={'/img/icons/ountline-heart.svg'}
-                  width={27}
-                  height={24}
-                  alt={'heart'}
-                  onClick={() => handleLikeProduct(true)}
-                />
-              ))}
-          </div>
         </CardContent>
+      </Link>
+      <div className={classes.subContent}>
+        <Link
+          href={`/product/${product.id}`}
+          className={clsx(classes.linkName, classes.linkNameImage)}
+        >
+          <CardContent>
+            <div className={classes.productTags}>
+              {tags && tags.length > 0 ? tags.map((tag, index) => {
+                return (
+                  <Chip
+                    key={String(index)}
+                    size='small'
+                    label={tag.name}
+                  />
+                );
+              }) : null}
+            </div>
+
+            <div className={classes.productPrice}>
+              {currency.format(product.price)}
+              {heart &&
+                (product.is_favorite_product ? (
+                  <Image
+                    src={'/img/icons/fill-heart.svg'}
+                    width={27}
+                    height={24}
+                    alt={'heart'}
+                    onClick={() => handleLikeProduct(false)}
+                  />
+                ) : (
+                  <Image
+                    src={'/img/icons/ountline-heart.svg'}
+                    width={27}
+                    height={24}
+                    alt={'heart'}
+                    onClick={() => handleLikeProduct(true)}
+                  />
+                ))}
+            </div>
+          </CardContent>
+        </Link>
 
         <CardActions className={classes.productSellerAction}>
           <Link
