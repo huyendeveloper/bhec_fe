@@ -83,6 +83,7 @@ const DefaultLayout = ({title, metaDescription, children}) => {
 
   React.useEffect(() => {
     setLoading(loadingPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingPage]);
 
   const clickOutSide = () => {

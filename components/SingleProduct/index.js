@@ -7,21 +7,26 @@ import Meta from './Meta';
 import Price from './Price';
 import ProductGallery from './ProductGallery';
 import Quantity from './Quantity';
+import Rating from './Rating';
 import SellerInfo from './SellerInfo';
 import Tags from './Tags';
 import Title from './Title';
 
 const useStyles = makeStyles((theme) => ({
   productDetail: {
-    [theme.breakpoints.down('lg')]: {
-      padding: '1rem 0rem 1rem 1rem',
+    padding: '0.5rem 0rem 1rem 1.5rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1.438rem 0rem 1rem 0rem',
     },
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xs')]: {
       padding: 0,
     },
 
     '& .rate': {
-      marginBottom: '0.5rem',
+      marginBottom: '1rem',
+      [theme.breakpoints.down('xs')]: {
+        marginTop: '1.438rem',
+      },
       '& span.noRating': {
         position: 'absolute',
         paddingTop: '3px',
@@ -36,14 +41,25 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
     },
     '& .table': {
-      maxWidth: 350,
+      '& th': {
+        width: '6.063rem',
+        [theme.breakpoints.down('sm')]: {
+          width: '6.125rem',
+          fontSize: '0.813rem !important',
+        },
+      },
+      '& td': {
+        [theme.breakpoints.down('sm')]: {
+          fontSize: '0.813rem !important',
+        },
+      },
       '& .MuiTableCell-root': {
         borderBottom: 'none !important',
         paddingLeft: 0,
         fontSize: '0.875rem',
         lineHeight: '1.313rem',
-        paddingTop: '1rem',
-        paddingBottom: '1rem',
+        paddingTop: '1.25rem',
+        paddingBottom: '0',
       },
       '& .MuiTableCell-root:first-child': {
         fontWeight: 'bold',
@@ -52,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     '& div.add': {
       display: 'flex',
       justifyContent: 'space-between',
-      padding: '1rem 0',
+      padding: '2.688rem 0 1rem',
     },
   },
   description: {
@@ -62,6 +78,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
     margin: '2rem 0',
+    padding: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+      padding: '1rem',
+    },
   },
 }));
 
@@ -87,8 +108,7 @@ const SingleProduct = () => {
           <Grid
             item={true}
             xs={12}
-            md={12}
-            lg={6}
+            md={6}
           >
             <ProductGallery/>
             <Tags/>
@@ -97,14 +117,10 @@ const SingleProduct = () => {
           <Grid
             item={true}
             xs={12}
-            md={12}
-            lg={6}
+            md={6}
             className={classes.productDetail}
           >
-
-            {/* eslint-disable-next-line no-warning-comments */}
-            {/* TODO: not implemented yet */}
-            {/* <Rating/> */}
+            <Rating/>
 
             <Price/>
 
@@ -123,7 +139,6 @@ const SingleProduct = () => {
             className={classes.description}
           >
             <Description/>
-
           </Grid>
         </Grid>
       </Container>

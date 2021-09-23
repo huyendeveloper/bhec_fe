@@ -138,7 +138,7 @@ const ProductWidget = ({variant, data, heart, border}) => {
       </CardActionArea>
       <CardContent>
         <Link
-          href={`/products/${product.id}`}
+          href={`/product/${product.id}`}
           className={clsx(classes.linkName)}
         >
           <Typography

@@ -71,7 +71,7 @@ function ProductDetail(props) {
   }, [linkProps, product]);
 
   return (
-    <DefaultLayout title='Products - Oshinagaki Store'>
+    <DefaultLayout title='Product Detail - Oshinagaki Store'>
       <div className={classes.root}>
         {/* Breadcrumbs */}
         {linkProps && (
@@ -127,7 +127,7 @@ function ProductDetail(props) {
             </Grid>
           </Grid>
         </Container>
-      </div >
+      </div>
     </DefaultLayout>
   );
 }

@@ -9,13 +9,17 @@ const useStyles = makeStyles((theme) => ({
         display: 'none',
       },
       '& select': {
-        border: `1px solid ${theme.selectBox.borderColor}`,
+        border: `1px solid ${theme.styledForm.formControl.borderColor}`,
         borderRadius: '4px !important',
-        padding: '10px 32px 9px 18px',
-        color: theme.selectBox.textColor,
-        background: 'url("/img/icons/dropdown-icon.png") right 10px center no-repeat',
+        color: theme.palette.gray.dark,
+        fontSize: '0.875rem',
+        background: 'url("/img/icons/dropdown-icon.png") right 1rem center no-repeat',
+        backgroundColor: theme.palette.white.main,
+        height: '-webkit-fill-available',
+        paddingLeft: '1rem',
         [theme.breakpoints.down('xs')]: {
           padding: '6px 32px 5px 13px',
+          fontSize: '0.813rem',
         },
       },
     },
@@ -33,7 +37,7 @@ const quantityOption = (quantity) => {
   return arrQuantity;
 };
 
-const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disabled}) => {
+const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disabled, width, height}) => {
   const classes = useStyles();
 
   return (
@@ -45,6 +49,7 @@ const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disable
         defaultValue={defaultValue}
         onChange={handleChange}
         disabled={disabled}
+        style={{width, height}}
       >
         <option
           value={0}
@@ -67,10 +72,14 @@ QuantityBox.propTypes = {
   defaultValue: PropTypes.number,
   handleChange: PropTypes.func,
   disabled: PropTypes.bool,
+  width: PropTypes.string,
+  height: PropTypes.string,
 };
 
 QuantityBox.defaultProps = {
   disabled: false,
+  width: '77px',
+  height: '48px',
 };
 
 export default QuantityBox;

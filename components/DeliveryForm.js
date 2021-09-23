@@ -47,6 +47,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
 
   useEffect(() => {
     fetchPrefectures();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmitClick = async (data) => {

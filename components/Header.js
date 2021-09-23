@@ -11,7 +11,9 @@ import {
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
+import {useRecoilValue} from 'recoil';
 
+import {userState} from '~/store/userState';
 import {SelectBox} from '~/components';
 
 function HideOnScroll(props) {
@@ -218,6 +220,7 @@ const Header = (props) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
   const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
+  const user = useRecoilValue(userState);
 
   const displaySameRow = isMobile ? false : (!isTablet);
 
@@ -226,9 +229,10 @@ const Header = (props) => {
   const classes = useStyles();
 
   useEffect(() => {
-    if (session?.accessToken) {
+    if (user?.isAuthenticated) {
       setAuthenticated(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, session]);
 
   return (

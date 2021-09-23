@@ -9,11 +9,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
     fontWeight: 'normal',
-    [theme.breakpoints.down('lg')]: {
-      padding: '2rem 0 0',
-    },
-    [theme.breakpoints.down('md')]: {
-      padding: '2rem 0',
+    padding: '2rem 0 0',
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      padding: '1rem 0 1.5rem',
+      borderBottom: `1px solid ${theme.palette.gray.main}`,
     },
     '& .MuiChip-root': {
       backgroundColor: '#FAF6EF',
