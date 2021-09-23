@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Controller} from 'react-hook-form';
 import {makeStyles, TextareaAutosize} from '@material-ui/core';
+import {useRecoilValue} from 'recoil';
 
 import {BlockForm, ConnectForm} from '~/components';
+import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
   notification: {
@@ -27,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
 const FormNote = ({isReadonly}) => {
   const classes = useStyles();
 
+  const order = useRecoilValue(orderState);
+
   return (
     <ConnectForm>
       {({control}) => {
@@ -38,7 +42,7 @@ const FormNote = ({isReadonly}) => {
             <Controller
               name='note'
               control={control}
-              defaultValue={''}
+              defaultValue={order?.note || ''}
               render={({field: {name, value, onChange}}) => (
                 <TextareaAutosize
                   variant='outlined'

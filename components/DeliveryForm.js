@@ -5,10 +5,13 @@ import {nanoid} from 'nanoid';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
 import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {isFullWidth} from '~/lib/text';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,18 +28,24 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const setLoading = useSetRecoilState(loadingState);
+
   const {
     control,
     handleSubmit,
     formState: {errors},
+    getValues,
+    setValue,
     reset,
   } = useForm({criteriaMode: 'all', defaultValues});
 
   const fetchPrefectures = async () => {
+    setLoading(true);
     const res = await CommonService.getPrefectures();
     if (res && res[0]?.name) {
       setPrefectures(res);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -44,7 +53,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   }, []);
 
   const handleSubmitClick = async (data) => {
-    const province = prefectures.find((item) => Number(item.code) === Number(data.province_id));
+    const province = prefectures.find((item) => Number(item.id) === Number(data.province_id));
     const address = {
       ...data,
       province,
@@ -57,6 +66,20 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     reset();
     if (typeof onClose === 'function') {
       onClose();
+    }
+  };
+
+  const handleLeaveZipcode = async (e) => {
+    const {city, province_id} = getValues();
+    const zipcode = e.target.value;
+    // eslint-disable-next-line no-underscore-dangle
+    if (city === '' && province_id === '1' && zipcode.length !== 0) {
+      const {response} = await CommonService.getPrefectureByZipcode(zipcode);
+      if (response?.location) {
+        const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
+        setValue('province_id', province?.code);
+        setValue('city', response?.location[0].city);
+      }
     }
   };
 
@@ -130,7 +153,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='zipcode'
                       className='formControlLabel'
                     >
-                      {'郵便番号（半角数字でご入力ください。）'}
+                      {'郵便番号（半角数字、 ハイフン（-） なしでご入力ください。）'}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
@@ -141,7 +164,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='zipcode'
-                          label={'1000000'}
+                          label={'郵便番号'}
                           variant='outlined'
                           error={Boolean(errors.zipcode)}
                           InputLabelProps={{shrink: false}}
@@ -149,6 +172,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          onBlur={handleLeaveZipcode}
                         />
                       )}
                     />
@@ -185,7 +209,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     <Controller
                       name='province_id'
                       control={control}
-                      defaultValue=''
+                      defaultValue={'1'}
                       rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
@@ -198,8 +222,8 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           >
                             {prefectures.map((pref) => (
                               <option
-                                key={pref.code}
-                                value={pref.code}
+                                key={pref.id}
+                                value={pref.id}
                               >{pref.name}</option>
                             ))}
                           </NativeSelect>
@@ -251,6 +275,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          onInput={(e) => {
+                            if (!isFullWidth(e.target.value)) {
+                              e.target.value = e.target.value.replace(e.target.value, '');
+                            }
+                          }}
                           inputRef={ref}
                         />
                       )}
@@ -282,7 +311,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='address'
                       className='formControlLabel'
                     >
-                      {'番地・建物名 '}
+                      {'番地・建物名 (全角でご入力ください。)'}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
@@ -300,6 +329,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          onInput={(e) => {
+                            if (!isFullWidth(e.target.value)) {
+                              e.target.value = e.target.value.replace(e.target.value, '');
+                            }
+                          }}
                           inputRef={ref}
                         />
                       )}
@@ -389,7 +423,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='tel'
                       className='formControlLabel'
                     >
-                      {'電話番号（配送時にご連絡させていただく事があります。） '}
+                      {'電話番号（半角数字、ハイフン（-） なしでご入力ください。）'}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
@@ -404,7 +438,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                         <TextField
                           id='tel'
                           variant='outlined'
-                          label={'0123456789'}
+                          label={'電話番号'}
                           error={Boolean(errors.tel)}
                           InputLabelProps={{shrink: false}}
                           name={name}

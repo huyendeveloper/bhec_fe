@@ -4,13 +4,14 @@ import produce from 'immer';
 import PropTypes from 'prop-types';
 import React, {useEffect} from 'react';
 import {Controller} from 'react-hook-form';
-import {useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {BlockForm, Button, ConnectForm, DeliveryForm} from '~/components';
 import {DialogWidget} from '~/components/Widgets';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
 const useStyles = makeStyles(() => ({
@@ -43,12 +44,13 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = React.useState(false);
   const setLoading = useSetRecoilState(loadingState);
+  const order = useRecoilValue(orderState);
 
   const handleSubmitDeliveryForm = async (address) => {
     setLoading(true);
     if (user?.isAuthenticated) {
       const response = await CommonService.addAddress(address);
-      if (response?.success) {
+      if (response) {
         fetchAddresses();
       } else {
         // eslint-disable-next-line no-warning-comments
@@ -92,48 +94,52 @@ const FormShipping = ({isReadonly}) => {
               themeStyle={'gray'}
               title={'お届け先の住所'}
             >
-              <Controller
-                name={'addressShipping'}
-                control={control}
-                defaultValue={''}
-                rules={{
-                  required: rules.required,
-                }}
-                render={({field: {onChange, value}}) => (
-                  <RadioGroup
-                    value={value}
-                    onChange={onChange}
-                    className={classes.radioGroup}
-                    style={{marginBottom: '2.563rem'}}
-                  >
-                    {loaded && user.addresses?.map((item, index) => (
-                      <FormControlLabel
-                        key={`address-${item?.id}`}
-                        value={`${item?.id}`}
-                        control={<Radio/>}
-                        label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item.province.name}${item.city}${item.address}`}
-                        className={'labelRadioBtn'}
-                        disabled={isReadonly}
-                      />
-                    ))}
-                  </RadioGroup>
-                )}
-              />
+              {loaded &&
+                <>
+                  <Controller
+                    name={'addressShipping'}
+                    control={control}
+                    defaultValue={order?.addressShipping || ''}
+                    rules={{
+                      required: rules.required,
+                    }}
+                    render={({field: {onChange, value}}) => (
+                      <RadioGroup
+                        value={value}
+                        onChange={onChange}
+                        className={classes.radioGroup}
+                        style={{marginBottom: '2.563rem'}}
+                      >
+                        {user.addresses?.map((item, index) => (
+                          <FormControlLabel
+                            key={`address-${item?.id}`}
+                            value={`${item?.id}`}
+                            control={<Radio/>}
+                            label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item.province.name}${item.city}${item.address}`}
+                            className={'labelRadioBtn'}
+                            disabled={isReadonly}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
 
-              <ErrorMessage
-                errors={errors}
-                name='addressShipping'
-                render={({messages}) => {
-                  return messages ? Object.entries(messages).map(([type, message]) => (
-                    <p
-                      className='inputErrorText'
-                      key={type}
-                    >
-                      {message}
-                    </p>
-                  )) : null;
-                }}
-              />
+                  <ErrorMessage
+                    errors={errors}
+                    name='addressShipping'
+                    render={({messages}) => {
+                      return messages ? Object.entries(messages).map(([type, message]) => (
+                        <p
+                          className='inputErrorText'
+                          key={type}
+                        >
+                          {message}
+                        </p>
+                      )) : null;
+                    }}
+                  />
+                </>
+              }
 
               <div className={classes.button}>
                 <Button

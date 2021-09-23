@@ -177,6 +177,7 @@ const ArchiveProduct = ({products, categories, pages}) => {
                 <ProductWidget
                   data={item}
                   border={'borderNone'}
+                  heart={true}
                 />
               </Grid>
             ))}
