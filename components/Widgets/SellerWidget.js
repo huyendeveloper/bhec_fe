@@ -10,8 +10,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Box, Grid, Button} from '@material-ui/core';
 import clsx from 'clsx';
-import {useRouter} from 'next/router';
+import {useRouter, useState} from 'next/router';
 
+import {AlertMessageForSection} from '~/components';
 import {SellerService} from '~/services';
 const SellerInstance = new SellerService();
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
 const SellerWidget = ({variant, data, reload}) => {
   const classes = useStyles();
   const router = useRouter();
+  const [alerts, setAlerts] = useState(null);
   if (!data) {
     return null;
   }
@@ -111,6 +113,10 @@ const SellerWidget = ({variant, data, reload}) => {
     };
     const response = await SellerInstance.unFollowSeller(payload);
     if (response) {
+      setAlerts({
+        type: 'success',
+        message: 'フォロー解除されました',
+      });
       reload();
     }
   };
@@ -190,6 +196,10 @@ const SellerWidget = ({variant, data, reload}) => {
           </Grid>
         </Box>
       </CardActions>
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </Card>
   );
 };
