@@ -37,23 +37,30 @@ const OrderReview = ({isReadonly}) => {
   const classes = useStyles();
   const cart = useRecoilValue(cartState);
   const {subTotal, shippingFee} = useRecoilValue(billState);
+  const [loaded, setLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   return (
     <ConnectForm>
       {({control, formState: {errors}}) => {
-        return (
+        return (loaded &&
           <>
             <BlockForm
               themeStyle={'gray'}
               title={'注文内容'}
             >
-              {cart.items?.map((item) => (
+              {cart.items?.map((item, index) => (
                 <OrderFormItem
                   key={item.productDetail?.id}
                   data={item}
                   control={control}
                   errors={errors}
                   disabled={isReadonly}
+                  index={index}
+                  defaultNote={item.note}
                 />
               ))}
             </BlockForm>
