@@ -161,6 +161,7 @@ const Footer = (props) => {
       linkChild: [],
     },
 
+    // eslint-disable-next-line no-warning-comments
     // TODO: link not fixed yet
     // {
     //   label: 'お買い物ガイド',
@@ -345,6 +346,7 @@ const Footer = (props) => {
                     className={classes.divider}
                   />
 
+                  {/* eslint-disable-next-line no-warning-comments */}
                   {/* TODO: link not fixed yet */}
                   <span>{'プライバシーポリシー'}</span>
 

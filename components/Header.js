@@ -272,11 +272,11 @@ const Header = (props) => {
               </Link>
             </div>
             {!isTablet && !isMobile && <div className={classes.navigation}>
-              {listNavigation.map((nav, index) =>
+              {listNavigation.map((nav) =>
                 (
                   <Link
                     href={nav.url}
-                    key={index}
+                    key={nav.name}
                   >
                     <a className={classes.naviLink}>
                       {nav.name}
@@ -356,15 +356,17 @@ const Header = (props) => {
             <div className={classes.personalAction}>
               {isAuthenticated &&
               <Link href={'/mypage'}>
-                <div className={classes.personalItem}>
-                  <Image
-                    src='/img/icons/ic-user.png'
-                    alt='user icon'
-                    width={24}
-                    height={24}
-                  />
-                  {'マイページ'}
-                </div>
+                <a>
+                  <div className={classes.personalItem}>
+                    <Image
+                      src='/img/icons/ic-user.png'
+                      alt='user icon'
+                      width={24}
+                      height={24}
+                    />
+                    {'マイページ'}
+                  </div>
+                </a>
               </Link>
               }
               {!isAuthenticated &&
