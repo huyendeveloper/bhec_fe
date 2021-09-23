@@ -31,7 +31,7 @@ export default class SellerService {
     return data;
   }
 
-  async geSellersFollowed(params) {
+  async getSellersFollowed(params) {
     const [data, errors] = await api.get('/users/list_followed_seller', params);
     if (errors.length) {
       return parserError(errors);

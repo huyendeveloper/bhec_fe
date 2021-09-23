@@ -44,7 +44,7 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
 
   React.useEffect(() => {
     setInvoice_flag(order?.invoice_flag === 0);
-  }, [])
+  }, []);
 
   return (
     <>
@@ -106,8 +106,8 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
                     control={control}
                     defaultValue={isConfirm ? order?.invoice_fullname : ''}
                     rules={{validate: {required: (value) => {
-                      const {invoice_flag} = getValues();
-                      return (!invoice_flag || value.trim().length > 0) || '必須項目です。';
+                      const invoice = getValues()?.invoice_flag;
+                      return (!invoice || value.trim().length > 0) || '必須項目です。';
                     }}}}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
