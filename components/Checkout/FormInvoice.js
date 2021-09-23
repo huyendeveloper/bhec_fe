@@ -1,10 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Controller} from 'react-hook-form';
-import {Checkbox, FormControlLabel, Grid, makeStyles, TextField} from '@material-ui/core';
 import {ErrorMessage} from '@hookform/error-message';
+import {Checkbox, FormControlLabel, Grid, makeStyles, TextField} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {Controller} from 'react-hook-form';
+import {useRecoilValue} from 'recoil';
 
 import {BlockForm, ConnectForm} from '~/components';
+import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
   paragraph: {
@@ -35,8 +37,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormInvoice = ({isReadonly}) => {
+const FormInvoice = ({isReadonly, isConfirm}) => {
   const classes = useStyles();
+  const order = useRecoilValue(orderState);
+  const [invoice_flag, setInvoice_flag] = React.useState(false);
+
+  React.useEffect(() => {
+    setInvoice_flag(order?.invoice_flag === 0);
+  }, [])
 
   return (
     <>
@@ -47,6 +55,7 @@ const FormInvoice = ({isReadonly}) => {
               themeStyle={'gray'}
               title={'領収書'}
             >
+              {!isConfirm &&
               <>
                 <div className={classes.checkBox}>
                   <Controller
@@ -70,7 +79,12 @@ const FormInvoice = ({isReadonly}) => {
                 </div>
 
                 <div className={classes.paragraph}>{'※領収書は発送完了後に別途メールで送付いたします。'}</div>
-              </>
+              </>}
+
+              {isConfirm && invoice_flag &&
+                <div className={classes.paragraph}>{'ご希望なし'}</div>
+              }
+
               <Grid
                 container={true}
                 spacing={3}
@@ -90,7 +104,7 @@ const FormInvoice = ({isReadonly}) => {
                   <Controller
                     name='invoice_fullname'
                     control={control}
-                    defaultValue={''}
+                    defaultValue={isConfirm ? order?.invoice_fullname : ''}
                     rules={{validate: {required: (value) => {
                       const {invoice_flag} = getValues();
                       return (!invoice_flag || value.trim().length > 0) || '必須項目です。';
@@ -98,7 +112,7 @@ const FormInvoice = ({isReadonly}) => {
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='invoice_fullname'
-                        label='氏名'
+                        label={isConfirm ? '' : '氏名'}
                         variant='outlined'
                         error={Boolean(errors.invoice_fullname)}
                         InputLabelProps={{shrink: false}}
@@ -138,11 +152,11 @@ const FormInvoice = ({isReadonly}) => {
                   <Controller
                     name='invoice_note'
                     control={control}
-                    defaultValue={''}
+                    defaultValue={isConfirm ? order?.invoice_note : ''}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='invoice_note'
-                        label='品代'
+                        label={isConfirm ? '' : '品代'}
                         variant='outlined'
                         error={Boolean(errors.invoice_note)}
                         InputLabelProps={{shrink: false}}
@@ -169,8 +183,10 @@ export default FormInvoice;
 
 FormInvoice.propTypes = {
   isReadonly: PropTypes.bool,
+  isConfirm: PropTypes.bool,
 };
 
 FormInvoice.defaultProps = {
   isReadonly: false,
+  isConfirm: false,
 };
