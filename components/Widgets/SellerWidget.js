@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -10,7 +10,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Box, Grid, Button} from '@material-ui/core';
 import clsx from 'clsx';
-import {useRouter, useState} from 'next/router';
+import {useRouter} from 'next/router';
 
 import {AlertMessageForSection} from '~/components';
 import {SellerService} from '~/services';

@@ -7,7 +7,7 @@ const parserError = (errors) => {
 };
 
 export default class SellerService {
-  async geSellerDetail(id) {
+  async getSellerDetail(id) {
     const [data, errors] = await api.get(`/sellers/${id}`);
     if (errors.length) {
       return parserError(errors);

@@ -79,7 +79,7 @@ export default function FollowedSellerList() {
     };
     const response = await SellerInstance.geSellersFollowed(query);
     if (response && response.list_followed_seller && response.list_followed_seller.length) {
-      setPages(response.total);
+      setPages(response.pages);
       setSellers(response.list_followed_seller);
     } else {
       setSellers([]);
