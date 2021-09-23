@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
-    width: '14rem',
     height: 'max-content',
     border: 'none',
     outline: 'none',
     display: 'flex',
     flexWrap: 'wrap',
+    overflowX: 'auto',
+    maxHeight: '48px',
     '& input': {
       fontStyle: 'normal',
       fontWeight: 'normal',
@@ -154,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.4rem',
     alignItems: 'center',
     cursor: 'pointer',
-    margin: '0.25rem 0.5rem 0.25rem 0',
+    margin: '0.5rem 0.5rem 0.5rem 0',
   },
 
   inputSearch: {
@@ -167,7 +168,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     flex: '1 1 0%',
-    width: '100%',
+    width: 'auto',
   },
 }));
 
@@ -332,6 +333,7 @@ const Search = ({query = {}}) => {
         />
         <div
           className={classes.input}
+          onClick={() => toggleSearch()}
         >
           {activeTags && activeTags.length > 0 ? activeTags.map((tag, index) => {
             return (
@@ -350,7 +352,6 @@ const Search = ({query = {}}) => {
           <div className={classes.divSearch}>
             <input
               placeholder={activeTags && activeTags.length > 0 ? '' : '検索キーワードを入力してください'}
-              onClick={() => toggleSearch()}
               className={classes.inputSearch}
               value={keywordSearch}
               onChange={(e) => setKeywordSearch(e.target.value)}

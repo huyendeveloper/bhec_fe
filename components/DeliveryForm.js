@@ -11,6 +11,7 @@ import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {isFullWidth} from '~/lib/text';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +34,8 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     control,
     handleSubmit,
     formState: {errors},
+    getValues,
+    setValue,
     reset,
   } = useForm({criteriaMode: 'all', defaultValues});
 
@@ -64,6 +67,20 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     reset();
     if (typeof onClose === 'function') {
       onClose();
+    }
+  };
+
+  const handleLeaveZipcode = async (e) => {
+    const {city, province_id} = getValues();
+    const zipcode = e.target.value;
+    // eslint-disable-next-line no-underscore-dangle
+    if (city === '' && province_id === '1' && zipcode.length !== 0) {
+      const {response} = await CommonService.getPrefectureByZipcode(zipcode);
+      if (response?.location) {
+        const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
+        setValue('province_id', province?.code);
+        setValue('city', response?.location[0].city);
+      }
     }
   };
 
@@ -156,6 +173,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          onBlur={handleLeaveZipcode}
                         />
                       )}
                     />
@@ -192,7 +210,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     <Controller
                       name='province_id'
                       control={control}
-                      defaultValue=''
+                      defaultValue={'1'}
                       rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
@@ -258,6 +276,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          onInput={(e) => {
+                            if (!isFullWidth(e.target.value)) {
+                              e.target.value = e.target.value.replace(e.target.value, '');
+                            }
+                          }}
                           inputRef={ref}
                         />
                       )}
@@ -307,6 +330,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          onInput={(e) => {
+                            if (!isFullWidth(e.target.value)) {
+                              e.target.value = e.target.value.replace(e.target.value, '');
+                            }
+                          }}
                           inputRef={ref}
                         />
                       )}

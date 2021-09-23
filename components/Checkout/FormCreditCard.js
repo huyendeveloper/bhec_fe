@@ -4,7 +4,7 @@ import {Controller} from 'react-hook-form';
 import {FormControlLabel, makeStyles, Radio, RadioGroup} from '@material-ui/core';
 import {ErrorMessage} from '@hookform/error-message';
 
-import {useRecoilState} from 'recoil';
+import {useRecoilValue, useRecoilState} from 'recoil';
 import produce from 'immer';
 
 import {BlockForm, Button, ConnectForm} from '~/components';
@@ -12,6 +12,7 @@ import {rules} from '~/lib/validator';
 import {PaymentPopup} from '~/components/Payment';
 import {userState} from '~/store/userState';
 import {PaymentService} from '~/services';
+import {orderState} from '~/store/orderState';
 
 const Payment = new PaymentService();
 
@@ -42,6 +43,7 @@ const FormCreditCard = ({isReadonly}) => {
 
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = React.useState(false);
+  const order = useRecoilValue(orderState);
 
   const handleClosePaymentPopup = () => {
     setOpenPaymentPopup(false);
@@ -87,7 +89,7 @@ const FormCreditCard = ({isReadonly}) => {
               <Controller
                 name={'creditCard'}
                 control={control}
-                defaultValue={''}
+                defaultValue={order?.creditCard || ''}
                 rules={{
                   required: rules.required,
                 }}

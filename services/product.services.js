@@ -75,4 +75,20 @@ export default class ProductService {
     }
     return data;
   }
+
+  async likeProduct(id) {
+    const [data, errors] = await api.post(`/products/${id}/like`);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
+  async unlikeProduct(id) {
+    const [data, errors] = await api.post(`/products/${id}/unlike`);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }
