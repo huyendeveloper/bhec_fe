@@ -105,10 +105,15 @@ const useStyles = makeStyles((theme) => ({
       margin: '1rem 0',
       display: 'flex',
       '& .icAdd': {
-        width: '1.75rem',
-        height: '1.75rem',
-        fontSize: '1.75rem',
+        width: '2rem',
+        height: '2rem',
+        fontSize: '2rem',
         marginRight: '0.5rem',
+        [theme.breakpoints.down('sm')]: {
+          width: '1.75rem',
+          height: '1.75rem',
+          fontSize: '1.75rem',
+        },
       },
     },
   },
@@ -180,6 +185,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       height: '2.5rem',
     },
+  },
+
+  divNote: {
+    fontSize: '0.8125rem',
+    lineHeight: '1.1875rem',
+    color: '#8A8A8A',
   },
 
   block: {
@@ -309,6 +320,8 @@ export default function ContactPage() {
         control={control}
         valueProductImages={valueProductImages}
         removeProduct={removeProduct}
+        logoWidth={logoWidth}
+        logoHeight={logoHeight}
       />
     ),
   );
@@ -397,7 +410,7 @@ export default function ContactPage() {
               </div>
               <div style={{marginBottom: '1rem'}}>
                 <div className={classes.block}>
-                  {isLoggined &&
+                  {isLoggined ?
                     <div
                       className='formBlockHeader'
                       style={{marginBottom: '2rem'}}
@@ -415,6 +428,27 @@ export default function ContactPage() {
                         {tabActive === 1 ? '入力フォームに必要事項をご記入のうえ、【フォーム内容確認】をクリックしてください。' : ''}
                       </Typography>
 
+                      {tabActive === 2 &&
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
+                        >
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
+                    </div> :
+                    <div
+                      className='formBlockHeader'
+                      style={{marginBottom: '2rem'}}
+                    >
                       {tabActive === 2 &&
                       <Typography
                         component='p'
@@ -595,7 +629,7 @@ export default function ContactPage() {
                         </div>
                       </Grid>
                       {typeContact === 5 &&
-                        <>
+                        <div className={classes.block}>
                           {ExchangeRender}
                           <div className='addProductDiv'>
                             <Icon
@@ -611,13 +645,13 @@ export default function ContactPage() {
                               </Typography>
                               <Typography
                                 component='p'
-                                className='formBlockDescImage'
+                                className={classes.divNote}
                               >
                                 {'商品を3つまで追加することができます。'}
                               </Typography>
                             </div>
                           </div>
-                        </>
+                        </div>
                       }
 
                       {typeContact !== 5 &&
@@ -673,7 +707,10 @@ export default function ContactPage() {
                 </div>
                 {typeContact !== 5 && <div className='formBlock'>
                   <div className={classes.block}>
-                    <div className='formBlockHeader'>
+                    <div
+                      className='formBlockHeader'
+                      style={{margin: '0.5rem 0 1rem 0'}}
+                    >
                       <Typography
                         component='h3'
                         className='formBlockTitleImage'

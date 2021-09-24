@@ -13,8 +13,24 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& .inputEditor .MuiInputBase-input': {
-      height: '20rem',
+    '& .MuiOutlinedInput-multiline': {
+      background: 'white',
+    },
+    '& .inputEditor': {
+      padding: '0 !important',
+    },
+    '& .formBlockHeader': {
+      margin: '0.5rem 0 1rem 0',
+    },
+
+    '& .formBlockExchange': {
+      marginBottom: '1rem',
+    },
+    '& .formBlockDescImage': {
+      fontSize: '0.875rem',
+    },
+    '& .MuiInputBase-input': {
+      height: '3rem',
     },
   },
 
@@ -36,8 +52,24 @@ const useStyles = makeStyles((theme) => ({
   icRemove: {
     color: theme.palette.red.main,
   },
+  block: {
+    width: '34.875rem',
+    margin: '0 calc((100% - 34.875rem)/2)',
+    flexBasis: 'auto',
+    marginBottom: '0.875rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '29.5rem',
+      margin: '0 calc((100% - 29.5rem)/2)',
+      marginBottom: '0px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
+      marginBottom: '0px',
+    },
+  },
 }));
-const ContactProduct = ({control, errors, product, index, removeProduct, valueProductImages, onContactProductImagesChange, maxNumber}) => {
+const ContactProduct = ({control, errors, product, index, removeProduct, valueProductImages, onContactProductImagesChange, maxNumber, logoHeight, logoWidth}) => {
   const classes = useStyles();
   const onChangeImage = (imageList) => {
     // data for submit
@@ -52,241 +84,246 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
         key={product.id}
         className={classes.root}
       >
-        <label
-          htmlFor='infomation'
-          className='formControlLabel'
-        >
-          {`種別${index + 1}`}
-          <span className='formControlRequired'>{'*'}</span>
-        </label>
-        <div
-          className='formBlockExchange'
-          style={{position: 'relative'}}
-        >
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-            className='gridBlockExchange'
+        <div className={classes.block}>
+          <label
+            htmlFor='infomation'
+            className='formControlLabel'
           >
-            <label
-              htmlFor={`order_number${index}`}
-              className='formControlLabel'
-            >
-              {'注文番号'}
-              <span className='formControlRequired'>{'*'}</span>
-            </label>
-            <Controller
-              name={`order_number${index}`}
-              control={control}
-              defaultValue=''
-              rules={{required: '必須項目です。'}}
-              render={({field: {name, value, ref, onChange}}) => (
-                <TextField
-                  id={`order_number${index}`}
-                  variant='outlined'
-                  label={'注文番号をご入力ください。'}
-                  error={Boolean(errors[`order_number${index}`])}
-                  InputLabelProps={{shrink: false}}
-                  name={name}
-                  value={value}
-                  inputRef={ref}
-                  onChange={onChange}
-                />
-              )}
-            />
-            <ErrorMessage
-              errors={errors}
-              name={`order_number${index}`}
-              render={({messages}) => {
-                return messages ? Object.entries(messages).map(([type, message]) => (
-                  <p
-                    className='inputErrorText'
-                    key={type}
-                  >{`⚠ ${message}`}</p>
-                )) : null;
-              }}
-            />
-          </Grid>
-          <Grid
-            xs={12}
-            md={12}
-            item={true}
-            className='gridBlockExchange'
-          >
-            <label
-              htmlFor={`product_code${index}`}
-              className='formControlLabel'
-            >
-              {'商品コード'}
-              <span className='formControlRequired'>{'*'}</span>
-            </label>
-            <Controller
-              name={`product_code${index}`}
-              control={control}
-              defaultValue=''
-              rules={{required: '必須項目です。'}}
-              render={({field: {name, value, ref, onChange}}) => (
-                <TextField
-                  id={`product_code${index}`}
-                  variant='outlined'
-                  label={'商品コードをご入力ください。'}
-                  error={Boolean(errors[`product_code${index}`])}
-                  InputLabelProps={{shrink: false}}
-                  name={name}
-                  value={value}
-                  inputRef={ref}
-                  onChange={onChange}
-                />
-              )}
-            />
-            <ErrorMessage
-              errors={errors}
-              name={`product_code${index}`}
-              render={({messages}) => {
-                return messages ? Object.entries(messages).map(([type, message]) => (
-                  <p
-                    className='inputErrorText'
-                    key={type}
-                  >{`⚠ ${message}`}</p>
-                )) : null;
-              }}
-            />
-          </Grid>
-          <Grid
-            xs={12}
-            md={12}
-            item={true}
-            className='gridBlockExchange'
-          >
-            <label
-              htmlFor={`description${index}`}
-              className='formControlLabel'
-            >
-              {'問い合わせ内容'}
-              <span className='formControlRequired'>{'*'}</span>
-            </label>
-            <Controller
-              name={`description${index}`}
-              control={control}
-              defaultValue=''
-              rules={{required: '必須項目です。'}}
-              render={({field: {name, value, ref, onChange}}) => (
-                <TextField
-                  id={`description${index}`}
-                  variant='outlined'
-                  error={Boolean(errors[`description${index}`])}
-                  InputLabelProps={{shrink: false}}
-                  name={name}
-                  value={value}
-                  inputRef={ref}
-                  onChange={onChange}
-                  className='inputEditor'
-                />
-              )}
-            />
-            <ErrorMessage
-              errors={errors}
-              name={`description${index}`}
-              render={({messages}) => {
-                return messages ? Object.entries(messages).map(([type, message]) => (
-                  <p
-                    className='inputErrorText'
-                    key={type}
-                  >{`⚠ ${message}`}</p>
-                )) : null;
-              }}
-            />
-          </Grid>
+            {`商品情報${index + 1}`}
+            <span className='formControlRequired'>{'*'}</span>
+          </label>
           <div
-            className='formBlockHeader'
+            className='formBlockExchange'
+            style={{position: 'relative'}}
           >
-            <Typography
-              component='h3'
-              className='formBlockTitleImage'
+            <Grid
+              item={true}
+              xs={12}
+              md={12}
+              className='gridBlockExchange'
             >
-              {'画像アップロード（任意）'}
-            </Typography>
-            <Typography
-              component='p'
-              className='formBlockDescImage'
+              <label
+                htmlFor={`order_number${index}`}
+                className='formControlLabel'
+              >
+                {'注文番号'}
+                <span className='formControlRequired'>{'*'}</span>
+              </label>
+              <Controller
+                name={`order_number${index}`}
+                control={control}
+                defaultValue=''
+                rules={{required: '必須項目です。'}}
+                render={({field: {name, value, ref, onChange}}) => (
+                  <TextField
+                    id={`order_number${index}`}
+                    variant='outlined'
+                    label={'注文番号をご入力ください。'}
+                    error={Boolean(errors[`order_number${index}`])}
+                    InputLabelProps={{shrink: false}}
+                    name={name}
+                    value={value}
+                    inputRef={ref}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              <ErrorMessage
+                errors={errors}
+                name={`order_number${index}`}
+                render={({messages}) => {
+                  return messages ? Object.entries(messages).map(([type, message]) => (
+                    <p
+                      className='inputErrorText'
+                      key={type}
+                    >{`${message}`}</p>
+                  )) : null;
+                }}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+              md={12}
+              item={true}
+              className='gridBlockExchange'
             >
-              {'5MB未満の画像(jpg, png)をアップロードすることができます。'}
-            </Typography>
-          </div>
+              <label
+                htmlFor={`product_code${index}`}
+                className='formControlLabel'
+              >
+                {'商品コード'}
+                <span className='formControlRequired'>{'*'}</span>
+              </label>
+              <Controller
+                name={`product_code${index}`}
+                control={control}
+                defaultValue=''
+                rules={{required: '必須項目です。'}}
+                render={({field: {name, value, ref, onChange}}) => (
+                  <TextField
+                    id={`product_code${index}`}
+                    variant='outlined'
+                    label={'商品コードをご入力ください。'}
+                    error={Boolean(errors[`product_code${index}`])}
+                    InputLabelProps={{shrink: false}}
+                    name={name}
+                    value={value}
+                    inputRef={ref}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              <ErrorMessage
+                errors={errors}
+                name={`product_code${index}`}
+                render={({messages}) => {
+                  return messages ? Object.entries(messages).map(([type, message]) => (
+                    <p
+                      className='inputErrorText'
+                      key={type}
+                    >{`${message}`}</p>
+                  )) : null;
+                }}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+              md={12}
+              item={true}
+              className='gridBlockExchange'
+            >
+              <label
+                htmlFor={`description${index}`}
+                className='formControlLabel'
+              >
+                {'問い合わせ内容'}
+                <span className='formControlRequired'>{'*'}</span>
+              </label>
+              <Controller
+                name={`description${index}`}
+                control={control}
+                defaultValue=''
+                rules={{required: '必須項目です。'}}
+                render={({field: {name, value, ref, onChange}}) => (
+                  <TextField
+                    id={`description${index}`}
+                    variant='outlined'
+                    error={Boolean(errors[`description${index}`])}
+                    InputLabelProps={{shrink: false}}
+                    name={name}
+                    value={value}
+                    inputRef={ref}
+                    onChange={onChange}
+                    className='inputEditor'
+                    multiline={true}
+                    rows={8}
+                    maxRows={12}
+                  />
+                )}
+              />
+              <ErrorMessage
+                errors={errors}
+                name={`description${index}`}
+                render={({messages}) => {
+                  return messages ? Object.entries(messages).map(([type, message]) => (
+                    <p
+                      className='inputErrorText'
+                      key={type}
+                    >{`${message}`}</p>
+                  )) : null;
+                }}
+              />
+            </Grid>
+            <div
+              className='formBlockHeader'
+            >
+              <Typography
+                component='h3'
+                className='formBlockTitleImage'
+              >
+                {'画像アップロード（任意）'}
+              </Typography>
+              <Typography
+                component='p'
+                className='formBlockDescImage'
+              >
+                {'5MB未満の画像(jpg, png)をアップロードすることができます。'}
+              </Typography>
+            </div>
 
-          <div className='formBlockControls'>
-            <ImageUploading
-              multiple={true}
-              value={valueProductImages[`productImages${index}`]}
-              onChange={onChangeImage}
-              maxNumber={maxNumber}
-              dataURLKey='data_url'
-            >
-              {({
-                imageList,
-                onImageUpload,
-                onImageUpdate,
-                onImageRemove,
-                dragProps,
-              }) => {
-                return (
-                  <div className='imageUploadWrapper'>
-                    {Array.from({length: maxNumber}, (x, i) => i).map((indexImg) => {
-                      const uploadedImage = imageList[indexImg];
-                      if (uploadedImage) {
+            <div className='formBlockControls'>
+              <ImageUploading
+                multiple={true}
+                value={valueProductImages[`productImages${index}`]}
+                onChange={onChangeImage}
+                maxNumber={maxNumber}
+                dataURLKey='data_url'
+              >
+                {({
+                  imageList,
+                  onImageUpload,
+                  onImageUpdate,
+                  onImageRemove,
+                  dragProps,
+                }) => {
+                  return (
+                    <div className='imageUploadWrapper'>
+                      {Array.from({length: maxNumber}, (x, i) => i).map((indexImg) => {
+                        const uploadedImage = imageList[indexImg];
+                        if (uploadedImage) {
+                          return (
+                            <div
+                              key={`imageUploadItem_${indexImg}`}
+                              className={'imageUploadItem'}
+                            >
+                              <Image
+                                onClick={() => onImageUpdate(indexImg)}
+                                src={uploadedImage.data_url}
+                                width={logoWidth}
+                                height={logoHeight}
+                                alt={`Image upload ${indexImg + 1}`}
+                              />
+                              <button
+                                type='button'
+                                className='imageUploadRemove'
+                                onClick={() => onImageRemove(indexImg)}
+                              ><Icon>{'close'}</Icon></button>
+                            </div>
+                          );
+                        }
                         return (
-                          <div
-                            key={`imageUploadItem_${indexImg}`}
-                            className={'imageUploadItem'}
+                          <button
+                            key={`imgUploadBtn_${indexImg}`}
+                            type='button'
+                            onClick={onImageUpload}
+                            className='imageUploadBtn'
+                            {...dragProps}
                           >
                             <Image
-                              onClick={() => onImageUpdate(indexImg)}
-                              src={uploadedImage.data_url}
-                              width={78}
-                              height={80}
-                              alt={`Image upload ${indexImg + 1}`}
+                              src='/img/btn-upload.png'
+                              width={logoWidth}
+                              height={logoHeight}
+                              alt='Image upload'
                             />
-                            <button
-                              type='button'
-                              className='imageUploadRemove'
-                              onClick={() => onImageRemove(indexImg)}
-                            ><Icon>{'close'}</Icon></button>
-                          </div>
+                          </button>
                         );
-                      }
-                      return (
-                        <button
-                          key={`imgUploadBtn_${indexImg}`}
-                          type='button'
-                          onClick={onImageUpload}
-                          className='imageUploadBtn'
-                          {...dragProps}
-                        >
-                          <Image
-                            src='/img/btn-upload.png'
-                            width={80}
-                            height={80}
-                            alt='Image upload'
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                );
-              }}
-            </ImageUploading>
-          </div>
-          {index > 0 &&
-            <div
-              className={classes.divRemove}
-              onClick={() => removeProduct(index)}
-            >
-              <DeleteIcon
-                className={classes.icRemove}
-              />
+                      })}
+                    </div>
+                  );
+                }}
+              </ImageUploading>
             </div>
-          }
+            {index > 0 &&
+              <div
+                className={classes.divRemove}
+                onClick={() => removeProduct(index)}
+              >
+                <DeleteIcon
+                  className={classes.icRemove}
+                />
+              </div>
+            }
+          </div>
         </div>
       </Grid>
     </>
@@ -303,6 +340,8 @@ ContactProduct.propTypes = {
   errors: PropTypes.func,
   valueProductImages: PropTypes.object,
   removeProduct: PropTypes.func,
+  logoHeight: PropTypes.number,
+  logoWidth: PropTypes.number,
 };
 
 export default ContactProduct;
