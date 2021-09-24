@@ -36,6 +36,13 @@ const useStyles = makeStyles((theme) => ({
         margin: '0 1rem',
       },
     },
+    '& .MuiOutlinedInput-multiline': {
+      padding: '1rem',
+
+      '& textarea': {
+        padding: '0',
+      },
+    },
     '& .formBlockTitle': {
       fontSize: '1rem',
       textAlign: 'center',
@@ -843,7 +850,7 @@ export default function ContactPage() {
             open={open}
             requestNo={requestNo}
             handleClose={handleClose}
-            style={{width: '80%'}}
+            style={{width: '90%'}}
           />
         }
       </div>
