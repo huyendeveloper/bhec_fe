@@ -62,6 +62,9 @@ const ConfirmCheckout = () => {
     if (!res?.address) {
       router.push('/404');
     }
+    if (cart.items.length === 0) {
+      router.push('/cart');
+    }
     setAddressData(res.address);
   };
 

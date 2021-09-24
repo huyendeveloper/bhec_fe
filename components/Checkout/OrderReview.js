@@ -1,12 +1,12 @@
 import {Divider, makeStyles} from '@material-ui/core';
+import router from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {useRecoilValue} from 'recoil';
 
-import ConnectForm from '../ConnectForm';
-import OrderFormItem from '../OrderFormItem';
-
 import {BlockForm} from '~/components';
+import ConnectForm from '~/components/ConnectForm';
+import OrderFormItem from '~/components/OrderFormItem';
 import {format as formatNumber} from '~/lib/number';
 import {billState, cartState} from '~/store/cartState';
 
@@ -40,7 +40,11 @@ const OrderReview = ({isReadonly}) => {
   const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
+    if (cart.items.length === 0) {
+      router.push('/cart');
+    }
     setLoaded(true);
+    // eslint-disable-next-line
   }, []);
 
   return (
