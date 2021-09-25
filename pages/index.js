@@ -182,22 +182,22 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
                   item={true}
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={5}
                 >
                   <Image
-                    src={article.thumb_url ?? '/logo.png'}
+                    src={article.image_url ?? '/logo.png'}
                     alt='article'
-                    layout='responsive'
-                    width='364'
-                    height='208'
-                    objectFit='cover'
+                    layout='intrinsic'
+                    width={364}
+                    height={208}
+                    objectFit={article.image_url ? 'cover' : 'contain'}
                   />
                 </Grid>
                 <Grid
                   item={true}
                   xs={12}
                   sm={6}
-                  lg={8}
+                  lg={7}
                 >
                   <Article
                     key={`article-${article.id}`}
@@ -254,7 +254,10 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={traditional_craft}/>
+            <ProductSwiper
+              items={traditional_craft}
+              widthMedia={160}
+            />
           </CategoryBlock>) : null
         }
 
@@ -267,7 +270,10 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={food_and_beverage}/>
+            <ProductSwiper
+              items={food_and_beverage}
+              widthMedia={160}
+            />
           </CategoryBlock>) : null
         }
 
@@ -281,7 +287,10 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             mixBlendMode='multiply'
             padding='2rem 0 4rem 0'
           >
-            <ProductSwiper items={lifestyle}/>
+            <ProductSwiper
+              items={lifestyle}
+              widthMedia={160}
+            />
           </CategoryBlock>) : null
         }
 

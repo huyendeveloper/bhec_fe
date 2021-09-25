@@ -5,7 +5,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {ProductWidget} from './Widgets';
 
-const ProductSwiper = ({items}) => {
+const ProductSwiper = ({items, widthMedia}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -26,6 +26,7 @@ const ProductSwiper = ({items}) => {
           >
             <ProductWidget
               data={item}
+              widthMedia={widthMedia || 0}
             />
           </SwiperSlide>
         ))}
@@ -47,6 +48,7 @@ const ProductSwiper = ({items}) => {
           >
             <ProductWidget
               data={item}
+              widthMedia={widthMedia || 0}
             />
           </SwiperSlide>
         ))}
@@ -69,6 +71,7 @@ const ProductSwiper = ({items}) => {
         >
           <ProductWidget
             data={item}
+            widthMedia={widthMedia || 0}
           />
         </Grid>
       ))}
@@ -78,6 +81,7 @@ const ProductSwiper = ({items}) => {
 
 ProductSwiper.propTypes = {
   items: PropTypes.array,
+  widthMedia: PropTypes.number,
 };
 
 export default ProductSwiper;

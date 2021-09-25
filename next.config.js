@@ -33,7 +33,7 @@ const moduleExports = {
   },
 
   images: {
-    domains: [`${process.env.S3_DOMAIN_NAME}`],
+    domains: process.env.IMAGE_DOMAIN_NAME.split(','),
   },
 };
 
