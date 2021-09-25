@@ -6,10 +6,8 @@ import {
   Box, FormControl,
   Grid, Icon, NativeSelect,
   TextField,
-  Link,
   useMediaQuery,
 } from '@material-ui/core';
-import {useSetRecoilState} from 'recoil';
 import Typography from '@material-ui/core/Typography';
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
@@ -19,11 +17,10 @@ import clsx from 'clsx';
 import React, {useState, useEffect} from 'react';
 
 import {DefaultLayout} from '~/components/Layouts';
-import {loadingState} from '~/store/loadingState';
 import {ContentBlock, Button, StyledForm} from '~/components';
 import {ContactService} from '~/services';
 const Contact = new ContactService();
-import {ContactProduct, ThanksPopup} from '~/components/Contact';
+import {ContactProduct, ContactFormConfirmations} from '~/components/Contact';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -182,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btnSubmit: {
-    width: '100%',
+    width: '65%',
     height: '100%',
     lineHeight: '2.25rem',
     fontSize: '1rem',
@@ -199,6 +196,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       height: '2.5rem',
+      width: '100%',
     },
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
@@ -239,7 +237,6 @@ export default function ContactPage() {
   const [session] = useSession();
   const {control, handleSubmit, setValue, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
-  const setLoading = useSetRecoilState(loadingState);
   const [productImages, setProductImages] = useState([]);
   const [valueProductImages, setValueProductImages] = useState({});
   // eslint-disable-next-line no-unused-vars
@@ -247,13 +244,12 @@ export default function ContactPage() {
   const [listContactCategory, setListContactCategory] = useState([]);
   const [typeContact, setTypeContact] = useState();
   const [listProduct, setListProduct] = useState(products);
-  const [open, setOpen] = useState(false);
   const [tabActive, setTabActive] = useState(1);
-  const [requestNo, setRequestNo] = useState();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const logoWidth = isMobile ? 64 : (isTablet ? 64 : 80);
   const logoHeight = isMobile ? 64 : (isTablet ? 64 : 80);
-
+  const [activeStep, setActiveStep] = useState(0);
+  const [formData, setFormData] = useState({});
   useEffect(() => {
     if (session?.accessToken) {
       setIsLoggined(true);
@@ -270,15 +266,12 @@ export default function ContactPage() {
   };
 
   const maxNumber = 3;
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const onProductImagesChange = (imageList) => {
     const imageDataUrls = [];
     imageList.forEach((image) => {
       if (image) {
-        imageDataUrls.push(image.file);
+        imageDataUrls.push(image);
       }
     });
     setProductImages(imageList);
@@ -289,7 +282,7 @@ export default function ContactPage() {
     const imageDataUrls = [];
     imageList.forEach((image) => {
       if (image) {
-        imageDataUrls.push(image.file);
+        imageDataUrls.push(image);
       }
     });
     setValueProductImages({
@@ -344,62 +337,27 @@ export default function ContactPage() {
     ),
   );
 
-  const onSubmit = async (data) => {
-    setLoading(true);
-    if (Number.parseInt(data.contact_category_id, 10) !== 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      bodyFormData.append('description', data.description);
-      if (data.images && data.images.length) {
-        data.images.forEach((img) => {
-          bodyFormData.append('images[]', img);
-        });
-      }
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
-      };
-      const res = await Contact.createContact(bodyFormData, configHeader);
-      if (res.id) {
-        setLoading(false);
-        setOpen(true);
-        setRequestNo(res.request_no);
-      } else {
-        setLoading(false);
-      }
-    } else if (Number.parseInt(data.contact_category_id, 10) === 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
-      };
-      const res = await Contact.createContact(bodyFormData, configHeader);
-      if (res) {
-        setRequestNo(res.request_no);
-        listProduct.forEach(async (item, index) => {
-          const body = new FormData();
-          body.append('contact_id', res.id);
-          body.append('order_number', data[`order_number${index}`]);
-          body.append('product_code', data[`product_code${index}`]);
-          body.append('description', data[`description${index}`]);
-          if (data[`productImages${index}`] && data[`productImages${index}`].length) {
-            data[`productImages${index}`].forEach((img) => {
-              body.append('images[]', img);
-            });
-          }
-          const result = await Contact.createContactProduct(body, configHeader);
-          if (result) {
-            setLoading(false);
-            setOpen(true);
-          } else {
-            setLoading(false);
-          }
-        });
-      }
+  const scrollToTop = () => {
+    const anchor = document.querySelector('#back-to-top-anchor');
+
+    if (anchor) {
+      anchor.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
+  };
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    scrollToTop();
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    scrollToTop();
+  };
+
+  const onSubmit = async (data) => {
+    setFormData(data);
+    handleNext();
   };
 
   return (
@@ -487,7 +445,7 @@ export default function ContactPage() {
                   }
                 </div>
               </div>
-              {tabActive === 1 && <StyledForm onSubmit={handleSubmit(onSubmit)}>
+              {activeStep === 0 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 {/* SECOND BLOCK */}
                 <div style={{marginBottom: '1rem'}}>
                   <div className='formBlockControls'>
@@ -818,26 +776,6 @@ export default function ContactPage() {
                   >
                     <Grid
                       xs={12}
-                      sm={6}
-                      md={6}
-                      item={true}
-                    >
-                      <Link
-                        href='/'
-                      >
-                        <Button
-                          variant='pill'
-                          customSize='extraLarge'
-                          className={classes.btnPrev}
-                        >
-                          {'TOPページへ戻る'}
-                        </Button>
-                      </Link>
-                    </Grid>
-                    <Grid
-                      xs={12}
-                      sm={6}
-                      md={6}
                       item={true}
                     >
                       <Button
@@ -852,18 +790,19 @@ export default function ContactPage() {
                     </Grid>
                   </Grid>
                 </Box>
-              </StyledForm>}
+              </StyledForm> : null}
+              {activeStep === 1 ? (
+                <ContactFormConfirmations
+                  data={formData}
+                  onNextStep={handleNext}
+                  onBackStep={handleBack}
+                  listProduct={listProduct}
+                  listContactCategory={listContactCategory}
+                />
+              ) : null}
             </Box>
           </ContentBlock>
         </div>
-        {open &&
-          <ThanksPopup
-            open={open}
-            requestNo={requestNo}
-            handleClose={handleClose}
-            style={{width: '90%'}}
-          />
-        }
       </div>
     </DefaultLayout>
   );
