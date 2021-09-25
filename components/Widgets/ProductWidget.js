@@ -8,8 +8,17 @@ import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Image from 'next/image';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
+
+import {ProductService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
+
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,10 +126,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, handleLike}) => {
+const ProductWidget = ({variant, data, heart, border, fetchData}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const router = useRouter();
+  const setLoading = useSetRecoilState(loadingState);
+  const user = useRecoilValue(userState);
 
   if (!data) {
     return null;
@@ -132,7 +144,31 @@ const ProductWidget = ({variant, data, heart, border, handleLike}) => {
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   const handleLikeProduct = async (likeStatus) => {
-    handleLike(data.id, likeStatus);
+    if (user?.isAuthenticated) {
+      setLoading(true);
+      const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
+      if (res) {
+        fetchData();
+      }
+      setLoading(false);
+    } else {
+      Swal.fire({
+        title: '登録・ログインが必要です。',
+        text: ' ',
+        showCancelButton: true,
+        reverseButtons: true,
+        cancelButtonText: '閉じる',
+        confirmButtonText: '登録・ログインへ',
+        backdrop: false,
+        customClass: {
+          container: 'swal2-warning',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/auth/login');
+        }
+      });
+    }
   };
 
   return (
@@ -238,7 +274,7 @@ ProductWidget.propTypes = {
   data: PropTypes.object.isRequired,
   heart: PropTypes.bool,
   border: PropTypes.string,
-  handleLike: PropTypes.func,
+  fetchData: PropTypes.func,
 };
 
 ProductWidget.defaultProps = {

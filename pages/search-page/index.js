@@ -4,16 +4,12 @@ import {Pagination} from '@material-ui/lab';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
-import Swal from 'sweetalert2';
 
 import {ContentBlock, Search} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
 import {clean} from '~/lib/object';
 import {ProductService} from '~/services';
-import {loadingState} from '~/store/loadingState';
-import {userState} from '~/store/userState';
 
 const Product = new ProductService();
 
@@ -126,8 +122,6 @@ const SearchPage = ({query}) => {
   const classes = useStyles();
   const [pagination, setPagination] = useState(null);
   const [products, setProducts] = useState([]);
-  const setLoading = useSetRecoilState(loadingState);
-  const user = useRecoilValue(userState);
 
   useEffect(() => {
     fetchData();
@@ -151,34 +145,6 @@ const SearchPage = ({query}) => {
       const productList = searchResult?.products;
       setPagination(searchResult?.pagination);
       setProducts(productList);
-    }
-  };
-
-  const handleLikeProduct = async (id, likeStatus) => {
-    if (user?.isAuthenticated) {
-      setLoading(true);
-      const res = likeStatus ? await Product.likeProduct(id) : await Product.unlikeProduct(id);
-      if (res) {
-        fetchData();
-      }
-      setLoading(false);
-    } else {
-      Swal.fire({
-        title: '登録・ログインが必要です。',
-        text: ' ',
-        showCancelButton: true,
-        reverseButtons: true,
-        cancelButtonText: '閉じる',
-        confirmButtonText: '登録・ログインへ',
-        backdrop: false,
-        customClass: {
-          container: 'swal2-warning',
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.push('/auth/login');
-        }
-      });
     }
   };
 
@@ -233,7 +199,7 @@ const SearchPage = ({query}) => {
                   data={product}
                   border={'borderNone'}
                   heart={true}
-                  handleLike={handleLikeProduct}
+                  fetchData={fetchData}
                 />
               </Grid>
             ))}

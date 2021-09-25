@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: '1.5rem',
         fontWeight: 'bold',
         paddingLeft: '1.5rem',
-        width: '22.75rem',
 
         [theme.breakpoints.down('sm')]: {
           fontSize: '0.875rem',
@@ -50,11 +49,12 @@ const useStyles = makeStyles((theme) => ({
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         width: '12.75rem',
+        fontSize: '0.875rem',
       },
       '& .label': {
         fontSize: '0.875rem',
         lineHeight: '1.313rem',
-        marginBottom: '1rem',
+        marginBottom: '0.625rem',
 
         [theme.breakpoints.down('sm')]: {
           fontSize: '0.813rem',
@@ -86,15 +86,26 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
   bgImg: {
-    width: 170,
-    height: 112,
     objectFit: 'contain',
+  },
+  image: {
+    width: '10.625rem',
+    height: '7rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '7.75rem',
+      height: '5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '5.438rem',
+      height: '3.5rem',
+    },
   },
 }));
 
 const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
   const classes = useStyles();
   const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const product = item.productDetail;
 
@@ -115,7 +126,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
-                className={clsx(product.images?.length > 0 ? '' : classes.bgImg)}
+                className={clsx(classes.image, product.images?.length > 0 ? '' : classes.bgImg)}
                 component='img'
                 alt={product?.name}
                 width={170}
@@ -180,6 +191,8 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
                 maximumQuantity={product?.maximum_quantity ?? 10}
                 defaultValue={item.quantity}
                 handleChange={(event) => handleChangeQuantity(event, product?.id)}
+                width={'4.813rem'}
+                height={isTablet ? '2rem' : '2.5rem'}
               />
             </div>
           </Box>
