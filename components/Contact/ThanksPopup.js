@@ -1,15 +1,39 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {Button, Dialog, DialogContent, Link} from '@material-ui/core';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {Button, Dialog, DialogContent, Link, useMediaQuery} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import Image from 'next/image';
-
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 const useStyles = makeStyles((theme) => ({
+
+  root: {
+    '& .MuiDialog-paper': {
+      margin: '1rem',
+    },
+  },
+  title: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.black4.main,
+    width: '2rem',
+    height: '2rem',
+  },
   muiPaper: {
     width: '100%',
     textAlign: 'center',
     padding: '2rem',
     marginTop: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1rem',
+      marginTop: '1rem',
+    },
   },
 
   filedValue: {
@@ -35,14 +59,19 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btnSubmit: {
-    width: '66%',
+    width: '72%',
     margin: '1rem 0 2rem 0',
     background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgb(0 0 0 / 15%)',
     borderRadius: '3rem',
+    fontSize: '1rem',
+    fontWeight: '700',
     height: '3rem',
     '&:hover': {
       background: theme.palette.red.main,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '86%',
     },
   },
 
@@ -50,6 +79,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ThanksPopup = ({open, handleClose, requestNo}) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const logoWidth = isMobile ? 80 : (isTablet ? 80 : 106);
+  const logoHeight = isMobile ? 80 : (isTablet ? 80 : 106);
 
   const handleSubmit = () => {
     handleClose();
@@ -63,7 +97,20 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
           onClose={handleClose}
           aria-labelledby='form-dialog-title'
           maxWidth='lg'
+          className={classes.dialog}
         >
+          <MuiDialogTitle
+            disableTypography={true}
+            className={classes.title}
+          >
+            <IconButton
+              aria-label='close'
+              className={classes.closeButton}
+              onClick={handleClose}
+            >
+              <CloseIcon/>
+            </IconButton>
+          </MuiDialogTitle>
           <DialogContent
             classes={{
               root: classes.muiPaper,
@@ -71,8 +118,8 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
           >
             <Image
               src={'/img/icons/ic-success.png'}
-              width={100}
-              height={100}
+              width={logoWidth}
+              height={logoHeight}
               alt={'Icon Success'}
               className={classes.icon}
             />
