@@ -147,6 +147,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.white.main,
     },
   },
+
+  sellerAvatar: {
+    borderRadius: '50%',
+  },
 }));
 
 const linkProps = [
@@ -218,7 +222,7 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
 
   const getSellerInfo = async () => {
     const {id} = router.query;
-    const response = await SellerInstance.geSellerDetail(id);
+    const response = await SellerInstance.getSellerDetail(id);
     if (!response?.seller?.id) {
       return {
         notFound: true,

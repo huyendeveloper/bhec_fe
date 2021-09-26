@@ -97,16 +97,27 @@ const ProductNotFound = () => {
     </Box>);
 };
 
-const ArchiveProduct = ({products, categories, pages}) => {
+const ArchiveProduct = ({queryParams}) => {
   const classes = useStyles();
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(pages);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    fetchData();
     return () => {
       // return an anonymous clean up function
     };
+    // eslint-disable-next-line
   }, [currentPage]);
+
+  const fetchData = async () => {
+    const response = await Product.getProducts(queryParams);
+    setProducts(response.products ?? []);
+    setCategories(response.categories ?? []);
+    setCurrentPage(response.pages ?? 0);
+  };
 
   const linkProps = [
     {
@@ -178,14 +189,15 @@ const ArchiveProduct = ({products, categories, pages}) => {
                   data={item}
                   border={'borderNone'}
                   heart={true}
+                  fetchData={fetchData}
                 />
               </Grid>
             ))}
           </Grid>) : <ProductNotFound/>
         }
-        { products?.length > 0 && pages > 0 &&
+        {products?.length > 0 && currentPage > 0 &&
           <Pagination
-            count={pages}
+            count={currentPage}
             variant={'outlined'}
             color={'primary'}
             size={'large'}
@@ -207,26 +219,19 @@ const ArchiveProduct = ({products, categories, pages}) => {
 export default ArchiveProduct;
 
 ArchiveProduct.propTypes = {
-  products: PropTypes.array.isRequired,
-  categories: PropTypes.array,
-  pages: PropTypes.number,
+  queryParams: PropTypes.object.isRequired,
 };
 
 ArchiveProduct.defaultProps = {
-  products: [],
-  categories: [],
-  pages: 0,
+
 };
 
 export async function getServerSideProps({query}) {
   const queryParams = {...query, per_page: 12};
-  const response = await Product.getProducts(queryParams);
 
   return {
     props: {
-      products: response.products ?? [],
-      categories: response.categories ?? [],
-      pages: response.pages ?? 0,
+      queryParams,
     },
   };
 }

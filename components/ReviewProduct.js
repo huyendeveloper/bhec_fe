@@ -1,5 +1,6 @@
 import {Grid, TextareaAutosize, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
+import clsx from 'clsx';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 import {React} from 'react';
@@ -128,6 +129,12 @@ const useStyles = makeStyles((theme) => ({
   productThumb: {
     borderRadius: '0.25rem',
   },
+  bgImg: {
+    backgroundColor: theme.palette.gray.main,
+    padding: '10% !important',
+    objectFit: 'scale-down !important',
+    borderRadius: '0.25rem',
+  },
 }));
 
 const ReviewProduct = ({product, images, addImage, removeImage}) => {
@@ -155,7 +162,7 @@ const ReviewProduct = ({product, images, addImage, removeImage}) => {
                 style={{paddingRight: isMobile ? '1rem' : '1.5rem'}}
               >
                 <Image
-                  src={'/img/products/product-02.png'}
+                  src={product.image_urls[0] || '/logo.png'}
                   width={
                     isMobile ? 121 : (isTablet ? 145 : 170)
                   }
@@ -164,7 +171,7 @@ const ReviewProduct = ({product, images, addImage, removeImage}) => {
                   }
                   layout={'responsive'}
                   alt={product.name}
-                  className={classes.productThumb}
+                  className={clsx(classes.productThumb, product.image_urls[0] ? '' : classes.bgImg)}
                 />
               </Grid>
               <Grid

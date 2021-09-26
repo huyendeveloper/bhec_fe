@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bgImg: {
-    backgroundColor: '#DBDBDB',
+    backgroundColor: theme.palette.gray.main,
     padding: '10% !important',
     objectFit: 'scale-down !important',
     borderRadius: '0.25rem',

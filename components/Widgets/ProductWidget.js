@@ -9,8 +9,17 @@ import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Image from 'next/image';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
+
+import {ProductService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
+
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,10 +126,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, handleLike, widthMedia}) => {
+const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const router = useRouter();
+  const setLoading = useSetRecoilState(loadingState);
+  const user = useRecoilValue(userState);
+
   if (!data) {
     return null;
   }
@@ -131,16 +144,40 @@ const ProductWidget = ({variant, data, heart, border, handleLike, widthMedia}) =
   const currency = new Intl.NumberFormat('ja-JP', {style: 'currency', currency: 'JPY'});
 
   const handleLikeProduct = async (likeStatus) => {
-    handleLike(data.id, likeStatus);
+    if (user?.isAuthenticated) {
+      setLoading(true);
+      const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
+      if (res) {
+        fetchData();
+      }
+      setLoading(false);
+    } else {
+      Swal.fire({
+        title: '登録・ログインが必要です。',
+        text: ' ',
+        showCancelButton: true,
+        reverseButtons: true,
+        cancelButtonText: '閉じる',
+        confirmButtonText: '登録・ログインへ',
+        backdrop: false,
+        customClass: {
+          container: 'swal2-warning',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/auth/login');
+        }
+      });
+    }
   };
 
   return (
     <Card className={clsx(classes.root, classes[border])}>
-      <CardActionArea>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName, classes.linkNameImage)}
-        >
+      <Link
+        href={`/products/${product.id}`}
+        className={clsx(classes.linkName)}
+      >
+        <CardActionArea>
           <CardMedia
             component='img'
             alt={product.name}
@@ -149,13 +186,8 @@ const ProductWidget = ({variant, data, heart, border, handleLike, widthMedia}) =
             image={product.thumb_url ?? '/logo.png'}
             title={product.name}
           />
-        </Link>
-      </CardActionArea>
-      <CardContent>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName)}
-        >
+        </CardActionArea>
+        <CardContent>
           <Typography
             gutterBottom={true}
             component='h3'
@@ -163,44 +195,49 @@ const ProductWidget = ({variant, data, heart, border, handleLike, widthMedia}) =
           >
             {product.name}
           </Typography>
-        </Link>
-      </CardContent>
-      <div className={classes.subContent}>
-        <CardContent>
-          <div className={classes.productTags}>
-            {tags && tags.length > 0 ? tags.map((tag, index) => {
-              return (
-                <Chip
-                  key={String(index)}
-                  size='small'
-                  label={tag.name}
-                />
-              );
-            }) : null}
-          </div>
-
-          <div className={classes.productPrice}>
-            {currency.format(product.price)}
-            {heart &&
-              (product.is_favorite_product ? (
-                <Image
-                  src={'/img/icons/fill-heart.svg'}
-                  width={27}
-                  height={24}
-                  alt={'heart'}
-                  onClick={() => handleLikeProduct(false)}
-                />
-              ) : (
-                <Image
-                  src={'/img/icons/ountline-heart.svg'}
-                  width={27}
-                  height={24}
-                  alt={'heart'}
-                  onClick={() => handleLikeProduct(true)}
-                />
-              ))}
-          </div>
         </CardContent>
+      </Link>
+      <div className={classes.subContent}>
+        <Link
+          href={`/product/${product.id}`}
+          className={clsx(classes.linkName, classes.linkNameImage)}
+        >
+          <CardContent>
+            <div className={classes.productTags}>
+              {tags && tags.length > 0 ? tags.map((tag, index) => {
+                return (
+                  <Chip
+                    key={String(index)}
+                    size='small'
+                    label={tag.name}
+                  />
+                );
+              }) : null}
+            </div>
+
+            <div className={classes.productPrice}>
+              {currency.format(product.price)}
+              {heart &&
+                (product.is_favorite_product ? (
+                  <Image
+                    src={'/img/icons/fill-heart.svg'}
+                    width={27}
+                    height={24}
+                    alt={'heart'}
+                    onClick={() => handleLikeProduct(false)}
+                  />
+                ) : (
+                  <Image
+                    src={'/img/icons/ountline-heart.svg'}
+                    width={27}
+                    height={24}
+                    alt={'heart'}
+                    onClick={() => handleLikeProduct(true)}
+                  />
+                ))}
+            </div>
+          </CardContent>
+        </Link>
 
         <CardActions className={classes.productSellerAction}>
           <Link
@@ -237,7 +274,7 @@ ProductWidget.propTypes = {
   data: PropTypes.object.isRequired,
   heart: PropTypes.bool,
   border: PropTypes.string,
-  handleLike: PropTypes.func,
+  fetchData: PropTypes.func,
   widthMedia: PropTypes.number,
 };
 

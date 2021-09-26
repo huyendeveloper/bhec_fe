@@ -1,4 +1,4 @@
-import {Box, Container, Grid, Typography} from '@material-ui/core';
+import {Box, Grid, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import produce from 'immer';
 import {useSession} from 'next-auth/client';
@@ -6,14 +6,15 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
 
+import {Button, CartItem, ContentBlock, ProductSwiper} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
-import {Button, CartItem, CategoryBlock, ContentBlock, ProductSwiper} from '~/components';
-import {CartService, ProductService} from '~/services';
+import {CartService} from '~/services';
 import {cartState} from '~/store/cartState';
 
-const Product = new ProductService();
 const CartServiceInstance = new CartService();
+
 const useStyles = makeStyles((theme) => ({
   bgBanner: {
     backgroundImage: 'url(/img/noise.png)',
@@ -41,18 +42,51 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '0.813rem',
       },
     },
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0',
+      marginBottom: '1rem',
+    },
   },
   store: {
     paddingBottom: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      '& button': {
+        minWidth: '0',
+        padding: '0 1.5rem',
+      },
+    },
+    [theme.breakpoints.down('xs')]: {
+      '& button': {
+        fontSize: '0.875rem',
+      },
+    },
   },
   continueShop: {
     paddingTop: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '0.5rem',
+      '& button': {
+        width: '14rem',
+        height: '2.5rem',
+      },
+    },
+    [theme.breakpoints.down('xs')]: {
+      '& button': {
+        width: '14rem',
+      },
+    },
   },
   banner: {
     padding: '2rem 0 1rem',
   },
   banner1: {
     padding: '1rem 0 4rem',
+  },
+  ads: {
+    paddingTop: '3rem !important',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '1rem !important',
+    },
   },
 }));
 
@@ -64,7 +98,7 @@ export default function Cart() {
   const router = useRouter();
 
   const [cart, setCart] = useRecoilState(cartState);
-  const [recommendProducts, setRecommendProducts] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   const updateRemoteCart = async (items) => {
     const payload = [];
@@ -91,20 +125,28 @@ export default function Cart() {
     if (cart.items.length && cart.items[0]?.sellerInfo) {
       query.seller_ids = cart.items[0]?.sellerInfo?.id;
     }
-    const result = await Product.getProducts(query);
-    if (result && result.products && result.products.length) {
-      setRecommendProducts(result.products);
-    } else {
-      setRecommendProducts([]);
-    }
   };
 
   const handleRemove = (id) => {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: MUST ask user before removing cart item
-    setCart(produce((draft) => {
-      draft.items = draft.items.filter((item) => item.productDetail?.id !== id);
-    }));
+    Swal.fire({
+      title: 'カートから削除',
+      text: 'この商品をカートから削除してもよろしいですか。',
+      showCancelButton: true,
+      reverseButtons: true,
+      cancelButtonText: 'キャンセル',
+      confirmButtonText: 'ボタン',
+      backdrop: false,
+      customClass: {
+        container: 'swal2-warning',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCart(produce((draft) => {
+          // eslint-disable-next-line
+          draft.items = draft.items.filter((item) => item.productDetail?.id !== id);
+        }));
+      }
+    });
   };
 
   const handleChangeQuantity = (event, productId) => {
@@ -130,6 +172,7 @@ export default function Cart() {
       updateRemoteCart(cart.items);
     }
     getListRecommendProducts();
+    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, session]);
 
@@ -152,15 +195,17 @@ export default function Cart() {
             md={12}
             lg={12}
           >
-            <Box
-              textAlign={'center'}
-              className={classes.title}
-            >
-              <Typography variant={'h2'}>{`カート内の商品 (${cart.items?.length}点)`}</Typography>
-              <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div>
-            </Box>
+            {loaded &&
+              <Box
+                textAlign={'center'}
+                className={classes.title}
+              >
+                <Typography variant={'h2'}>{`カート内の商品 (${cart.items?.length}点)`}</Typography>
+                <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div>
+              </Box>
+            }
 
-            {cart.seller && (
+            {loaded && cart.seller && (
               <Box
                 textAlign={'left'}
                 className={classes.store}
@@ -177,18 +222,18 @@ export default function Cart() {
                       alt={'store'}
                     />}
                 >
-                  {`${cart.seller?.name ?? ''}`}{cart.seller.catch_phrase?.length > 0 ? `(${cart.seller.catch_phrase})` : ''}
+                  {`${cart.seller?.name ?? ''}`}{' '}{cart.seller.catch_phrase?.length > 0 ? `(${cart.seller.catch_phrase})` : ''}
                 </Button>
               </Box>
             )}
           </Grid>
         </Grid>
 
-        {cart.items?.length === 0 && (
+        {loaded && cart.items?.length === 0 && (
           <Typography align='center'>{'カートに商品はありません。'}</Typography>
         )}
 
-        {cart.items?.length > 0 && (
+        {loaded && cart.items?.length > 0 && (
           <>
             {cart.items?.map((item, idx) => (
               <CartItem
@@ -230,60 +275,7 @@ export default function Cart() {
         )}
       </ContentBlock>
 
-      {/* Recommend Product */}
-      {recommendProducts.length > 0 && (
-        <CategoryBlock
-          title='あなたにオススメの商品'
-          bgColor='#FAF6EF'
-          bgImage='/img/noise.png'
-          bgRepeat='repeat'
-          mixBlendMode='multiply'
-        >
-          <ProductSwiper items={recommendProducts}/>
-        </CategoryBlock>
-      )}
-
-      {/* Banner */}
-      <div className={classes.bgBanner}>
-        <Container maxWidth='lg'>
-          <Grid
-            container={true}
-            className={classes.banner}
-          >
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-            >
-              <Image
-                src={'/img/banner-favorite2.png'}
-                alt='banner bottom'
-                layout={'responsive'}
-                width={'1140'}
-                height={'192'}
-              />
-            </Grid>
-          </Grid>
-          <Grid
-            container={true}
-            className={classes.banner1}
-          >
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-            >
-              <Image
-                src={'/img/banner.png'}
-                alt='banner bottom'
-                layout={'responsive'}
-                width={'1140'}
-                height={'192'}
-              />
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
+      <ProductSwiper/>
     </DefaultLayout>
   );
 }
