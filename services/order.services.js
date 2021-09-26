@@ -5,6 +5,7 @@ const OrderService = {
   createOrder,
   getOrders,
   getOrderDetail,
+  exportOrderPdf,
 };
 
 // eslint-disable-next-line no-warning-comments
@@ -42,6 +43,14 @@ async function getOrders(payload) {
 
 async function getOrderDetail(id) {
   const [data, errors] = await api.get(`/orders/${id}`);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function exportOrderPdf(id) {
+  const [data, errors] = await api.get(`/users/export_order_pdf?order_number=${id}`);
   if (errors.length) {
     return parserError(errors);
   }
