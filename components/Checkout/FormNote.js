@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
       height: '9rem !important',
     },
     '&:focus': {
-      outline: '2px solid #3f51b5',
+      outline: 'none',
+      border: '2px solid #3f51b5',
     },
   },
 }));

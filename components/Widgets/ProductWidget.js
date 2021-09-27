@@ -83,6 +83,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     color: theme.palette.black3.main,
+    '& a': {
+      color: theme.palette.black3.main,
+    },
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
@@ -174,7 +177,6 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
   return (
     <Card
       className={clsx(classes.root, classes[border])}
-      id={`product${product.id}`}
     >
       <Link
         href={`/products/${product.id}`}
@@ -201,11 +203,11 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
         </CardContent>
       </Link>
       <div className={classes.subContent}>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName, classes.linkNameImage)}
-        >
-          <CardContent>
+        <CardContent>
+          <Link
+            href={`/product/${product.id}`}
+            className={classes.linkName}
+          >
             <div className={classes.productTags}>
               {tags && tags.length > 0 ? tags.map((tag, index) => {
                 return (
@@ -217,32 +219,36 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
                 );
               }) : null}
             </div>
+          </Link>
 
-            <div className={classes.productPrice}>
+          <div className={classes.productPrice}>
+            <Link
+              href={`/product/${product.id}`}
+              className={classes.linkName}
+            >
               {currency.format(product.price)}
-              <Link href={`#product${product.id}`}>
-                {heart &&
-                  (product.is_favorite_product ? (
-                    <Image
-                      src={'/img/icons/fill-heart.svg'}
-                      width={27}
-                      height={24}
-                      alt={'heart'}
-                      onClick={() => handleLikeProduct(false)}
-                    />
-                  ) : (
-                    <Image
-                      src={'/img/icons/ountline-heart.svg'}
-                      width={27}
-                      height={24}
-                      alt={'heart'}
-                      onClick={() => handleLikeProduct(true)}
-                    />
-                  ))}
-              </Link>
-            </div>
-          </CardContent>
-        </Link>
+            </Link>
+
+            {heart &&
+              (product.is_favorite_product ? (
+                <Image
+                  src={'/img/icons/fill-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(false)}
+                />
+              ) : (
+                <Image
+                  src={'/img/icons/ountline-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(true)}
+                />
+              ))}
+          </div>
+        </CardContent>
 
         <CardActions className={classes.productSellerAction}>
           <Link

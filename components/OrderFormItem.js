@@ -18,6 +18,11 @@ import {format as formatNumber} from '~/lib/number';
 import {cartState} from '~/store/cartState';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    '& .MuiInputBase-root': {
+      background: theme.palette.white.main,
+    },
+  },
   centerCell: {
     display: 'flex',
     flexDirection: 'column',
@@ -250,7 +255,8 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 <div className={classes.title}>{'数量'}</div>
                 <QuantityBox
                   name={`quantity${data.productDetail.id}`}
-                  maximumQuantity={data.productDetail.maximum_quantity ?? 10}
+                  maximum_quantity={data?.productDetail?.maximum_quantity}
+                  quantity={data?.productDetail?.quantity}
                   defaultValue={data.quantity}
                   handleChange={handleChangeQuantity}
                   disabled={disabled}
