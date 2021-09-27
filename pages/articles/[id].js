@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
   },
   body: {
     marginBottom: theme.spacing(6),
+    '& img': {
+      width: '100%',
+    },
   },
   buttons: {
     textAlign: 'center',
