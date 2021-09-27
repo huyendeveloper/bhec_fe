@@ -372,16 +372,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
-                          {...getCardNumberProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          placeholder={'カード番号'}
                           error={Boolean(errors.card_number)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          {...getCardNumberProps({onChange})}
+                          placeholder={'カード番号'}
                         />
                       )}
                     />
@@ -425,16 +425,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
-                          {...getExpiryDateProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          placeholder={'月/年'}
                           error={Boolean(errors.card_expire)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          {...getExpiryDateProps({onChange})}
+                          placeholder={'月/年'}
                         />
                       )}
                     />
