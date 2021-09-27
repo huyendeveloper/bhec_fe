@@ -76,13 +76,13 @@ const FormShipping = ({isReadonly}) => {
         draft.addresses = addresses;
       }));
     }
+    setLoaded(true);
   };
 
   useEffect(() => {
     if (user?.isAuthenticated) {
       fetchAddresses();
     }
-    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
