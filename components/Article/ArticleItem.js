@@ -89,11 +89,11 @@ const ArticleItem = ({item}) => {
         <div>
           <Image
             className={classes.articleImage}
-            src={item.thumb_url ?? '/logo.png'}
+            src={item.image_url ?? '/logo.png'}
             width={364}
             height={208}
             alt={item?.title}
-            objectFit='cover'
+            objectFit={item.image_url ? 'cover' : 'contain'}
             onClick={() => toDetailPage(item?.id)}
           />
         </div>
