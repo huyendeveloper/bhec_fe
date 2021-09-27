@@ -179,7 +179,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
       className={clsx(classes.root, classes[border])}
     >
       <Link
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
         className={clsx(classes.linkName)}
       >
         <CardActionArea>
