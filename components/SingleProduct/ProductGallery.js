@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 const ProductGallery = () => {
   const classes = useStyles();
   const product = useRecoilValue(productState);
-  const images = product?.productDetail?.images || [];
+  const images = product?.productDetail?.image_urls || [];
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -80,9 +80,9 @@ const ProductGallery = () => {
           className={classes.thumbnail}
         >
           {images && images.length > 0 ? images.map((img) => (
-            <SwiperSlide key={img.id}>
+            <SwiperSlide key={img}>
               <Image
-                src={img.src}
+                src={img}
                 alt='banner top'
                 width='558'
                 height='368'
@@ -116,9 +116,9 @@ const ProductGallery = () => {
           className={classes.preview}
         >
           {images && images.length ? images.map((img) => (
-            <SwiperSlide key={img.id}>
+            <SwiperSlide key={img}>
               <Image
-                src={img.src}
+                src={img}
                 alt='banner top'
                 layout='responsive'
                 width='99'

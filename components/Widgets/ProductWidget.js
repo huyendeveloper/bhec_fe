@@ -151,7 +151,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
       setLoading(true);
       const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
       if (res) {
-        fetchData();
+        fetchData(data.id, !likeStatus);
       }
       setLoading(false);
     } else {
@@ -187,8 +187,8 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
             component='img'
             alt={product.name}
             height={isTablet ? '160' : '208'}
-            className={clsx(product.thumb_url ? null : classes.bgImg)}
-            image={product.thumb_url ?? '/logo.png'}
+            className={clsx(product.image_urls[0] ? null : classes.bgImg)}
+            image={product.image_urls[0] ?? '/logo.png'}
             title={product.name}
           />
         </CardActionArea>
