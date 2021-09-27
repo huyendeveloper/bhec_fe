@@ -164,7 +164,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           // eslint-disable-next-line max-nested-callbacks
           draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
         }));
-        if (cart.items.length === 0) {
+        if (cart.items.length === 1) {
           Router.push('/cart');
         }
       }

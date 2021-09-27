@@ -172,7 +172,10 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
   };
 
   return (
-    <Card className={clsx(classes.root, classes[border])}>
+    <Card
+      className={clsx(classes.root, classes[border])}
+      id={`product${product.id}`}
+    >
       <Link
         href={`/products/${product.id}`}
         className={clsx(classes.linkName)}
@@ -217,24 +220,26 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
 
             <div className={classes.productPrice}>
               {currency.format(product.price)}
-              {heart &&
-                (product.is_favorite_product ? (
-                  <Image
-                    src={'/img/icons/fill-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(false)}
-                  />
-                ) : (
-                  <Image
-                    src={'/img/icons/ountline-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(true)}
-                  />
-                ))}
+              <Link href={`#product${product.id}`}>
+                {heart &&
+                  (product.is_favorite_product ? (
+                    <Image
+                      src={'/img/icons/fill-heart.svg'}
+                      width={27}
+                      height={24}
+                      alt={'heart'}
+                      onClick={() => handleLikeProduct(false)}
+                    />
+                  ) : (
+                    <Image
+                      src={'/img/icons/ountline-heart.svg'}
+                      width={27}
+                      height={24}
+                      alt={'heart'}
+                      onClick={() => handleLikeProduct(true)}
+                    />
+                  ))}
+              </Link>
             </div>
           </CardContent>
         </Link>
