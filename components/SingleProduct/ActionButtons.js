@@ -20,6 +20,8 @@ const ActionButtons = () => {
   const [alerts, setAlerts] = useState(null);
   const router = useRouter();
 
+  const isOutStock = !(product?.quantity > 0);
+
   const addToCart = () => {
     if ((product.quantity ?? 0) === 0) {
       setAlerts({
@@ -87,6 +89,7 @@ const ActionButtons = () => {
               alt={'cart'}
             />}
           onClick={handleAddToCartClick}
+          disabled={isOutStock}
         >
           {'カートに入れる'}
         </Button>
@@ -123,6 +126,7 @@ const ActionButtons = () => {
               height={32}
               alt={'touch'}
             />}
+          disabled={isOutStock}
         >
           {'今すぐ購入する'}
         </Button>
