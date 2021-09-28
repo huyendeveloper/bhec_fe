@@ -76,13 +76,13 @@ const FormShipping = ({isReadonly}) => {
         draft.addresses = addresses;
       }));
     }
+    setLoaded(true);
   };
 
   useEffect(() => {
     if (user?.isAuthenticated) {
       fetchAddresses();
     }
-    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,7 +111,7 @@ const FormShipping = ({isReadonly}) => {
                         className={classes.radioGroup}
                         style={{marginBottom: '2.563rem'}}
                       >
-                        {user.addresses?.map((item, index) => (
+                        {loaded && user.addresses?.map((item, index) => (
                           <FormControlLabel
                             key={`address-${item?.id}`}
                             value={`${item?.id}`}

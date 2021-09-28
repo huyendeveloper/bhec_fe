@@ -134,7 +134,7 @@ export default function Cart() {
       showCancelButton: true,
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
-      confirmButtonText: 'ボタン',
+      confirmButtonText: 'Ok',
       backdrop: false,
       customClass: {
         container: 'swal2-warning',

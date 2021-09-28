@@ -28,4 +28,3 @@ AlertBox.propTypes = {
 };
 
 export default AlertBox;
-

@@ -8,6 +8,7 @@ import {Breadcrumbs, Search, SingleProduct} from '~/components';
 import {productState} from '~/store/productState';
 import {ProductService} from '~/services';
 import {DefaultLayout} from '~/components/Layouts';
+
 const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
@@ -62,12 +63,16 @@ function ProductDetail(props) {
         if (category.parent_id === null) {
           current.push({
             id: 0,
-            linkLabel: category?.name_kana,
+            linkLabel: `${category?.name_kana}一覧`,
             linkUrl: `/products?cat=${category?.name}`,
           });
           break;
         }
       }
+      current.push({
+        id: 0,
+        linkLabel: product?.productDetail?.name,
+      });
       setLinkProps(current);
     }
   }, [linkProps, product]);

@@ -188,7 +188,8 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
             <div className={'quantity'}>
               <QuantityBox
                 name={'productQuantity'}
-                maximumQuantity={product?.maximum_quantity ?? 10}
+                maximum_quantity={product?.maximum_quantity}
+                quantity={product?.quantity}
                 defaultValue={item.quantity}
                 handleChange={(event) => handleChangeQuantity(event, product?.id)}
                 width={'4.813rem'}

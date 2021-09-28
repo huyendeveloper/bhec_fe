@@ -83,6 +83,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     color: theme.palette.black3.main,
+    '& a': {
+      color: theme.palette.black3.main,
+    },
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
@@ -148,7 +151,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
       setLoading(true);
       const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
       if (res) {
-        fetchData();
+        fetchData(data.id, !likeStatus);
       }
       setLoading(false);
     } else {
@@ -172,9 +175,11 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
   };
 
   return (
-    <Card className={clsx(classes.root, classes[border])}>
+    <Card
+      className={clsx(classes.root, classes[border])}
+    >
       <Link
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
         className={clsx(classes.linkName)}
       >
         <CardActionArea>
@@ -182,8 +187,8 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
             component='img'
             alt={product.name}
             height={widthMedia ? '160' : isTablet ? '160' : '208'}
-            className={clsx(product.thumb_url ? null : classes.bgImg)}
-            image={product.thumb_url ?? '/logo.png'}
+            className={clsx(product.image_urls[0] ? null : classes.bgImg)}
+            image={product.image_urls[0] ?? '/logo.png'}
             title={product.name}
           />
         </CardActionArea>
@@ -198,11 +203,11 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
         </CardContent>
       </Link>
       <div className={classes.subContent}>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName, classes.linkNameImage)}
-        >
-          <CardContent>
+        <CardContent>
+          <Link
+            href={`/product/${product.id}`}
+            className={classes.linkName}
+          >
             <div className={classes.productTags}>
               {tags && tags.length > 0 ? tags.map((tag, index) => {
                 return (
@@ -214,30 +219,36 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
                 );
               }) : null}
             </div>
+          </Link>
 
-            <div className={classes.productPrice}>
+          <div className={classes.productPrice}>
+            <Link
+              href={`/product/${product.id}`}
+              className={classes.linkName}
+            >
               {currency.format(product.price)}
-              {heart &&
-                (product.is_favorite_product ? (
-                  <Image
-                    src={'/img/icons/fill-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(false)}
-                  />
-                ) : (
-                  <Image
-                    src={'/img/icons/ountline-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(true)}
-                  />
-                ))}
-            </div>
-          </CardContent>
-        </Link>
+            </Link>
+
+            {heart &&
+              (product.is_favorite_product ? (
+                <Image
+                  src={'/img/icons/fill-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(false)}
+                />
+              ) : (
+                <Image
+                  src={'/img/icons/ountline-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(true)}
+                />
+              ))}
+          </div>
+        </CardContent>
 
         <CardActions className={classes.productSellerAction}>
           <Link

@@ -123,6 +123,10 @@ const SellerInfo = () => {
   const product = useRecoilValue(productState);
   const sellerInfo = product?.sellerInfo;
 
+  const fetchData = async () => {
+    //
+  };
+
   return sellerInfo ? (
     <>
       <Container>
@@ -245,6 +249,7 @@ const SellerInfo = () => {
                     data={item}
                     border={'borderNone'}
                     heart={true}
+                    fetchData={fetchData}
                   />
                 </Grid>
               ))}
