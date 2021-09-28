@@ -40,7 +40,7 @@ const Quantity = () => {
                 {'数量'}
               </TableCell>
               <TableCell align='left'>
-                {product?.quantity > 0 ? (
+                {product?.productDetail?.quantity > 0 ? (
                   <QuantityBox
                     name={'productQuantity'}
                     value={product?.quantity ?? 0}

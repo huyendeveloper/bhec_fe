@@ -20,7 +20,7 @@ const ActionButtons = () => {
   const [alerts, setAlerts] = useState(null);
   const router = useRouter();
 
-  const isOutStock = !(product?.quantity > 0);
+  const isOutStock = !(product?.productDetail?.quantity > 0);
 
   const addToCart = () => {
     if ((product.quantity ?? 0) === 0) {
