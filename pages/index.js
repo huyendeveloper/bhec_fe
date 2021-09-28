@@ -3,7 +3,6 @@ import url from 'url';
 import React, {useEffect} from 'react';
 import {Container, Grid, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import {useSetRecoilState} from 'recoil';
@@ -135,12 +134,8 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
   };
 
   return (
-    <DefaultLayout title='TopPage - Oshinagaki Store'>
+    <DefaultLayout title='おしながき'>
       <div className={classes.root}>
-        <Head>
-          <title>{'おしながき'}</title>
-        </Head>
-
         <div className={classes.topBanner}>
           <Container
             maxWidth='lg'

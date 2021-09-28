@@ -187,8 +187,8 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
             component='img'
             alt={product.name}
             height={widthMedia ? '160' : isTablet ? '160' : '208'}
-            className={clsx(product.image_urls[0] ? null : classes.bgImg)}
-            image={product.image_urls[0] ?? '/logo.png'}
+            className={clsx(product.image_urls?.length > 0 ? null : classes.bgImg)}
+            image={product.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
             title={product.name}
           />
         </CardActionArea>

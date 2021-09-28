@@ -78,7 +78,7 @@ function ProductDetail(props) {
   }, [linkProps, product]);
 
   return (
-    <DefaultLayout title='Product Detail - Oshinagaki Store'>
+    <DefaultLayout title={product?.productDetail?.name ?? '商品詳細'}>
       <div className={classes.content}>
         <Container className={classes.searchBox}>
           {/* Breadcrumbs */}
