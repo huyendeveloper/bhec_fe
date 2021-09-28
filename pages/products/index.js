@@ -119,7 +119,7 @@ const ArchiveProduct = ({queryParams}) => {
       // return an anonymous clean up function
     };
     // eslint-disable-next-line
-  }, [currentPage]);
+  }, [categories, currentPage]);
 
   const fetchData = async () => {
     const response = await Product.getProducts(queryParams);
