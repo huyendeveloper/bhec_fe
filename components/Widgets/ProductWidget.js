@@ -129,13 +129,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) => {
+const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const router = useRouter();
   const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
+  const [isLike, setIsLike] = React.useState(data?.is_favorite_product || false);
 
   if (!data) {
     return null;
@@ -150,8 +151,8 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
     if (user?.isAuthenticated) {
       setLoading(true);
       const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
-      if (res) {
-        fetchData(data.id, !likeStatus);
+      if (res && (res?.message === 'You have unliked this product' || res?.message === 'You have liked this product')) {
+        setIsLike(!isLike);
       }
       setLoading(false);
     } else {
@@ -221,7 +222,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
             </div>
           </Link>
 
-          <div className={classes.productPrice}>
+          <strong className={classes.productPrice}>
             <Link
               href={`/product/${product.id}`}
               className={classes.linkName}
@@ -230,7 +231,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
             </Link>
 
             {heart &&
-              (product.is_favorite_product ? (
+              (isLike ? (
                 <Image
                   src={'/img/icons/fill-heart.svg'}
                   width={27}
@@ -247,7 +248,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) =>
                   onClick={() => handleLikeProduct(true)}
                 />
               ))}
-          </div>
+          </strong>
         </CardContent>
 
         <CardActions className={classes.productSellerAction}>
@@ -285,7 +286,6 @@ ProductWidget.propTypes = {
   data: PropTypes.object.isRequired,
   heart: PropTypes.bool,
   border: PropTypes.string,
-  fetchData: PropTypes.func,
   widthMedia: PropTypes.number,
 };
 
