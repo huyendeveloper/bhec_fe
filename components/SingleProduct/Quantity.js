@@ -9,7 +9,6 @@ import {productState} from '~/store/productState';
 
 const Quantity = () => {
   const [product, setProduct] = useRecoilState(productState);
-  const maximumQuantity = product?.productDetail?.maximumQuantity || 10;
 
   const handleQuantityChange = (event) => {
     setProduct((oldValue) => ({
@@ -36,7 +35,8 @@ const Quantity = () => {
                 <QuantityBox
                   name={'productQuantity'}
                   value={product?.quantity ?? 0}
-                  maximumQuantity={maximumQuantity}
+                  maximum_quantity={product?.productDetail?.maximum_quantity}
+                  quantity={product?.productDetail?.quantity}
                   handleChange={handleQuantityChange}
                   width={'170px'}
                   height={'40px'}

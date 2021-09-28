@@ -5,19 +5,24 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import clsx from 'clsx';
 import 'date-fns';
 import produce from 'immer';
+import Router from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
-import QuantityBox from './QuantityBox';
-
+import QuantityBox from '~/components/QuantityBox';
+import {times} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {cartState} from '~/store/cartState';
-import {times} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    '& .MuiInputBase-root': {
+      background: theme.palette.white.main,
+    },
+  },
   centerCell: {
     display: 'flex',
     flexDirection: 'column',
@@ -153,7 +158,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       showCancelButton: true,
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
-      confirmButtonText: 'ボタン',
+      confirmButtonText: 'Ok',
       backdrop: false,
       customClass: {
         container: 'swal2-warning',
@@ -164,6 +169,9 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           // eslint-disable-next-line max-nested-callbacks
           draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
         }));
+        if (cart.items.length === 1) {
+          Router.push('/cart');
+        }
       }
     });
   };
@@ -247,7 +255,8 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 <div className={classes.title}>{'数量'}</div>
                 <QuantityBox
                   name={`quantity${data.productDetail.id}`}
-                  maximumQuantity={data.productDetail.maximum_quantity ?? 10}
+                  maximum_quantity={data?.productDetail?.maximum_quantity}
+                  quantity={data?.productDetail?.quantity}
                   defaultValue={data.quantity}
                   handleChange={handleChangeQuantity}
                   disabled={disabled}

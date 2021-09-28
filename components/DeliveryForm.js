@@ -2,7 +2,7 @@ import {Box, FormControl, Grid, makeStyles, NativeSelect, TextField, useMediaQue
 import {useTheme} from '@material-ui/core/styles';
 import {nanoid} from 'nanoid';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
 
@@ -10,7 +10,7 @@ import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {isFullWidth} from '~/lib/text';
+import {isFullWidth, removeHalfWidth} from '~/lib/text';
 import {ErrorMessageWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(1, 0, 5),
     },
   },
+  option: {
+    color: theme.palette.black.default,
+  },
 }));
 
 const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
@@ -29,6 +32,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const setLoading = useSetRecoilState(loadingState);
+  const typingTimeoutRef = useRef(null);
 
   const {
     control,
@@ -70,11 +74,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     }
   };
 
-  const handleLeaveZipcode = async (e) => {
+  const fetchDataByZipcode = async (zipcode) => {
     const {city, province_id} = getValues();
-    const zipcode = e.target.value;
     // eslint-disable-next-line no-underscore-dangle
-    if (city === '' && province_id === '1' && zipcode.length !== 0) {
+    if (city === '' && province_id === 1 && zipcode.length !== 0) {
       const {response} = await CommonService.getPrefectureByZipcode(zipcode);
       if (response?.location) {
         const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
@@ -82,6 +85,15 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
         setValue('city', response?.location[0].city);
       }
     }
+  };
+
+  const handleStopTypeZipcode = (e) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      fetchDataByZipcode(e.target.value);
+    }, 300);
   };
 
   return (
@@ -161,8 +173,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
-                          onChange={onChange}
-                          onBlur={handleLeaveZipcode}
+                          onChange={(e) => {
+                            onChange(e);
+                            handleStopTypeZipcode(e);
+                          }}
                         />
                       )}
                     />
@@ -188,8 +202,15 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     <Controller
                       name='province_id'
                       control={control}
-                      defaultValue={'1'}
-                      rules={{required: rules.required}}
+                      defaultValue={1}
+                      rules={{
+                        required: rules.required,
+                        validate: {
+                          matchesPreviousPassword: (value) => {
+                            return value > 1 || 'パスワードは一致する必要があります！';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
                           <NativeSelect
@@ -198,11 +219,13 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                             value={value}
                             inputRef={ref}
                             onChange={onChange}
+                            style={value === 1 ? {color: '#757575'} : null}
                           >
                             {prefectures.map((pref) => (
                               <option
                                 key={pref.id}
                                 value={pref.id}
+                                className={classes.option}
                               >{pref.name}</option>
                             ))}
                           </NativeSelect>
@@ -245,7 +268,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           onChange={onChange}
                           onInput={(e) => {
                             if (!isFullWidth(e.target.value)) {
-                              e.target.value = e.target.value.replace(e.target.value, '');
+                              e.target.value = removeHalfWidth(e.target.value);
                             }
                           }}
                           inputRef={ref}
@@ -288,7 +311,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           onChange={onChange}
                           onInput={(e) => {
                             if (!isFullWidth(e.target.value)) {
-                              e.target.value = e.target.value.replace(e.target.value, '');
+                              e.target.value = removeHalfWidth(e.target.value);
                             }
                           }}
                           inputRef={ref}

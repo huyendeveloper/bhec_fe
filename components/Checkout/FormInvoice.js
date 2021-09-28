@@ -6,6 +6,7 @@ import {Controller} from 'react-hook-form';
 import {useRecoilValue} from 'recoil';
 
 import {BlockForm, ConnectForm} from '~/components';
+import {isHalfWidth} from '~/lib/text';
 import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
@@ -122,6 +123,11 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
                         onChange={onChange}
                         inputRef={ref}
                         disabled={isReadonly}
+                        onInput={(e) => {
+                          if (!isHalfWidth(e.target.value)) {
+                            e.target.value = e.target.value.replace(e.target.value, '');
+                          }
+                        }}
                       />
                     )}
                   />
