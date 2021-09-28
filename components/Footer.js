@@ -346,10 +346,12 @@ const Footer = (props) => {
                     className={classes.divider}
                   />
 
-                  {/* eslint-disable-next-line no-warning-comments */}
-                  {/* TODO: link not fixed yet */}
-                  <span>{'プライバシーポリシー'}</span>
-
+                  <Link
+                    href='/policy'
+                    color='inherit'
+                  >
+                    <span>{'プライバシーポリシー'}</span>
+                  </Link>
                 </Grid>
               </Grid>
             </Box>
