@@ -1,9 +1,12 @@
+/* eslint-disable new-cap */
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
+import {useSetRecoilState} from 'recoil';
 
+import {loadingState} from '~/store/loadingState';
 import {Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
@@ -80,6 +83,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  btnToOrderList: {
+    marginRight: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.875rem',
+    },
+  },
+  btnExport: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.875rem',
+    },
+  },
 }));
 
 export async function getServerSideProps({params}) {
@@ -93,10 +107,20 @@ const OrdersDetail = ({id}) => {
   const classes = useStyles();
   const router = useRouter();
   const [order, setOrder] = useState();
+  const setLoading = useSetRecoilState(loadingState);
 
   const fetchOrder = async () => {
     const response = await OrderService.getOrderDetail(id);
     setOrder(response?.order);
+  };
+
+  const exportOrder = async () => {
+    setLoading(true);
+    const response = await OrderService.exportOrderPdf(order.order_number);
+    if (response && response.url) {
+      setLoading(false);
+      window.open(response.url, '_blank');
+    }
   };
 
   useEffect(() => {
@@ -268,9 +292,19 @@ const OrdersDetail = ({id}) => {
               customColor={'white'}
               customBorder={'bdGray'}
               customSize={'extraLarge'}
+              style={{marginRight: '1rem'}}
               onClick={() => router.push('/orders')}
             >
               {'注文一覧へ'}
+            </Button>
+            <Button
+              variant={'pill'}
+              customColor={'yellow'}
+              customBorder={'bdGray'}
+              customSize={'extraLarge'}
+              onClick={() => exportOrder()}
+            >
+              {'領収書発行'}
             </Button>
           </div>
         </ContentBlock>

@@ -77,7 +77,7 @@ export default function FollowedSellerList() {
       page: currentPage,
       per_page: DEFAULT_PER_PAGE,
     };
-    const response = await SellerInstance.geSellersFollowed(query);
+    const response = await SellerInstance.getSellersFollowed(query);
     if (response && response.list_followed_seller && response.list_followed_seller.length) {
       setPages(response.pages);
       setSellers(response.list_followed_seller);

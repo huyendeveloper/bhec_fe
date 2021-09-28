@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 import {Avatar, Chip, Link, useMediaQuery, useTheme} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -49,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   bgImg: {
     backgroundColor: '#DBDBDB',
-    padding: '10%',
     objectFit: 'scale-down',
   },
   productName: {
@@ -129,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, fetchData}) => {
+const ProductWidget = ({variant, data, heart, border, fetchData, widthMedia}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -186,7 +186,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
           <CardMedia
             component='img'
             alt={product.name}
-            height={isTablet ? '160' : '208'}
+            height={widthMedia ? '160' : isTablet ? '160' : '208'}
             className={clsx(product.image_urls[0] ? null : classes.bgImg)}
             image={product.image_urls[0] ?? '/logo.png'}
             title={product.name}
@@ -286,6 +286,7 @@ ProductWidget.propTypes = {
   heart: PropTypes.bool,
   border: PropTypes.string,
   fetchData: PropTypes.func,
+  widthMedia: PropTypes.number,
 };
 
 ProductWidget.defaultProps = {
