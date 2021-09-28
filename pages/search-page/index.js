@@ -14,11 +14,20 @@ import {ProductService} from '~/services';
 const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
-  favoriteProducts: {
+  products: {
     marginTop: '2rem',
     marginBottom: '3rem',
     [theme.breakpoints.down('sm')]: {
       marginTop: '1.75rem',
+    },
+  },
+  product: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '0.75rem 0.5rem !important',
+      '& strong': {
+        fontSize: '1rem',
+        lineHeight: '1.5rem',
+      },
     },
   },
   content: {
@@ -187,19 +196,20 @@ const SearchPage = ({query}) => {
           <Grid
             container={true}
             spacing={3}
-            className={classes.favoriteProducts}
+            className={classes.products}
           >
             {products.length > 0 && products.map((product) => (
               <Grid
                 key={`product${product.id}`}
                 item={true}
                 sm={4}
+                xs={6}
+                className={classes.product}
               >
                 <ProductWidget
                   data={product}
                   border={'borderNone'}
                   heart={true}
-                  fetchData={fetchData}
                 />
               </Grid>
             ))}
