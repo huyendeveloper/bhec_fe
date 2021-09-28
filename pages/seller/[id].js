@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import {Container, Grid, Breadcrumbs as MuiBreadcrumbs, useTheme, Button, useMediaQuery, Link, Typography, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Image from 'next/image';
@@ -276,12 +275,8 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
     getSellerInfo();
   }, []);
   return (
-    <DefaultLayout title='TopPage - Oshinagaki Store'>
+    <DefaultLayout title={seller?.name}>
       <div className={classes.root}>
-        <Head>
-          <title>{'おしながき'}</title>
-        </Head>
-
         <div className={classes.topBanner}>
           <Container
             maxWidth='lg'
