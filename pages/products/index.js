@@ -14,12 +14,12 @@ import {ProductService} from '~/services';
 const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    background: 'url(/img/noise.png)',
-  },
-  container: {
-    width: '100%',
-    paddingBottom: '0.125rem',
+  products: {
+    marginTop: '2rem',
+    marginBottom: '3rem',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '1.75rem',
+    },
   },
   product: {
     paddingBottom: '1.25rem !important',
@@ -27,20 +27,20 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: '0.75rem !important',
     },
     [theme.breakpoints.down('xs')]: {
-      padding: '0.5rem !important',
+      padding: '0.75rem 0.5rem !important',
+      '& strong': {
+        fontSize: '1rem',
+      },
     },
   },
-  topContainer: {
-    paddingTop: '2rem',
-    paddingBottom: '2rem',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-    },
-  },
-  breadcrumbs: {
-    padding: '4rem 0 0',
+  content: {
+    padding: '2rem 0 0 0',
+    backgroundColor: '#f8f8f8',
+    backgroundRepeat: 'repeat',
+    backgroundImage: 'url("/img/noise.png")',
+    mixBlendMode: 'multiply',
     [theme.breakpoints.down('sm')]: {
-      padding: '2rem 0 0',
+      padding: '1.5rem 0 0 0',
     },
   },
   pagination: {
@@ -76,6 +76,15 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.red.main,
       borderColor: theme.palette.red.main,
       color: theme.palette.white.main,
+    },
+  },
+  searchBox: {
+    marginBottom: '-2rem',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '-1rem',
     },
   },
 }));
@@ -141,77 +150,58 @@ const ArchiveProduct = ({queryParams}) => {
 
   return (
     <DefaultLayout title={`${categories[0]?.name_kana ?? '商品'}一覧`}>
-      <Container
-        maxWidth='lg'
-      >
-        <Grid
-          container={true}
-          spacing={0}
-          className={classes.breadcrumbs}
+      <div className={classes.content}>
+        <Container className={classes.searchBox}>
+          <Breadcrumbs linkProps={linkProps}/>
+
+          <Search/>
+        </Container>
+
+        <ContentBlock
+          title={`${categories[0]?.name_kana ?? '商品'}一覧`}
+          bgColor='transparent'
         >
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-            lg={12}
-          >
-            <Breadcrumbs linkProps={linkProps}/>
-          </Grid>
-        </Grid>
-      </Container>
-
-      <Container
-        maxWidth='lg'
-        className={classes.topContainer}
-      >
-        <Search/>
-      </Container>
-
-      <ContentBlock
-        title={`${categories[0]?.name_kana ?? '商品'}一覧`}
-        bgImage={'/img/noise.png'}
-        bgRepeat={'repeat'}
-      >
-        { products?.length > 0 ? (
-          <Grid
-            container={true}
-            spacing={3}
-          >
-            {products?.map((item) => (
-              <Grid
-                key={item.id}
-                item={true}
-                sm={4}
-                xs={6}
-                className={classes.product}
-              >
-                <ProductWidget
-                  data={item}
-                  border={'borderNone'}
-                  heart={true}
-                  fetchData={fetchData}
-                />
-              </Grid>
-            ))}
-          </Grid>) : <ProductNotFound/>
-        }
-        {products?.length > 0 && currentPage > 0 &&
-          <Pagination
-            count={currentPage}
-            variant={'outlined'}
-            color={'primary'}
-            size={'large'}
-            defaultPage={1}
-            onChange={changePage}
-            className={classes.pagination}
+          { products?.length > 0 ? (
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.products}
+            >
+              {products?.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>) : <ProductNotFound/>
+          }
+          {products?.length > 0 && currentPage > 0 &&
+            <Pagination
+              count={currentPage}
+              variant={'outlined'}
+              color={'primary'}
+              size={'large'}
+              defaultPage={1}
+              onChange={changePage}
+              className={classes.pagination}
+            />
+          }
+          <AdsWidget
+            imgSrc={'/img/ad/ad5.png'}
+            imgWidth={'1140'}
+            imgHeight={'192'}
           />
-        }
-        <AdsWidget
-          imgSrc={'/img/ad/ad5.png'}
-          imgWidth={'1140'}
-          imgHeight={'192'}
-        />
-      </ContentBlock>
+        </ContentBlock>
+      </div>
     </DefaultLayout>
   );
 };
