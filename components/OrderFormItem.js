@@ -196,7 +196,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 alt={data.productDetail.name}
                 width={170}
                 height={112}
-                image={data.productDetail.images?.length ? data.productDetail.images[0].src : '/logo.png'}
+                image={data.productDetail?.image_urls?.length ? data.productDetail.image_urls[0] : '/logo.png'}
                 title={data.productDetail.name}
               />
             </CardActionArea>
