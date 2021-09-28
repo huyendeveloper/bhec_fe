@@ -14,9 +14,9 @@ import {signIn} from 'next-auth/client';
 import {httpStatus} from '~/constants';
 import {userState} from '~/store/userState';
 import {DefaultLayout} from '~/components/Layouts';
-import {Slider, Search, CategoryBlock, ContentBlock, ProductSwiper} from '~/components';
+import {Slider, Search, CategoryBlock, ContentBlock} from '~/components';
 import {Article} from '~/components/Article';
-import {AdsWidget} from '~/components/Widgets';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
 import {ProductService, ArticleService, AuthService} from '~/services';
 const Auth = new AuthService();
@@ -249,10 +249,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper
-              items={traditional_craft}
-              widthMedia={160}
-            />
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {traditional_craft.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 
@@ -265,10 +281,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper
-              items={food_and_beverage}
-              widthMedia={160}
-            />
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {food_and_beverage.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 
@@ -282,10 +314,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             mixBlendMode='multiply'
             padding='2rem 0 4rem 0'
           >
-            <ProductSwiper
-              items={lifestyle}
-              widthMedia={160}
-            />
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {lifestyle.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 
