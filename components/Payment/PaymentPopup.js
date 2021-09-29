@@ -27,6 +27,8 @@ import {registerPayment} from '~/pages/payment-method';
 import {rules} from '~/lib/validator';
 import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
+import {isHalfWidth} from '~/lib/text';
+import removeFullWidth from '~/lib/text/removeFullWidth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -335,6 +337,11 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                           value={value}
                           onChange={onChange}
                           inputRef={ref}
+                          onInput={(e) => {
+                            if (!isHalfWidth(e.target.value)) {
+                              e.target.value = removeFullWidth(e.target.value);
+                            }
+                          }}
                         />
                       )}
                     />

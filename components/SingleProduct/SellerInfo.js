@@ -58,6 +58,11 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('md')]: {
         justifyContent: 'space-between',
       },
+      [theme.breakpoints.down('xs')]: {
+        '& button:first-child': {
+          marginRight: '1.063rem',
+        },
+      },
     },
   },
   introduction: {
@@ -116,6 +121,14 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  actions: {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '0.5rem',
+    },
+  },
 }));
 
 const SellerInfo = () => {
@@ -170,6 +183,7 @@ const SellerInfo = () => {
             xs={12}
             sm={6}
             md={6}
+            className={classes.actions}
           >
             <Box
               component='div'
@@ -225,9 +239,7 @@ const SellerInfo = () => {
         <div className={classes.categoryBlock}>
           <CategoryBlock
             category='この生産者の商品'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
+            bgColor='transparent'
           >
             <Grid
               container={true}
@@ -257,9 +269,7 @@ const SellerInfo = () => {
         <div className={classes.categoryBlock}>
           <CategoryBlock
             category='オススメ商品'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
+            bgColor='transparent'
           >
             <Grid
               container={true}

@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    background: theme.palette.white.main,
 
     '& .MuiCardContent-root': {
       flex: '1 1 auto',
