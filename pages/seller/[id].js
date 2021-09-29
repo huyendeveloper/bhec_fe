@@ -211,70 +211,72 @@ const Seller = () => {
 
   const getSellerInfo = async () => {
     const {id} = router.query;
-    const response = await SellerInstance.getSellerDetail(id);
-    if (!response?.seller?.id) {
-      return {
-        notFound: true,
-      };
-    }
+    if (id) {
+      const response = await SellerInstance.getSellerDetail(id);
+      if (!response?.seller?.id) {
+        return {
+          notFound: true,
+        };
+      }
 
-    getListRelatedProduct(response?.seller?.id);
-    getListLastestProduct();
-    const current = [
-      {
-        id: 1,
-        linkLabel: 'ホーム',
-        linkUrl: '/',
-      },
-      {
-        id: 2,
-        linkLabel: response?.seller?.name,
-        linkUrl: '#',
-      },
-    ];
-    setLinkProps(current);
+      getListRelatedProduct(response?.seller?.id);
+      getListLastestProduct();
+      const current = [
+        {
+          id: 1,
+          linkLabel: 'ホーム',
+          linkUrl: '/',
+        },
+        {
+          id: 2,
+          linkLabel: response?.seller?.name,
+          linkUrl: '#',
+        },
+      ];
+      setLinkProps(current);
 
-    setSeller(response?.seller);
-    setIsFollowing(response?.seller?.followed);
-    const rawHTML = response?.seller?.description;
-    const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
-    let match;
-    let refinedHTMLGenerate = rawHTML;
-    const shortcodesGenerate = [];
-    let shortcodeIdx = 0;
-    // eslint-disable-next-line no-cond-assign
-    while (match = productsRegrex.exec(rawHTML)) {
-      const shortcode = match[0];
-      shortcodesGenerate.push(shortcode);
-
-      // replace shortcode by div container
-      // then, render shortcode to container in client side
-      refinedHTMLGenerate = refinedHTMLGenerate.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
-      shortcodeIdx++;
-    }
-    setRefinedHTML(refinedHTMLGenerate);
-    for (let i = 0; i < shortcodesGenerate.length; i++) {
-      const shortcode = shortcodesGenerate[i];
-      const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
-      let matchProd;
-      const products = [];
+      setSeller(response?.seller);
+      setIsFollowing(response?.seller?.followed);
+      const rawHTML = response?.seller?.description;
+      const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
+      let match;
+      let refinedHTMLGenerate = rawHTML;
+      const shortcodesGenerate = [];
+      let shortcodeIdx = 0;
       // eslint-disable-next-line no-cond-assign
-      while (matchProd = shortcodeRegex.exec(shortcode)) {
-        const productIds = matchProd[1].replace(/ /g, '').split(',');
-        for (let j = 0; j < productIds.length; j++) {
-          const idProduct = productIds[j];
-          // eslint-disable-next-line no-await-in-loop
-          const result = await ProductServiceInstance.getProductDetail(idProduct);
-          if (result?.product_detail) {
-            products.push({
-              ...result?.product_detail,
-              seller_info: result?.seller_info,
-              tags: result?.product_detail.tags,
-            });
+      while (match = productsRegrex.exec(rawHTML)) {
+        const shortcode = match[0];
+        shortcodesGenerate.push(shortcode);
+
+        // replace shortcode by div container
+        // then, render shortcode to container in client side
+        refinedHTMLGenerate = refinedHTMLGenerate.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
+        shortcodeIdx++;
+      }
+      setRefinedHTML(refinedHTMLGenerate);
+      for (let i = 0; i < shortcodesGenerate.length; i++) {
+        const shortcode = shortcodesGenerate[i];
+        const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
+        let matchProd;
+        const products = [];
+        // eslint-disable-next-line no-cond-assign
+        while (matchProd = shortcodeRegex.exec(shortcode)) {
+          const productIds = matchProd[1].replace(/ /g, '').split(',');
+          for (let j = 0; j < productIds.length; j++) {
+            const idProduct = productIds[j];
+            // eslint-disable-next-line no-await-in-loop
+            const result = await ProductServiceInstance.getProductDetail(idProduct);
+            if (result?.product_detail) {
+              products.push({
+                ...result?.product_detail,
+                seller_info: result?.seller_info,
+                tags: result?.product_detail.tags,
+              });
+            }
           }
         }
+        ReactDOM.render(<ProductSwiperSeller items={products}/>, document.getElementById(`js-shorcode-${i}`));
       }
-      ReactDOM.render(<ProductSwiperSeller items={products}/>, document.getElementById(`js-shorcode-${i}`));
     }
   };
 
@@ -294,7 +296,7 @@ const Seller = () => {
 
   useEffect(() => {
     getSellerInfo();
-  }, []);
+  }, [router]);
   return (
     <DefaultLayout title={seller?.name}>
       <div className={classes.root}>
