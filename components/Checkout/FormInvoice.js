@@ -7,6 +7,7 @@ import {useRecoilValue} from 'recoil';
 
 import {BlockForm, ConnectForm} from '~/components';
 import {isHalfWidth} from '~/lib/text';
+import removeFullWidth from '~/lib/text/removeFullWidth';
 import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
@@ -125,7 +126,7 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
                         disabled={isReadonly}
                         onInput={(e) => {
                           if (!isHalfWidth(e.target.value)) {
-                            e.target.value = e.target.value.replace(e.target.value, '');
+                            e.target.value = removeFullWidth(e.target.value);
                           }
                         }}
                       />
