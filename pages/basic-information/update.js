@@ -122,7 +122,7 @@ export default function BasicInformationUpdate() {
   };
 
   return (
-    <DefaultLayout title='Update Info - Oshinagaki Store'>
+    <DefaultLayout title='基本情報'>
       <div className={classes.root}>
         <div className='content'>
 

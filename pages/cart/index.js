@@ -178,7 +178,7 @@ export default function Cart() {
 
   /* eslint-disable max-lines */
   return (
-    <DefaultLayout title='Cart - Oshinagaki Store'>
+    <DefaultLayout title='カート'>
       {/* Cart */}
       <ContentBlock
         bgImage='/img/noise.png'

@@ -126,12 +126,12 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
-                className={clsx(classes.image, product.images?.length > 0 ? '' : classes.bgImg)}
+                className={clsx(classes.image, product.image_urls?.length > 0 ? '' : classes.bgImg)}
                 component='img'
                 alt={product?.name}
                 width={170}
                 height={112}
-                image={product.images?.length > 0 ? product.images[0]?.src : '/logo.png'}
+                image={product?.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
                 title={product?.name}
               />
             </CardActionArea>

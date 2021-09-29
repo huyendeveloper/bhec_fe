@@ -1,4 +1,12 @@
-import {Box, Table, TableBody, TableCell, TableContainer, TableRow} from '@material-ui/core';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 
 import {useRecoilState} from 'recoil';
@@ -32,15 +40,17 @@ const Quantity = () => {
                 {'数量'}
               </TableCell>
               <TableCell align='left'>
-                <QuantityBox
-                  name={'productQuantity'}
-                  value={product?.quantity ?? 0}
-                  maximum_quantity={product?.productDetail?.maximum_quantity}
-                  quantity={product?.productDetail?.quantity}
-                  handleChange={handleQuantityChange}
-                  width={'170px'}
-                  height={'40px'}
-                />
+                {product?.productDetail?.quantity > 0 ? (
+                  <QuantityBox
+                    name={'productQuantity'}
+                    value={product?.quantity ?? 0}
+                    maximum_quantity={product?.productDetail?.maximum_quantity}
+                    quantity={product?.productDetail?.quantity}
+                    handleChange={handleQuantityChange}
+                    width={'170px'}
+                    height={'40px'}
+                  />
+                ) : <Typography color={'secondary'}>{'在庫なし'}</Typography>}
               </TableCell>
             </TableRow>
           </TableBody>

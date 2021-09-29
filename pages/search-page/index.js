@@ -158,7 +158,7 @@ const SearchPage = ({query}) => {
   };
 
   return (
-    <DefaultLayout title={category}>
+    <DefaultLayout title={'検索結果一覧'}>
       <div className={classes.content}>
         <Container className={classes.searchBox}>
           <MuiBreadcrumbs

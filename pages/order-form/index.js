@@ -171,9 +171,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// eslint-disable-next-line no-warning-comments
-// TODO: get products in same category with cart item
-
 export default function OrderForm() {
   const classes = useStyles();
   const [recommendProducts, setRecommendProducts] = useState([]);

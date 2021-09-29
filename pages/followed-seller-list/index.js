@@ -92,7 +92,7 @@ export default function FollowedSellerList() {
   };
 
   return (
-    <DefaultLayout title='Followed Seller List - Oshinagaki Store'>
+    <DefaultLayout title='フォロー中の出品者一覧'>
       <div className={'page'}>
         <div className='content'>
           <ContentBlock

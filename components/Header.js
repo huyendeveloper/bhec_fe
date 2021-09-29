@@ -190,15 +190,15 @@ const useStyles = makeStyles((theme) => ({
 const listNavigation = [
   {
     name: '伝統工芸品',
-    url: '/products?category=traditional_craft',
+    url: '/products?category=伝統工芸品',
   },
   {
     name: '食品・飲料',
-    url: '/products?category=food_and_beverage',
+    url: '/products?category=食品・飲料',
   },
   {
     name: 'ライフスタイル',
-    url: '/products?category=lifestyle',
+    url: '/products?category=ライフスタイル',
   },
   {
     name: '特集',

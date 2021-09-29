@@ -15,6 +15,8 @@ import React from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
+import {get} from 'lodash';
+
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
@@ -189,8 +191,9 @@ const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
             alt={product.name}
             height={widthMedia ? '160' : isTablet ? '160' : '208'}
             className={clsx(product.image_urls?.length > 0 ? null : classes.bgImg)}
-            image={product.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
+            image={product.image_urls?.length > 0 ? get(product, 'image_urls.0') : '/logo.png'}
             title={product.name}
+            style={{objectFit: product.image_urls?.length > 0 ? 'cover' : 'contain'}}
           />
         </CardActionArea>
         <CardContent>
@@ -258,7 +261,7 @@ const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
           >
             <Avatar
               alt={seller.name}
-              src={seller.avatar_url}
+              src={seller?.avatar_url}
               className={classes.productSellerAvatar}
             />
 
@@ -266,12 +269,12 @@ const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
               <Typography
                 component={'h5'}
                 className={classes.sellerInfo}
-              >{seller.name}</Typography>
+              >{seller?.name}</Typography>
               <Typography
                 component={'div'}
                 className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
               >
-                {seller.catch_phrase}
+                {seller?.catch_phrase}
               </Typography>
             </div>
           </Link>

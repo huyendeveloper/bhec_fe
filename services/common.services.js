@@ -76,7 +76,7 @@ async function getAddress(id) {
 }
 
 async function getPrefectureByZipcode(zipcode) {
-  const [data, errors] = await api.get(`http://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zipcode}`);
+  const [data, errors] = await api.get(`https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zipcode}`);
   if (errors.length) {
     return parserError(errors);
   }
