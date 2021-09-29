@@ -13,7 +13,7 @@ const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   content: {
-    padding: '2rem 0 0 0',
+    padding: '2rem 0',
     backgroundColor: '#f8f8f8',
     backgroundRepeat: 'repeat',
     backgroundImage: 'url("/img/noise.png")',

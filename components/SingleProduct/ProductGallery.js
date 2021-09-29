@@ -18,6 +18,10 @@ SwiperCore.use([Navigation, Thumbs]);
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '0px',
+    '& img': {
+      objectFit: 'cover !important',
+      borderRadius: '0.25rem !important',
+    },
   },
   thumbnail: {
     paddingBottom: '1rem',

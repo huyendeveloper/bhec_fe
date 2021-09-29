@@ -82,6 +82,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.813rem',
       padding: '1rem',
+      margin: '0.5rem 0 1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '1.5rem 0 1.5rem',
     },
   },
 }));
