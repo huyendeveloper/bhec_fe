@@ -1,8 +1,15 @@
+import {FormControlLabel, InputBase, makeStyles, Paper, Radio, RadioGroup} from '@material-ui/core';
+import produce from 'immer';
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
-import {FormControl, FormControlLabel, InputBase, makeStyles, Paper, Radio, RadioGroup} from '@material-ui/core';
+import {Controller} from 'react-hook-form';
+import {useRecoilState, useRecoilValue} from 'recoil';
 
-import {BlockForm, Button, ConnectForm} from '~/components';
+import {AlertMessageForSection, BlockForm, Button, ConnectForm} from '~/components';
+import {format} from '~/lib/date';
+import {CouponService} from '~/services';
+import {billState} from '~/store/cartState';
+import {couponState} from '~/store/couponState';
+import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -11,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     width: '14rem',
     height: '1.313rem',
     '& input': {
-      backgroundColor: 'transparent',
+      backgroundColor: 'transparent !important',
       fontStyle: 'normal',
       fontWeight: 'normal',
       fontSize: '0.875rem',
@@ -73,80 +80,150 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const FormCoupon = ({isReadonly}) => {
+const FormCoupon = () => {
   const classes = useStyles();
-  const [coupon] = useState('1');
+  const [alerts, setAlerts] = useState(null);
+  const [coupons, setCoupons] = useRecoilState(couponState);
+  const [loaded, setLoaded] = React.useState(false);
+  const [order, setOrder] = useRecoilState(orderState);
+  const {subTotal, shippingFee} = useRecoilValue(billState);
 
-  const handleChange = () => {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: not implemented yet
+  const handleChange = (e) => {
+    const coupon = coupons.items.find((item) => item.code === e.target.value);
+    const discount = coupon ? (coupon.coupon_type === 1 ? calDiscountByPercent(coupon.value) : coupon.value) : 0;
+    setOrder({...order, coupon_code: e.target.value, discount});
   };
+
+  const calDiscountByPercent = (value) => {
+    const discount = (subTotal + shippingFee) * (value / 100);
+    if (discount > (subTotal + shippingFee)) {
+      return subTotal + shippingFee;
+    }
+    return discount;
+  };
+
+  const handleCheckCoupon = async (code) => {
+    const isExistCoupon = coupons.items.find((item) => item.code === code);
+    if (isExistCoupon) {
+      setAlerts({
+        type: 'error',
+        message: 'すでに登録されているクーポンコードです。',
+      });
+      return;
+    }
+
+    const res = await CouponService.getCouponDetails({code});
+    if (res?.success && res?.data) {
+      setAlerts({
+        type: 'success',
+        message: 'クーポンが適用されました。',
+      });
+      const {coupon} = res.data;
+
+      if (coupon) {
+        const discountInfo = (coupon.value || '0') + (coupon.coupon_type === 1 ? '%' : '円');
+        const expiration_date = format(coupon.expiration_date, 'jaDateMD');
+        setCoupons(produce((draft) => {
+          draft.items.push({...coupon, code, label: `クーポン名  ${discountInfo}  ${expiration_date}`});
+        }));
+      }
+
+      if (!coupon) {
+        setAlerts({
+          type: 'error',
+          message: 'クーポンコードは正しくありません。',
+        });
+      }
+    }
+    if (!res?.success || !res?.data) {
+      setAlerts({
+        type: 'error',
+        message: 'クーポンコードは正しくありません。',
+      });
+    }
+  };
+
+  React.useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   return (
     <ConnectForm>
       {/* eslint-disable-next-line no-unused-vars */}
-      {({control}) => {
+      {({control, getValues}) => {
         return (
           <BlockForm
             themeStyle={'gray'}
             title={'クーポン利用'}
+            id={'coupon'}
           >
-            <FormControl>
-              <RadioGroup
-                name={'coupon'}
-                value={coupon}
-                onChange={handleChange}
-                className={classes.radioGroup}
-              >
-                <FormControlLabel
-                  value={'1'}
-                  control={<Radio/>}
-                  label={'クーポン名300円3月15日まで...'}
-                  className={'labelRadioBtn'}
-                />
-
-                <FormControlLabel
-                  value={'2'}
-                  control={<Radio/>}
-                  label={'クーポン名5%3月15日まで'}
-                  className={'labelRadioBtn'}
-                />
-
-                <FormControlLabel
-                  value={'3'}
-                  control={<Radio/>}
-                  label={'クーポン名300円3月15日まで'}
-                  className={'labelRadioBtn'}
-                />
-
-                <FormControlLabel
-                  value={'4'}
-                  control={<Radio/>}
-                  label={'クーポン名5%3月15日まで'}
-                  className={'labelRadioBtn'}
-                />
-              </RadioGroup>
-            </FormControl>
+            {loaded && coupons && coupons?.items?.length > 0 &&
+            <>
+              <Controller
+                name={'coupon_code'}
+                control={control}
+                defaultValue={order?.coupon_code || ''}
+                render={({field: {onChange, value}}) => (
+                  <RadioGroup
+                    name={'coupon_code'}
+                    value={value}
+                    onChange={(e) => {
+                      onChange(e);
+                      handleChange(e);
+                    }}
+                    className={classes.radioGroup}
+                  >
+                    {coupons?.items.map((item) => (
+                      <FormControlLabel
+                        key={item.code}
+                        value={item.code}
+                        control={<Radio/>}
+                        label={item.label}
+                        className={'labelRadioBtn'}
+                      />
+                    ))}
+                  </RadioGroup>
+                )}
+              />
+            </>
+            }
 
             <Paper
               elevation={0}
               component='div'
               className={classes.inputBlock}
             >
-              <InputBase
-                className={classes.input}
-                placeholder='クーポンコード入力'
-                inputProps={{'aria-label': 'search'}}
+              <Controller
+                name='couponCode'
+                control={control}
+                defaultValue={''}
+                render={({field: {name, value, onChange}}) => (
+                  <InputBase
+                    className={classes.input}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    placeholder='クーポンコード入力'
+                    inputProps={{'aria-label': 'search'}}
+                  />
+                )}
               />
+
               <Button
                 variant='contained'
                 type='submit'
                 size='large'
                 className={classes.btnApply}
+                onClick={() => handleCheckCoupon(getValues('couponCode'))}
               >
                 {'適用'}
               </Button>
             </Paper>
+
+            <AlertMessageForSection
+              alert={alerts}
+              handleCloseAlert={() => setAlerts(null)}
+            />
           </BlockForm>
         );
       }}
@@ -155,11 +232,3 @@ const FormCoupon = ({isReadonly}) => {
 };
 
 export default FormCoupon;
-
-FormCoupon.propTypes = {
-  isReadonly: PropTypes.bool,
-};
-
-FormCoupon.defaultProps = {
-  isReadonly: false,
-};

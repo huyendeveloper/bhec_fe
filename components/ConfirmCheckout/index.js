@@ -106,7 +106,7 @@ const ConfirmCheckout = () => {
   // }, [isReadonly]);
 
   const handleConfirmClick = (data) => {
-    setOrder(data);
+    setOrder({...data, coupon_code: order?.coupon_code || '', discount: order?.discount || 0});
   };
 
   const handleSendOrderClick = async () => {
@@ -128,6 +128,7 @@ const ConfirmCheckout = () => {
       invoice_fullname: order?.invoice_fullname,
       invoice_note: order?.invoice_note,
       note: order?.note,
+      coupon_code: order?.coupon_code,
     };
 
     const shippingAddress = user.addresses?.find((a) => a.id === order?.addressShipping);
