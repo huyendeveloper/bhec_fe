@@ -44,10 +44,6 @@ function ProductDetail(props) {
   const router = useRouter();
 
   useEffect(() => {
-    // setProduct((oldValue) => ({
-    //   ...oldValue,
-    //   ...props,
-    // }));
     getDetailProduct();
   }, [props, setProduct]);
 
