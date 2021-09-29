@@ -3,6 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
 
 import {Breadcrumbs, Search, SingleProduct} from '~/components';
 import {productState} from '~/store/productState';
@@ -40,13 +41,32 @@ function ProductDetail(props) {
   const classes = useStyles();
   const [product, setProduct] = useRecoilState(productState);
   const [linkProps, setLinkProps] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    setProduct((oldValue) => ({
-      ...oldValue,
-      ...props,
-    }));
+    // setProduct((oldValue) => ({
+    //   ...oldValue,
+    //   ...props,
+    // }));
+    getDetailProduct();
   }, [props, setProduct]);
+
+  const getDetailProduct = async () => {
+    const {id} = router.query;
+    const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+    if (res) {
+      const productRes = {
+        productDetail: res.product_detail,
+        sellerInfo: res.seller_info,
+        sellerProduct: res.seller_products,
+        recommendProduct: res.recommend_products,
+      };
+      setProduct((oldValue) => ({
+        ...oldValue,
+        ...productRes,
+      }));
+    }
+  };
 
   useEffect(() => {
     if (product?.productDetail?.categories?.length && linkProps.length === 0) {
@@ -91,7 +111,7 @@ function ProductDetail(props) {
         </Container>
 
         {/* Product details */}
-        <SingleProduct/>
+        <SingleProduct getDetailProduct={getDetailProduct}/>
 
         {/* Banner */}
         <Container>
@@ -117,24 +137,6 @@ function ProductDetail(props) {
       </div>
     </DefaultLayout>
   );
-}
-
-export async function getServerSideProps({params}) {
-  const {id} = params;
-  const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
-  if (!res?.product_detail?.id) {
-    return {
-      notFound: true,
-    };
-  }
-  return {
-    props: {
-      productDetail: res.product_detail,
-      sellerInfo: res.seller_info,
-      sellerProduct: res.seller_products,
-      recommendProduct: res.recommend_products,
-    },
-  };
 }
 
 export default ProductDetail;

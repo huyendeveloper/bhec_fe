@@ -143,6 +143,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.white.main,
     color: theme.btnFollow.isFollowing,
     borderColor: theme.btnFollow.isFollowing,
+    boxShadow: 'none',
+    border: `1px solid ${theme.btnFollow.isFollowing}`,
     '&:hover': {
       backgroundColor: theme.palette.white.main,
     },
@@ -386,7 +388,7 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
                   onClick={() => toggleFollow()}
                   className={clsx(classes.btnFollow, isFollowing ? classes.isFollowing : '')}
                 >
-                  {isFollowing ? 'フォロー中' : 'プロフィール'}
+                  {isFollowing ? 'フォローする' : 'フォロー中'}
                 </Button>
               </Grid>
               <Grid

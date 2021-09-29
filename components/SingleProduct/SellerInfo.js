@@ -1,6 +1,10 @@
 import {Avatar, Box, Container, Grid, makeStyles, Typography} from '@material-ui/core';
 import React from 'react';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import clsx from 'clsx';
+import Swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 import CategoryBlock from '../CategoryBlock';
 import {ProductWidget} from '../Widgets';
@@ -8,7 +12,9 @@ import {ProductWidget} from '../Widgets';
 import {Button} from '..';
 
 import {productState} from '~/store/productState';
-
+import {userState} from '~/store/userState';
+import {SellerService} from '~/services';
+const SellerInstance = new SellerService();
 const useStyles = makeStyles((theme) => ({
   seller: {
     '& .info': {
@@ -48,15 +54,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .action': {
       display: 'flex',
-
-      [theme.breakpoints.down('lg')]: {
-        justifyContent: 'flex-end',
-        '& button:first-child': {
-          marginRight: '1.5rem',
-        },
-      },
-      [theme.breakpoints.down('md')]: {
-        justifyContent: 'space-between',
+      justifyContent: 'flex-end',
+      '& button:first-child': {
+        marginRight: '1.5rem',
       },
     },
   },
@@ -116,12 +116,74 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  btnFollow: {
+    backgroundColor: theme.btnFollow.backgroundColor,
+    color: theme.palette.white.main,
+    fontWeight: 'bold',
+    fontSize: '0.8125rem',
+    padding: '0 2.5rem',
+    height: '40px',
+    '&:hover': {
+      backgroundColor: theme.btnFollow.backgroundColor,
+    },
+  },
+  isFollowing: {
+    border: `1px solid ${theme.btnFollow.isFollowing}`,
+    backgroundColor: theme.palette.white.main,
+    color: theme.btnFollow.isFollowing,
+    borderColor: theme.btnFollow.isFollowing,
+    '&:hover': {
+      backgroundColor: theme.palette.white.main,
+    },
+  },
 }));
 
-const SellerInfo = () => {
+const SellerInfo = ({getDetailProduct}) => {
   const classes = useStyles();
   const product = useRecoilValue(productState);
   const sellerInfo = product?.sellerInfo;
+  const router = useRouter();
+  const [user] = useRecoilState(userState);
+
+  const goToDetailSeller = () => {
+    router.push(`/seller/${sellerInfo.id}`);
+  };
+
+  const toggleFollow = async () => {
+    if (user?.isAuthenticated) {
+      const payload = {
+        seller_id: sellerInfo.id,
+      };
+      if (sellerInfo.followed) {
+        const response = await SellerInstance.unFollowSeller(payload);
+        if (response) {
+          getDetailProduct();
+        }
+      } else {
+        const response = await SellerInstance.followSeller(payload);
+        if (response) {
+          getDetailProduct();
+        }
+      }
+    } else {
+      Swal.fire({
+        title: '通知',
+        text: '利用するためにログインが必要です。',
+        showCancelButton: true,
+        reverseButtons: true,
+        cancelButtonText: '閉じる',
+        confirmButtonText: 'ログイン画面へ',
+        backdrop: false,
+        customClass: {
+          container: 'swal2-warning-1',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/auth/login?callbackUrl=${router.asPath}`);
+        }
+      });
+    }
+  };
 
   return sellerInfo ? (
     <>
@@ -175,18 +237,26 @@ const SellerInfo = () => {
               component='div'
               className={'action'}
             >
-              <Button
+              {/* <Button
                 variant='contained'
                 customColor='yellow'
                 customSize='small'
               >
-                {'フォローする'}
+                {sellerInfo?.followed ? 'フォローする' : 'フォロー中'}
+              </Button> */}
+              <Button
+                variant='contained'
+                onClick={() => toggleFollow()}
+                className={clsx(classes.btnFollow, sellerInfo?.followed ? classes.isFollowing : '')}
+              >
+                {sellerInfo?.followed ? 'フォローする' : 'フォロー中'}
               </Button>
               <Button
                 variant='contained'
                 customSize='small'
                 customColor='white'
                 customBorder='bdGray'
+                onClick={goToDetailSeller}
               >
                 {'プロフィールを見る'}
               </Button>
@@ -286,6 +356,10 @@ const SellerInfo = () => {
       )}
     </>
   ) : <></>;
+};
+
+SellerInfo.propTypes = {
+  getDetailProduct: PropTypes.func,
 };
 
 export default SellerInfo;

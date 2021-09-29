@@ -1,5 +1,6 @@
 import {Container, Grid, makeStyles} from '@material-ui/core';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import ActionButtons from './ActionButtons';
 import Description from './Description';
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SingleProduct = () => {
+const SingleProduct = ({getDetailProduct}) => {
   const classes = useStyles();
 
   return (
@@ -143,9 +144,13 @@ const SingleProduct = () => {
         </Grid>
       </Container>
 
-      <SellerInfo/>
+      <SellerInfo getDetailProduct={getDetailProduct}/>
     </>
   );
+};
+
+SingleProduct.propTypes = {
+  getDetailProduct: PropTypes.func,
 };
 
 export default SingleProduct;
