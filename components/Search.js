@@ -435,9 +435,6 @@ const Search = ({query = {}}) => {
                     <>
                       <Grid
                         item={true}
-                        xs={6}
-                        sm={3}
-                        md={2}
                         key={tag.name}
                         style={{marginBottom: '1rem', padding: '10px'}}
                       >
