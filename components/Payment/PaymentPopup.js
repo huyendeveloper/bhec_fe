@@ -236,7 +236,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         type: 'error',
         message: 'カード登録が失敗しました。',
       });
-    } else if (response.status === httpStatus.SUCCESS) {
+    } else if (response?.success) {
       setLoading(false);
       if (typeof onSubmit === 'function') {
         onSubmit({...card, id: nanoid(8)});
@@ -318,7 +318,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       htmlFor='card_name'
                       className='formControlLabel'
                     >
-                      {'カードの名義 '}
+                      {'カードの名義 (全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller

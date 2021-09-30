@@ -7,6 +7,11 @@ import {ConnectForm} from '.';
 const useStyles = makeStyles((theme) => ({
   bordered: {
     '& .selectQuantity': {
+      width: '4.813rem',
+      height: '3rem !important',
+      [theme.breakpoints.down('sm')]: {
+        height: '2rem !important',
+      },
       '&::before, &::after': {
         display: 'none',
       },
@@ -55,7 +60,12 @@ const QuantityBox = ({name, maximum_quantity, quantity, defaultValue, handleChan
               name={name}
               inputProps={{'aria-label': name}}
               defaultValue={defaultValue}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                if (Number(e.target.value) === 0) {
+                  e.target.value = defaultValue;
+                }
+              }}
               disabled={disabled}
               style={{width, height}}
             >
@@ -89,8 +99,6 @@ QuantityBox.propTypes = {
 
 QuantityBox.defaultProps = {
   disabled: false,
-  width: '77px',
-  height: '48px',
 };
 
 export default QuantityBox;
