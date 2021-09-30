@@ -11,7 +11,7 @@ import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {isFullWidth, removeHalfWidth} from '~/lib/text';
+import {isFullWidth} from '~/lib/text';
 import {ErrorMessageWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
@@ -271,7 +271,13 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       name='city'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='city'
@@ -282,11 +288,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = removeHalfWidth(e.target.value);
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}
@@ -314,7 +315,13 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       name='address'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='address'
@@ -325,11 +332,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = removeHalfWidth(e.target.value);
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}
