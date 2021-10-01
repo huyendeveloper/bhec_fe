@@ -422,42 +422,42 @@ export default function ContactPage() {
                       </Typography>
 
                       {tabActive === 2 &&
-                        <Typography
-                          component='p'
-                          className='formBlockNote'
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
                         >
-                          <span>{'法人のお客様は'}</span>
-                          <a
-                            href='mailto:oshinagaki@gmail.com'
-                            target='_blank'
-                            className='formBlockLink'
-                            rel='noreferrer'
-                          >
-                            {'こちら'}
-                          </a>
-                          <span>{'から'}</span>
-                        </Typography>}
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
                     </div> :
                     <div
                       className='formBlockHeader'
                       style={{marginBottom: '2rem'}}
                     >
                       {tabActive === 2 &&
-                        <Typography
-                          component='p'
-                          className='formBlockNote'
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
                         >
-                          <span>{'法人のお客様は'}</span>
-                          <a
-                            href='mailto:oshinagaki@gmail.com'
-                            target='_blank'
-                            className='formBlockLink'
-                            rel='noreferrer'
-                          >
-                            {'こちら'}
-                          </a>
-                          <span>{'から'}</span>
-                        </Typography>}
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
                     </div>
                   }
                 </div>
