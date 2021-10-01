@@ -1,16 +1,15 @@
 import PropTypes from 'prop-types';
 import {
-  Grid, Icon,
+  Grid,
   TextField,
   Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Image from 'next/image';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller} from 'react-hook-form';
-import ImageUploading from 'react-images-uploading';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import {UploadComponent} from '~/components';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiOutlinedInput-multiline': {
@@ -252,7 +251,18 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
             </div>
 
             <div className='formBlockControls'>
-              <ImageUploading
+              <UploadComponent
+                multiple={false}
+                images={valueProductImages[`productImages${index}`]}
+                onChange={onChangeImage}
+                allowRemove={false}
+                showImage={false}
+                style={{marginTop: '0.5rem'}}
+                maxNumber={maxNumber}
+                logoWidth={logoWidth}
+                logoHeight={logoHeight}
+              />
+              {/* <ImageUploading
                 multiple={true}
                 value={valueProductImages[`productImages${index}`]}
                 onChange={onChangeImage}
@@ -311,7 +321,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
                     </div>
                   );
                 }}
-              </ImageUploading>
+              </ImageUploading> */}
             </div>
             {index > 0 &&
               <div

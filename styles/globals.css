@@ -59,7 +59,7 @@ img {
 }
 
 @media (max-width: 599.95px) {
-  .swal2-actions > .swal2-cancel{
+  .swal2-actions > .swal2-cancel {
     margin-bottom: 1rem;
   }
 }
