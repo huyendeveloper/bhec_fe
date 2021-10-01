@@ -132,7 +132,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
     setLoading(true);
     if (Number.parseInt(data.contact_category_id, 10) !== 5) {
       const body = {
-        contact_category_id: Number(data.contact_category_id),
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
         name: data.name,
         email: data.email,
         description: data.description,
@@ -157,7 +157,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         });
       });
       const body = {
-        contact_category_id: Number(data.contact_category_id),
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
         name: data.name,
         email: data.email,
         description: data.description,

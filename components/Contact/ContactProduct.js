@@ -262,66 +262,6 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
                 logoWidth={logoWidth}
                 logoHeight={logoHeight}
               />
-              {/* <ImageUploading
-                multiple={true}
-                value={valueProductImages[`productImages${index}`]}
-                onChange={onChangeImage}
-                maxNumber={maxNumber}
-                dataURLKey='data_url'
-              >
-                {({
-                  imageList,
-                  onImageUpload,
-                  onImageUpdate,
-                  onImageRemove,
-                  dragProps,
-                }) => {
-                  return (
-                    <div className='imageUploadWrapper'>
-                      {Array.from({length: maxNumber}, (x, i) => i).map((indexImg) => {
-                        const uploadedImage = imageList[indexImg];
-                        if (uploadedImage) {
-                          return (
-                            <div
-                              key={`imageUploadItem_${indexImg}`}
-                              className={'imageUploadItem'}
-                            >
-                              <Image
-                                onClick={() => onImageUpdate(indexImg)}
-                                src={uploadedImage.data_url}
-                                width={logoWidth}
-                                height={logoHeight}
-                                alt={`Image upload ${indexImg + 1}`}
-                              />
-                              <button
-                                type='button'
-                                className='imageUploadRemove'
-                                onClick={() => onImageRemove(indexImg)}
-                              ><Icon>{'close'}</Icon></button>
-                            </div>
-                          );
-                        }
-                        return (
-                          <button
-                            key={`imgUploadBtn_${indexImg}`}
-                            type='button'
-                            onClick={onImageUpload}
-                            className='imageUploadBtn'
-                            {...dragProps}
-                          >
-                            <Image
-                              src='/img/btn-upload.png'
-                              width={logoWidth}
-                              height={logoHeight}
-                              alt='Image upload'
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  );
-                }}
-              </ImageUploading> */}
             </div>
             {index > 0 &&
               <div
