@@ -10,6 +10,7 @@ const CommonService = {
   registerSeller,
   getAddress,
   getPrefectureByZipcode,
+  uploadFile,
 };
 
 const parserError = (errors) => {
@@ -83,4 +84,11 @@ async function getPrefectureByZipcode(zipcode) {
   return data;
 }
 
+async function uploadFile(payload) {
+  const [data, errors] = await api.post('/image_storages', payload);
+  if (errors && errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
 export default CommonService;

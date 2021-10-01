@@ -1,4 +1,3 @@
-import {api} from '~/lib/api';
 import {axios} from '~/modules/axios';
 
 const CouponService = {

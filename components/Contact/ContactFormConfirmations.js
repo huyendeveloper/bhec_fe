@@ -131,20 +131,14 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
   const handleSubmitForm = async () => {
     setLoading(true);
     if (Number.parseInt(data.contact_category_id, 10) !== 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      bodyFormData.append('description', data.description);
-      if (data.images && data.images.length) {
-        data.images.forEach((img) => {
-          bodyFormData.append('images[]', img.file);
-        });
-      }
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
+      const body = {
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
+        name: data.name,
+        email: data.email,
+        description: data.description,
+        image_urls: data.images,
       };
-      const res = await Contact.createContact(bodyFormData, configHeader);
+      const res = await Contact.createContact(body);
       if (res.id) {
         setLoading(false);
         setOpen(true);
@@ -153,35 +147,29 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         setLoading(false);
       }
     } else if (Number.parseInt(data.contact_category_id, 10) === 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
-      };
-      const res = await Contact.createContact(bodyFormData, configHeader);
-      if (res) {
-        setRequestNo(res.request_no);
-        listProduct.forEach(async (item, index) => {
-          const body = new FormData();
-          body.append('contact_id', res.id);
-          body.append('order_number', data[`order_number${index}`]);
-          body.append('product_code', data[`product_code${index}`]);
-          body.append('description', data[`description${index}`]);
-          if (data[`productImages${index}`] && data[`productImages${index}`].length) {
-            data[`productImages${index}`].forEach((img) => {
-              body.append('images[]', img.file);
-            });
-          }
-          const result = await Contact.createContactProduct(body, configHeader);
-          if (result) {
-            setLoading(false);
-            setOpen(true);
-          } else {
-            setLoading(false);
-          }
+      const contactProduct = [];
+      listProduct.forEach(async (item, index) => {
+        contactProduct.push({
+          order_number: data[`order_number${index}`],
+          product_code: data[`product_code${index}`],
+          description: data[`description${index}`],
+          image_urls: data[`productImages${index}`],
         });
+      });
+      const body = {
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
+        name: data.name,
+        email: data.email,
+        description: data.description,
+        contact_products: contactProduct,
+      };
+      const res = await Contact.createContact(body);
+      if (res.id) {
+        setLoading(false);
+        setOpen(true);
+        setRequestNo(res.request_no);
+      } else {
+        setLoading(false);
       }
     }
   };
@@ -261,7 +249,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                         {data[`productImages${index}`].map((img, prodIndex) => (
                           <Image
                             key={String(prodIndex)}
-                            src={img.data_url}
+                            src={img}
                             width={logoWidth}
                             height={logoHeight}
                             alt={`product-image-${prodIndex + 1}`}
@@ -290,7 +278,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
               {data.images.map((img, prodIndex) => (
                 <Image
                   key={String(prodIndex)}
-                  src={img.data_url}
+                  src={img}
                   width={logoWidth}
                   height={logoHeight}
                   alt={`product-image-${prodIndex + 1}`}
@@ -315,7 +303,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             className={classes.btnPrev}
             onClick={onBackStep}
           >
-            {'TOPページへ戻る'}
+            {'前のページへ戻る'}
           </Button>
 
           <Button
@@ -326,7 +314,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             className={classes.btnSubmit}
             onClick={() => handleSubmitForm()}
           >
-            {'フォーム内容確認'}
+            {'フォームを送信'}
           </Button>
         </Box>
       </div>

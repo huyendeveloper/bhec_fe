@@ -38,4 +38,5 @@ export {default as Slider} from './Slider';
 export {default as StyledForm} from './StyledForm';
 export {default as StyledSteppers} from './StyledSteppers';
 export {default as UserAccount} from './UserAccount';
+export {default as UploadComponent} from './UploadComponent';
 export {default as ProductSwiperSeller} from './ProductSwiperSeller';
