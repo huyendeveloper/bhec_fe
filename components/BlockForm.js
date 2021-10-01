@@ -35,11 +35,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BlockForm = ({title, themeStyle, children}) => {
+const BlockForm = ({title, themeStyle, children, id}) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div id={id}>
       <div className={clsx(classes.title, classes[themeStyle])}>{title}</div>
 
       <div className={classes.content}>
@@ -53,6 +53,7 @@ BlockForm.propTypes = {
   title: PropTypes.string,
   themeStyle: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
+  id: PropTypes.string,
 };
 
 BlockForm.defaultProps = {
