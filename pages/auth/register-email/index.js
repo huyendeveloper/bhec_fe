@@ -274,7 +274,7 @@ function RegisterEmail() {
                             validate: {
                               checkLengthPasswrod: () => {
                                 const {password} = getValues();
-                                return password.length >= 8 || '8文字以上で入力してください。';
+                                return password.length >= 8 || '文字以上で入力してください。';
                               },
                             },
                           }}
