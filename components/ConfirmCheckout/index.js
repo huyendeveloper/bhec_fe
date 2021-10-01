@@ -185,7 +185,17 @@ const ConfirmCheckout = () => {
 
       router.push('/order-form/successded');
     } else {
-      const messageError = result === 1811 ? 'この数量の在庫がありません' : '500';
+      let messageError = '';
+      switch (result) {
+      case 1811:
+        messageError = 'この数量の在庫がありません';
+        break;
+      case 2306:
+        messageError = 'クーポンの利用期限が切れました。';
+        break;
+      default:
+        break;
+      }
       setAlerts({
         type: 'error',
         message: messageError,
