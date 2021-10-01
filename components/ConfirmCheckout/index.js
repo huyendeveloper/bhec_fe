@@ -175,7 +175,7 @@ const ConfirmCheckout = () => {
     }
 
     const result = await OrderService.createOrder(orderDetails);
-    if (result?.order) {
+    if (result?.success) {
       if (!user?.isAuthenticated) {
         // remove temporarily addresses, cards
         setUser({});
@@ -185,9 +185,10 @@ const ConfirmCheckout = () => {
 
       router.push('/order-form/successded');
     } else {
+      const messageError = result === 1811 ? 'この数量の在庫がありません' : '500';
       setAlerts({
         type: 'error',
-        message: result,
+        message: messageError,
       });
     }
     setLoading(false);

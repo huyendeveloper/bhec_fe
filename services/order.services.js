@@ -17,9 +17,9 @@ const parserError = (errors) => {
 };
 
 async function createOrder(payload) {
-  const [data, errors] = await api.post('/orders', payload);
-  if (errors.length) {
-    return parserError(errors);
+  const [data, , , error_code] = await api.post('/orders', payload);
+  if (error_code) {
+    return error_code;
   }
   return data;
 }
