@@ -20,10 +20,14 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: '1.5rem',
         fontWeight: 'bold',
         paddingLeft: '1.5rem',
+        width: '80%',
 
         [theme.breakpoints.down('sm')]: {
           fontSize: '0.875rem',
           lineHeight: '1.313rem',
+        },
+        [theme.breakpoints.down('xs')]: {
+          width: '100%',
         },
       },
     },
@@ -192,7 +196,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
                 quantity={product?.quantity}
                 defaultValue={item.quantity}
                 handleChange={(event) => handleChangeQuantity(event, product?.id)}
-                width={'4.813rem'}
+                width={'6.413rem'}
                 height={isTablet ? '2rem' : '2.5rem'}
               />
             </div>

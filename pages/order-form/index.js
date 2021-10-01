@@ -15,9 +15,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& input': {
       backgroundColor: theme.palette.white.main,
+    },
+    '& .MuiInputLabel-formControl': {
+      [theme.breakpoints.down('md')]: {
+        top: '-0.25rem',
+      },
+    },
+    '& .MuiInput-underline': {
       [theme.breakpoints.down('md')]: {
         height: '2.5rem',
-        boxSizing: 'border-box',
       },
     },
   },

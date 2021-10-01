@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
+import clsx from 'clsx';
 
 import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {isFullWidth, removeHalfWidth} from '~/lib/text';
+import {isFullWidth} from '~/lib/text';
 import {ErrorMessageWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,9 +21,22 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       padding: theme.spacing(1, 0, 5),
     },
+    '& .MuiFormLabel-root.Mui-error': {
+      color: '#757575',
+    },
+    '& .MuiInputLabel-formControl': {
+      [theme.breakpoints.down('md')]: {
+        top: '-0.25rem',
+      },
+    },
   },
   option: {
     color: theme.palette.black.default,
+  },
+  selectQuantity: {
+    [theme.breakpoints.down('sm')]: {
+      height: '2.5rem !important',
+    },
   },
 }));
 
@@ -47,7 +61,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     setLoading(true);
     const res = await CommonService.getPrefectures();
     if (res && res[0]?.name) {
-      setPrefectures(res);
+      setPrefectures([{
+        id: 1,
+        name: '都道府県',
+      }, ...res]);
     }
     setLoading(false);
   };
@@ -204,17 +221,16 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       control={control}
                       defaultValue={1}
                       rules={{
-                        required: rules.required,
                         validate: {
                           matchesPreviousPassword: (value) => {
-                            return value > 1 || 'パスワードは一致する必要があります！';
+                            return value > 1 || '必須項目です。';
                           },
                         },
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
                           <NativeSelect
-                            className={errors.province_id ? 'selectBoxError' : ''}
+                            className={clsx(errors.province_id ? 'selectBoxError' : '', classes.selectQuantity)}
                             name={name}
                             value={value}
                             inputRef={ref}
@@ -248,14 +264,20 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='city'
                       className='formControlLabel'
                     >
-                      {'市区町村 '}
+                      {'市区町村（全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
                       name='city'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='city'
@@ -266,11 +288,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = removeHalfWidth(e.target.value);
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}
@@ -298,7 +315,13 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       name='address'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='address'
@@ -309,11 +332,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = removeHalfWidth(e.target.value);
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}

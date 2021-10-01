@@ -83,6 +83,7 @@ const FormShipping = ({isReadonly}) => {
     if (user?.isAuthenticated) {
       fetchAddresses();
     }
+    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

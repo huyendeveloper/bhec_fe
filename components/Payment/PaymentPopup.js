@@ -28,7 +28,6 @@ import {rules} from '~/lib/validator';
 import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
 import {isHalfWidth} from '~/lib/text';
-import removeFullWidth from '~/lib/text/removeFullWidth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -236,7 +235,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         type: 'error',
         message: 'カード登録が失敗しました。',
       });
-    } else if (response.status === httpStatus.SUCCESS) {
+    } else if (response?.success) {
       setLoading(false);
       if (typeof onSubmit === 'function') {
         onSubmit({...card, id: nanoid(8)});
@@ -318,14 +317,20 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       htmlFor='card_name'
                       className='formControlLabel'
                     >
-                      {'カードの名義 '}
+                      {'カードの名義 (全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
                       name='card_name'
                       control={control}
                       defaultValue=''
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkHalfWidth: (value) => {
+                            return isHalfWidth(value) || '半角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
@@ -337,11 +342,6 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                           value={value}
                           onChange={onChange}
                           inputRef={ref}
-                          onInput={(e) => {
-                            if (!isHalfWidth(e.target.value)) {
-                              e.target.value = removeFullWidth(e.target.value);
-                            }
-                          }}
                         />
                       )}
                     />
