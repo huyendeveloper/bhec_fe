@@ -282,7 +282,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               <Typography
                 variant={'h5'}
                 className={classes.price}
-              >{`¥${formatNumber(parseInt(data.productDetail.price, 10))}`}</Typography>
+              >{formatNumber(data.productDetail.price, 'currency')}</Typography>
             </Grid>
 
             <Grid
