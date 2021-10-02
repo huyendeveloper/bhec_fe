@@ -462,7 +462,7 @@ export default function ContactPage() {
                   }
                 </div>
               </div>
-              {activeStep === 0 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
+              {activeStep === 0 && tabActive === 1 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 {/* SECOND BLOCK */}
                 <div style={{marginBottom: '1rem'}}>
                   <div className='formBlockControls'>
@@ -760,7 +760,7 @@ export default function ContactPage() {
                   </Button>
                 </Box>
               </StyledForm> : null}
-              {activeStep === 1 ? (
+              {tabActive === 1 && activeStep === 1 ? (
                 <ContactFormConfirmations
                   data={formData}
                   onNextStep={handleNext}

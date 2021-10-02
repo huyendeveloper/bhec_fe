@@ -25,14 +25,21 @@ const useStyles = makeStyles((theme) => ({
       margin: '0',
     },
   },
-  infoBlock: {
-    marginBottom: '2.5rem',
-  },
   infoBlockTitle: {
     fontSize: '1.25rem',
     fontWeight: 700,
     lineHeight: '1.5rem',
-    marginBottom: '1.5rem',
+    marginBottom: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
+
+  infoBlockLabel: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    lineHeight: '1.5rem',
+    margin: '1rem 0',
     [theme.breakpoints.down('xs')]: {
       fontSize: '1rem',
     },
@@ -201,14 +208,13 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             <span>{'種別：'}</span>
             {data.contact_category_id ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)) ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)).name : '' : ''}
           </Typography>
-          {data.contact_category_id === 5 ? (<Typography component='p'>
-            <span>{'問い合わせ内容：'}</span>
-            {data.description ? data.description : ''}
-          </Typography>) : null}
         </div>
       </div>
       {data.contact_category_id === '5' ? (
-        <div className={classes.infoBlock}>
+        <div
+          className={classes.infoBlock}
+          style={{marginTop: '2.5rem'}}
+        >
           <Typography
             component='h3'
             className={classes.infoBlockTitle}
@@ -221,7 +227,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                 <div key={product.id}>
                   <Typography
                     component='h3'
-                    className={classes.infoBlockTitle}
+                    className={classes.infoBlockLabel}
                   >
                     {`商品情報${index + 1}`}
                   </Typography>
@@ -265,28 +271,37 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         </div>
       ) : null}
       {data.images && data.contact_category_id !== '5' && data.images.length > 0 ? (
-        <div className={classes.infoBlock}>
-          <Typography
-            component='h3'
-            className={classes.infoBlockTitle}
-          >
-            {'画像アップロード'}
+        <>
+          <Typography component='p'>
+            <span>{'問い合わせ内容：'}</span>
+            {data.description ? data.description : ''}
           </Typography>
+          <div
+            className={classes.infoBlock}
+            style={{marginTop: '2.5rem'}}
+          >
+            <Typography
+              component='h3'
+              className={classes.infoBlockTitle}
+            >
+              {'画像アップロード'}
+            </Typography>
 
-          <div className={classes.infoBlockContent}>
-            <div className={classes.productImages}>
-              {data.images.map((img, prodIndex) => (
-                <Image
-                  key={String(prodIndex)}
-                  src={img}
-                  width={logoWidth}
-                  height={logoHeight}
-                  alt={`product-image-${prodIndex + 1}`}
-                />
-              ))}
+            <div className={classes.infoBlockContent}>
+              <div className={classes.productImages}>
+                {data.images.map((img, prodIndex) => (
+                  <Image
+                    key={String(prodIndex)}
+                    src={img}
+                    width={logoWidth}
+                    height={logoHeight}
+                    alt={`product-image-${prodIndex + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       ) : null}
 
       <div className={classes.actions}>
