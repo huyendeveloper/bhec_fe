@@ -27,6 +27,7 @@ import {registerPayment} from '~/pages/payment-method';
 import {rules} from '~/lib/validator';
 import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
+import {isHalfWidth} from '~/lib/text';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -234,7 +235,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         type: 'error',
         message: 'カード登録が失敗しました。',
       });
-    } else if (response.status === httpStatus.SUCCESS) {
+    } else if (response?.success) {
       setLoading(false);
       if (typeof onSubmit === 'function') {
         onSubmit({...card, id: nanoid(8)});
@@ -316,14 +317,20 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       htmlFor='card_name'
                       className='formControlLabel'
                     >
-                      {'カードの名義 '}
+                      {'カードの名義 (全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
                       name='card_name'
                       control={control}
                       defaultValue=''
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkHalfWidth: (value) => {
+                            return isHalfWidth(value) || '半角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='card_name'
@@ -372,16 +379,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
-                          {...getCardNumberProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          placeholder={'カード番号'}
                           error={Boolean(errors.card_number)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          {...getCardNumberProps({onChange})}
+                          placeholder={'カード番号'}
                         />
                       )}
                     />
@@ -425,16 +432,16 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       rules={{required: rules.required}}
                       render={({field: {name, value, ref, onChange}}) => (
                         <input
-                          {...getExpiryDateProps({onChange})}
                           className={classes.inputPayment}
                           variant='outlined'
-                          placeholder={'月/年'}
                           error={Boolean(errors.card_expire)}
                           InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
                           inputRef={ref}
                           onChange={onChange}
+                          {...getExpiryDateProps({onChange})}
+                          placeholder={'月/年'}
                         />
                       )}
                     />

@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 import {Avatar, Chip, Link, useMediaQuery, useTheme} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -14,6 +15,8 @@ import React from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
+import {get} from 'lodash';
+
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
@@ -27,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    background: theme.palette.white.main,
 
     '& .MuiCardContent-root': {
       flex: '1 1 auto',
@@ -49,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
   bgImg: {
     backgroundColor: '#DBDBDB',
-    padding: '10%',
     objectFit: 'scale-down',
   },
   productName: {
@@ -83,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     color: theme.palette.black3.main,
+    '& a': {
+      color: theme.palette.black3.main,
+    },
   },
   productSellerAction: {
     borderTop: '1px solid #f1ebdf',
@@ -126,13 +132,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, fetchData}) => {
+const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const router = useRouter();
   const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
+  const [isLike, setIsLike] = React.useState(data?.is_favorite_product || false);
 
   if (!data) {
     return null;
@@ -147,8 +154,8 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
     if (user?.isAuthenticated) {
       setLoading(true);
       const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
-      if (res) {
-        fetchData();
+      if (res && (res?.message === 'You have unliked this product' || res?.message === 'You have liked this product')) {
+        setIsLike(!isLike);
       }
       setLoading(false);
     } else {
@@ -172,19 +179,22 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
   };
 
   return (
-    <Card className={clsx(classes.root, classes[border])}>
+    <Card
+      className={clsx(classes.root, classes[border])}
+    >
       <Link
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
         className={clsx(classes.linkName)}
       >
         <CardActionArea>
           <CardMedia
             component='img'
             alt={product.name}
-            height={isTablet ? '160' : '208'}
-            className={clsx(product.thumb_url ? null : classes.bgImg)}
-            image={product.thumb_url ?? '/logo.png'}
+            height={widthMedia ? '160' : isTablet ? '160' : '208'}
+            className={clsx(product.image_urls?.length > 0 ? null : classes.bgImg)}
+            image={product.image_urls?.length > 0 ? get(product, 'image_urls.0') : '/logo.png'}
             title={product.name}
+            style={{objectFit: product.image_urls?.length > 0 ? 'cover' : 'contain'}}
           />
         </CardActionArea>
         <CardContent>
@@ -198,11 +208,11 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
         </CardContent>
       </Link>
       <div className={classes.subContent}>
-        <Link
-          href={`/product/${product.id}`}
-          className={clsx(classes.linkName, classes.linkNameImage)}
-        >
-          <CardContent>
+        <CardContent>
+          <Link
+            href={`/product/${product.id}`}
+            className={classes.linkName}
+          >
             <div className={classes.productTags}>
               {tags && tags.length > 0 ? tags.map((tag, index) => {
                 return (
@@ -214,30 +224,36 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
                 );
               }) : null}
             </div>
+          </Link>
 
-            <div className={classes.productPrice}>
+          <strong className={classes.productPrice}>
+            <Link
+              href={`/product/${product.id}`}
+              className={classes.linkName}
+            >
               {currency.format(product.price)}
-              {heart &&
-                (product.is_favorite_product ? (
-                  <Image
-                    src={'/img/icons/fill-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(false)}
-                  />
-                ) : (
-                  <Image
-                    src={'/img/icons/ountline-heart.svg'}
-                    width={27}
-                    height={24}
-                    alt={'heart'}
-                    onClick={() => handleLikeProduct(true)}
-                  />
-                ))}
-            </div>
-          </CardContent>
-        </Link>
+            </Link>
+
+            {heart &&
+              (isLike ? (
+                <Image
+                  src={'/img/icons/fill-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(false)}
+                />
+              ) : (
+                <Image
+                  src={'/img/icons/ountline-heart.svg'}
+                  width={27}
+                  height={24}
+                  alt={'heart'}
+                  onClick={() => handleLikeProduct(true)}
+                />
+              ))}
+          </strong>
+        </CardContent>
 
         <CardActions className={classes.productSellerAction}>
           <Link
@@ -246,7 +262,7 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
           >
             <Avatar
               alt={seller.name}
-              src={seller.avatar_url}
+              src={seller?.avatar_url}
               className={classes.productSellerAvatar}
             />
 
@@ -254,12 +270,12 @@ const ProductWidget = ({variant, data, heart, border, fetchData}) => {
               <Typography
                 component={'h5'}
                 className={classes.sellerInfo}
-              >{seller.name}</Typography>
+              >{seller?.name}</Typography>
               <Typography
                 component={'div'}
                 className={classes.sellerInfo + ' ' + classes.sellerInfoIntro}
               >
-                {seller.catch_phrase}
+                {seller?.catch_phrase}
               </Typography>
             </div>
           </Link>
@@ -274,7 +290,7 @@ ProductWidget.propTypes = {
   data: PropTypes.object.isRequired,
   heart: PropTypes.bool,
   border: PropTypes.string,
-  fetchData: PropTypes.func,
+  widthMedia: PropTypes.number,
 };
 
 ProductWidget.defaultProps = {

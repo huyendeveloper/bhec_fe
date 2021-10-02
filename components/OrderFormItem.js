@@ -5,19 +5,24 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import clsx from 'clsx';
 import 'date-fns';
 import produce from 'immer';
+import Router from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
-import QuantityBox from './QuantityBox';
-
+import QuantityBox from '~/components/QuantityBox';
+import {times} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {cartState} from '~/store/cartState';
-import {times} from '~/constants';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    '& .MuiInputBase-root': {
+      background: theme.palette.white.main,
+    },
+  },
   centerCell: {
     display: 'flex',
     flexDirection: 'column',
@@ -51,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '1.188rem',
       fontWeight: 'normal',
       width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
   },
   gridContainer: {
@@ -61,6 +69,9 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.313rem',
     height: '1.313rem',
     marginBottom: '1rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
     [theme.breakpoints.down('xs')]: {
       display: 'none',
     },
@@ -72,8 +83,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       height: '2rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'left',
+    },
   },
   selectBox: {
+    marginBottom: '0.5rem',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0.125rem',
+    },
     '& .MuiInputBase-root': {
       width: '4.813rem',
       margin: 'auto',
@@ -113,11 +134,35 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     boxShadow: 'none',
+    '& button': {
+      width: 'fit-content',
+    },
   },
   bgImg: {
     width: 170,
-    height: 112,
-    objectFit: 'contain',
+    height: 111,
+    objectFit: 'cover',
+    borderRadius: '0.25rem',
+    [theme.breakpoints.down('sm')]: {
+      width: 124,
+      height: 80,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: 87,
+      height: 56,
+    },
+  },
+  selectShipDate: {
+    width: '10.625rem',
+    height: '2.5rem !important',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+  },
+  productDetail: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
 }));
 
@@ -126,6 +171,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [cart, setCart] = useRecoilState(cartState);
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleChangeQuantity = (event) => {
     const newQuantity = parseInt(event.target.value, 10);
@@ -153,7 +199,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       showCancelButton: true,
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
-      confirmButtonText: 'ボタン',
+      confirmButtonText: '削除',
       backdrop: false,
       customClass: {
         container: 'swal2-warning',
@@ -164,6 +210,9 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           // eslint-disable-next-line max-nested-callbacks
           draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
         }));
+        if (cart.items.length === 1) {
+          Router.push('/cart');
+        }
       }
     });
   };
@@ -172,7 +221,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
     <div className={classes.root}>
       <Grid
         container={true}
-        spacing={3}
+        spacing={isMobile ? 0 : 3}
       >
         <Grid
           item={true}
@@ -186,9 +235,9 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 className={clsx(data.productDetail.images?.length ? '' : classes.bgImg)}
                 component='img'
                 alt={data.productDetail.name}
-                width={170}
-                height={112}
-                image={data.productDetail.images?.length ? data.productDetail.images[0].src : '/logo.png'}
+                width={isMobile ? 87 : (isTablet ? 124 : 170)}
+                height={isMobile ? 56 : (isTablet ? 80 : 111)}
+                image={data.productDetail?.image_urls?.length ? data.productDetail.image_urls[0] : '/logo.png'}
                 title={data.productDetail.name}
               />
             </CardActionArea>
@@ -200,10 +249,11 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           md={9}
           sm={8}
           xs={7}
+          style={isMobile ? {marginBottom: '2rem'} : null}
         >
           <Grid
             container={true}
-            spacing={3}
+            spacing={isMobile ? 2 : 3}
             style={{height: 'calc(100% + 24px)'}}
           >
             <Grid
@@ -211,7 +261,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               md={8}
               sm={6}
               xs={12}
-              style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}
+              className={classes.productDetail}
             >
               <Typography
                 variant={'h6'}
@@ -247,7 +297,8 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 <div className={classes.title}>{'数量'}</div>
                 <QuantityBox
                   name={`quantity${data.productDetail.id}`}
-                  maximumQuantity={data.productDetail.maximum_quantity ?? 10}
+                  maximum_quantity={data?.productDetail?.maximum_quantity}
+                  quantity={data?.productDetail?.quantity}
                   defaultValue={data.quantity}
                   handleChange={handleChangeQuantity}
                   disabled={disabled}
@@ -292,7 +343,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           item={true}
           md={2}
           sm={3}
-          xs={12}
+          xs={4}
           className={classes.gridContainer}
           style={{justifyContent: isMobile ? 'flex-start' : 'flex-end'}}
         >
@@ -303,7 +354,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           item={true}
           md={4}
           sm={4}
-          xs={12}
+          xs={8}
           className={classes.gridContainer}
         >
           <Controller
@@ -320,7 +371,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             render={({field: {name, value, ref, onChange}}) => (
               <FormControl>
                 <NativeSelect
-                  className={errors.note ? 'selectBoxError' : ''}
+                  className={clsx(errors.note ? 'selectBoxError' : '', classes.selectShipDate)}
                   name={name}
                   value={value}
                   inputRef={ref}

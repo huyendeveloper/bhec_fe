@@ -2,9 +2,10 @@ import {Box, FormControl, Grid, makeStyles, NativeSelect, TextField, useMediaQue
 import {useTheme} from '@material-ui/core/styles';
 import {nanoid} from 'nanoid';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
+import clsx from 'clsx';
 
 import {Button, StyledForm} from '~/components';
 import {rules} from '~/lib/validator';
@@ -20,6 +21,22 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       padding: theme.spacing(1, 0, 5),
     },
+    '& .MuiFormLabel-root.Mui-error': {
+      color: '#757575',
+    },
+    '& .MuiInputLabel-formControl': {
+      [theme.breakpoints.down('md')]: {
+        top: '-0.25rem',
+      },
+    },
+  },
+  option: {
+    color: theme.palette.black.default,
+  },
+  selectQuantity: {
+    [theme.breakpoints.down('sm')]: {
+      height: '2.5rem !important',
+    },
   },
 }));
 
@@ -29,6 +46,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const setLoading = useSetRecoilState(loadingState);
+  const typingTimeoutRef = useRef(null);
 
   const {
     control,
@@ -43,7 +61,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     setLoading(true);
     const res = await CommonService.getPrefectures();
     if (res && res[0]?.name) {
-      setPrefectures(res);
+      setPrefectures([{
+        id: 1,
+        name: '都道府県',
+      }, ...res]);
     }
     setLoading(false);
   };
@@ -70,11 +91,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     }
   };
 
-  const handleLeaveZipcode = async (e) => {
+  const fetchDataByZipcode = async (zipcode) => {
     const {city, province_id} = getValues();
-    const zipcode = e.target.value;
     // eslint-disable-next-line no-underscore-dangle
-    if (city === '' && province_id === '1' && zipcode.length !== 0) {
+    if (city === '' && province_id === 1 && zipcode.length !== 0) {
       const {response} = await CommonService.getPrefectureByZipcode(zipcode);
       if (response?.location) {
         const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
@@ -82,6 +102,15 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
         setValue('city', response?.location[0].city);
       }
     }
+  };
+
+  const handleStopTypeZipcode = (e) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      fetchDataByZipcode(e.target.value);
+    }, 300);
   };
 
   return (
@@ -161,8 +190,10 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
-                          onChange={onChange}
-                          onBlur={handleLeaveZipcode}
+                          onChange={(e) => {
+                            onChange(e);
+                            handleStopTypeZipcode(e);
+                          }}
                         />
                       )}
                     />
@@ -188,21 +219,29 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     <Controller
                       name='province_id'
                       control={control}
-                      defaultValue={'1'}
-                      rules={{required: rules.required}}
+                      defaultValue={1}
+                      rules={{
+                        validate: {
+                          matchesPreviousPassword: (value) => {
+                            return value > 1 || '必須項目です。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <FormControl>
                           <NativeSelect
-                            className={errors.province_id ? 'selectBoxError' : ''}
+                            className={clsx(errors.province_id ? 'selectBoxError' : '', classes.selectQuantity)}
                             name={name}
                             value={value}
                             inputRef={ref}
                             onChange={onChange}
+                            style={value === 1 ? {color: '#757575'} : null}
                           >
                             {prefectures.map((pref) => (
                               <option
                                 key={pref.id}
                                 value={pref.id}
+                                className={classes.option}
                               >{pref.name}</option>
                             ))}
                           </NativeSelect>
@@ -225,14 +264,20 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='city'
                       className='formControlLabel'
                     >
-                      {'市区町村 '}
+                      {'市区町村（全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
                       name='city'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='city'
@@ -243,11 +288,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = e.target.value.replace(e.target.value, '');
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}
@@ -275,7 +315,13 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       name='address'
                       control={control}
                       defaultValue={''}
-                      rules={{required: rules.required}}
+                      rules={{required: rules.required,
+                        validate: {
+                          checkFullWidth: (value) => {
+                            return isFullWidth(value) || '全角でご入力ください。';
+                          },
+                        },
+                      }}
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='address'
@@ -286,11 +332,6 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          onInput={(e) => {
-                            if (!isFullWidth(e.target.value)) {
-                              e.target.value = e.target.value.replace(e.target.value, '');
-                            }
-                          }}
                           inputRef={ref}
                         />
                       )}

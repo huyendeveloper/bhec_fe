@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
       left: 0,
       right: 0,
       margin: '0 auto',
-      backgroundColor: theme.palette.red.main,
+      backgroundColor: '#ba2636',
       bottom: '-0.875rem',
       borderRadius: '2px',
       [theme.breakpoints.down('sm')]: {
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bgRepeat, mixBlendMode, children}) => {
+const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bgRepeat, mixBlendMode, children, padding}) => {
   const classes = useStyles();
   const newDesc = description ? description.split('\n').
     map((str, index) => (
@@ -92,6 +92,7 @@ const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bg
         backgroundRepeat: bgRepeat || 'no-repeat',
         backgroundImage: bgImage && bgImage !== '' ? `url("${bgImage}")` : 'none',
         mixBlendMode: mixBlendMode || 'unset',
+        padding: padding || 'auto',
       }}
     >
       <Container>
@@ -145,6 +146,7 @@ ContentBlock.propTypes = {
   description: PropTypes.string,
   descriptionType: PropTypes.string,
   children: PropTypes.any,
+  padding: PropTypes.string,
 };
 
 export default ContentBlock;

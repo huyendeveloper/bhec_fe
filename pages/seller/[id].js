@@ -1,9 +1,7 @@
 /* eslint-disable consistent-return */
 import React, {useEffect, useState} from 'react';
-import {Container, Grid, Breadcrumbs as MuiBreadcrumbs, useTheme, Button, useMediaQuery, Link, Typography, Box} from '@material-ui/core';
+import {Container, Grid, useTheme, Button, useMediaQuery, Typography, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Head from 'next/head';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -14,7 +12,7 @@ import Swal from 'sweetalert2';
 import {useRouter} from 'next/router';
 
 import {DefaultLayout} from '~/components/Layouts';
-import {Search, CategoryBlock, ProductSwiper} from '~/components';
+import {Search, CategoryBlock, ProductSwiperSeller, Breadcrumbs} from '~/components';
 import 'swiper/swiper.min.css';
 import {SellerService, ProductService} from '~/services';
 import {userState} from '~/store/userState';
@@ -25,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     paddingBottom: '3rem',
+
+    '& .MuiRating-root': {
+      color: '#E6B422',
+    },
   },
   topBanner: {
     backgroundImage: 'url("/img/noise.png")',
@@ -118,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.btnFollow.backgroundColor,
     color: theme.palette.white.main,
     fontWeight: 'bold',
-    fontSize: '0.8125rem',
+    fontSize: '0.875rem',
     width: '100%',
     height: '40px',
     '&:hover': {
@@ -143,6 +145,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.white.main,
     color: theme.btnFollow.isFollowing,
     borderColor: theme.btnFollow.isFollowing,
+    boxShadow: 'none',
+    border: `1px solid ${theme.btnFollow.isFollowing}`,
     '&:hover': {
       backgroundColor: theme.palette.white.main,
     },
@@ -153,25 +157,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const linkProps = [
-  {
-    id: 1,
-    linkLabel: 'ホーム',
-    linkUrl: '/',
-  },
-  {
-    id: 2,
-    linkLabel: '工芸品一覧',
-    linkUrl: '/',
-  },
-  {
-    id: 3,
-    linkLabel: '工芸品名',
-    linkUrl: '#',
-  },
-];
-
-const Seller = ({traditional_craft, food_and_beverage}) => {
+const Seller = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [isFollowing, setIsFollowing] = useState(false);
@@ -182,6 +168,9 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const avatarWidth = isMobile ? 72 : (isTablet ? 80 : 128);
   const avatarHeight = isMobile ? 72 : (isTablet ? 80 : 128);
+  const [linkProps, setLinkProps] = useState([]);
+  const [relatedProduct, setRelatedProduct] = useState([]);
+  const [lastestProduct, setLastestProduct] = useState([]);
   const router = useRouter();
 
   const toggleFollow = async () => {
@@ -222,66 +211,95 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
 
   const getSellerInfo = async () => {
     const {id} = router.query;
-    const response = await SellerInstance.getSellerDetail(id);
-    if (!response?.seller?.id) {
-      return {
-        notFound: true,
-      };
-    }
-    setSeller(response?.seller);
-    setIsFollowing(response?.seller?.followed);
-    const rawHTML = response?.seller?.description;
-    const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
-    let match;
-    let refinedHTMLGenerate = rawHTML;
-    const shortcodesGenerate = [];
-    let shortcodeIdx = 0;
-    // eslint-disable-next-line no-cond-assign
-    while (match = productsRegrex.exec(rawHTML)) {
-      const shortcode = match[0];
-      shortcodesGenerate.push(shortcode);
+    if (id) {
+      const response = await SellerInstance.getSellerDetail(id);
+      if (!response?.seller?.id) {
+        return {
+          notFound: true,
+        };
+      }
 
-      // replace shortcode by div container
-      // then, render shortcode to container in client side
-      refinedHTMLGenerate = refinedHTMLGenerate.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
-      shortcodeIdx++;
-    }
-    setRefinedHTML(refinedHTMLGenerate);
-    for (let i = 0; i < shortcodesGenerate.length; i++) {
-      const shortcode = shortcodesGenerate[i];
-      const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
-      let matchProd;
-      const products = [];
+      getListRelatedProduct(response?.seller?.id);
+      getListLastestProduct();
+      const current = [
+        {
+          id: 1,
+          linkLabel: 'ホーム',
+          linkUrl: '/',
+        },
+        {
+          id: 2,
+          linkLabel: response?.seller?.name,
+          linkUrl: '#',
+        },
+      ];
+      setLinkProps(current);
+
+      setSeller(response?.seller);
+      setIsFollowing(response?.seller?.followed);
+      const rawHTML = response?.seller?.description;
+      const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
+      let match;
+      let refinedHTMLGenerate = rawHTML;
+      const shortcodesGenerate = [];
+      let shortcodeIdx = 0;
       // eslint-disable-next-line no-cond-assign
-      while (matchProd = shortcodeRegex.exec(shortcode)) {
-        const productIds = matchProd[1].replace(/ /g, '').split(',');
-        for (let j = 0; j < productIds.length; j++) {
-          const idProduct = productIds[j];
-          // eslint-disable-next-line no-await-in-loop
-          const result = await ProductServiceInstance.getProductDetail(idProduct);
-          if (result?.product_detail) {
-            products.push({
-              ...result?.product_detail,
-              seller_info: result?.seller_info,
-              tags: result?.product_detail.tags,
-            });
+      while (match = productsRegrex.exec(rawHTML)) {
+        const shortcode = match[0];
+        shortcodesGenerate.push(shortcode);
+
+        // replace shortcode by div container
+        // then, render shortcode to container in client side
+        refinedHTMLGenerate = refinedHTMLGenerate.replace(shortcode, `<div id="js-shorcode-${shortcodeIdx}"></div>`);
+        shortcodeIdx++;
+      }
+      setRefinedHTML(refinedHTMLGenerate);
+      for (let i = 0; i < shortcodesGenerate.length; i++) {
+        const shortcode = shortcodesGenerate[i];
+        const shortcodeRegex = /\[product_ids=([\s\S]*?)\]/gm;
+        let matchProd;
+        const products = [];
+        // eslint-disable-next-line no-cond-assign
+        while (matchProd = shortcodeRegex.exec(shortcode)) {
+          const productIds = matchProd[1].replace(/ /g, '').split(',');
+          for (let j = 0; j < productIds.length; j++) {
+            const idProduct = productIds[j];
+            // eslint-disable-next-line no-await-in-loop
+            const result = await ProductServiceInstance.getProductDetail(idProduct);
+            if (result?.product_detail) {
+              products.push({
+                ...result?.product_detail,
+                seller_info: result?.seller_info,
+                tags: result?.product_detail.tags,
+              });
+            }
           }
         }
+        ReactDOM.render(<ProductSwiperSeller items={products}/>, document.getElementById(`js-shorcode-${i}`));
       }
-      ReactDOM.render(<ProductSwiper items={products}/>, document.getElementById(`js-shorcode-${i}`));
+    }
+  };
+
+  const getListRelatedProduct = async (id) => {
+    const result = await ProductServiceInstance.getProducts({seller_ids: id, per_page: 3});
+    if (result && result.products.length) {
+      setRelatedProduct(result.products);
+    }
+  };
+
+  const getListLastestProduct = async () => {
+    const result = await ProductServiceInstance.getProducts({per_page: 3});
+    if (result && result.products.length) {
+      setLastestProduct(result.products);
     }
   };
 
   useEffect(() => {
     getSellerInfo();
-  }, []);
+  }, [router]);
   return (
-    <DefaultLayout title='TopPage - Oshinagaki Store'>
+    <DefaultLayout title={seller?.name}>
       <div className={classes.root}>
-        <Head>
-          <title>{'おしながき'}</title>
-        </Head>
-
         <div className={classes.topBanner}>
           <Container
             maxWidth='lg'
@@ -291,30 +309,9 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
               item={true}
               xs={12}
             >
-              <MuiBreadcrumbs
-                className={classes.breadcrumbs}
-                separator={'＞'}
-              >
-                {linkProps.map((item) => (
-                  item.linkUrl ? (
-                    <Link
-                      key={`link-${item.id}`}
-                      className={classes.link}
-                      href={item.linkUrl}
-                      color='textPrimary'
-                    >
-                      {item.linkLabel}
-                    </Link>
-                  ) : (
-                    <Typography
-                      key={`textLink-${item.id}`}
-                      className={classes.link}
-                    >
-                      {item.linkLabel}
-                    </Typography>
-                  )
-                ))}
-              </MuiBreadcrumbs>
+              {linkProps && (
+                <Breadcrumbs linkProps={linkProps}/>
+              )}
             </Grid>
             <Grid
               item={true}
@@ -367,7 +364,7 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
                     </Typography>
                     <Rating
                       name='read-only'
-                      value={seller?.rating || 0}
+                      value={seller?.rating || 1}
                       readOnly={true}
                       emptyIcon={<StarBorderIcon fontSize='inherit'/>}
                     />
@@ -386,7 +383,7 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
                   onClick={() => toggleFollow()}
                   className={clsx(classes.btnFollow, isFollowing ? classes.isFollowing : '')}
                 >
-                  {isFollowing ? 'フォロー中' : 'プロフィール'}
+                  {isFollowing ? 'フォローする' : 'フォロー中'}
                 </Button>
               </Grid>
               <Grid
@@ -419,27 +416,25 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
         </div>
 
         {/* Product by category*/}
-        {traditional_craft?.length ? (
+        {relatedProduct?.length ? (
           <CategoryBlock
             category='この生産者の商品'
-            categoryLink='traditional_craft'
             bgImage='/img/noise.png'
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={traditional_craft}/>
+            <ProductSwiperSeller items={relatedProduct}/>
           </CategoryBlock>) : null
         }
 
-        {food_and_beverage?.length ? (
+        {lastestProduct?.length ? (
           <CategoryBlock
             category='オススメ商品'
-            categoryLink='food_and_beverage'
             bgImage='/img/noise.png'
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={food_and_beverage}/>
+            <ProductSwiperSeller items={lastestProduct}/>
           </CategoryBlock>) : null
         }
 
@@ -448,31 +443,4 @@ const Seller = ({traditional_craft, food_and_beverage}) => {
   );
 };
 
-Seller.propTypes = {
-  traditional_craft: PropTypes.array,
-  food_and_beverage: PropTypes.array,
-};
-
-Seller.defaultProps = {
-  traditional_craft: [],
-  food_and_beverage: [],
-};
-
 export default Seller;
-
-export async function getServerSideProps() {
-  //traditional_craft
-  const lstProduct1 = await ProductServiceInstance.getProducts({category: 'traditional_craft', limit: '4'});
-  const traditional_craft = lstProduct1?.products?.length ? lstProduct1.products : [];
-
-  //food_and_beverage
-  const lstProduct2 = await ProductServiceInstance.getProducts({category: 'food_and_beverage', limit: '4'});
-  const food_and_beverage = lstProduct2?.products?.length ? lstProduct2.products : [];
-  return {
-    props: {
-      traditional_craft,
-      food_and_beverage,
-    },
-  };
-}
-

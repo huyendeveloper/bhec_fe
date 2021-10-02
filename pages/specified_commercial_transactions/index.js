@@ -9,9 +9,11 @@ const useStyles = makeStyles((theme) => ({
   content: {
     fontStyle: 'normal',
     fontWeight: 'normal',
-    lineHeight: '21px',
-    fontSize: '16px',
+    lineHeight: '1.375rem',
     color: theme.palette.black.default,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
   },
   block: {
     marginBottom: '1.5rem',

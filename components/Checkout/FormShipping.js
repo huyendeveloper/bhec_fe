@@ -76,6 +76,7 @@ const FormShipping = ({isReadonly}) => {
         draft.addresses = addresses;
       }));
     }
+    setLoaded(true);
   };
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const FormShipping = ({isReadonly}) => {
                         className={classes.radioGroup}
                         style={{marginBottom: '2.563rem'}}
                       >
-                        {user.addresses?.map((item, index) => (
+                        {loaded && user.addresses?.map((item, index) => (
                           <FormControlLabel
                             key={`address-${item?.id}`}
                             value={`${item?.id}`}

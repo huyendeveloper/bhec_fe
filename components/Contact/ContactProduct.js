@@ -1,16 +1,15 @@
 import PropTypes from 'prop-types';
 import {
-  Grid, Icon,
+  Grid,
   TextField,
   Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Image from 'next/image';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller} from 'react-hook-form';
-import ImageUploading from 'react-images-uploading';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import {UploadComponent} from '~/components';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiOutlinedInput-multiline': {
@@ -252,66 +251,17 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
             </div>
 
             <div className='formBlockControls'>
-              <ImageUploading
-                multiple={true}
-                value={valueProductImages[`productImages${index}`]}
+              <UploadComponent
+                multiple={false}
+                images={valueProductImages[`productImages${index}`]}
                 onChange={onChangeImage}
+                allowRemove={false}
+                showImage={false}
+                style={{marginTop: '0.5rem'}}
                 maxNumber={maxNumber}
-                dataURLKey='data_url'
-              >
-                {({
-                  imageList,
-                  onImageUpload,
-                  onImageUpdate,
-                  onImageRemove,
-                  dragProps,
-                }) => {
-                  return (
-                    <div className='imageUploadWrapper'>
-                      {Array.from({length: maxNumber}, (x, i) => i).map((indexImg) => {
-                        const uploadedImage = imageList[indexImg];
-                        if (uploadedImage) {
-                          return (
-                            <div
-                              key={`imageUploadItem_${indexImg}`}
-                              className={'imageUploadItem'}
-                            >
-                              <Image
-                                onClick={() => onImageUpdate(indexImg)}
-                                src={uploadedImage.data_url}
-                                width={logoWidth}
-                                height={logoHeight}
-                                alt={`Image upload ${indexImg + 1}`}
-                              />
-                              <button
-                                type='button'
-                                className='imageUploadRemove'
-                                onClick={() => onImageRemove(indexImg)}
-                              ><Icon>{'close'}</Icon></button>
-                            </div>
-                          );
-                        }
-                        return (
-                          <button
-                            key={`imgUploadBtn_${indexImg}`}
-                            type='button'
-                            onClick={onImageUpload}
-                            className='imageUploadBtn'
-                            {...dragProps}
-                          >
-                            <Image
-                              src='/img/btn-upload.png'
-                              width={logoWidth}
-                              height={logoHeight}
-                              alt='Image upload'
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  );
-                }}
-              </ImageUploading>
+                logoWidth={logoWidth}
+                logoHeight={logoHeight}
+              />
             </div>
             {index > 0 &&
               <div

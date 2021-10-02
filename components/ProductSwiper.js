@@ -1,5 +1,6 @@
 import {Grid, makeStyles} from '@material-ui/core';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {ContentBlock} from '~/components';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductSwiper = () => {
+const ProductSwiper = ({widthMedia}) => {
   const classes = useStyles();
   const [recommendProducts, setRecommendProducts] = React.useState([]);
 
@@ -59,6 +60,7 @@ const ProductSwiper = () => {
             <ProductWidget
               data={product}
               border={'borderNone'}
+              widthMedia={widthMedia}
             />
           </Grid>
         ))}
@@ -92,4 +94,7 @@ const ProductSwiper = () => {
   );
 };
 
+ProductSwiper.propTypes = {
+  widthMedia: PropTypes.number,
+};
 export default ProductSwiper;

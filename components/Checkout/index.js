@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/core';
 import router from 'next/router';
 import React, {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 
 import {AlertMessageForSection, StyledForm} from '..';
 import Button from '../Button';
@@ -14,6 +14,7 @@ import FormPaymentMethods from './FormPaymentMethods';
 import FormShipping from './FormShipping';
 import FormSignup from './FormSignup';
 import OrderReview from './OrderReview';
+import FormCoupon from './FormCoupon';
 
 import {userState} from '~/store/userState';
 import {orderState} from '~/store/orderState';
@@ -43,7 +44,7 @@ const Checkout = () => {
   const classes = useStyles();
   const {handleSubmit, ...methods} = useForm({criteriaMode: 'all'});
   const user = useRecoilValue(userState);
-  const setOrder = useSetRecoilState(orderState);
+  const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
@@ -75,7 +76,7 @@ const Checkout = () => {
   // }, [isReadonly]);
 
   const handleConfirmClick = (data) => {
-    setOrder(data);
+    setOrder({...data, coupon_code: order?.coupon_code || '', discount: order?.discount || 0});
     router.push('/order-form/confirm');
   };
 
@@ -100,9 +101,7 @@ const Checkout = () => {
 
           <FormCreditCard/>
 
-          {/* eslint-disable-next-line no-warning-comments */}
-          {/* TODO: hide not-ready-yet feature */}
-          {/* <FormCoupon isReadonly={isReadonly}/> */}
+          <FormCoupon/>
 
           <FormNote/>
 

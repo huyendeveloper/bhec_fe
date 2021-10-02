@@ -30,11 +30,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bgImg: {
-    height: '100%',
     backgroundColor: '#DBDBDB',
-    padding: 50,
+    width: '22.75rem',
+    height: '13rem',
     backgroundSize: 'cover',
-    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      width: '14rem',
+      height: '8rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      height: '12.5rem',
+    },
+  },
+  noImg: {
+    objectFit: 'scale-down',
   },
   sellerName: {
     fontWeight: 'bold',
@@ -64,8 +74,13 @@ const useStyles = makeStyles((theme) => ({
   },
   sellerIntro: {
     fontSize: '0.875rem',
-    lineHeight: '1.1325rem',
+    lineHeight: '1.3125rem',
     color: theme.palette.black4.main,
+    display: '-webkit-box',
+    lineClamp: 4,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    boxOrient: 'vertical',
   },
   btnDetail: {
     background: theme.palette.yellow.main,
@@ -91,6 +106,18 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #BEBEBE',
     width: '100%',
     height: '40px',
+  },
+  thumb_url: {
+    width: '22.75rem',
+    height: '13rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '7.75rem',
+      height: '5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '5.438rem',
+      height: '3.5rem',
+    },
   },
 }));
 
@@ -129,9 +156,8 @@ const SellerWidget = ({variant, data, reload}) => {
         <CardMedia
           component='img'
           alt={seller.name}
-          height='160'
-          className={clsx(seller.thumb_url ? '' : classes.bgImg)}
-          image={seller.thumb_url ?? '/logo.png'}
+          className={clsx(classes.bgImg, seller.avatar_url ? '' : classes.noImg)}
+          image={seller.avatar_url ?? '/logo.png'}
           title={seller.name}
         />
       </CardActionArea>

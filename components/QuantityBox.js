@@ -7,6 +7,11 @@ import {ConnectForm} from '.';
 const useStyles = makeStyles((theme) => ({
   bordered: {
     '& .selectQuantity': {
+      width: '4.813rem',
+      height: '3rem !important',
+      [theme.breakpoints.down('sm')]: {
+        height: '2rem !important',
+      },
       '&::before, &::after': {
         display: 'none',
       },
@@ -39,8 +44,10 @@ const quantityOption = (quantity) => {
   return arrQuantity;
 };
 
-const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disabled, width, height}) => {
+const QuantityBox = ({name, maximum_quantity, quantity, defaultValue, handleChange, disabled, width, height}) => {
   const classes = useStyles();
+
+  const maximumQuantity = maximum_quantity > quantity ? quantity : maximum_quantity || 10;
 
   return (
     <ConnectForm>
@@ -53,18 +60,23 @@ const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disable
               name={name}
               inputProps={{'aria-label': name}}
               defaultValue={defaultValue}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                if (Number(e.target.value) === 0) {
+                  e.target.value = defaultValue;
+                }
+              }}
               disabled={disabled}
               style={{width, height}}
             >
               <option
                 value={0}
               >{'選択する'}</option>
-              {quantityOption(maximumQuantity).map((quantity, index) => (
+              {quantityOption(maximumQuantity).map((item, index) => (
                 <option
                   key={String(index)}
-                  value={quantity.value}
-                >{quantity.name}</option>
+                  value={item.value}
+                >{item.name}</option>
               ))}
             </NativeSelect>
           </div>
@@ -76,7 +88,8 @@ const QuantityBox = ({name, maximumQuantity, defaultValue, handleChange, disable
 
 QuantityBox.propTypes = {
   name: PropTypes.string.isRequired,
-  maximumQuantity: PropTypes.number.isRequired,
+  maximum_quantity: PropTypes.number,
+  quantity: PropTypes.number,
   defaultValue: PropTypes.number,
   handleChange: PropTypes.func,
   disabled: PropTypes.bool,
@@ -86,8 +99,6 @@ QuantityBox.propTypes = {
 
 QuantityBox.defaultProps = {
   disabled: false,
-  width: '77px',
-  height: '48px',
 };
 
 export default QuantityBox;

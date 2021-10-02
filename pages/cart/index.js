@@ -134,7 +134,7 @@ export default function Cart() {
       showCancelButton: true,
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
-      confirmButtonText: 'ボタン',
+      confirmButtonText: '削除',
       backdrop: false,
       customClass: {
         container: 'swal2-warning',
@@ -178,7 +178,7 @@ export default function Cart() {
 
   /* eslint-disable max-lines */
   return (
-    <DefaultLayout title='Cart - Oshinagaki Store'>
+    <DefaultLayout title='カート'>
       {/* Cart */}
       <ContentBlock
         bgImage='/img/noise.png'

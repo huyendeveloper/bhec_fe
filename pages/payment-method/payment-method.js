@@ -198,7 +198,7 @@ function PaymentMethod() {
   };
 
   return (
-    <DefaultLayout title='Payment Method - Oshinagaki Store'>
+    <DefaultLayout title='決済方法'>
       <div className={classes.root}>
         <div
           className='content'

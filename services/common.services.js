@@ -10,6 +10,7 @@ const CommonService = {
   registerSeller,
   getAddress,
   getPrefectureByZipcode,
+  uploadFile,
 };
 
 const parserError = (errors) => {
@@ -76,11 +77,18 @@ async function getAddress(id) {
 }
 
 async function getPrefectureByZipcode(zipcode) {
-  const [data, errors] = await api.get(`http://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zipcode}`);
+  const [data, errors] = await api.get(`https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zipcode}`);
   if (errors.length) {
     return parserError(errors);
   }
   return data;
 }
 
+async function uploadFile(payload) {
+  const [data, errors] = await api.post('/image_storages', payload);
+  if (errors && errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
 export default CommonService;

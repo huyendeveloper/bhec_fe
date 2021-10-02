@@ -16,8 +16,8 @@ export default class ContactService {
     return data;
   }
 
-  async createContact(payload, headers) {
-    const {data, errors} = await axios.post('/contacts', payload, {headers});
+  async createContact(payload) {
+    const {data, errors} = await axios.post('/contacts', payload);
     if (errors && errors.length) {
       return parserError(errors);
     }

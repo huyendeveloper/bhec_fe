@@ -1,4 +1,4 @@
-import {Grid, makeStyles} from '@material-ui/core';
+import {Grid, makeStyles, Typography} from '@material-ui/core';
 import router from 'next/router';
 
 import React, {useState} from 'react';
@@ -7,9 +7,6 @@ import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import Button from '../Button';
 import {AlertMessageForSection, StyledForm} from '..';
-
-import FormInvoice from '../Checkout/FormInvoice';
-import FormNote from '../Checkout/FormNote';
 
 import FormSignup from '../Checkout/FormSignup';
 
@@ -109,7 +106,7 @@ const ConfirmCheckout = () => {
   // }, [isReadonly]);
 
   const handleConfirmClick = (data) => {
-    setOrder(data);
+    setOrder({...data, coupon_code: order?.coupon_code || '', discount: order?.discount || 0});
   };
 
   const handleSendOrderClick = async () => {
@@ -131,6 +128,7 @@ const ConfirmCheckout = () => {
       invoice_fullname: order?.invoice_fullname,
       invoice_note: order?.invoice_note,
       note: order?.note,
+      coupon_code: order?.coupon_code,
     };
 
     const shippingAddress = user.addresses?.find((a) => a.id === order?.addressShipping);
@@ -214,45 +212,50 @@ const ConfirmCheckout = () => {
             themeStyle={'gray'}
             title={'お届け先の住所'}
           >
-            <>
-              {addressData &&
-                <div>{`住所${addressData?.id}  ${addressData?.name}、${addressData?.zipcode}、${addressData?.province.name}${addressData?.city}${addressData?.address}`}</div>
-              }
-            </>
+            {addressData &&
+            <Typography>
+              {addressData?.zipcode}<br/>
+              {addressData?.province?.name}<br/>
+              {addressData?.city}{addressData?.address}<br/>
+              {addressData?.name} {'様'}<br/>
+            </Typography>
+            }
           </BlockForm>
 
           <BlockForm
             themeStyle={'gray'}
             title={'お支払い方法'}
           >
-            <div>{'クレジットカード払い'}</div>
+            <Typography>
+              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'クレジットカード払い'}</Typography>}
+              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'銀聯カード（UnionPay）払い'}</Typography>}
+              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'コンビニ払い'}</Typography>}
+            </Typography>
           </BlockForm>
 
-          <BlockForm
-            themeStyle={'gray'}
-            title={'お支払いクレジットカード'}
-          >
-            <>
-              {cardData &&
-                <div>{`${cardData.card_type} ${cardData.holder_name} ${cardData.req_number}`}</div>
-              }
-            </>
-          </BlockForm>
+          {cardData && parseInt(order?.payment_method, 10) === 1 &&
+            <BlockForm
+              themeStyle={'gray'}
+              title={'お支払いクレジットカード'}
+            >
+              <Typography>
+                {cardData.card_type} <br/>
+                {cardData.req_number} <br/>
+                {cardData.holder_name}
+              </Typography>
+            </BlockForm>
+          }
 
-          {/* eslint-disable-next-line no-warning-comments */}
-          {/* TODO: hide not-ready-yet feature */}
-          {/* <FormCoupon isReadonly={isReadonly}/> */}
+          {/*<FormCoupon isReadonly={true}/>*/}
 
-          <FormNote isReadonly={true}/>
-
-          <FormInvoice
-            isReadonly={true}
-            isConfirm={true}
-            defaultValue={{
-              invoice_fullname: order?.invoice_fullname,
-              invoice_note: order?.invoice_note,
-            }}
-          />
+          {order?.note?.length > 0 && (
+            <BlockForm
+              themeStyle={'gray'}
+              title={'特記事項'}
+            >
+              <Typography>{order?.note}</Typography>
+            </BlockForm>
+          )}
 
           <OrderReview isReadonly={true}/>
 

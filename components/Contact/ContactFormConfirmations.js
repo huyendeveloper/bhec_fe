@@ -25,14 +25,21 @@ const useStyles = makeStyles((theme) => ({
       margin: '0',
     },
   },
-  infoBlock: {
-    marginBottom: '2.5rem',
-  },
   infoBlockTitle: {
     fontSize: '1.25rem',
     fontWeight: 700,
     lineHeight: '1.5rem',
-    marginBottom: '1.5rem',
+    marginBottom: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
+
+  infoBlockLabel: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    lineHeight: '1.5rem',
+    margin: '1rem 0',
     [theme.breakpoints.down('xs')]: {
       fontSize: '1rem',
     },
@@ -131,20 +138,14 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
   const handleSubmitForm = async () => {
     setLoading(true);
     if (Number.parseInt(data.contact_category_id, 10) !== 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      bodyFormData.append('description', data.description);
-      if (data.images && data.images.length) {
-        data.images.forEach((img) => {
-          bodyFormData.append('images[]', img.file);
-        });
-      }
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
+      const body = {
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
+        name: data.name,
+        email: data.email,
+        description: data.description,
+        image_urls: data.images,
       };
-      const res = await Contact.createContact(bodyFormData, configHeader);
+      const res = await Contact.createContact(body);
       if (res.id) {
         setLoading(false);
         setOpen(true);
@@ -153,35 +154,29 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         setLoading(false);
       }
     } else if (Number.parseInt(data.contact_category_id, 10) === 5) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('contact_category_id', data.contact_category_id);
-      bodyFormData.append('name', data.name);
-      bodyFormData.append('email', data.email);
-      const configHeader = {
-        'Content-Type': 'multipart/form-data',
-      };
-      const res = await Contact.createContact(bodyFormData, configHeader);
-      if (res) {
-        setRequestNo(res.request_no);
-        listProduct.forEach(async (item, index) => {
-          const body = new FormData();
-          body.append('contact_id', res.id);
-          body.append('order_number', data[`order_number${index}`]);
-          body.append('product_code', data[`product_code${index}`]);
-          body.append('description', data[`description${index}`]);
-          if (data[`productImages${index}`] && data[`productImages${index}`].length) {
-            data[`productImages${index}`].forEach((img) => {
-              body.append('images[]', img.file);
-            });
-          }
-          const result = await Contact.createContactProduct(body, configHeader);
-          if (result) {
-            setLoading(false);
-            setOpen(true);
-          } else {
-            setLoading(false);
-          }
+      const contactProduct = [];
+      listProduct.forEach(async (item, index) => {
+        contactProduct.push({
+          order_number: data[`order_number${index}`],
+          product_code: data[`product_code${index}`],
+          description: data[`description${index}`],
+          image_urls: data[`productImages${index}`],
         });
+      });
+      const body = {
+        contact_category_id: Number.parseInt(data.contact_category_id, 10),
+        name: data.name,
+        email: data.email,
+        description: data.description,
+        contact_products: contactProduct,
+      };
+      const res = await Contact.createContact(body);
+      if (res.id) {
+        setLoading(false);
+        setOpen(true);
+        setRequestNo(res.request_no);
+      } else {
+        setLoading(false);
       }
     }
   };
@@ -213,14 +208,13 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             <span>{'種別：'}</span>
             {data.contact_category_id ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)) ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)).name : '' : ''}
           </Typography>
-          {data.contact_category_id === 5 ? (<Typography component='p'>
-            <span>{'問い合わせ内容：'}</span>
-            {data.description ? data.description : ''}
-          </Typography>) : null}
         </div>
       </div>
       {data.contact_category_id === '5' ? (
-        <div className={classes.infoBlock}>
+        <div
+          className={classes.infoBlock}
+          style={{marginTop: '2.5rem'}}
+        >
           <Typography
             component='h3'
             className={classes.infoBlockTitle}
@@ -233,7 +227,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                 <div key={product.id}>
                   <Typography
                     component='h3'
-                    className={classes.infoBlockTitle}
+                    className={classes.infoBlockLabel}
                   >
                     {`商品情報${index + 1}`}
                   </Typography>
@@ -261,7 +255,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                         {data[`productImages${index}`].map((img, prodIndex) => (
                           <Image
                             key={String(prodIndex)}
-                            src={img.data_url}
+                            src={img}
                             width={logoWidth}
                             height={logoHeight}
                             alt={`product-image-${prodIndex + 1}`}
@@ -277,28 +271,37 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         </div>
       ) : null}
       {data.images && data.contact_category_id !== '5' && data.images.length > 0 ? (
-        <div className={classes.infoBlock}>
-          <Typography
-            component='h3'
-            className={classes.infoBlockTitle}
-          >
-            {'画像アップロード'}
+        <>
+          <Typography component='p'>
+            <span>{'問い合わせ内容：'}</span>
+            {data.description ? data.description : ''}
           </Typography>
+          <div
+            className={classes.infoBlock}
+            style={{marginTop: '2.5rem'}}
+          >
+            <Typography
+              component='h3'
+              className={classes.infoBlockTitle}
+            >
+              {'画像アップロード'}
+            </Typography>
 
-          <div className={classes.infoBlockContent}>
-            <div className={classes.productImages}>
-              {data.images.map((img, prodIndex) => (
-                <Image
-                  key={String(prodIndex)}
-                  src={img.data_url}
-                  width={logoWidth}
-                  height={logoHeight}
-                  alt={`product-image-${prodIndex + 1}`}
-                />
-              ))}
+            <div className={classes.infoBlockContent}>
+              <div className={classes.productImages}>
+                {data.images.map((img, prodIndex) => (
+                  <Image
+                    key={String(prodIndex)}
+                    src={img}
+                    width={logoWidth}
+                    height={logoHeight}
+                    alt={`product-image-${prodIndex + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       ) : null}
 
       <div className={classes.actions}>
@@ -315,7 +318,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             className={classes.btnPrev}
             onClick={onBackStep}
           >
-            {'TOPページへ戻る'}
+            {'前のページへ戻る'}
           </Button>
 
           <Button
@@ -326,7 +329,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             className={classes.btnSubmit}
             onClick={() => handleSubmitForm()}
           >
-            {'フォーム内容確認'}
+            {'フォームを送信'}
           </Button>
         </Box>
       </div>

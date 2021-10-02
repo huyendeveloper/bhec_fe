@@ -6,6 +6,7 @@ import {Controller} from 'react-hook-form';
 import {useRecoilValue} from 'recoil';
 
 import {BlockForm, ConnectForm} from '~/components';
+import {isHalfWidth} from '~/lib/text';
 import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
@@ -109,7 +110,10 @@ const FormInvoice = ({isReadonly, isConfirm}) => {
                     rules={{validate: {required: (value) => {
                       const invoice = getValues()?.invoice_flag;
                       return (!invoice || value.trim().length > 0) || '必須項目です。';
-                    }}}}
+                    }},
+                    checkHalfWidth: (value) => {
+                      return isHalfWidth(value) || '半角でご入力ください。';
+                    }}}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
                         id='invoice_fullname'

@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.pink.light,
     height: '100%',
     marginRight: '1rem',
+    justifyContent: 'space-around',
     [theme.breakpoints.down('md')]: {
       width: '100%',
       marginRight: 0,
@@ -103,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
       padding: '0.5rem 0',
       height: '48px',
     },
-    '.MuiLink-underlineHover:hover': {
+    '& a': {
       textDecoration: 'none',
     },
   },
@@ -189,15 +190,15 @@ const useStyles = makeStyles((theme) => ({
 const listNavigation = [
   {
     name: '伝統工芸品',
-    url: '/products?category=traditional_craft',
+    url: '/products?category=伝統工芸品',
   },
   {
     name: '食品・飲料',
-    url: '/products?category=food_and_beverage',
+    url: '/products?category=食品・飲料',
   },
   {
     name: 'ライフスタイル',
-    url: '/products?category=lifestyle',
+    url: '/products?category=ライフスタイル',
   },
   {
     name: '特集',
@@ -356,7 +357,7 @@ const Header = (props) => {
             <div className={classes.personalAction}>
               {isAuthenticated &&
               <Link href={'/mypage'}>
-                <a>
+                <a className={classes.linkPersonal}>
                   <div className={classes.personalItem}>
                     <Image
                       src='/img/icons/ic-user.png'

@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 import 'date-fns';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Image from 'next/image';
 import {
   Box, FormControl,
   Grid, Icon, NativeSelect,
@@ -12,12 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import {ErrorMessage} from '@hookform/error-message';
 import {useForm, Controller} from 'react-hook-form';
 import {useSession} from 'next-auth/client';
-import ImageUploading from 'react-images-uploading';
 import clsx from 'clsx';
 import React, {useState, useEffect} from 'react';
+import {useRouter} from 'next/router';
 
 import {DefaultLayout} from '~/components/Layouts';
-import {ContentBlock, Button, StyledForm} from '~/components';
+import {ContentBlock, Button, StyledForm, UploadComponent} from '~/components';
 import {ContactService} from '~/services';
 const Contact = new ContactService();
 import {ContactProduct, ContactFormConfirmations} from '~/components/Contact';
@@ -37,6 +36,14 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('sm')]: {
         gap: '0.5rem',
       },
+      [theme.breakpoints.down('xs')]: {
+        gap: '0.75rem',
+      },
+    },
+    '& .imageUploadBtn': {
+      background: 'transparent',
+      border: 'none',
+      padding: '0',
     },
     '& .MuiOutlinedInput-multiline': {
       padding: '1rem',
@@ -179,7 +186,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btnSubmit: {
-    width: '65%',
+    width: '100%',
     height: '100%',
     lineHeight: '2.25rem',
     fontSize: '1rem',
@@ -196,7 +203,6 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       height: '2.5rem',
-      width: '100%',
     },
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
@@ -220,6 +226,24 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '0px',
     },
     [theme.breakpoints.down('xs')]: {
+      width: '21.4375rem',
+      margin: '0 calc((100% - 21.4375rem)/2)',
+      marginBottom: '0px',
+    },
+  },
+  actionBtns: {
+    flexWrap: 'nowrap',
+    width: '34.875rem',
+    margin: '0 calc((100% - 34.875rem)/2)',
+    flexBasis: 'auto',
+    marginBottom: '0.875rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '29.5rem',
+      margin: '0 calc((100% - 29.5rem)/2)',
+      marginBottom: '0px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexWrap: 'wrap',
       width: '21.4375rem',
       margin: '0 calc((100% - 21.4375rem)/2)',
       marginBottom: '0px',
@@ -250,6 +274,7 @@ export default function ContactPage() {
   const logoHeight = isMobile ? 64 : (isTablet ? 64 : 80);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const router = useRouter();
   useEffect(() => {
     if (session?.accessToken) {
       setIsLoggined(true);
@@ -268,28 +293,16 @@ export default function ContactPage() {
   const maxNumber = 3;
 
   const onProductImagesChange = (imageList) => {
-    const imageDataUrls = [];
-    imageList.forEach((image) => {
-      if (image) {
-        imageDataUrls.push(image);
-      }
-    });
     setProductImages(imageList);
-    setValue('images', imageDataUrls);
+    setValue('images', imageList);
   };
 
   const onContactProductImagesChange = (imageList, index) => {
-    const imageDataUrls = [];
-    imageList.forEach((image) => {
-      if (image) {
-        imageDataUrls.push(image);
-      }
-    });
     setValueProductImages({
       ...valueProductImages,
       [`productImages${index}`]: imageList,
     });
-    setValue(`productImages${index}`, imageDataUrls);
+    setValue(`productImages${index}`, imageList);
   };
 
   const onChangeType = (e) => {
@@ -358,6 +371,10 @@ export default function ContactPage() {
   const onSubmit = async (data) => {
     setFormData(data);
     handleNext();
+  };
+
+  const goToTopPage = () => {
+    router.push('/');
   };
 
   return (
@@ -445,7 +462,7 @@ export default function ContactPage() {
                   }
                 </div>
               </div>
-              {activeStep === 0 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
+              {activeStep === 0 && tabActive === 1 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 {/* SECOND BLOCK */}
                 <div style={{marginBottom: '1rem'}}>
                   <div className='formBlockControls'>
@@ -702,96 +719,48 @@ export default function ContactPage() {
                     </div>
 
                     <div className='formBlockControls'>
-                      <ImageUploading
-                        multiple={true}
-                        value={productImages}
+                      <UploadComponent
+                        multiple={false}
+                        images={productImages}
                         onChange={onProductImagesChange}
+                        allowRemove={false}
+                        showImage={false}
+                        style={{marginTop: '0.5rem'}}
                         maxNumber={maxNumber}
-                        dataURLKey='data_url'
-                      >
-                        {({
-                          imageList,
-                          onImageUpload,
-                          onImageUpdate,
-                          onImageRemove,
-                          dragProps,
-                        }) => {
-                          return (
-                            <div className='imageUploadWrapper'>
-                              {Array.from({length: maxNumber}, (x, i) => i).map((index) => {
-                                const uploadedImage = imageList[index];
-                                if (uploadedImage) {
-                                  return (
-                                    <div
-                                      key={`imageUploadItem_${index}`}
-                                      className={'imageUploadItem'}
-                                    >
-                                      <Image
-                                        onClick={() => onImageUpdate(index)}
-                                        src={uploadedImage.data_url}
-                                        width={logoWidth}
-                                        height={logoHeight}
-                                        alt={`Image upload ${index + 1}`}
-                                      />
-                                      <button
-                                        type='button'
-                                        className='imageUploadRemove'
-                                        onClick={() => onImageRemove(index)}
-                                      ><Icon>{'close'}</Icon></button>
-                                    </div>
-                                  );
-                                }
-                                return (
-                                  <button
-                                    key={`imgUploadBtn_${index}`}
-                                    type='button'
-                                    onClick={onImageUpload}
-                                    className='imageUploadBtn'
-                                    {...dragProps}
-                                  >
-                                    <Image
-                                      src='/img/btn-upload.png'
-                                      width={logoWidth}
-                                      height={logoHeight}
-                                      alt='Image upload'
-                                    />
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          );
-                        }}
-                      </ImageUploading>
+                        logoWidth={logoWidth}
+                        logoHeight={logoHeight}
+                      />
                     </div>
                   </div>
                 </div>}
                 <Box
-                  textAlign='center'
-                  mt={5}
-                  className={classes.block}
+                  display='flex'
+                  gridGap='1rem'
+                  justifyContent='center'
+                  flexWrap='wrap'
+                  className={classes.actionBtns}
                 >
-                  <Grid
-                    container={true}
-                    spacing={3}
+                  <Button
+                    variant='pill'
+                    customSize='extraLarge'
+                    className={classes.btnPrev}
+                    onClick={() => goToTopPage()}
                   >
-                    <Grid
-                      xs={12}
-                      item={true}
-                    >
-                      <Button
-                        variant='pill'
-                        customColor='red'
-                        customSize='extraLarge'
-                        type='submit'
-                        className={classes.btnSubmit}
-                      >
-                        {'フォーム内容確認'}
-                      </Button>
-                    </Grid>
-                  </Grid>
+                    {'TOPページへ戻る'}
+                  </Button>
+
+                  <Button
+                    variant='pill'
+                    customColor='red'
+                    customSize='extraLarge'
+                    type='submit'
+                    className={classes.btnSubmit}
+                  >
+                    {'フォーム内容確認'}
+                  </Button>
                 </Box>
               </StyledForm> : null}
-              {activeStep === 1 ? (
+              {tabActive === 1 && activeStep === 1 ? (
                 <ContactFormConfirmations
                   data={formData}
                   onNextStep={handleNext}

@@ -3,16 +3,18 @@ import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
 
 import {Breadcrumbs, Search, SingleProduct} from '~/components';
 import {productState} from '~/store/productState';
 import {ProductService} from '~/services';
 import {DefaultLayout} from '~/components/Layouts';
+
 const ProductServiceInstance = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   content: {
-    padding: '2rem 0 0 0',
+    padding: '2rem 0',
     backgroundColor: '#f8f8f8',
     backgroundRepeat: 'repeat',
     backgroundImage: 'url("/img/noise.png")',
@@ -39,13 +41,28 @@ function ProductDetail(props) {
   const classes = useStyles();
   const [product, setProduct] = useRecoilState(productState);
   const [linkProps, setLinkProps] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    setProduct((oldValue) => ({
-      ...oldValue,
-      ...props,
-    }));
+    getDetailProduct();
   }, [props, setProduct]);
+
+  const getDetailProduct = async () => {
+    const {id} = router.query;
+    const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+    if (res) {
+      const productRes = {
+        productDetail: res.product_detail,
+        sellerInfo: res.seller_info,
+        sellerProduct: res.seller_products,
+        recommendProduct: res.recommend_products,
+      };
+      setProduct((oldValue) => ({
+        ...oldValue,
+        ...productRes,
+      }));
+    }
+  };
 
   useEffect(() => {
     if (product?.productDetail?.categories?.length && linkProps.length === 0) {
@@ -62,18 +79,22 @@ function ProductDetail(props) {
         if (category.parent_id === null) {
           current.push({
             id: 0,
-            linkLabel: category?.name_kana,
+            linkLabel: `${category?.name_kana}一覧`,
             linkUrl: `/products?cat=${category?.name}`,
           });
           break;
         }
       }
+      current.push({
+        id: 0,
+        linkLabel: product?.productDetail?.name,
+      });
       setLinkProps(current);
     }
   }, [linkProps, product]);
 
   return (
-    <DefaultLayout title='Product Detail - Oshinagaki Store'>
+    <DefaultLayout title={product?.productDetail?.name ?? '商品詳細'}>
       <div className={classes.content}>
         <Container className={classes.searchBox}>
           {/* Breadcrumbs */}
@@ -86,7 +107,7 @@ function ProductDetail(props) {
         </Container>
 
         {/* Product details */}
-        <SingleProduct/>
+        <SingleProduct getDetailProduct={getDetailProduct}/>
 
         {/* Banner */}
         <Container>
@@ -112,24 +133,6 @@ function ProductDetail(props) {
       </div>
     </DefaultLayout>
   );
-}
-
-export async function getServerSideProps({params}) {
-  const {id} = params;
-  const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
-  if (!res?.product_detail?.id) {
-    return {
-      notFound: true,
-    };
-  }
-  return {
-    props: {
-      productDetail: res.product_detail,
-      sellerInfo: res.seller_info,
-      sellerProduct: res.seller_products,
-      recommendProduct: res.recommend_products,
-    },
-  };
 }
 
 export default ProductDetail;

@@ -1,14 +1,16 @@
-import {Divider, makeStyles} from '@material-ui/core';
+import {Divider, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
 import router from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {useRecoilValue} from 'recoil';
+import Link from 'next/link';
 
 import {BlockForm} from '~/components';
 import ConnectForm from '~/components/ConnectForm';
 import OrderFormItem from '~/components/OrderFormItem';
 import {format as formatNumber} from '~/lib/number';
 import {billState, cartState} from '~/store/cartState';
+import {orderState} from '~/store/orderState';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -35,9 +37,12 @@ const useStyles = makeStyles((theme) => ({
 
 const OrderReview = ({isReadonly}) => {
   const classes = useStyles();
+  const theme = useTheme();
   const cart = useRecoilValue(cartState);
   const {subTotal, shippingFee} = useRecoilValue(billState);
   const [loaded, setLoaded] = React.useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const order = useRecoilValue(orderState);
 
   React.useEffect(() => {
     if (cart.items.length === 0) {
@@ -49,7 +54,7 @@ const OrderReview = ({isReadonly}) => {
 
   return (
     <ConnectForm>
-      {({control, formState: {errors}}) => {
+      {({control, formState: {errors}, setValue}) => {
         return (loaded &&
           <>
             <BlockForm
@@ -88,23 +93,20 @@ const OrderReview = ({isReadonly}) => {
                 <b>{`¥${formatNumber(shippingFee)}`}</b>
               </div>
 
-              {/* eslint-disable-next-line no-warning-comments */}
-              {/* TODO: hide not-ready-yet feature */}
-              {/* <div
+              <div
                 className={classes.row}
               >
                 <div>
                   {'クーポン '}
                   {isMobile ? <br/> : null}
                   <Link
-                    href={'/'}
+                    href={'#coupon'}
                   >
-                    {'他のクーポンを使う'}
+                    <a onClick={() => setValue('couponCode', '')}>{'他のクーポンを使う'}</a>
                   </Link>
                 </div>
-
-                <b>{`-${currency.format(bill.discount)}`}</b>
-              </div> */}
+                <b>{`-¥${formatNumber(order?.discount || 0)}`}</b>
+              </div>
             </div>
 
             <Divider/>
@@ -116,7 +118,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {`¥${formatNumber(subTotal + shippingFee)}`}
+                  {`¥${formatNumber((subTotal + shippingFee) - order?.discount)}`}
                 </h1>
               </div>
             </div>

@@ -21,7 +21,7 @@ const Policy = () => {
   const classes = useStyles();
 
   return (
-    <DefaultLayout title='Policy - Oshinagaki Store'>
+    <DefaultLayout title='おしながきプライバシーポリシー'>
       <div className={classes.root}>
         <div
           className='content'

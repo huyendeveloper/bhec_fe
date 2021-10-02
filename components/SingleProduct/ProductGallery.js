@@ -18,6 +18,10 @@ SwiperCore.use([Navigation, Thumbs]);
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '0px',
+    '& img': {
+      objectFit: 'cover !important',
+      borderRadius: '0.25rem !important',
+    },
   },
   thumbnail: {
     paddingBottom: '1rem',
@@ -35,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& div.swiper-slide img': {
-      objectFit: 'cover !important',
       borderRadius: '0.25rem',
     },
     '& div.swiper-slide-thumb-active': {
@@ -55,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0.25rem',
   },
   productThumb: {
-    objectFit: 'cover !important',
     borderRadius: '0.25rem',
   },
 }));
@@ -63,73 +65,59 @@ const useStyles = makeStyles((theme) => ({
 const ProductGallery = () => {
   const classes = useStyles();
   const product = useRecoilValue(productState);
-  const images = product?.productDetail?.images || [];
+  const images = product?.productDetail?.image_urls || [];
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <>
-      <div className={classes.root}>
-        <Swiper
-          style={{'--swiper-navigation-color': '#fff', '--swiper-pagination-color': '#fff'}}
-          loop={true}
-          spaceBetween={10}
-          navigation={false}
-          thumbs={{swiper: thumbsSwiper}}
-          className={classes.thumbnail}
-        >
-          {images && images.length > 0 ? images.map((img) => (
-            <SwiperSlide key={img.id}>
-              <Image
-                src={img.src}
-                alt='banner top'
-                width='558'
-                height='368'
-                objectFit='contain'
-                className={classes.productThumb}
-                // eslint-disable-next-line no-undefined
-                layout={isTablet ? 'responsive' : undefined}
-              />
-            </SwiperSlide>
-          )) : (
+    <div className={classes.root}>
+      <Swiper
+        style={{'--swiper-navigation-color': '#fff', '--swiper-pagination-color': '#fff'}}
+        loop={true}
+        spaceBetween={10}
+        navigation={false}
+        thumbs={{swiper: thumbsSwiper}}
+        className={classes.thumbnail}
+      >
+        {images?.map((img, idx) => (
+          <SwiperSlide key={`img-${idx}`}>
             <Image
-              src='/logo.png'
+              src={img || '/logo.png'}
               alt='banner top'
               width='558'
               height='368'
               objectFit='contain'
-              className={classes.bgImg}
               // eslint-disable-next-line no-undefined
               layout={isTablet ? 'responsive' : undefined}
             />
-          )}
-        </Swiper>
-        <Swiper
-          onSwiper={setThumbsSwiper}
-          loop={false}
-          spaceBetween={12}
-          slidesPerView={5}
-          freeMode={true}
-          watchSlidesVisibility={true}
-          watchSlidesProgress={true}
-          className={classes.preview}
-        >
-          {images && images.length ? images.map((img) => (
-            <SwiperSlide key={img.id}>
-              <Image
-                src={img.src}
-                alt='banner top'
-                layout='responsive'
-                width='99'
-                height='64'
-                objectFit='contain'
-              />
-            </SwiperSlide>
-          )) : null}
-        </Swiper>
-      </div>
-    </>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <Swiper
+        onSwiper={setThumbsSwiper}
+        loop={false}
+        spaceBetween={12}
+        slidesPerView={5}
+        freeMode={true}
+        watchSlidesVisibility={true}
+        watchSlidesProgress={true}
+        className={classes.preview}
+      >
+        {images?.map((img, idx) => (
+          <SwiperSlide key={`img-${idx}`}>
+            <Image
+              src={img || '/logo.png'}
+              alt='banner top'
+              layout='responsive'
+              width='99'
+              height='64'
+              objectFit='contain'
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

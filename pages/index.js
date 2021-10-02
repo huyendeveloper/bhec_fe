@@ -3,7 +3,6 @@ import url from 'url';
 import React, {useEffect} from 'react';
 import {Container, Grid, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import {useSetRecoilState} from 'recoil';
@@ -15,9 +14,9 @@ import {signIn} from 'next-auth/client';
 import {httpStatus} from '~/constants';
 import {userState} from '~/store/userState';
 import {DefaultLayout} from '~/components/Layouts';
-import {Slider, Search, CategoryBlock, ContentBlock, ProductSwiper} from '~/components';
+import {Slider, Search, CategoryBlock, ContentBlock} from '~/components';
 import {Article} from '~/components/Article';
-import {AdsWidget} from '~/components/Widgets';
+import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import 'swiper/swiper.min.css';
 import {ProductService, ArticleService, AuthService} from '~/services';
 const Auth = new AuthService();
@@ -135,12 +134,8 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
   };
 
   return (
-    <DefaultLayout title='TopPage - Oshinagaki Store'>
+    <DefaultLayout title='おしながき'>
       <div className={classes.root}>
-        <Head>
-          <title>{'おしながき'}</title>
-        </Head>
-
         <div className={classes.topBanner}>
           <Container
             maxWidth='lg'
@@ -182,22 +177,22 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
                   item={true}
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={5}
                 >
                   <Image
-                    src={article.thumb_url ?? '/logo.png'}
+                    src={article.image_url ?? '/logo.png'}
                     alt='article'
-                    layout='responsive'
-                    width='364'
-                    height='208'
-                    objectFit='cover'
+                    layout='intrinsic'
+                    width={364}
+                    height={208}
+                    objectFit={article.image_url ? 'cover' : 'contain'}
                   />
                 </Grid>
                 <Grid
                   item={true}
                   xs={12}
                   sm={6}
-                  lg={8}
+                  lg={7}
                 >
                   <Article
                     key={`article-${article.id}`}
@@ -254,7 +249,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={traditional_craft}/>
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {traditional_craft.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 
@@ -267,7 +281,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            <ProductSwiper items={food_and_beverage}/>
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {food_and_beverage.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 
@@ -281,7 +314,26 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
             mixBlendMode='multiply'
             padding='2rem 0 4rem 0'
           >
-            <ProductSwiper items={lifestyle}/>
+            <Grid
+              container={true}
+              spacing={3}
+            >
+              {lifestyle.map((item) => (
+                <Grid
+                  key={item.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                  className={classes.product}
+                >
+                  <ProductWidget
+                    data={item}
+                    border={'borderNone'}
+                    heart={true}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </CategoryBlock>) : null
         }
 

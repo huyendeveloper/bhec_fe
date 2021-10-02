@@ -89,6 +89,8 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       padding: '0.5rem 2.75rem',
+      fontSize: '0.875rem',
+      minWidth: '10rem',
     },
   },
   medium: {

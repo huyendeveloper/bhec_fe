@@ -2,6 +2,7 @@ import {Box} from '@material-ui/core';
 import Image from 'next/image';
 import React, {useState} from 'react';
 import {useRecoilState, useRecoilValue} from 'recoil';
+import {makeStyles} from '@material-ui/core/styles';
 
 import produce from 'immer';
 
@@ -14,11 +15,31 @@ import {AlertMessageForSection} from '..';
 import {cartState} from '~/store/cartState';
 import {productState} from '~/store/productState';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: '1.438rem',
+      borderBottom: `1px solid ${theme.palette.gray.main}`,
+    },
+  },
+  btnBuyNow: {
+    '& button': {
+      height: '3rem',
+      [theme.breakpoints.down('sm')]: {
+        height: '2.5rem',
+      },
+    },
+  },
+}));
+
 const ActionButtons = () => {
+  const classes = useStyles();
   const [cart, setCart] = useRecoilState(cartState);
   const product = useRecoilValue(productState);
   const [alerts, setAlerts] = useState(null);
   const router = useRouter();
+
+  const isOutStock = !(product?.productDetail?.quantity > 0);
 
   const addToCart = () => {
     if ((product.quantity ?? 0) === 0) {
@@ -70,7 +91,7 @@ const ActionButtons = () => {
   };
 
   return (
-    <>
+    <div className={classes.root}>
       <Box
         component='div'
         className={'add'}
@@ -87,6 +108,7 @@ const ActionButtons = () => {
               alt={'cart'}
             />}
           onClick={handleAddToCartClick}
+          disabled={isOutStock}
         >
           {'カートに入れる'}
         </Button>
@@ -110,6 +132,7 @@ const ActionButtons = () => {
 
       <Box
         component='div'
+        className={classes.btnBuyNow}
       >
         <Button
           customColor='red'
@@ -123,6 +146,7 @@ const ActionButtons = () => {
               height={32}
               alt={'touch'}
             />}
+          disabled={isOutStock}
         >
           {'今すぐ購入する'}
         </Button>
@@ -132,7 +156,7 @@ const ActionButtons = () => {
         alert={alerts}
         handleCloseAlert={() => setAlerts(null)}
       />
-    </>
+    </div>
   );
 };
 

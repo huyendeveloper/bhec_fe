@@ -20,10 +20,14 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: '1.5rem',
         fontWeight: 'bold',
         paddingLeft: '1.5rem',
+        width: '80%',
 
         [theme.breakpoints.down('sm')]: {
           fontSize: '0.875rem',
           lineHeight: '1.313rem',
+        },
+        [theme.breakpoints.down('xs')]: {
+          width: '100%',
         },
       },
     },
@@ -126,12 +130,12 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
-                className={clsx(classes.image, product.images?.length > 0 ? '' : classes.bgImg)}
+                className={clsx(classes.image, product.image_urls?.length > 0 ? '' : classes.bgImg)}
                 component='img'
                 alt={product?.name}
                 width={170}
                 height={112}
-                image={product.images?.length > 0 ? product.images[0]?.src : '/logo.png'}
+                image={product?.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
                 title={product?.name}
               />
             </CardActionArea>
@@ -188,10 +192,11 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
             <div className={'quantity'}>
               <QuantityBox
                 name={'productQuantity'}
-                maximumQuantity={product?.maximum_quantity ?? 10}
+                maximum_quantity={product?.maximum_quantity}
+                quantity={product?.quantity}
                 defaultValue={item.quantity}
                 handleChange={(event) => handleChangeQuantity(event, product?.id)}
-                width={'4.813rem'}
+                width={'6.413rem'}
                 height={isTablet ? '2rem' : '2.5rem'}
               />
             </div>

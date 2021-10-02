@@ -95,7 +95,7 @@ export default function BasicInformation() {
   }
 
   return (
-    <DefaultLayout title='Info - Oshinagaki Store'>
+    <DefaultLayout title='基本情報'>
       <div className='content'>
         <ContentBlock
           title={'基本情報'}
