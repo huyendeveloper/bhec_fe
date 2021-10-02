@@ -1,8 +1,9 @@
 import {
   Typography,
   Box,
+  useMediaQuery,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import Image from 'next/image';
@@ -22,17 +23,87 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #DBDBDB',
     borderRadius: '4px',
   },
+  infoBlockTitle: {
+    fontSize: '1rem',
+    fontWeight: 700,
+    lineHeight: '1.5rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
+
+  infoBlockLabel: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    lineHeight: '1.5rem',
+    margin: '1rem 0',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
+  infoBlockContent: {
+    margin: '0.5rem',
+    flexWrap: 'wrap',
+    '& p': {
+      margin: '3px 0',
+      display: 'flex',
+      fontSize: '0.875rem',
+    },
+  },
+  productImages: {
+    display: 'flex',
+    gap: '1.5rem',
+
+    [theme.breakpoints.down('xs')]: {
+      gap: '0.5rem',
+    },
+
+    '& > div': {
+      border: '1px solid #e3e3e3',
+      overflow: 'hidden',
+      borderRadius: '4px',
+    },
+  },
+  actionBtns: {
+    margin: '3rem 0 1.5rem',
+    flexWrap: 'nowrap',
+    [theme.breakpoints.down('xs')]: {
+      margin: '2rem 0 1rem',
+      flexWrap: 'wrap',
+      '& button': {
+        width: '100%',
+      },
+    },
+  },
+
+  title: {
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
+    color: theme.palette.black3.main,
+    fontWeight: '700',
+  },
+
+  infoBlockImage: {
+    marginTop: '1.875rem',
+  },
 }));
 
 const Contacts = () => {
   const classes = useStyles();
   const [contact, setContact] = useState([]);
   const router = useRouter();
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const imgWidth = isMobile ? 80 : (isTablet ? 120 : 120);
+  const imgHeight = isMobile ? 80 : (isTablet ? 120 : 120);
 
   const getDetailContact = async () => {
     const {id} = router?.query;
-    const response = await ContactCommon.getContactDetail(id);
-    setContact(response?.contact);
+    if (id) {
+      const response = await ContactCommon.getContactDetail(id);
+      setContact(response?.contact);
+    }
   };
 
   useEffect(() => {
@@ -53,78 +124,62 @@ const Contacts = () => {
             className={classes.contactBox}
           >
             <div className={classes.infoBlock}>
-              <Typography
-                component='h3'
-                className={classes.infoBlockTitle}
-              >
-                {'連絡先情報'}
-              </Typography>
-
               <div className={classes.infoBlockContent}>
                 <Typography component='p'>
-                  <span>{'氏名 :'}</span>
-                  {contact.name ? contact.name : ''}
+                  <span className={classes.title}>{'氏名 :'}</span>
+                  {contact?.name}
                 </Typography>
                 <Typography component='p'>
-                  <span>{'メールアドレス：'}</span>
-                  {contact.email ? contact.email : ''}
+                  <span className={classes.title}>{'メールアドレス：'}</span>
+                  {contact?.email}
                 </Typography>
                 <Typography component='p'>
-                  <span>{'種別：'}</span>
-                  {contact.contact_category ? contact.contact_category.name : ''}
+                  <span className={classes.title}>{'種別：'}</span>
+                  {contact?.contact_category ? contact.contact_category.name : ''}
                 </Typography>
-                {contact.contact_category_id === 5 ? (<Typography component='p'>
-                  <span>{'問い合わせ内容：'}</span>
-                  {contact.description ? contact.description : ''}
+                {contact?.contact_category_id === 5 ? (<Typography component='p'>
+                  <span className={classes.title}>{'問い合わせ内容：'}</span>
+                  {contact?.description}
                 </Typography>) : null}
               </div>
             </div>
-            {contact.contact_category_id === 5 ? (
+            {contact?.contact_category_id === 5 ? (
               <div className={classes.infoBlock}>
-                <Typography
-                  component='h3'
-                  className={classes.infoBlockTitle}
-                >
-                  {'製品カテゴリ'}
-                </Typography>
                 <div className={classes.infoBlockContent}>
                   <div className={classes.productCategory}>
-                    {contact.image_urls.length && contact.image_urls.map((product, index) => (
-                      <div key={product.id}>
+                    {contact.contact_products.length && contact.contact_products.map((product, index) => (
+                      <div
+                        key={product.id}
+                        style={{marginTop: '1rem'}}
+                      >
                         <Typography
-                          component='h3'
+                          component='h4'
                           className={classes.infoBlockTitle}
                         >
                           {`商品情報${index + 1}`}
                         </Typography>
                         <div className={classes.infoBlockContent}>
                           <Typography component='p'>
-                            <span>{'注文番号 :'}</span>
-                            <span>{product[`order_number${index}`]}</span>
-                            {contact[`order_number${index}`] ? contact[`order_number${index}`] : ''}
+                            <span className={classes.title}>{'注文番号 :'}</span>
+                            <span>{product.order_number}</span>
                           </Typography>
                           <Typography component='p'>
-                            <span>{'商品コード：'}</span>
-                            {contact[`product_code${index}`] ? contact[`product_code${index}`] : ''}
+                            <span className={classes.title}>{'商品コード：'}</span>
+                            {product.product_code}
                           </Typography>
                           <Typography component='p'>
-                            <span>{'問い合わせ内容：'}</span>
-                            {contact[`description${index}`] ? contact[`description${index}`] : ''}
+                            <span className={classes.title}>{'問い合わせ内容：'}</span>
+                            {product.description}
                           </Typography>
-                          {contact[`productImages${index}`].length && <div className={classes.infoBlock}>
-                            <Typography
-                              component='p'
-                            >
-                              {'画像アップロード'}
-                            </Typography>
+                          {product.image_urls.length && <div className={classes.infoBlock}>
                             <div className={classes.productImages}>
-                              {contact[`productImages${index}`].map((img, prodIndex) => (
+                              {product.image_urls.map((img, prodIndex) => (
                                 <Image
                                   key={String(prodIndex)}
-                                  src={img.contact_url}
-                                  width={176}
-                                  height={176}
-                                  alt={`product-image-${prodIndex + 1}`}
+                                  src={img}
+                                  width={imgWidth}
+                                  height={imgHeight}
+                                  alt={'product-image'}
                                 />
                               ))}
                             </div>
@@ -136,23 +191,16 @@ const Contacts = () => {
                 </div>
               </div>
             ) : null}
-            {contact.images && contact.contact_category_id !== 5 && contact.images.length > 0 ? (
-              <div className={classes.infoBlock}>
-                <Typography
-                  component='h3'
-                  className={classes.infoBlockTitle}
-                >
-                  {'画像アップロード'}
-                </Typography>
-
+            {contact?.image_urls && contact?.contact_category_id !== 5 && contact?.image_urls.length > 0 ? (
+              <div className={classes.infoBlockImage}>
                 <div className={classes.infoBlockContent}>
                   <div className={classes.productImages}>
-                    {contact.images.map((img, prodIndex) => (
+                    {contact.image_urls.map((img, prodIndex) => (
                       <Image
                         key={String(prodIndex)}
-                        src={img.contact_url}
-                        width={176}
-                        height={176}
+                        src={img}
+                        width={imgWidth}
+                        height={imgHeight}
                         alt={`product-image-${prodIndex + 1}`}
                       />
                     ))}
