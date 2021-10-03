@@ -117,7 +117,7 @@ const FormShipping = ({isReadonly}) => {
                             key={`address-${item?.id}`}
                             value={`${item?.id}`}
                             control={<Radio/>}
-                            label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item.province.name}${item.city}${item.address}`}
+                            label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item?.province?.name ?? ''}${item.city}${item.address}`}
                             className={'labelRadioBtn'}
                             disabled={isReadonly}
                           />

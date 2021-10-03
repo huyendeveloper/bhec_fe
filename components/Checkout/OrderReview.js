@@ -1,7 +1,7 @@
 import {Divider, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
 import router from 'next/router';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import Link from 'next/link';
 
@@ -40,11 +40,11 @@ const OrderReview = ({isReadonly}) => {
   const theme = useTheme();
   const cart = useRecoilValue(cartState);
   const {subTotal, shippingFee} = useRecoilValue(billState);
-  const [loaded, setLoaded] = React.useState(false);
+  const [loaded, setLoaded] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const order = useRecoilValue(orderState);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (cart.items.length === 0) {
       router.push('/cart');
     }
@@ -82,7 +82,7 @@ const OrderReview = ({isReadonly}) => {
               >
                 <div>{'商品合計'}</div>
 
-                <b>{`¥${formatNumber(subTotal)}`}</b>
+                <b>{formatNumber(subTotal, 'currency')}</b>
               </div>
 
               <div
@@ -90,7 +90,7 @@ const OrderReview = ({isReadonly}) => {
               >
                 <div>{'送料合計'}</div>
 
-                <b>{`¥${formatNumber(shippingFee)}`}</b>
+                <b>{formatNumber(shippingFee, 'currency')}</b>
               </div>
 
               <div
@@ -105,7 +105,7 @@ const OrderReview = ({isReadonly}) => {
                     <a onClick={() => setValue('couponCode', '')}>{'他のクーポンを使う'}</a>
                   </Link>
                 </div>
-                <b>{`-¥${formatNumber(order?.discount || 0)}`}</b>
+                <b>{formatNumber(-(order?.discount ?? 0), 'currency')}</b>
               </div>
             </div>
 
@@ -118,7 +118,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {`¥${formatNumber((subTotal + shippingFee) - order?.discount)}`}
+                  {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
                 </h1>
               </div>
             </div>

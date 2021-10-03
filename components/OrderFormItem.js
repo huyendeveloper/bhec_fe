@@ -282,7 +282,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               <Typography
                 variant={'h5'}
                 className={classes.price}
-              >{`¥${formatNumber(parseInt(data.productDetail.price, 10))}`}</Typography>
+              >{formatNumber(data.productDetail.price, 'currency')}</Typography>
             </Grid>
 
             <Grid
@@ -295,14 +295,19 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             >
               <div className={classes.selectBox}>
                 <div className={classes.title}>{'数量'}</div>
-                <QuantityBox
-                  name={`quantity${data.productDetail.id}`}
-                  maximum_quantity={data?.productDetail?.maximum_quantity}
-                  quantity={data?.productDetail?.quantity}
-                  defaultValue={data.quantity}
-                  handleChange={handleChangeQuantity}
-                  disabled={disabled}
-                />
+
+                {disabled ? (
+                  <Typography align={'center'}>{data?.quantity}</Typography>
+                ) : (
+                  <QuantityBox
+                    name={`quantity${data.productDetail.id}`}
+                    maximum_quantity={data?.productDetail?.maximum_quantity}
+                    quantity={data?.productDetail?.quantity}
+                    defaultValue={data.quantity}
+                    handleChange={handleChangeQuantity}
+                    disabled={disabled}
+                  />
+                )}
                 <ErrorMessage
                   errors={errors}
                   name={`quantity${data.productDetail.id}`}
@@ -364,33 +369,38 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             render={() => (<div>{''}</div>)}
           />
 
-          <Controller
-            name={`note${data.productDetail.id}`}
-            control={control}
-            defaultValue={defaultNote || '指定なし'}
-            render={({field: {name, value, ref, onChange}}) => (
-              <FormControl>
-                <NativeSelect
-                  className={clsx(errors.note ? 'selectBoxError' : '', classes.selectShipDate)}
-                  name={name}
-                  value={value}
-                  inputRef={ref}
-                  onChange={(e) => {
-                    onChange(e);
-                    handleChangeNote(e);
-                  }}
-                  disabled={disabled}
-                >
-                  {times.map((time) => (
-                    <option
-                      key={time.value}
-                      value={time.value}
-                    >{time.value}</option>
-                  ))}
-                </NativeSelect>
-              </FormControl>
-            )}
-          />
+          {disabled ? (
+            <Typography align={'center'}>{data?.note ?? '指定なし'}</Typography>
+          ) : (
+            <Controller
+              name={`note${data.productDetail.id}`}
+              control={control}
+              defaultValue={defaultNote || '指定なし'}
+              render={({field: {name, value, ref, onChange}}) => (
+                <FormControl>
+                  <NativeSelect
+                    className={clsx(errors?.note ? 'selectBoxError' : '', classes.selectShipDate)}
+                    name={name}
+                    value={value}
+                    inputRef={ref}
+                    onChange={(e) => {
+                      onChange(e);
+                      handleChangeNote(e);
+                    }}
+                    disabled={disabled}
+                  >
+                    {times.map((time) => (
+                      <option
+                        key={time.value}
+                        value={time.value}
+                      >{time.value}</option>
+                    ))}
+                  </NativeSelect>
+                </FormControl>
+              )}
+            />
+          )}
+
         </Grid>
       </Grid>
     </div>
