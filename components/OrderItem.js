@@ -1,9 +1,9 @@
-import {
-  Grid, Step, StepLabel, Stepper, useMediaQuery,
-} from '@material-ui/core';
+import {Grid, Step, StepLabel, Stepper, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
+
+import {get} from 'lodash';
 
 import {order} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
@@ -159,6 +159,7 @@ const OrderItem = ({item, status}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const product = item?.product;
+  const thumbnail = get(product, 'image_urls.0', 'logo.png');
 
   return item ? (
     <div className={classes.root}>
@@ -179,7 +180,7 @@ const OrderItem = ({item, status}) => {
         >
           {isMobile ? (
             <Image
-              src={product.thumb_url ?? '/logo.png'}
+              src={thumbnail}
               width={500}
               height={200}
               layout={'responsive'}
@@ -189,7 +190,7 @@ const OrderItem = ({item, status}) => {
             />
           ) : (
             <Image
-              src={product.thumb_url ?? '/logo.png'}
+              src={thumbnail}
               width={
                 (isTablet ? 146 : 195)
               }

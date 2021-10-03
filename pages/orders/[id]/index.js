@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import {useSetRecoilState} from 'recoil';
 
+import clsx from 'clsx';
+
 import {loadingState} from '~/store/loadingState';
 import {Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
@@ -124,7 +126,8 @@ const OrdersDetail = ({id}) => {
   };
 
   useEffect(() => {
-    fetchOrder();
+    setLoading(true);
+    fetchOrder().finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -264,17 +267,17 @@ const OrdersDetail = ({id}) => {
                 </h4>
               </Grid>
 
-              {/* eslint-disable-next-line no-warning-comments */}
-              {/* TODO: not implemented yet */}
-              {/* <Grid
+              <Grid
                 item={true}
                 sm={5}
                 xs={4}
                 className={classes.buttons}
               >
-                <button className={clsx(classes.button, classes.whiteButton)}>{'領収書発行'}</button>
-                <button className={classes.button}>{'再発行'}</button>
-              </Grid> */}
+                <button
+                  className={clsx(classes.button, classes.whiteButton)}
+                  onClick={exportOrder}
+                >{'領収書発行'}</button>
+              </Grid>
             </div>
           </Grid>
 
@@ -296,15 +299,6 @@ const OrdersDetail = ({id}) => {
               onClick={() => router.push('/orders')}
             >
               {'注文一覧へ'}
-            </Button>
-            <Button
-              variant={'pill'}
-              customColor={'yellow'}
-              customBorder={'bdGray'}
-              customSize={'extraLarge'}
-              onClick={() => exportOrder()}
-            >
-              {'領収書発行'}
             </Button>
           </div>
         </ContentBlock>
