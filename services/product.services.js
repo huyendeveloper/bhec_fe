@@ -91,4 +91,19 @@ export default class ProductService {
     }
     return data;
   }
+
+  async getListFavoriteProduct(payload) {
+    const DEFAULT_PER_PAGE = 10;
+    const cleanPayload = clean(payload);
+    const activeParam = {
+      ...cleanPayload,
+      per_page: payload.per_page || DEFAULT_PER_PAGE,
+      page: payload.page || 1,
+    };
+    const [data, errors] = await api.get('/products/list_like', {...activeParam});
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }
