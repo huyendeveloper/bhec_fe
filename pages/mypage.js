@@ -74,12 +74,12 @@ const boxLinks = [
     colorLabel: '#54c0c0',
   },
 
-  // {
-  //   image: '/img/icons/heart_fill.png',
-  //   content: 'お気に入り商品',
-  //   url: '/favorite-products',
-  //   colorLabel: '#ba2636',
-  // },
+  {
+    image: '/img/icons/heart_fill.png',
+    content: 'お気に入り商品',
+    url: '/favorite-products',
+    colorLabel: '#ba2636',
+  },
 ];
 
 // eslint-disable-next-line no-warning-comments
