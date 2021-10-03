@@ -7,6 +7,7 @@ import {get} from 'lodash';
 
 import {order} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
+import Button from '~/components/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   buttonList: {
+    display: 'flex',
+    justifyContent: 'flex-end',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       justifyContent: 'flex-end',
@@ -48,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'space-between',
       marginTop: '1rem',
     },
-    '& a': {
+    '& .MuiButton-root': {
       margin: '0 1.5rem 1.25rem 0',
       height: '2.5rem',
       width: '10.625rem',
@@ -148,12 +151,6 @@ const steps = Object.values(order.label);
 
 const OrderItem = ({item, status}) => {
   const classes = useStyles();
-
-  // eslint-disable-next-line no-warning-comments
-  // TODO: not implemented yet
-  // eslint-disable-next-line no-unused-vars
-  const isDelivered = false;
-
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -212,39 +209,25 @@ const OrderItem = ({item, status}) => {
           xs={12}
           className={classes.buttonList}
         >
-          {/* eslint-disable-next-line no-warning-comments */}
-          {/* TODO: not implemented yet */}
-          {/* <Button
+          <Button
             variant='contained'
-            href='/'
             className={classes.btnBuyAgain}
-            disabled={!isDelivered()}
-
+            href={`/product/${item?.product_id}`}
           >
             {'再度購入'}
           </Button>
           <Button
             variant='contained'
-            href={`/reviews/${item?.id}`}
-            >
-            disabled={!isDelivered()}
-
+            href={`/reviews/${item?.product_id}`}
+          >
             {'レビューを書く'}
           </Button>
           <Button
             variant='contained'
-            href='/'
-            >
-            disabled={!isDelivered()}
-
-            {'返品・交換'}
-          </Button>
-          <Button
-            variant='contained'
-            href='/'
+            href='/contact'
           >
             {'お問い合わせ'}
-          </Button> */}
+          </Button>
         </Grid>
 
         <Grid
@@ -266,11 +249,9 @@ const OrderItem = ({item, status}) => {
         >
           <div>{product?.id}</div>
           <div>{item?.quantity}</div>
-          <div>{`¥${formatNumber(parseInt(product?.price, 10))}`}</div>
-          <div>{`¥${formatNumber(parseInt(item?.quantity * product?.price, 10))}`}</div>
+          <div>{formatNumber(product?.price ?? 0, 'currency')}</div>
+          <div>{formatNumber((item?.quantity ?? 1) * (product?.price ?? 0), 'currency')}</div>
 
-          {/* eslint-disable-next-line no-warning-comments */}
-          {/* TODO: not implemented yet */}
           {!isMobile && (
             <Stepper
               activeStep={status}
@@ -286,8 +267,6 @@ const OrderItem = ({item, status}) => {
           )}
         </Grid>
 
-        {/* eslint-disable-next-line no-warning-comments */}
-        {/* TODO: not implemented yet */}
         {isMobile && (
           <Grid
             item={true}
