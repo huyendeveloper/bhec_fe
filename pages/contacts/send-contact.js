@@ -422,47 +422,47 @@ export default function ContactPage() {
                       </Typography>
 
                       {tabActive === 2 &&
-                        <Typography
-                          component='p'
-                          className='formBlockNote'
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
                         >
-                          <span>{'法人のお客様は'}</span>
-                          <a
-                            href='mailto:oshinagaki@gmail.com'
-                            target='_blank'
-                            className='formBlockLink'
-                            rel='noreferrer'
-                          >
-                            {'こちら'}
-                          </a>
-                          <span>{'から'}</span>
-                        </Typography>}
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
                     </div> :
                     <div
                       className='formBlockHeader'
                       style={{marginBottom: '2rem'}}
                     >
                       {tabActive === 2 &&
-                        <Typography
-                          component='p'
-                          className='formBlockNote'
+                      <Typography
+                        component='p'
+                        className='formBlockNote'
+                      >
+                        <span>{'法人のお客様は'}</span>
+                        <a
+                          href='mailto:oshinagaki@gmail.com'
+                          target='_blank'
+                          className='formBlockLink'
+                          rel='noreferrer'
                         >
-                          <span>{'法人のお客様は'}</span>
-                          <a
-                            href='mailto:oshinagaki@gmail.com'
-                            target='_blank'
-                            className='formBlockLink'
-                            rel='noreferrer'
-                          >
-                            {'こちら'}
-                          </a>
-                          <span>{'から'}</span>
-                        </Typography>}
+                          {'こちら'}
+                        </a>
+                        <span>{'から'}</span>
+                      </Typography>}
                     </div>
                   }
                 </div>
               </div>
-              {activeStep === 0 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
+              {activeStep === 0 && tabActive === 1 ? <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 {/* SECOND BLOCK */}
                 <div style={{marginBottom: '1rem'}}>
                   <div className='formBlockControls'>
@@ -760,7 +760,7 @@ export default function ContactPage() {
                   </Button>
                 </Box>
               </StyledForm> : null}
-              {activeStep === 1 ? (
+              {tabActive === 1 && activeStep === 1 ? (
                 <ContactFormConfirmations
                   data={formData}
                   onNextStep={handleNext}

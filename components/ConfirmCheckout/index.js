@@ -1,23 +1,23 @@
-import {Grid, makeStyles, Typography} from '@material-ui/core';
+import {Divider, Grid, makeStyles, Typography} from '@material-ui/core';
 import router from 'next/router';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
 import Button from '../Button';
 import {AlertMessageForSection, StyledForm} from '..';
 
 import FormSignup from '../Checkout/FormSignup';
 
-import OrderReview from '../Checkout/OrderReview';
-import {BlockForm} from '../index';
+import OrderFormItem from '../OrderFormItem';
 
 import {loadingState} from '~/store/loadingState';
 import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
-import {cartState} from '~/store/cartState';
+import {billState, cartState} from '~/store/cartState';
 import {CommonService, OrderService, PaymentService} from '~/services';
+import {format as formatNumber} from '~/lib/number';
 
 const Payment = new PaymentService();
 
@@ -40,6 +40,34 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  infoBlock: {
+    marginBottom: '2.5rem',
+  },
+  infoBlockTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    lineHeight: '1.5rem',
+    marginBottom: '1.5rem',
+  },
+  infoBlockContent: {
+    '& p': {
+      margin: '3px 0',
+    },
+  },
+  calculatedBill: {
+    margin: '1.938rem 0',
+    '& a': {
+      fontSize: '1rem',
+      color: theme.palette.gray.dark,
+      [theme.breakpoints.down('md')]: {
+        fontSize: '0.875rem',
+      },
+    },
+  },
+  total: {
+    fontSize: '1.5rem',
+    margin: '0',
+  },
 }));
 
 const ConfirmCheckout = () => {
@@ -49,10 +77,11 @@ const ConfirmCheckout = () => {
   const [cart, setCart] = useRecoilState(cartState);
   const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
-  const [addressData, setAddressData] = React.useState(null);
+  const [addressData, setAddressData] = useState(null);
   const [cardData, setCardData] = useState(null);
+  const {subTotal, shippingFee} = useRecoilValue(billState);
 
   const fetchAddressData = async () => {
     const res = order?.addressShipping ? await CommonService.getAddress(order?.addressShipping) : null;
@@ -73,7 +102,7 @@ const ConfirmCheckout = () => {
     setCardData(res.card);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchAddressData();
     fetchCardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -204,7 +233,7 @@ const ConfirmCheckout = () => {
     setLoading(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
     }
@@ -219,56 +248,147 @@ const ConfirmCheckout = () => {
             <FormSignup isReadonly={true}/>
           )}
 
-          <BlockForm
-            themeStyle={'gray'}
-            title={'お届け先の住所'}
-          >
-            {addressData &&
-            <Typography>
-              {addressData?.zipcode}<br/>
-              {addressData?.province?.name}<br/>
-              {addressData?.city}{addressData?.address}<br/>
-              {addressData?.name} {'様'}<br/>
+          <div className={classes.infoBlock}>
+            <Typography
+              component='h3'
+              className={classes.infoBlockTitle}
+            >
+              {'お届け先の住所'}
             </Typography>
-            }
-          </BlockForm>
 
-          <BlockForm
-            themeStyle={'gray'}
-            title={'お支払い方法'}
-          >
-            <Typography>
-              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'クレジットカード払い'}</Typography>}
-              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'銀聯カード（UnionPay）払い'}</Typography>}
-              {parseInt(order?.payment_method, 10) === 1 && <Typography>{'コンビニ払い'}</Typography>}
+            <div className={classes.infoBlockContent}>
+              <Typography component='p'>
+                <span>{`郵便番号： ${addressData?.zipcode ?? ''}`}</span>
+              </Typography>
+              <Typography component='p'>
+                <span>{`都道府県： ${addressData?.province?.name ?? ''}`}</span>
+              </Typography>
+              <Typography component='p'>
+                <span>{`住所： ${addressData?.city ?? ''}${addressData?.address ?? ''}`}</span>
+              </Typography>
+              <Typography component='p'>
+                <span>{`受取人氏名： ${addressData?.name ?? ''}様`}</span>
+              </Typography>
+            </div>
+          </div>
+
+          <div className={classes.infoBlock}>
+            <Typography
+              component='h3'
+              className={classes.infoBlockTitle}
+            >
+              {'お支払い方法'}
             </Typography>
-          </BlockForm>
+
+            <div className={classes.infoBlockContent}>
+              <Typography>
+                {parseInt(order?.payment_method, 10) === 1 && <Typography>{'クレジットカード払い'}</Typography>}
+                {parseInt(order?.payment_method, 10) === 2 && <Typography>{'銀聯カード（UnionPay）払い'}</Typography>}
+                {parseInt(order?.payment_method, 10) === 3 && <Typography>{'コンビニ払い'}</Typography>}
+              </Typography>
+            </div>
+          </div>
 
           {cardData && parseInt(order?.payment_method, 10) === 1 &&
-            <BlockForm
-              themeStyle={'gray'}
-              title={'お支払いクレジットカード'}
-            >
-              <Typography>
-                {cardData.card_type} <br/>
-                {cardData.req_number} <br/>
-                {cardData.holder_name}
+            <div className={classes.infoBlock}>
+              <Typography
+                component='h3'
+                className={classes.infoBlockTitle}
+              >
+                {'お支払いクレジットカード'}
               </Typography>
-            </BlockForm>
+
+              <div className={classes.infoBlockContent}>
+                <Typography component='p'>
+                  <span>{`${cardData?.card_type ?? ''} ${cardData?.holder_name ?? ''} ${cardData?.req_number ?? ''}`}</span>
+                </Typography>
+              </div>
+            </div>
           }
 
           {/*<FormCoupon isReadonly={true}/>*/}
 
           {order?.note?.length > 0 && (
-            <BlockForm
-              themeStyle={'gray'}
-              title={'特記事項'}
-            >
-              <Typography>{order?.note}</Typography>
-            </BlockForm>
+            <div className={classes.infoBlock}>
+              <Typography
+                component='h3'
+                className={classes.infoBlockTitle}
+              >
+                {'特記事項'}
+              </Typography>
+
+              <div className={classes.infoBlockContent}>
+                <Typography component='p'>
+                  <span>{order?.note ?? ''}</span>
+                </Typography>
+              </div>
+            </div>
           )}
 
-          <OrderReview isReadonly={true}/>
+          <div className={classes.infoBlock}>
+            <Typography
+              component='h3'
+              className={classes.infoBlockTitle}
+            >
+              {'注文内容'}
+            </Typography>
+
+            <div className={classes.infoBlockContent}>
+              {cart.items?.map((item, index) => (
+                <OrderFormItem
+                  key={item.productDetail?.id}
+                  data={item}
+                  disabled={true}
+                  index={index}
+                  defaultNote={item.note}
+                />
+              ))}
+            </div>
+          </div>
+
+          <Divider/>
+
+          <div className={classes.calculatedBill}>
+            <div
+              className={classes.row}
+            >
+              <div>{'商品合計'}</div>
+
+              <b>{formatNumber(subTotal, 'currency')}</b>
+            </div>
+
+            <div
+              className={classes.row}
+            >
+              <div>{'送料合計'}</div>
+
+              <b>{formatNumber(shippingFee, 'currency')}</b>
+            </div>
+
+            <div
+              className={classes.row}
+            >
+              <div>
+                {'クーポン '}
+                {/*{isMobile ? <br/> : null}*/}
+              </div>
+              <b>{formatNumber(-(order?.discount ?? 0), 'currency')}</b>
+            </div>
+          </div>
+
+          <Divider/>
+
+          <div className={classes.calculatedBill}>
+            <div
+              className={classes.row}
+            >
+              <h3 style={{margin: '0'}}>{'決済金額'}</h3>
+
+              <h1 className={classes.total}>
+                {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
+              </h1>
+            </div>
+          </div>
 
           <div
             className={classes.row}

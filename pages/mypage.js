@@ -58,7 +58,7 @@ const buttonLinks = [
   {id: 4, label: '割引クーポン', url: '/'},
 
   // TODO: not implement yet
-  // {id: 5, label: 'お問い合わせ一覧', url: '/contact'},
+  {id: 5, label: 'お問い合わせ一覧', url: '/contacts'},
   {id: 6, label: 'フォロー中の出品者一覧', url: '/followed-seller-list'},
   {id: 7, label: '返品/交換申請', url: '/contact'},
   {id: 9, label: 'パスワードを変更', url: '/auth/change-password'},
