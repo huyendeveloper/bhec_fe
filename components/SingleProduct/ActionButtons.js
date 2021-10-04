@@ -1,19 +1,22 @@
 import {Box} from '@material-ui/core';
 import Image from 'next/image';
 import React, {useState} from 'react';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import {makeStyles} from '@material-ui/core/styles';
-
+import Swal from 'sweetalert2';
 import produce from 'immer';
-
 import {useRouter} from 'next/router';
 
 import Button from '../Button';
-
 import {AlertMessageForSection} from '..';
 
 import {cartState} from '~/store/cartState';
 import {productState} from '~/store/productState';
+import {userState} from '~/store/userState';
+import {loadingState} from '~/store/loadingState';
+import {ProductService} from '~/services';
+
+const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,9 +38,11 @@ const useStyles = makeStyles((theme) => ({
 const ActionButtons = () => {
   const classes = useStyles();
   const [cart, setCart] = useRecoilState(cartState);
-  const product = useRecoilValue(productState);
+  const [product, setProduct] = useRecoilState(productState);
   const [alerts, setAlerts] = useState(null);
   const router = useRouter();
+  const user = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
 
   const isOutStock = !(product?.productDetail?.quantity > 0);
 
@@ -90,6 +95,42 @@ const ActionButtons = () => {
     }
   };
 
+  const handleLikeProduct = async (likeStatus) => {
+    let isAuthenticated = user?.isAuthenticated;
+    if (isAuthenticated) {
+      setLoading(true);
+      const res = likeStatus ? await Product.likeProduct(product?.productDetail?.id) : await Product.unlikeProduct(product?.productDetail?.id);
+      if (res && (res?.message === 'You have unliked this product' || res?.message === 'You have liked this product')) {
+        const productDetail = {...product.productDetail, is_favorite_product: !product.productDetail.is_favorite_product};
+        setProduct((oldValue) => ({
+          ...oldValue,
+          productDetail,
+        }));
+      } else {
+        isAuthenticated = false;
+      }
+      setLoading(false);
+    }
+    if (!isAuthenticated) {
+      Swal.fire({
+        title: '登録・ログインが必要です。',
+        text: ' ',
+        showCancelButton: true,
+        reverseButtons: true,
+        cancelButtonText: '閉じる',
+        confirmButtonText: '登録・ログインへ',
+        backdrop: false,
+        customClass: {
+          container: 'swal2-warning',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/auth/login');
+        }
+      });
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Box
@@ -118,13 +159,23 @@ const ActionButtons = () => {
           customColor='whiteRed'
           customSize='medium'
           customBorder='bdRed'
-          startIcon={
+          onClick={() => handleLikeProduct(!product?.productDetail?.is_favorite_product)}
+          // eslint-disable-next-line
+          startIcon={product?.productDetail?.is_favorite_product ?
+            // eslint-disable-next-line
+            <Image
+              src={'/img/icons/heart_fill.svg'}
+              width={24}
+              height={24}
+              alt={'heart'}
+            /> :
             <Image
               src={'/img/icons/heart_line.svg'}
               width={24}
               height={24}
               alt={'heart'}
-            />}
+            />
+          }
         >
           {'お気に入り'}
         </Button>

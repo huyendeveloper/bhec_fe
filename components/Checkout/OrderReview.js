@@ -118,7 +118,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {`¥${formatNumber((subTotal + shippingFee) - order?.discount)}`}
+                  {`¥${formatNumber((subTotal + shippingFee) - (order?.discount || 0))}`}
                 </h1>
               </div>
             </div>

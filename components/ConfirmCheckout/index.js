@@ -175,7 +175,7 @@ const ConfirmCheckout = () => {
     }
 
     const result = await OrderService.createOrder(orderDetails);
-    if (result?.success) {
+    if (result?.order) {
       if (!user?.isAuthenticated) {
         // remove temporarily addresses, cards
         setUser({});
