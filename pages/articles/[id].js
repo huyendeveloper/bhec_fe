@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breadcrumbs: {
-    padding: '4rem 0 0',
+    padding: '2rem 0 0',
     [theme.breakpoints.down('sm')]: {
       padding: '2rem 0 0',
     },
@@ -166,7 +166,10 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
             md={12}
             lg={12}
           >
-            <Breadcrumbs linkProps={linkProps}/>
+            <Breadcrumbs
+              linkProps={linkProps}
+              margin='0'
+            />
           </Grid>
         </Grid>
       </Container>
