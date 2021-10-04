@@ -150,6 +150,7 @@ const ArchiveArticle = ({articles, pages}) => {
         title={'記事一覧'}
         bgImage={'/img/noise.png'}
         bgRepeat={'repeat'}
+        padding={'0'}
       >
 
         {articles?.length > 0 ? articles?.map((article) => (

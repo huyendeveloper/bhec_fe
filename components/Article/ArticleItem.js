@@ -6,7 +6,6 @@ import {useRouter} from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(4),
   },
   articleLabel: {
     fontSize: '1rem',
@@ -46,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.buttonLogin.default,
     marginTop: '1rem',
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0.75rem',
+    },
   },
 
   introduction: {
@@ -59,6 +61,12 @@ const useStyles = makeStyles((theme) => ({
   text: {
     textDecorationLine: 'underline',
     marginRight: '0.25rem',
+  },
+  articleRight: {
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '0.75rem',
+      paddingTop: '0 !important',
+    },
   },
 }));
 
@@ -78,6 +86,7 @@ const ArticleItem = ({item}) => {
     <Grid
       container={true}
       className={classes.root}
+      spacing={3}
     >
       <Grid
         item={true}
@@ -93,7 +102,7 @@ const ArticleItem = ({item}) => {
             width={364}
             height={208}
             alt={item?.title}
-            objectFit={item.image_url ? 'cover' : 'contain'}
+            objectFit={item.image_url ? 'fill' : 'contain'}
             onClick={() => toDetailPage(item?.id)}
           />
         </div>
@@ -104,6 +113,7 @@ const ArticleItem = ({item}) => {
         sm={8}
         md={8}
         key={`article-right-${item?.id}`}
+        className={classes.articleRight}
       >
         <div justifyContent='left'>
           <Typography
@@ -111,7 +121,7 @@ const ArticleItem = ({item}) => {
             className={classes.articleLabel}
             onClick={() => toDetailPage(item?.id)}
           >{item?.title}</Typography>
-          <div className={classes.chipList}>
+          {item.tags.length ? <div className={classes.chipList}>
             {item.tags?.map((tag) => {
               return (
                 <>
@@ -124,7 +134,7 @@ const ArticleItem = ({item}) => {
                 </>
               );
             })}
-          </div>
+          </div> : null }
           <div className={classes.introduction}>{item?.introduction}</div>
           <div
             className={classes.seeMore}
