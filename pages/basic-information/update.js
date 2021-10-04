@@ -1,33 +1,32 @@
 /* eslint-disable guard-for-in */
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import DateFnsUtils from '@date-io/date-fns';
+import {ErrorMessage} from '@hookform/error-message';
 import {
   Box, FormControl,
   FormControlLabel,
   Grid, NativeSelect,
   Radio,
-  RadioGroup,
-  TextField,
+  RadioGroup, Snackbar, TextField,
   useMediaQuery,
-  Snackbar,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import {ErrorMessage} from '@hookform/error-message';
-import {useForm, Controller} from 'react-hook-form';
-import DateFnsUtils from '@date-io/date-fns';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {
+  KeyboardDatePicker, MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 import {format as formatDate} from 'date-fns';
 import {ja as jaLocale} from 'date-fns/locale';
 import Router from 'next/router';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import PropTypes from 'prop-types';
+import React, {useEffect, useRef, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
-import React, {useState, useEffect} from 'react';
 
-import {loadingState} from '~/store/loadingState';
+import {Alert, Button, ContentBlock, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
-import {Alert, ContentBlock, Button, StyledForm} from '~/components';
+import {rules} from '~/lib/validator';
 import {AuthService, CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+
 const Auth = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
@@ -71,13 +70,35 @@ export default function BasicInformationUpdate() {
   const [listCity, setListCity] = useState([]);
   const [alerts, setAlerts] = useState(null);
   const setLoading = useSetRecoilState(loadingState);
+  const typingTimeoutRef = useRef(null);
 
   useEffect(() => {
     getDetailUser();
     getListCity();
   }, []);
+
   const {control, setValue, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleStopTypeZipcode = (e) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      fetchDataByZipcode(e.target.value);
+    }, 300);
+  };
+
+  const fetchDataByZipcode = async (zipcode) => {
+    if (zipcode.length !== 0) {
+      const {response} = await CommonService.getPrefectureByZipcode(zipcode);
+      if (response?.location) {
+        const province = listCity.find((item) => item.name === response?.location[0].prefecture);
+        setValue('province_id', province?.code);
+        setValue('city', response?.location[0].city);
+      }
+    }
+  };
 
   const getDetailUser = async () => {
     setLoading(true);
@@ -93,7 +114,10 @@ export default function BasicInformationUpdate() {
   const getListCity = async () => {
     const res = await CommonService.getPrefectures();
     if (res && res.length) {
-      setListCity(res);
+      setListCity([{
+        id: 1,
+        name: '都道府県',
+      }, ...res]);
     }
   };
 
@@ -135,7 +159,7 @@ export default function BasicInformationUpdate() {
 
             <Box
               m={'0 auto'}
-              width={isTablet ? '100%' : '48rem'}
+              width={isTablet ? '100%' : '58rem'}
             >
               <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 <MuiPickersUtilsProvider
@@ -213,7 +237,7 @@ export default function BasicInformationUpdate() {
                               <TextField
                                 id='name'
                                 variant='outlined'
-                                label='はな'
+                                label='氏名'
                                 error={Boolean(errors.name)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
@@ -400,31 +424,91 @@ export default function BasicInformationUpdate() {
                             htmlFor='zipcode'
                             className='formControlLabel'
                           >
-                            {'郵便番号 （半角数字でご入力ください。）'}
+                            {'郵便番号（半角数字、 ハイフン（-） なしでご入力ください。）'}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='zipcode'
                             control={control}
                             defaultValue=''
-                            rules={{required: '必須項目です。'}}
+                            rules={{required: rules.required}}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='zipcode'
                                 variant='outlined'
-                                label='はな'
+                                label='郵便番号'
                                 error={Boolean(errors.zipcode)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
+                                type={'number'}
                                 value={value}
                                 inputRef={ref}
-                                onChange={onChange}
+                                onChange={(e) => {
+                                  onChange(e);
+                                  handleStopTypeZipcode(e);
+                                }}
                               />
                             )}
                           />
                           <ErrorMessage
                             errors={errors}
                             name='zipcode'
+                            render={({messages}) => {
+                              return messages ? Object.entries(messages).map(([type, message]) => (
+                                <p
+                                  className='inputErrorText'
+                                  key={type}
+                                >{`${message}`}</p>
+                              )) : null;
+                            }}
+                          />
+                        </Grid>
+
+                        <Grid
+                          item={true}
+                          xs={12}
+                          md={6}
+                        >
+                          <label
+                            htmlFor='province_id'
+                            className='formControlLabel'
+                          >
+                            {'都道府県 '}
+                            <span className='formControlRequired'>{'*'}</span>
+                          </label>
+                          <Controller
+                            name='province_id'
+                            control={control}
+                            defaultValue={1}
+                            rules={{
+                              validate: {
+                                matchesPreviousPassword: (value) => {
+                                  return value > 1 || '必須項目です。';
+                                },
+                              },
+                            }}
+                            render={({field: {name, value, ref, onChange}}) => (
+                              <FormControl>
+                                <NativeSelect
+                                  className={errors.province_id ? 'selectBoxError' : ''}
+                                  name={name}
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                >
+                                  {listCity.map((c, index) => (
+                                    <option
+                                      key={String(index)}
+                                      value={c.id}
+                                    >{c.name}</option>
+                                  ))}
+                                </NativeSelect>
+                              </FormControl>
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name='province_id'
                             render={({messages}) => {
                               return messages ? Object.entries(messages).map(([type, message]) => (
                                 <p
@@ -445,72 +529,22 @@ export default function BasicInformationUpdate() {
                             htmlFor='city'
                             className='formControlLabel'
                           >
-                            {'都道府県 '}
+                            {'市区町村（全角でご入力ください。) '}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='city'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <FormControl>
-                                <NativeSelect
-                                  className={errors.city ? 'selectBoxError' : ''}
-                                  name={name}
-                                  value={value}
-                                  inputRef={ref}
-                                  onChange={onChange}
-                                >
-                                  {listCity.map((c, index) => (
-                                    <option
-                                      key={String(index)}
-                                      value={c.id}
-                                    >{c.name}</option>
-                                  ))}
-                                </NativeSelect>
-                              </FormControl>
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='city'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item={true}
-                          xs={12}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='district'
-                            className='formControlLabel'
-                          >
-                            {'市区町村 '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='district'
                             control={control}
                             defaultValue=''
                             rules={{required: '必須項目です。'}}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
-                                id='district'
+                                id='city'
                                 variant='outlined'
-                                error={Boolean(errors.district)}
+                                error={Boolean(errors.city)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
-                                label='渋谷区渋谷'
+                                label='市区町村'
                                 value={value}
                                 inputRef={ref}
                                 onChange={onChange}
@@ -519,7 +553,7 @@ export default function BasicInformationUpdate() {
                           />
                           <ErrorMessage
                             errors={errors}
-                            name='district'
+                            name='city'
                             render={({messages}) => {
                               return messages ? Object.entries(messages).map(([type, message]) => (
                                 <p
@@ -539,7 +573,7 @@ export default function BasicInformationUpdate() {
                             htmlFor='office_room'
                             className='formControlLabel'
                           >
-                            {'番地・マンション名 '}
+                            {'番地・建物名 (全角でご入力ください。) '}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
@@ -554,7 +588,7 @@ export default function BasicInformationUpdate() {
                                 error={Boolean(errors.office_room)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
-                                label=' 1-2-3 渋谷マンション101号室'
+                                label='番地・建物名'
                                 value={value}
                                 inputRef={ref}
                                 onChange={onChange}
@@ -583,14 +617,17 @@ export default function BasicInformationUpdate() {
                             htmlFor='phone_no'
                             className='formControlLabel'
                           >
-                            {'電話番号（配送時にご連絡させていただく事があります。） '}
+                            {'電話番号（半角数字、ハイフン（-） なしでご入力ください。）'}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='phone_no'
                             control={control}
                             defaultValue=''
-                            rules={{required: '必須項目です。'}}
+                            rules={{
+                              required: rules.required,
+                              pattern: rules.isPhoneNumber,
+                            }}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='phone_no'
@@ -598,9 +635,10 @@ export default function BasicInformationUpdate() {
                                 error={Boolean(errors.phone_no)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
-                                label='0123456708'
+                                label='電話番号'
                                 value={value}
                                 inputRef={ref}
+                                type='number'
                                 onChange={onChange}
                               />
                             )}

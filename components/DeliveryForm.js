@@ -2,7 +2,7 @@ import {Box, FormControl, Grid, makeStyles, NativeSelect, TextField, useMediaQue
 import {useTheme} from '@material-ui/core/styles';
 import {nanoid} from 'nanoid';
 import PropTypes from 'prop-types';
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
 import clsx from 'clsx';
@@ -41,18 +41,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
-  const [prefectures, setPrefectures] = useState([]);
+  const [prefectures, setPrefectures] = React.useState([]);
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const setLoading = useSetRecoilState(loadingState);
-  const typingTimeoutRef = useRef(null);
+  const typingTimeoutRef = React.useRef(null);
 
   const {
     control,
     handleSubmit,
     formState: {errors},
-    getValues,
     setValue,
     reset,
   } = useForm({criteriaMode: 'all', defaultValues});
@@ -69,7 +68,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
     setLoading(false);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchPrefectures();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -92,9 +91,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
   };
 
   const fetchDataByZipcode = async (zipcode) => {
-    const {city, province_id} = getValues();
-    // eslint-disable-next-line no-underscore-dangle
-    if (city === '' && province_id === 1 && zipcode.length !== 0) {
+    if (zipcode.length !== 0) {
       const {response} = await CommonService.getPrefectureByZipcode(zipcode);
       if (response?.location) {
         const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
@@ -190,6 +187,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
+                          type={'number'}
                           onChange={(e) => {
                             onChange(e);
                             handleStopTypeZipcode(e);
@@ -308,7 +306,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='address'
                       className='formControlLabel'
                     >
-                      {'番地・建物名 (全角でご入力ください。)'}
+                      {'番地・建物名 (全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
@@ -429,6 +427,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
+                          type='number'
                           onChange={onChange}
                         />
                       )}
