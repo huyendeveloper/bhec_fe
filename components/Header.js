@@ -316,7 +316,7 @@ const Header = (props) => {
                   </div>
                 </a>
               </Link>}
-              <Link href={'/contact'}>
+              <Link href={'/contacts/send-contact'}>
                 <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
                     <Image
@@ -384,7 +384,7 @@ const Header = (props) => {
                   </div>
                 </a>
               </Link>}
-              <Link href={'/contact'}>
+              <Link href={'/contacts/send-contact'}>
                 <a className={classes.linkPersonal}>
                   <div className={classes.personalItem} >
                     <Image
