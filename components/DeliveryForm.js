@@ -13,6 +13,7 @@ import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {isFullWidth} from '~/lib/text';
 import {ErrorMessageWidget} from '~/components/Widgets';
+import {isInteger} from '~/lib/number';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -187,10 +188,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
-                          type={'number'}
                           onChange={(e) => {
-                            onChange(e);
-                            handleStopTypeZipcode(e);
+                            if (isInteger(e.target.value)) {
+                              onChange(e);
+                              handleStopTypeZipcode(e);
+                            }
                           }}
                         />
                       )}
@@ -427,8 +429,11 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                           name={name}
                           value={value}
                           inputRef={ref}
-                          type='number'
-                          onChange={onChange}
+                          onChange={(e) => {
+                            if (isInteger(e.target.value)) {
+                              onChange(e);
+                            }
+                          }}
                         />
                       )}
                     />

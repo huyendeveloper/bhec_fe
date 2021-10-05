@@ -26,6 +26,7 @@ import {useSetRecoilState} from 'recoil';
 import {Button, ContentBlock, SellerFormComplete, SellerFormConfirmations, StyledForm, StyledSteppers} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ErrorMessageWidget, TopBannerWidget} from '~/components/Widgets';
+import {isInteger} from '~/lib/number';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
@@ -188,7 +189,7 @@ export default function SellerForm() {
           render={({field}) => (
             <TextField
               id='other_name_kana'
-              label='⽒⽒⽒名カナを入力してください'
+              label='⽒名カナ'
               variant='outlined'
               InputLabelProps={{shrink: false}}
               {...field}
@@ -229,8 +230,11 @@ export default function SellerForm() {
               name={name}
               value={value}
               inputRef={ref}
-              type='number'
-              onChange={onChange}
+              onChange={(e) => {
+                if (isInteger(e.target.value)) {
+                  onChange(e);
+                }
+              }}
             />
           )}
         />
@@ -269,6 +273,7 @@ export default function SellerForm() {
             <TextField
               id='other_email'
               variant='outlined'
+              label='メールアドレス'
               error={Boolean(errors.other_email)}
               InputLabelProps={{shrink: false}}
               name={name}
@@ -402,7 +407,7 @@ export default function SellerForm() {
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name_kana'
-                              label='⽒名カナを入力してください'
+                              label='氏名カナ'
                               variant='outlined'
                               error={Boolean(errors.name_kana)}
                               InputLabelProps={{shrink: false}}
@@ -475,7 +480,7 @@ export default function SellerForm() {
                           htmlFor='gender'
                           className='formControlLabel'
                         >
-                          {'⽒名カナ '}
+                          {'性別 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
@@ -553,6 +558,7 @@ export default function SellerForm() {
                             <TextField
                               id='company_name'
                               variant='outlined'
+                              label='事業者名'
                               error={Boolean(errors.company_name)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -590,6 +596,7 @@ export default function SellerForm() {
                             <TextField
                               id='company_address'
                               variant='outlined'
+                              label='事業者住所'
                               error={Boolean(errors.company_address)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -634,11 +641,12 @@ export default function SellerForm() {
                               value={value}
                               label={'郵便番号'}
                               inputRef={ref}
-                              type='number'
                               className={classes.zipcodeInput}
                               onChange={(e) => {
-                                onChange(e);
-                                handleStopTypeZipcode(e);
+                                if (isInteger(e.target.value)) {
+                                  onChange(e);
+                                  handleStopTypeZipcode(e);
+                                }
                               }}
                             />
                           )}
@@ -810,13 +818,16 @@ export default function SellerForm() {
                               id='phone_no'
                               variant='outlined'
                               label={'電話番号'}
-                              type='number'
                               error={Boolean(errors.phone_no)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
                               inputRef={ref}
-                              onChange={onChange}
+                              onChange={(e) => {
+                                if (isInteger(e.target.value)) {
+                                  onChange(e);
+                                }
+                              }}
                             />
                           )}
                         />
@@ -855,6 +866,7 @@ export default function SellerForm() {
                             <TextField
                               id='email'
                               variant='outlined'
+                              label='メールアドレス'
                               error={Boolean(errors.email)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -897,6 +909,7 @@ export default function SellerForm() {
                             <TextField
                               id='url_homepage'
                               variant='outlined'
+                              label='⽣産者ホームページURL'
                               error={Boolean(errors.url_homepage)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -933,6 +946,7 @@ export default function SellerForm() {
                             <TextField
                               id='express_delivery'
                               variant='outlined'
+                              label='ご利⽤予定の運送会社'
                               InputLabelProps={{shrink: false}}
                               {...field}
                             />

@@ -23,6 +23,7 @@ import {useSetRecoilState} from 'recoil';
 
 import {Alert, Button, ContentBlock, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {isInteger} from '~/lib/number';
 import {rules} from '~/lib/validator';
 import {AuthService, CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
@@ -192,7 +193,7 @@ export default function BasicInformationUpdate() {
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='nickname'
-                                label='はな'
+                                label='ニックネーム'
                                 variant='outlined'
                                 error={Boolean(errors.nickname)}
                                 InputLabelProps={{shrink: false}}
@@ -270,7 +271,7 @@ export default function BasicInformationUpdate() {
                             htmlFor='name_kana'
                             className='formControlLabel'
                           >
-                            {'ひらがな '}
+                            {'氏名カナ '}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
@@ -282,7 +283,7 @@ export default function BasicInformationUpdate() {
                               <TextField
                                 id='name_kana'
                                 variant='outlined'
-                                label='はな'
+                                label='氏名カナ'
                                 error={Boolean(errors.name_kana)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
@@ -440,12 +441,13 @@ export default function BasicInformationUpdate() {
                                 error={Boolean(errors.zipcode)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
-                                type={'number'}
                                 value={value}
                                 inputRef={ref}
                                 onChange={(e) => {
-                                  onChange(e);
-                                  handleStopTypeZipcode(e);
+                                  if (isInteger(e.target.value)) {
+                                    onChange(e);
+                                    handleStopTypeZipcode(e);
+                                  }
                                 }}
                               />
                             )}
@@ -638,8 +640,11 @@ export default function BasicInformationUpdate() {
                                 label='電話番号'
                                 value={value}
                                 inputRef={ref}
-                                type='number'
-                                onChange={onChange}
+                                onChange={(e) => {
+                                  if (isInteger(e.target.value)) {
+                                    onChange(e);
+                                  }
+                                }}
                               />
                             )}
                           />
