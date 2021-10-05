@@ -93,7 +93,7 @@ export default function SellerForm() {
       const {response} = await CommonService.getPrefectureByZipcode(zipcode);
       if (response?.location) {
         const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
-        setValue('province_id', province?.code);
+        setValue('province_id', province?.id);
         setValue('city', response?.location[0].city);
       }
     }
