@@ -1,8 +1,6 @@
 import {api} from '~/lib/api';
 
 const parserError = (errors) => {
-  // eslint-disable-next-line no-console
-  console.log('errror', errors);
   return errors[0].message.
     split('\n').
     map((error, i) => <div key={`err-${String(i)}`}>{error}</div>);

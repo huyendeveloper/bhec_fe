@@ -1,5 +1,6 @@
 import {api} from '~/lib/api';
 import {clean} from '~/lib/object';
+import {errorMessage} from '~/constants';
 
 const OrderService = {
   createOrder,
@@ -17,9 +18,10 @@ const parserError = (errors) => {
 };
 
 async function createOrder(payload) {
-  const [data, errors] = await api.post('/orders', payload);
-  if (errors.length) {
-    return parserError(errors);
+  const [data, , , error_code] = await api.post('/orders', payload);
+  if (error_code) {
+    const message = errorMessage.find((item) => item.code === error_code)?.message;
+    return message;
   }
   return data;
 }

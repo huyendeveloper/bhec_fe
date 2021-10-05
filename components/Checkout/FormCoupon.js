@@ -211,7 +211,7 @@ const FormCoupon = () => {
 
               <Button
                 variant='contained'
-                type='submit'
+                type='button'
                 size='large'
                 className={classes.btnApply}
                 onClick={() => handleCheckCoupon(getValues('couponCode'))}
