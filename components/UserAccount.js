@@ -1,6 +1,5 @@
 import {Avatar, Badge, Input} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import CreateIcon from '@material-ui/icons/Create';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import {useRouter} from 'next/router';
 import {useEffect, useState} from 'react';
@@ -180,10 +179,6 @@ const UserAccount = () => {
         ) : (
           <>
             {username}
-            <CreateIcon
-              onClick={handleUpdateStatus}
-              className={classes.editIcon}
-            />
           </>)}
       </div>
     </div>

@@ -274,32 +274,36 @@ const SellerInfo = ({getDetailProduct}) => {
             </Box>
           </Grid>
 
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-            className={classes.introduction}
-          >
-            <Box
-              component='div'
-              dangerouslySetInnerHTML={{__html: `${sellerInfo.introduction}`}}
-            />
-          </Grid>
+          {sellerInfo.introduction &&
+            <Grid
+              item={true}
+              xs={12}
+              md={12}
+              className={classes.introduction}
+            >
+              <Box
+                component='div'
+                dangerouslySetInnerHTML={{__html: `${sellerInfo.introduction}`}}
+              />
+            </Grid>
+          }
         </Grid>
 
         {/* This get from API editor */}
         <div className={classes.sellerPost}>
           <Typography variant={'h5'}>{'生産者のこだわり'}</Typography>
         </div>
-        <Grid
-          container={true}
-          className={classes.description}
-        >
-          <Box
-            component='div'
-            dangerouslySetInnerHTML={{__html: `${sellerInfo.description}`}}
-          />
-        </Grid>
+        {sellerInfo.description &&
+          <Grid
+            container={true}
+            className={classes.description}
+          >
+            <Box
+              component='div'
+              dangerouslySetInnerHTML={{__html: `${sellerInfo.description}`}}
+            />
+          </Grid>
+        }
       </Container>
 
       {product?.sellerProduct?.length > 0 && (
