@@ -279,6 +279,11 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
     }
   };
 
+  const goToGuideCard = () => {
+    const linkGuideCard = 'https://www.cr.mufg.jp/mycard/relief/20111/index.html';
+    window.open(linkGuideCard, '_blank');
+  };
+
   return (
     <>
       <Dialog
@@ -512,7 +517,10 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                     md={4}
                     className={classes.gridNote}
                   >
-                    <span className={classes.note}>{'セキュリティーコードとは'}</span>
+                    <span
+                      className={classes.note}
+                      onClick={goToGuideCard}
+                    >{'セキュリティーコードとは'}</span>
                     <Image
                       src={'/ic-question.png'}
                       width={14}
