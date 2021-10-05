@@ -1,39 +1,35 @@
-/* eslint-disable max-lines */
 /* eslint-disable no-useless-escape */
-import 'date-fns';
-import {useTheme} from '@material-ui/core/styles';
-import Image from 'next/image';
-
+import DateFnsUtils from '@date-io/date-fns';
 import {
   Box, Checkbox, CircularProgress, FormControl,
   FormControlLabel,
-  Grid, Icon, NativeSelect,
+  Grid, Icon, makeStyles, NativeSelect,
   Radio,
   RadioGroup,
   TextField,
   useMediaQuery,
 } from '@material-ui/core';
+import {useTheme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {ErrorMessage} from '@hookform/error-message';
-import {useForm, Controller} from 'react-hook-form';
-import DateFnsUtils from '@date-io/date-fns';
-import jaLocale from 'date-fns/locale/ja';
-
-import ImageUploading from 'react-images-uploading';
-
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  KeyboardDatePicker, MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-
-import React, {useState} from 'react';
-
+import 'date-fns';
+import jaLocale from 'date-fns/locale/ja';
 import moment from 'moment';
+import Image from 'next/image';
+import React, {useRef, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import ImageUploading from 'react-images-uploading';
+import {useSetRecoilState} from 'recoil';
 
-import {ContentBlock, Button, StyledForm, StyledSteppers, SellerFormConfirmations, SellerFormComplete} from '~/components';
-import {TopBannerWidget} from '~/components/Widgets';
-import {prefectures} from '~/constants';
+import {Button, ContentBlock, SellerFormComplete, SellerFormConfirmations, StyledForm, StyledSteppers} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {ErrorMessageWidget, TopBannerWidget} from '~/components/Widgets';
+import {isInteger} from '~/lib/number';
+import {rules} from '~/lib/validator';
+import {CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
 
 const REGISTER_STEPS = [
   '内容を入力',
@@ -41,8 +37,14 @@ const REGISTER_STEPS = [
   '送信完了',
 ];
 
+const useStyles = makeStyles(() => ({
+  root: {
+  },
+}));
+
 export default function SellerForm() {
   const theme = useTheme();
+  const classes = useStyles();
 
   const {
     control,
@@ -59,8 +61,48 @@ export default function SellerForm() {
   const [loading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const [prefectures, setPrefectures] = useState([]);
+  const setLoading = useSetRecoilState(loadingState);
+  const typingTimeoutRef = useRef(null);
 
   const maxNumber = 3;
+
+  const fetchPrefectures = async () => {
+    setLoading(true);
+    const res = await CommonService.getPrefectures();
+    if (res && res[0]?.name) {
+      setPrefectures([{
+        id: 1,
+        name: '都道府県',
+      }, ...res]);
+    }
+    setLoading(false);
+  };
+
+  const handleStopTypeZipcode = (e) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      fetchDataByZipcode(e.target.value);
+    }, 300);
+  };
+
+  const fetchDataByZipcode = async (zipcode) => {
+    if (zipcode.length !== 0) {
+      const {response} = await CommonService.getPrefectureByZipcode(zipcode);
+      if (response?.location) {
+        const province = prefectures.find((item) => item.name === response?.location[0].prefecture);
+        setValue('province_id', province?.id);
+        setValue('city', response?.location[0].city);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    fetchPrefectures();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onProductImagesChange = (imageList) => {
     const imageDataUrls = [];
@@ -118,7 +160,7 @@ export default function SellerForm() {
           render={({field}) => (
             <TextField
               id='other_name'
-              label='⽒⽒名を入力してください'
+              label='⽒名'
               variant='outlined'
               InputLabelProps={{shrink: false}}
               {...field}
@@ -147,7 +189,7 @@ export default function SellerForm() {
           render={({field}) => (
             <TextField
               id='other_name_kana'
-              label='⽒⽒⽒名カナを入力してください'
+              label='⽒名カナ'
               variant='outlined'
               InputLabelProps={{shrink: false}}
               {...field}
@@ -175,40 +217,30 @@ export default function SellerForm() {
           control={control}
           defaultValue=''
           rules={{
-            required: '必須項目です。',
-            pattern: {
-              value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-              message: '無効な電話番号。',
-            },
+            required: rules.required,
+            pattern: rules.isPhoneNumber,
           }}
           render={({field: {name, value, ref, onChange}}) => (
             <TextField
               id='other_phone'
               variant='outlined'
-              label={'0000 - 000 - 0000'}
+              label={'電話番号'}
               error={Boolean(errors.other_phone)}
               InputLabelProps={{shrink: false}}
               name={name}
               value={value}
               inputRef={ref}
-              onChange={onChange}
+              onChange={(e) => {
+                if (isInteger(e.target.value)) {
+                  onChange(e);
+                }
+              }}
             />
           )}
         />
-        <ErrorMessage
+        <ErrorMessageWidget
           errors={errors}
           name='other_phone'
-          render={({messages}) => {
-            return messages ? Object.entries(messages).map(([type, message]) => (
-              <p
-                className='inputErrorText'
-                key={type}
-              >
-                <Icon>{'warning_amber'}</Icon>
-                {message}
-              </p>
-            )) : null;
-          }}
         />
       </Grid>
       {/* END DEPUTY PHONE NUMBER */}
@@ -241,6 +273,7 @@ export default function SellerForm() {
             <TextField
               id='other_email'
               variant='outlined'
+              label='メールアドレス'
               error={Boolean(errors.other_email)}
               InputLabelProps={{shrink: false}}
               name={name}
@@ -250,20 +283,9 @@ export default function SellerForm() {
             />
           )}
         />
-        <ErrorMessage
+        <ErrorMessageWidget
           errors={errors}
           name='other_email'
-          render={({messages}) => {
-            return messages ? Object.entries(messages).map(([type, message]) => (
-              <p
-                className='inputErrorText'
-                key={type}
-              >
-                <Icon>{'warning_amber'}</Icon>
-                {message}
-              </p>
-            )) : null;
-          }}
         />
       </Grid>
       {/* END DEPUTY EMAIL */}
@@ -290,7 +312,7 @@ export default function SellerForm() {
 
         <Box
           m={'0 auto'}
-          width={isTablet ? '100%' : '48rem'}
+          width={isTablet ? '100%' : '58rem'}
         >
           <StyledSteppers
             activeStep={activeStep}
@@ -335,7 +357,7 @@ export default function SellerForm() {
                           htmlFor='name'
                           className='formControlLabel'
                         >
-                          {'⽒名 '}
+                          {'氏名 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
@@ -346,7 +368,7 @@ export default function SellerForm() {
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name'
-                              label='⽒名を入力してください'
+                              label='氏名'
                               variant='outlined'
                               error={Boolean(errors.name)}
                               InputLabelProps={{shrink: false}}
@@ -357,20 +379,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='name'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END NAME*/}
@@ -396,7 +407,7 @@ export default function SellerForm() {
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='name_kana'
-                              label='⽒名カナを入力してください'
+                              label='氏名カナ'
                               variant='outlined'
                               error={Boolean(errors.name_kana)}
                               InputLabelProps={{shrink: false}}
@@ -407,20 +418,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='name_kana'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END NAME KANA*/}
@@ -463,20 +463,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='dob'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END BIRTHDAY*/}
@@ -491,7 +480,7 @@ export default function SellerForm() {
                           htmlFor='gender'
                           className='formControlLabel'
                         >
-                          {'⽒名カナ '}
+                          {'性別 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
@@ -569,6 +558,7 @@ export default function SellerForm() {
                             <TextField
                               id='company_name'
                               variant='outlined'
+                              label='事業者名'
                               error={Boolean(errors.company_name)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -578,20 +568,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='company_name'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END STORE NAME*/}
@@ -617,6 +596,7 @@ export default function SellerForm() {
                             <TextField
                               id='company_address'
                               variant='outlined'
+                              label='事業者住所'
                               error={Boolean(errors.company_address)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -626,20 +606,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='company_address'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END STORE ADDRESS*/}
@@ -648,20 +617,20 @@ export default function SellerForm() {
                       <Grid
                         item={true}
                         xs={12}
-                        sm={3}
+                        sm={12}
                       >
                         <label
                           htmlFor='zipcode'
                           className='formControlLabel'
                         >
-                          {'郵便番号 '}
+                          {'郵便番号（半角数字、 ハイフン（-） なしでご入力ください。）'}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
                           name='zipcode'
                           control={control}
-                          defaultValue='10000'
-                          rules={{required: '必須項目です。'}}
+                          defaultValue=''
+                          rules={{required: rules.required}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='zipcode'
@@ -670,25 +639,21 @@ export default function SellerForm() {
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
+                              label={'郵便番号'}
                               inputRef={ref}
-                              onChange={onChange}
+                              className={classes.zipcodeInput}
+                              onChange={(e) => {
+                                if (isInteger(e.target.value)) {
+                                  onChange(e);
+                                  handleStopTypeZipcode(e);
+                                }
+                              }}
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='zipcode'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END POSTAL CODE*/}
@@ -707,50 +672,45 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='city'
+                          htmlFor='province_id'
                           className='formControlLabel'
                         >
                           {'都道府県 '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='city'
+                          name='province_id'
                           control={control}
-                          defaultValue=''
-                          rules={{required: '必須項目です。'}}
+                          defaultValue={1}
+                          rules={{
+                            validate: {
+                              matchesPreviousPassword: (value) => {
+                                return value > 1 || '必須項目です。';
+                              },
+                            },
+                          }}
                           render={({field: {name, value, ref, onChange}}) => (
                             <FormControl>
                               <NativeSelect
-                                className={errors.city ? 'selectBoxError' : ''}
+                                className={errors.province_id ? 'selectBoxError' : ''}
                                 name={name}
                                 value={value}
                                 inputRef={ref}
                                 onChange={onChange}
                               >
-                                {prefectures.map((pref, index) => (
+                                {prefectures.map((pref) => (
                                   <option
-                                    key={String(index)}
-                                    value={pref.value}
-                                  >{pref.label}</option>
+                                    key={pref.id}
+                                    value={pref.id}
+                                  >{pref.name}</option>
                                 ))}
                               </NativeSelect>
                             </FormControl>
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
-                          name='city'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
+                          name='province_id'
                         />
                       </Grid>
                       {/*END PROVINCE*/}
@@ -762,22 +722,23 @@ export default function SellerForm() {
                         md={6}
                       >
                         <label
-                          htmlFor='district'
+                          htmlFor='city'
                           className='formControlLabel'
                         >
-                          {'市区郡 '}
+                          {'市区町村（全角でご入力ください。) '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
-                          name='district'
+                          name='city'
                           control={control}
                           defaultValue=''
                           rules={{required: '必須項目です。'}}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
-                              id='district'
+                              id='city'
+                              label='市区町村'
                               variant='outlined'
-                              error={Boolean(errors.district)}
+                              error={Boolean(errors.city)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
@@ -786,20 +747,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
-                          name='district'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
+                          name='city'
                         />
                       </Grid>
                       {/*END DISTRICT*/}
@@ -813,7 +763,7 @@ export default function SellerForm() {
                           htmlFor='ward'
                           className='formControlLabel'
                         >
-                          {'町村番地 '}
+                          {'番地・建物名 (全角でご入力ください。) '}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
@@ -824,6 +774,7 @@ export default function SellerForm() {
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='ward'
+                              label='番地・建物名'
                               variant='outlined'
                               error={Boolean(errors.ward)}
                               InputLabelProps={{shrink: false}}
@@ -834,51 +785,12 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='ward'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END TOWN*/}
-
-                      {/*ADDRESS DETAIL*/}
-                      <Grid
-                        item={true}
-                        xs={12}
-                        md={6}
-                      >
-                        <label
-                          htmlFor='office_room'
-                          className='formControlLabel'
-                        >
-                          {'建物名・部屋番号'}
-                        </label>
-                        <Controller
-                          name='office_room'
-                          control={control}
-                          defaultValue=''
-                          render={({field}) => (
-                            <TextField
-                              id='office_room'
-                              variant='outlined'
-                              InputLabelProps={{shrink: false}}
-                              {...field}
-                            />
-                          )}
-                        />
-                      </Grid>
-                      {/*END ADDRESS DETAIL*/}
 
                       {/*PHONE NUMBER*/}
                       <Grid
@@ -890,7 +802,7 @@ export default function SellerForm() {
                           htmlFor='phone_no'
                           className='formControlLabel'
                         >
-                          {'電話番号 '}
+                          {'電話番号（半角数字、ハイフン（-） なしでご入力ください。）'}
                           <span className='formControlRequired'>{'*'}</span>
                         </label>
                         <Controller
@@ -898,40 +810,30 @@ export default function SellerForm() {
                           control={control}
                           defaultValue=''
                           rules={{
-                            required: '必須項目です。',
-                            pattern: {
-                              value: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-                              message: '無効な電話番号。',
-                            },
+                            required: rules.required,
+                            pattern: rules.isPhoneNumber,
                           }}
                           render={({field: {name, value, ref, onChange}}) => (
                             <TextField
                               id='phone_no'
                               variant='outlined'
-                              label={'0000 - 000 - 0000'}
+                              label={'電話番号'}
                               error={Boolean(errors.phone_no)}
                               InputLabelProps={{shrink: false}}
                               name={name}
                               value={value}
                               inputRef={ref}
-                              onChange={onChange}
+                              onChange={(e) => {
+                                if (isInteger(e.target.value)) {
+                                  onChange(e);
+                                }
+                              }}
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='phone_no'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END PHONE NUMBER*/}
@@ -964,6 +866,7 @@ export default function SellerForm() {
                             <TextField
                               id='email'
                               variant='outlined'
+                              label='メールアドレス'
                               error={Boolean(errors.email)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -973,20 +876,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='email'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END EMAIL*/}
@@ -1017,6 +909,7 @@ export default function SellerForm() {
                             <TextField
                               id='url_homepage'
                               variant='outlined'
+                              label='⽣産者ホームページURL'
                               error={Boolean(errors.url_homepage)}
                               InputLabelProps={{shrink: false}}
                               name={name}
@@ -1026,20 +919,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='url_homepage'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END WEB URL*/}
@@ -1064,6 +946,7 @@ export default function SellerForm() {
                             <TextField
                               id='express_delivery'
                               variant='outlined'
+                              label='ご利⽤予定の運送会社'
                               InputLabelProps={{shrink: false}}
                               {...field}
                             />
@@ -1164,20 +1047,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='product_sell'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END EXHIBITED PRODUCTS*/}
@@ -1221,20 +1093,9 @@ export default function SellerForm() {
                             />
                           )}
                         />
-                        <ErrorMessage
+                        <ErrorMessageWidget
                           errors={errors}
                           name='time_sell'
-                          render={({messages}) => {
-                            return messages ? Object.entries(messages).map(([type, message]) => (
-                              <p
-                                className='inputErrorText'
-                                key={type}
-                              >
-                                <Icon>{'warning_amber'}</Icon>
-                                {message}
-                              </p>
-                            )) : null;
-                          }}
                         />
                       </Grid>
                       {/*END EXHIBITED DATE*/}

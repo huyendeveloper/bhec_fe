@@ -18,6 +18,13 @@ import {productState} from '~/store/productState';
 const Quantity = () => {
   const [product, setProduct] = useRecoilState(productState);
 
+  React.useEffect(() => {
+    setProduct((oldValue) => ({
+      ...oldValue,
+      quantity: 1,
+    }));
+  }, []);
+
   const handleQuantityChange = (event) => {
     setProduct((oldValue) => ({
       ...oldValue,
@@ -40,13 +47,14 @@ const Quantity = () => {
                 {'数量'}
               </TableCell>
               <TableCell align='left'>
-                {product?.productDetail?.quantity > 0 ? (
+                {(product?.productDetail?.quantity > 0 && product?.productDetail?.maximum_quantity) ? (
                   <QuantityBox
                     name={'productQuantity'}
                     value={product?.quantity ?? 0}
                     maximum_quantity={product?.productDetail?.maximum_quantity}
                     quantity={product?.productDetail?.quantity}
                     handleChange={handleQuantityChange}
+                    defaultValue={1}
                     width={'170px'}
                     height={'40px'}
                   />
