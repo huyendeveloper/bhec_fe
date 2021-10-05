@@ -388,8 +388,6 @@ const Login = () => {
 
   const responseGoogle = async (response) => {
     setLoading(true);
-    // eslint-disable-next-line no-console
-    console.log(response);
     if (response.tokenId) {
       const res = await Auth.loginBySNS({
         type: 'gg',

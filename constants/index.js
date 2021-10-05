@@ -1,4 +1,5 @@
 export {default as contactType} from './contactType';
+export {default as errorMessage} from './errorMessage';
 export {default as genders} from './genders';
 export {default as httpStatus} from './httpStatus';
 export {default as order} from './order';
