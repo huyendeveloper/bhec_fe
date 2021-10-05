@@ -159,6 +159,7 @@ const SellerWidget = ({variant, data, reload}) => {
           className={clsx(classes.bgImg, seller.avatar_url ? '' : classes.noImg)}
           image={seller.avatar_url ?? '/logo.png'}
           title={seller.name}
+          onClick={goToDetailSeller}
         />
       </CardActionArea>
       <CardContent>
