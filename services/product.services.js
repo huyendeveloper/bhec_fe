@@ -60,6 +60,14 @@ export default class ProductService {
     return data;
   }
 
+  async getSpecialTags() {
+    const [data, errors] = await api.get('/tags/ten_outstanding_tag');
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
   async getCategories() {
     const [data, errors] = await api.get('/categories');
     if (errors.length) {

@@ -204,7 +204,7 @@ const Search = ({query = {}}) => {
   };
 
   const getTags = async () => {
-    const result = await Product.getTags();
+    const result = await Product.getSpecialTags();
     let res = [];
     if (result?.tags) {
       setTags(result.tags);
@@ -436,7 +436,7 @@ const Search = ({query = {}}) => {
                       <Grid
                         item={true}
                         key={tag.name}
-                        style={{marginBottom: '1rem', padding: '10px'}}
+                        style={{marginBottom: '1rem', padding: '8px'}}
                       >
                         <span
                           className={clsx(classes.tagLabel, isActiveTag(tag.id) ? classes.active : '')}
