@@ -1,16 +1,20 @@
 import {makeStyles} from '@material-ui/core/styles';
-import {Grid, Box, Select, MenuItem, FormControl, InputLabel} from '@material-ui/core';
-import {useState} from 'react';
+import {Grid, Box} from '@material-ui/core';
+import {useState, useEffect} from 'react';
+import Pagination from '@material-ui/lab/Pagination';
+import {useSetRecoilState} from 'recoil';
 
 import {ContentBlock} from '~/components';
-import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
+import {ProductWidget, TopBannerWidget, FilterFavouriteProductWidget} from '~/components/Widgets';
 import {DefaultLayout} from '~/components/Layouts';
+import {ProductService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+const Product = new ProductService();
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
-    marginTop: '2rem',
+    margin: '2rem 0 3rem 0',
   },
   gridFilter: {
-    textAlign: 'end',
     '& .MuiSelect-select': {
       width: '8rem',
     },
@@ -20,101 +24,85 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '3rem 0',
+    [theme.breakpoints.down('md')]: {
+      margin: '1.5rem 0',
+    },
+    '& .MuiButtonBase-root': {
+      width: '3rem',
+      height: '3rem',
+      borderRadius: '50%',
+      border: '1px solid ' + theme.palette.grey.dark,
+      margin: '0 0.5rem',
+      background: theme.palette.white.main,
+      fontWeight: '700',
+      fontSize: '1rem',
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        background: theme.palette.red.main,
+        borderColor: theme.palette.red.main,
+        color: theme.palette.white.main,
+      },
+      [theme.breakpoints.down('md')]: {
+        width: '2.5rem',
+        height: '2.5rem',
+        margin: '0 0.25rem',
+        fontSize: '0.875rem',
+      },
+    },
+    '& .Mui-selected': {
+      background: theme.palette.red.main,
+      borderColor: theme.palette.red.main,
+      color: theme.palette.white.main,
+    },
+  },
 }));
-
-const favoriteProducts = [
-  {
-    productId: 1,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-01.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 26600,
-    favoriteProduct: true,
-    productOwner: {
-      name: '小田原漆器',
-      avatar: '/img/sellers/seller-01.png',
-      introduction: '木地部門　伝統工芸士',
-    },
-  },
-  {
-    productId: 2,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-02.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-    productPrice: 32800,
-    favoriteProduct: true,
-    productOwner: {
-      name: '磯貝 剛',
-      avatar: '/img/sellers/seller-02.png',
-      introduction: 'ベッ甲イソガイ　統括',
-    },
-  },
-  {
-    productId: 3,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-03.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 149300,
-    favoriteProduct: false,
-    productOwner: {
-      name: '林　文雄',
-      avatar: '/img/sellers/seller-03.png',
-      introduction: 'アートランド',
-    },
-  },
-  {
-    productId: 4,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-01.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 26600,
-    favoriteProduct: true,
-    productOwner: {
-      name: '小田原漆器',
-      avatar: '/img/sellers/seller-01.png',
-      introduction: '木地部門　伝統工芸士',
-    },
-  },
-  {
-    productId: 5,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-02.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '農薬節約栽培'}, {name: '期間限定'}],
-    productPrice: 32800,
-    favoriteProduct: true,
-    productOwner: {
-      name: '磯貝 剛',
-      avatar: '/img/sellers/seller-02.png',
-      introduction: 'ベッ甲イソガイ　統括',
-    },
-  },
-  {
-    productId: 6,
-    productName: '『大好評』1度は食べたい淡路島のたまねぎ！加熱するとまるでフルーツ！',
-    productThumb: '/img/products/product-03.png',
-    productUrl: '#',
-    productTags: [{name: '送料無料', isFeatured: true}, {name: '期間限定'}],
-    productPrice: 149300,
-    favoriteProduct: false,
-    productOwner: {
-      name: '林　文雄',
-      avatar: '/img/sellers/seller-03.png',
-      introduction: 'アートランド',
-    },
-  },
-];
 
 export default function FavoriteProducts() {
   const classes = useStyles();
-  const [age, setAge] = useState('');
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [category_id, setCategoryId] = useState();
+  const setLoading = useSetRecoilState(loadingState);
+  useEffect(() => {
+    getFavoriteProducts();
+    // eslint-disable-next-line
+  }, [page, category_id]);
+  const PER_PAGE = 6;
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const getFavoriteProducts = async () => {
+    setLoading(true);
+    const payload = {
+      page,
+      per_page: PER_PAGE,
+      category_id,
+    };
+    const response = await Product.getListFavoriteProduct(payload);
+    if (response?.products?.length) {
+      setLoading(false);
+      setFavoriteProducts(response?.products);
+      setPage(response?.page);
+      setTotalPage(response?.pages);
+    } else {
+      setLoading(false);
+      setFavoriteProducts([]);
+      setPage(1);
+      setTotalPage(1);
+    }
+  };
+
+  const changeFilterCategory = (value) => {
+    if (value) {
+      setCategoryId(value);
+    }
+  };
+
+  const changePage = (e, pageNumber) => {
+    setPage(pageNumber);
   };
 
   return (
@@ -138,32 +126,9 @@ export default function FavoriteProducts() {
                 <Grid
                   item={true}
                   xs={12}
-                  md={12}
                   className={classes.gridFilter}
                 >
-                  <FormControl
-                    variant='outlined'
-                    className={classes.formControl}
-                  >
-                    <InputLabel>{'フィルター'}</InputLabel>
-                    <Select
-                      value={age}
-                      onChange={handleChange}
-                      label='フィルター'
-                    >
-                      <MenuItem value=''>
-                        <em>{'None'}</em>
-                      </MenuItem>
-                      <MenuItem value={1}>{'ガラス工芸'}</MenuItem>
-                      <MenuItem value={2}>{'農産物'}</MenuItem>
-                      <MenuItem value={3}>{'水産物'}</MenuItem>
-                      <MenuItem value={4}>{'畜産物'}</MenuItem>
-                      <MenuItem value={5}>{'キッチン'}</MenuItem>
-                      <MenuItem value={6}>{'文具・玩具'}</MenuItem>
-                      <MenuItem value={7}>{'ファッション'}</MenuItem>
-                      <MenuItem value={8}>{'ヘルス・ビューティー'}</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <FilterFavouriteProductWidget changeFilterCategory={changeFilterCategory}/>
                 </Grid>
                 {favoriteProducts.map((product) => (
                   <Grid
@@ -177,6 +142,23 @@ export default function FavoriteProducts() {
                     />
                   </Grid>
                 ))}
+                <Grid
+                  item={true}
+                  xs={12}
+                  className={classes.gridFilter}
+                >
+                  {favoriteProducts?.length > 0 && totalPage > 0 &&
+                    <Pagination
+                      count={totalPage}
+                      variant={'outlined'}
+                      color={'primary'}
+                      size={'large'}
+                      defaultPage={1}
+                      onChange={changePage}
+                      className={classes.pagination}
+                    />
+                  }
+                </Grid>
               </Grid>
               <Grid
                 item={true}
