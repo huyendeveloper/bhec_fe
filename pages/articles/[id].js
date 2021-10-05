@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breadcrumbs: {
-    padding: '4rem 0 0',
+    padding: '2rem 0 0',
     [theme.breakpoints.down('sm')]: {
       padding: '2rem 0 0',
     },
@@ -75,7 +75,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
   const [linkProps, setLinkProps] = useState([]);
 
   const toArchivePage = (tag) => {
-    router.push(`/articles?tag=${tag}`);
+    router.push(`/articles?tag=${tag?.name}`);
   };
 
   const renderShortcodes = async () => {
@@ -166,7 +166,10 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
             md={12}
             lg={12}
           >
-            <Breadcrumbs linkProps={linkProps}/>
+            <Breadcrumbs
+              linkProps={linkProps}
+              margin='0'
+            />
           </Grid>
         </Grid>
       </Container>
@@ -192,7 +195,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
                   key={`${tag}-${article?.id}`}
                   label={tag?.name}
                   className={classes.chipItem}
-                  onClick={() => toArchivePage(tag?.name_kana)}
+                  onClick={() => toArchivePage(tag)}
                 />
               </>
             );

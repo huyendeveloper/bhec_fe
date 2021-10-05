@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: '0.125rem',
   },
   topContainer: {
-    paddingTop: '2rem',
+    paddingTop: '1.625rem',
     paddingBottom: '2rem',
     [theme.breakpoints.down('md')]: {
       width: '100%',
     },
   },
   breadcrumbs: {
-    padding: '4rem 0 0',
+    padding: '2rem 0 0',
     [theme.breakpoints.down('sm')]: {
       padding: '2rem 0 0',
     },
@@ -131,7 +131,10 @@ const ArchiveArticle = ({articles, pages}) => {
             md={12}
             lg={12}
           >
-            <Breadcrumbs linkProps={linkProps}/>
+            <Breadcrumbs
+              linkProps={linkProps}
+              margin='0'
+            />
           </Grid>
         </Grid>
       </Container>
@@ -147,6 +150,7 @@ const ArchiveArticle = ({articles, pages}) => {
         title={'記事一覧'}
         bgImage={'/img/noise.png'}
         bgRepeat={'repeat'}
+        padding={'0'}
       >
 
         {articles?.length > 0 ? articles?.map((article) => (

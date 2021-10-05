@@ -30,13 +30,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Breadcrumbs = ({linkProps}) => {
+const Breadcrumbs = ({linkProps, margin}) => {
   const classes = useStyles();
 
   return (
     <MuiBreadcrumbs
       className={classes.root}
       separator={' / '}
+      style={{margin: margin || 'none'}}
     >
       {linkProps.map((item) => (
         item.linkUrl ? (
@@ -63,6 +64,7 @@ const Breadcrumbs = ({linkProps}) => {
 
 Breadcrumbs.propTypes = {
   linkProps: PropTypes.array,
+  margin: PropTypes.any,
 };
 
 export default Breadcrumbs;
