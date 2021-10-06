@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import Image from 'next/image';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import {useRouter} from 'next/router';
 const useStyles = makeStyles((theme) => ({
 
@@ -110,9 +109,7 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
               aria-label='close'
               className={classes.closeButton}
               onClick={closeModal}
-            >
-              <CloseIcon/>
-            </IconButton>
+            />
           </MuiDialogTitle>
           <DialogContent
             classes={{
