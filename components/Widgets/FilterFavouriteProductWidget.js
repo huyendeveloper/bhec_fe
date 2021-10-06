@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
-import {IconButton, Paper, useTheme, useMediaQuery, Grid, ClickAwayListener} from '@material-ui/core';
+import {IconButton, Paper, Grid, ClickAwayListener} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -24,10 +24,14 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.black4.main}`,
     borderRadius: '4px',
     padding: '0 2.125rem',
+    cursor: 'pointer',
     [theme.breakpoints.down('xs')]: {
       padding: '0 0.5rem',
+      height: '40px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    cursor: 'pointer',
   },
   divider: {
     height: '3rem',
@@ -62,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   searchBox: {
     position: 'absolute',
     top: '52px',
-    width: 'max-content',
+    width: 'auto',
     padding: '1.5rem 3rem',
     background: 'white',
     border: '1px solid #DBDBDB',
@@ -153,8 +157,6 @@ const Search = ({changeFilterCategory}) => {
   const [currentCategory, setCurrentCategory] = useState();
   const [listCategory, setListCategory] = useState([]);
   const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   useEffect(() => {
     getListCategory();
     // eslint-disable-next-line
@@ -205,7 +207,7 @@ const Search = ({changeFilterCategory}) => {
         >
           <IconButton
             aria-label='menu'
-            size={isMobile ? 'small' : 'medium'}
+            size={'medium'}
           >
             <Image
               src={'/img/icons/filter-search.svg'}
@@ -215,11 +217,7 @@ const Search = ({changeFilterCategory}) => {
               alt={'arrow right'}
             />
           </IconButton>
-          {
-            isMobile ? (null) : (
-              <span>{currentCategory ? currentCategory.name_kana : 'フィルター'}</span>
-            )
-          }
+          <span>{currentCategory ? currentCategory.name_kana : 'フィルター'}</span>
         </div>
         {isExpandedCategory &&
           <ClickAwayListener onClickAway={handleClickAwayCategory}>
