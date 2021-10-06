@@ -8,6 +8,7 @@ import {
   Radio,
   RadioGroup, Snackbar, TextField,
   useMediaQuery,
+  Button,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {
@@ -22,7 +23,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
 
 import {notFutureDate} from '~/lib/date';
-import {Alert, Button, ContentBlock, StyledForm} from '~/components';
+import {Alert, ContentBlock, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {isInteger} from '~/lib/number';
 import {rules} from '~/lib/validator';
@@ -37,6 +38,31 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiFormHelperText-root': {
       display: 'none',
+    },
+  },
+
+  btnSubmit: {
+    width: '22.75rem',
+    fontSize: '1.25rem',
+    fontWeight: '700',
+    background: theme.palette.red.main,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    borderRadius: '3rem',
+    color: theme.palette.background.default,
+    padding: '0.5rem 3rem',
+    height: '64px',
+    '&:hover': {
+      background: theme.palette.red.main,
+      color: theme.palette.background.default,
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      height: '40px',
+      lineHeight: '1.3125rem',
+      width: '14rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
     },
   },
 
@@ -714,10 +740,9 @@ export default function BasicInformationUpdate() {
                     mt={5}
                   >
                     <Button
-                      variant='pill'
-                      customColor='red'
-                      customSize='extraLarge'
+                      variant='contained'
                       type='submit'
+                      className={classes.btnSubmit}
                     >
                       {'保存する'}
                     </Button>

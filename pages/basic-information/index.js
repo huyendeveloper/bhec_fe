@@ -35,16 +35,32 @@ const useStyles = makeStyles((theme) => ({
     color: theme.textDisable.default,
   },
   btnSubmit: {
+    width: '22.75rem',
+    fontSize: '1.25rem',
+    fontWeight: '700',
     background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '3rem',
     color: theme.palette.background.default,
     padding: '0.5rem 3rem',
-    fontSize: '1rem',
+    height: '64px',
     '&:hover': {
       background: theme.palette.red.main,
       color: theme.palette.background.default,
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      height: '40px',
+      lineHeight: '1.3125rem',
+      width: '14rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+  },
+
+  divAction: {
+    marginTop: '3.5rem',
   },
 }));
 
@@ -272,6 +288,7 @@ export default function BasicInformation() {
           <Box
             textAlign='center'
             mt={5}
+            className={classes.divAction}
           >
             <Button
               variant='contained'
