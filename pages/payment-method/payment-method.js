@@ -198,14 +198,14 @@ function PaymentMethod() {
   };
 
   return (
-    <DefaultLayout title='決済方法'>
+    <DefaultLayout title='お支払い方法'>
       <div className={classes.root}>
         <div
           className='content'
           style={{marginBottom: '3rem'}}
         >
           <ContentBlock
-            title='決済方法'
+            title='お支払い方法'
           >
             <Container maxWidth='lg'>
               <Grid
