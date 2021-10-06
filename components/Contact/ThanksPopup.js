@@ -135,7 +135,7 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
                 type='submit'
                 variant='contained'
                 className={classes.btnSubmit}
-              >{'ホームページに戻る'}</Button>
+              >{'TOPページへ戻る'}</Button>
             </Link>
           </DialogContent>
         </Dialog>

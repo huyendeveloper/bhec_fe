@@ -111,7 +111,7 @@ export default function OrderForm() {
               customSize={'extraLarge'}
               onClick={() => router.push('/')}
             >
-              {'ホームページに戻る'}
+              {'TOPページへ戻る'}
             </Button>
 
             {user?.isAuthenticated && (
