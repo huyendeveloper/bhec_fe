@@ -205,7 +205,7 @@ const OrdersDetail = ({id}) => {
                 sm={3}
                 xs={4}
               >
-                <h4>{'決済方法'}</h4>
+                <h4>{'お支払い方法'}</h4>
               </Grid>
               <Grid
                 item={true}

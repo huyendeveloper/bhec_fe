@@ -62,7 +62,7 @@ const buttonLinks = [
   {id: 6, label: 'フォロー中の出品者一覧', url: '/followed-seller-list'},
   {id: 7, label: '返品/交換申請', url: '/contacts/send-contact'},
   {id: 9, label: 'パスワードを変更', url: '/auth/change-password'},
-  {id: 3, label: '決済方法', url: '/payment-method'},
+  {id: 3, label: 'お支払い方法', url: '/payment-method'},
   {id: 10, label: 'ログアウト', url: '/'},
 ];
 
