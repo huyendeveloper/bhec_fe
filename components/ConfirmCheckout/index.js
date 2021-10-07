@@ -418,7 +418,7 @@ const ConfirmCheckout = () => {
                   customSize='extraLarge'
                   onClick={handleSendOrderClick}
                 >
-                  {'送信'}
+                  {'フォームを送信'}
                 </Button>
               </Grid>
             </Grid>

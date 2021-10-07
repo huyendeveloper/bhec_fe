@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
         top: '-0.25rem',
       },
     },
+    '& .selectBoxError .MuiInputBase-input': {
+      color: '#757575 !important',
+    },
   },
   option: {
     color: theme.palette.black.default,

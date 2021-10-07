@@ -117,7 +117,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
                   <TextField
                     id={`order_number${index}`}
                     variant='outlined'
-                    label={'注文番号をご入力ください。'}
+                    placeholder={'注文番号をご入力ください。'}
                     error={Boolean(errors[`order_number${index}`])}
                     InputLabelProps={{shrink: false}}
                     name={name}
@@ -162,7 +162,7 @@ const ContactProduct = ({control, errors, product, index, removeProduct, valuePr
                   <TextField
                     id={`product_code${index}`}
                     variant='outlined'
-                    label={'商品コードをご入力ください。'}
+                    placeholder={'商品コードをご入力ください。'}
                     error={Boolean(errors[`product_code${index}`])}
                     InputLabelProps={{shrink: false}}
                     name={name}

@@ -1,4 +1,4 @@
-import {Box, Card, CardActionArea, CardMedia, Grid, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
+import {Box, Card, CardActionArea, CardMedia, Grid, makeStyles, useMediaQuery, Link, useTheme} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
@@ -128,17 +128,22 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           className={'blockFirst'}
         >
           <Card className={classes.card}>
-            <CardActionArea>
-              <CardMedia
-                className={clsx(classes.image, product.image_urls?.length > 0 ? '' : classes.bgImg)}
-                component='img'
-                alt={product?.name}
-                width={170}
-                height={112}
-                image={product?.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
-                title={product?.name}
-              />
-            </CardActionArea>
+            <Link
+              href={`/product/${product.id}`}
+              className={clsx(classes.linkName)}
+            >
+              <CardActionArea>
+                <CardMedia
+                  className={clsx(classes.image, product.image_urls?.length > 0 ? '' : classes.bgImg)}
+                  component='img'
+                  alt={product?.name}
+                  width={170}
+                  height={112}
+                  image={product?.image_urls?.length > 0 ? product.image_urls[0] : '/logo.png'}
+                  title={product?.name}
+                />
+              </CardActionArea>
+            </Link>
           </Card>
           {isMobile ? null : (
             <Box
