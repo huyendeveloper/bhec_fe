@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BasicInformation() {
   const classes = useStyles();
   const [user, setUser] = useState({});
+  const [province, setProvince] = useState({});
   const [listCity, setListCity] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
 
@@ -66,6 +67,11 @@ export default function BasicInformation() {
       setUser(res.user);
     } else {
       setLoading(false);
+    }
+    if (res.province) {
+      setProvince(res.province);
+    } else {
+      setProvince();
     }
   };
 
@@ -256,12 +262,12 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { user.zipcode || user.city || user.district || user.phone_no || user.office_room || user?.province ? <>
+                { user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? <>
                   <span>{`〒${user.zipcode}`}</span>
                   <br/>
                   <span>{user.district}</span>
                   <br/>
-                  {user?.province && <span>{`${user?.province?.name}`}</span>} {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
+                  {province && <span>{`${province?.name}`}</span>} {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
                   <br/>
                   <span>{user.office_room}</span>
                   <br/>
