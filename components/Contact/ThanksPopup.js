@@ -2,9 +2,7 @@ import React from 'react';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {Button, Dialog, DialogContent, Link, useMediaQuery} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import Image from 'next/image';
-import IconButton from '@material-ui/core/IconButton';
 import {useRouter} from 'next/router';
 const useStyles = makeStyles((theme) => ({
 
@@ -101,16 +99,6 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
           className={classes.dialog}
           disableBackdropClick={true}
         >
-          <MuiDialogTitle
-            disableTypography={true}
-            className={classes.title}
-          >
-            <IconButton
-              aria-label='close'
-              className={classes.closeButton}
-              onClick={closeModal}
-            />
-          </MuiDialogTitle>
           <DialogContent
             classes={{
               root: classes.muiPaper,

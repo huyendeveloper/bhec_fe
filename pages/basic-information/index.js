@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Router from 'next/router';
 import {useEffect, useState} from 'react';
 import {useSetRecoilState} from 'recoil';
-import {format as formatDate} from 'date-fns';
+import moment from 'moment';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock} from '~/components';
@@ -84,6 +84,10 @@ export default function BasicInformation() {
     } else {
       setLoading(false);
     }
+  };
+
+  const formatDob = (dob) => {
+    return moment(dob).format('yyyy/MM/DD');
   };
 
   const getListCity = async () => {
@@ -251,7 +255,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                {user && user.dob ? <span>{formatDate(new Date(user.dob), 'yyyy/MM/dd')}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
+                {user && user.dob ? <span>{formatDob(user.dob)}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
             <div className={classes.block}>
