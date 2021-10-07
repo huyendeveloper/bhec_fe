@@ -352,6 +352,17 @@ const Footer = (props) => {
                   >
                     <span>{'プライバシーポリシー'}</span>
                   </Link>
+                  <Divider
+                    orientation='vertical'
+                    className={classes.divider}
+                  />
+
+                  <Link
+                    href='/specified_commercial_transactions'
+                    color='inherit'
+                  >
+                    <span>{'特定商取引'}</span>
+                  </Link>
                 </Grid>
               </Grid>
             </Box>
