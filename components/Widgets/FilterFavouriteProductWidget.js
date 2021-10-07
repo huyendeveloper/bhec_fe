@@ -186,6 +186,8 @@ const Search = ({changeFilterCategory}) => {
     setCurrentCategory(targetCategory);
     if (targetCategory?.id) {
       changeFilterCategory(targetCategory?.id);
+    } else {
+      changeFilterCategory(null);
     }
     toggleCategory(false);
   };

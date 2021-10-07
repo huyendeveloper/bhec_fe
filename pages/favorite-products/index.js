@@ -99,6 +99,8 @@ export default function FavoriteProducts() {
   const changeFilterCategory = (value) => {
     if (value) {
       setCategoryId(value);
+    } else {
+      setCategoryId('');
     }
   };
 
