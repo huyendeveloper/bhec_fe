@@ -322,7 +322,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       htmlFor='card_name'
                       className='formControlLabel'
                     >
-                      {'カードの名義 (全角でご入力ください。) '}
+                      {'カードの名義 (半角でご入力ください。)'}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
