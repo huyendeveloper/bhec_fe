@@ -231,7 +231,7 @@ const DeliveryInfo = () => {
         mixBlendMode='multiply'
       >
         <div className={classes.addresses}>
-          {loaded && user.addresses?.map((adr) => (
+          {loaded && user.addresses?.map((adr, indexAdd) => (
             <Grid
               key={adr.id}
               container={true}
@@ -252,7 +252,7 @@ const DeliveryInfo = () => {
                     sm={2}
                   >
                     <b className={classes.idAddress}>
-                      {`住所 ${adr.id}`}
+                      {`住所 ${indexAdd + 1}`}
                     </b>
                   </Grid>
 

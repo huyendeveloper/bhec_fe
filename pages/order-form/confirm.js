@@ -176,10 +176,10 @@ export default function OrderForm() {
   const classes = useStyles();
 
   return (
-    <DefaultLayout title={'ご注文フォーム'}>
+    <DefaultLayout title={'ご注文内容確認'}>
       <div className={classes.root}>
         <ContentBlock
-          title={'ご注文フォーム'}
+          title={'ご注文内容確認'}
           bgImage='/img/noise.png'
           bgRepeat='repeat'
         >

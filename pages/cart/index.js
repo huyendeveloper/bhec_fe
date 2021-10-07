@@ -88,6 +88,13 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '1rem !important',
     },
   },
+  buttons: {
+    [theme.breakpoints.down('xs')]: {
+      '& button': {
+        width: '100%',
+      },
+    },
+  },
 }));
 
 // eslint-disable-next-line no-warning-comments
@@ -200,7 +207,7 @@ export default function Cart() {
                 textAlign={'center'}
                 className={classes.title}
               >
-                <Typography variant={'h2'}>{`カート内の商品 (${cart.items?.length}点)`}</Typography>
+                <Typography variant={'h2'}>{'カート内の商品' + (cart.items?.length > 0 ? ` (${cart.items?.length}点)` : '')}</Typography>
                 <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div>
               </Box>
             }
@@ -214,6 +221,7 @@ export default function Cart() {
                   variant='pill'
                   customColor='yellow'
                   customSize='medium'
+                  onClick={() => router.push(`/seller/${cart.seller?.id}`)}
                   startIcon={
                     <Image
                       src={'/img/icons/store.svg'}
@@ -247,28 +255,39 @@ export default function Cart() {
 
             <Grid
               container={true}
-              spacing={0}
+              spacing={3}
+              className={classes.buttons}
             >
               <Grid
                 item={true}
+                sm={6}
                 xs={12}
-                md={12}
-                lg={12}
+                style={{justifyContent: 'flex-end', display: 'flex'}}
               >
-                <Box
-                  textAlign={'center'}
-                  className={classes.continueShop}
+                <Button
+                  variant='pill'
+                  customColor='white'
+                  customBorder='bdGray'
+                  customSize='extraLarge'
+                  onClick={() => router.push('/products')}
                 >
-                  <Button
-                    variant='pill'
-                    customColor='black'
-                    customSize='extraLarge'
-                    onClick={handleGoToOrderClick}
-                  >
-                    {'購入画面へすすむ'}
-                  </Button>
-                </Box>
+                  {'買物を続く'}
+                </Button>
+              </Grid>
 
+              <Grid
+                item={true}
+                sm={6}
+                xs={12}
+              >
+                <Button
+                  variant='pill'
+                  customColor='red'
+                  customSize='extraLarge'
+                  onClick={handleGoToOrderClick}
+                >
+                  {'購入画面へすすむ'}
+                </Button>
               </Grid>
             </Grid>
           </>

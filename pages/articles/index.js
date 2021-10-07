@@ -105,6 +105,11 @@ const ArchiveArticle = ({articles, pages}) => {
       linkLabel: 'ホーム',
       linkUrl: '/',
     },
+    {
+      id: 1,
+      linkLabel: '記事一覧',
+      linkUrl: '#',
+    },
   ];
 
   const changePage = (e, pageNumber) => {
