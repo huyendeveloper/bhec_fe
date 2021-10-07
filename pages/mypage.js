@@ -39,10 +39,6 @@ const useStyles = makeStyles(() => ({
   },
   recommendedProducts: {
     marginTop: '2rem',
-    '& .MuiGrid-item': {
-      paddingTop: '0',
-      paddingBottom: '0',
-    },
   },
 }));
 
@@ -170,6 +166,8 @@ export default function MyPage() {
               key={item.url}
               item={true}
               md={4}
+              sm={6}
+              xs={6}
             >
               <BoxLink
                 link={item}
@@ -189,6 +187,8 @@ export default function MyPage() {
               key={item.id}
               item={true}
               md={4}
+              sm={4}
+              xs={12}
             >
               <ButtonLink
                 item={item}
@@ -201,20 +201,21 @@ export default function MyPage() {
 
       {recommendProducts?.length > 0 && (
         <ContentBlock
-          title={'あなたにオススメの商品'}
+          title={'オススメ商品'}
           bgColor='#faf6ef'
           bgImage='/img/noise.png'
         >
           <Grid
             container={true}
-            spacing={4}
+            spacing={3}
             className={classes.recommendedProducts}
           >
             {recommendProducts.map((product) => (
               <Grid
                 key={product.productId}
                 item={true}
-                md={4}
+                sm={4}
+                xs={6}
               >
                 <ProductWidget
                   data={product}
