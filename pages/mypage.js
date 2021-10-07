@@ -108,7 +108,7 @@ export default function MyPage() {
   const getListRecommendProducts = async () => {
     const query = {
       page: 1,
-      per_page: 3,
+      per_page: 10,
     };
     const result = await Product.getProducts(query);
     if (result && result.products && result.products.length) {
@@ -133,6 +133,7 @@ export default function MyPage() {
 
     setUser(produce((draft) => {
       draft.profile = response?.user;
+      draft.noti_unread = response?.noti_unread;
     }));
   };
 

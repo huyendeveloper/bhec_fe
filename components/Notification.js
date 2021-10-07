@@ -1,8 +1,13 @@
+import {Avatar} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import produce from 'immer';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import {Avatar} from '@material-ui/core';
-import clsx from 'clsx';
+import {useSetRecoilState} from 'recoil';
+
+import {NotificationService} from '~/services';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,19 +53,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Notification = ({notification}) => {
+const Notification = ({notification, fetchNotify}) => {
   const classes = useStyles();
+  const setUser = useSetRecoilState(userState);
+
+  const handleRead = async () => {
+    if (!notification?.read) {
+      const res = await NotificationService.markReaded({id: notification?.id});
+      if (res?.noti_unread) {
+        setUser(produce((draft) => {
+          draft.noti_unread = res?.noti_unread;
+        }));
+        fetchNotify();
+      }
+    }
+  };
 
   return (
-    <Link href='/product'>
-      <a className={clsx({[classes.root]: true, [classes.readed]: notification.readed})}>
+    <Link href={`/${notification?.type === 1 ? 'product' : 'articles'}/${notification?.notiable_id}`}>
+      <a
+        target='_blank'
+        className={clsx({[classes.root]: true, [classes.readed]: notification.read})}
+        onClick={handleRead}
+      >
         <Avatar
-          src={notification.readed ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
+          src={notification.read ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
         />
 
         <div>
           <div className={classes.content}>{notification.content}</div>
-          <span className={classes.dateTime}>{notification.dateTime}</span>
+          <span className={classes.dateTime}>{notification.created_at}</span>
         </div>
       </a>
     </Link>
@@ -69,6 +91,7 @@ const Notification = ({notification}) => {
 
 Notification.propTypes = {
   notification: PropTypes.object,
+  fetchNotify: PropTypes.func,
 };
 
 export default Notification;
