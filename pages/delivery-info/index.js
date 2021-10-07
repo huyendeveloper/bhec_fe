@@ -267,7 +267,7 @@ const DeliveryInfo = () => {
                     >
                       {adr.name} <br/>
                       {`〒${adr.zipcode}`} <br/>
-                      {`${adr.province.name}${adr.city}`} <br/>
+                      {`${adr?.province?.name}${adr.city}`} <br/>
                       {adr.address} <br/>
                       {adr.tel}
                     </Box>
