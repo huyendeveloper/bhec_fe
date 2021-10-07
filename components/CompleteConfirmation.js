@@ -115,7 +115,7 @@ const CompleteConfirmation = ({type, isMale = false}) => {
       content: registerDesc(),
     },
     forgot: {
-      title: '送信いたしました。',
+      title: 'パスワードリセットの申請が送信されました。',
       content: forgotDesc(),
     },
   };

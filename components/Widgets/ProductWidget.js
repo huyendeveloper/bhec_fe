@@ -61,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.188rem',
     marginBottom: '0.75rem',
     color: '#333',
+    height: '2.376rem',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    display: '-webkit-box',
   },
   productTags: {
     marginBottom: '1rem',
@@ -201,7 +205,7 @@ const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
           <Typography
             gutterBottom={true}
             component='h3'
-            className={classes.productName}
+            className={clsx(classes.productName, 'overflowText')}
           >
             {product.name}
           </Typography>
