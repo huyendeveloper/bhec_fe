@@ -383,7 +383,7 @@ const Seller = () => {
                   onClick={() => toggleFollow()}
                   className={clsx(classes.btnFollow, isFollowing ? classes.isFollowing : '')}
                 >
-                  {isFollowing ? 'フォローする' : 'フォロー中'}
+                  {isFollowing ? 'フォロー中' : 'フォローする'}
                 </Button>
               </Grid>
               <Grid

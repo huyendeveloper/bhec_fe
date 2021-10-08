@@ -132,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
+const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavourite}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -155,6 +155,9 @@ const ProductWidget = ({variant, data, heart, border, widthMedia}) => {
       setLoading(true);
       const res = likeStatus ? await Product.likeProduct(data.id) : await Product.unlikeProduct(data.id);
       if (res && (res?.message === 'You have unliked this product' || res?.message === 'You have liked this product')) {
+        if (loadListFavourite) {
+          loadListFavourite();
+        }
         setIsLike(!isLike);
       }
       setLoading(false);
@@ -291,6 +294,7 @@ ProductWidget.propTypes = {
   heart: PropTypes.bool,
   border: PropTypes.string,
   widthMedia: PropTypes.number,
+  loadListFavourite: PropTypes.func,
 };
 
 ProductWidget.defaultProps = {
