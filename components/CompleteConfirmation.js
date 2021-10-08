@@ -83,6 +83,12 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '6rem',
     },
   },
+
+  linkSubmit: {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
 }));
 
 const CompleteConfirmation = ({type, isMale = false}) => {
@@ -146,14 +152,17 @@ const CompleteConfirmation = ({type, isMale = false}) => {
         </Typography>
         {content}
         <div className={classes.buttons}>
-          <Link href={'/'}>
+          <Link
+            href={'/'}
+            className={classes.linkSubmit}
+          >
             <Button
               variant={'pill'}
               customColor={'red'}
               customBorder={'bdGray'}
               customSize={'extraLarge'}
             >
-              {'ホームページに戻る'}
+              {'TOPページへ戻る'}
             </Button>
           </Link>
         </div>

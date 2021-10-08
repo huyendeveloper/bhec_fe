@@ -253,14 +253,14 @@ const SellerInfo = ({getDetailProduct}) => {
                 customColor='yellow'
                 customSize='small'
               >
-                {sellerInfo?.followed ? 'フォローする' : 'フォロー中'}
+                {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
               </Button> */}
               <Button
                 variant='contained'
                 onClick={() => toggleFollow()}
                 className={clsx(classes.btnFollow, sellerInfo?.followed ? classes.isFollowing : '')}
               >
-                {sellerInfo?.followed ? 'フォローする' : 'フォロー中'}
+                {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
               </Button>
               <Button
                 variant='contained'

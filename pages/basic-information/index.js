@@ -3,6 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Router from 'next/router';
 import {useEffect, useState} from 'react';
 import {useSetRecoilState} from 'recoil';
+import moment from 'moment';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock} from '~/components';
@@ -34,22 +35,39 @@ const useStyles = makeStyles((theme) => ({
     color: theme.textDisable.default,
   },
   btnSubmit: {
+    width: '22.75rem',
+    fontSize: '1.25rem',
+    fontWeight: '700',
     background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '3rem',
     color: theme.palette.background.default,
     padding: '0.5rem 3rem',
-    fontSize: '1rem',
+    height: '64px',
     '&:hover': {
       background: theme.palette.red.main,
       color: theme.palette.background.default,
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      height: '40px',
+      lineHeight: '1.3125rem',
+      width: '14rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+  },
+
+  divAction: {
+    marginTop: '3.5rem',
   },
 }));
 
 export default function BasicInformation() {
   const classes = useStyles();
   const [user, setUser] = useState({});
+  const [province, setProvince] = useState({});
   const [listCity, setListCity] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
 
@@ -67,6 +85,15 @@ export default function BasicInformation() {
     } else {
       setLoading(false);
     }
+    if (res.province) {
+      setProvince(res.province);
+    } else {
+      setProvince();
+    }
+  };
+
+  const formatDob = (dob) => {
+    return moment(dob).format('yyyy/MM/DD');
   };
 
   const getListCity = async () => {
@@ -234,7 +261,7 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                {user && user.dob ? <span>{user.dob}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
+                {user && user.dob ? <span>{formatDob(user.dob)}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
               </Grid>
             </div>
             <div className={classes.block}>
@@ -256,13 +283,16 @@ export default function BasicInformation() {
                 sm={8}
                 md={8}
               >
-                { user.zipcode || user.city || user.district ? <>
-                  <span>{user.zipcode}</span>
-                  <br/>
-                  {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
+                { user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? <>
+                  <span>{`〒${user.zipcode}`}</span>
                   <br/>
                   <span>{user.district}</span>
                   <br/>
+                  {province && <span>{`${province?.name}`}</span>} {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
+                  <br/>
+                  <span>{user.office_room}</span>
+                  <br/>
+                  <span>{user.phone_no}</span>
                 </> : <span className={classes.textDisable}>{'未登録'}</span>
                 }
               </Grid>
@@ -271,6 +301,7 @@ export default function BasicInformation() {
           <Box
             textAlign='center'
             mt={5}
+            className={classes.divAction}
           >
             <Button
               variant='contained'

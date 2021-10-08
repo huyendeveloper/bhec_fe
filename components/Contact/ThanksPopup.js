@@ -2,10 +2,8 @@ import React from 'react';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {Button, Dialog, DialogContent, Link, useMediaQuery} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import Image from 'next/image';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import {useRouter} from 'next/router';
 const useStyles = makeStyles((theme) => ({
 
   root: {
@@ -74,7 +72,11 @@ const useStyles = makeStyles((theme) => ({
       width: '86%',
     },
   },
-
+  linkSubmit: {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
 }));
 
 const ThanksPopup = ({open, handleClose, requestNo}) => {
@@ -84,8 +86,9 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const logoWidth = isMobile ? 80 : (isTablet ? 80 : 106);
   const logoHeight = isMobile ? 80 : (isTablet ? 80 : 106);
-
-  const handleSubmit = () => {
+  const router = useRouter();
+  const closeModal = () => {
+    router.push('/');
     handleClose();
   };
 
@@ -94,23 +97,12 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
       <div className={classes.root}>
         <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={closeModal}
           aria-labelledby='form-dialog-title'
           maxWidth='lg'
           className={classes.dialog}
+          disableBackdropClick={true}
         >
-          <MuiDialogTitle
-            disableTypography={true}
-            className={classes.title}
-          >
-            <IconButton
-              aria-label='close'
-              className={classes.closeButton}
-              onClick={handleClose}
-            >
-              <CloseIcon/>
-            </IconButton>
-          </MuiDialogTitle>
           <DialogContent
             classes={{
               root: classes.muiPaper,
@@ -129,14 +121,14 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
             </div>
             <Link
               href='/'
+              className={classes.linkSubmit}
             >
               <Button
                 color='primary'
                 type='submit'
                 variant='contained'
-                onClick={handleSubmit}
                 className={classes.btnSubmit}
-              >{'ホームページに戻る'}</Button>
+              >{'TOPページへ戻る'}</Button>
             </Link>
           </DialogContent>
         </Dialog>
