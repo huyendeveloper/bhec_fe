@@ -2,7 +2,7 @@
 {
   "header": {
     "reportVersion": 1,
-    "event": "Allocation failed - JavaScript heap out of memory",
+    "event": "Allocation failed -  JavaScript heap out of memory",
     "trigger": "FatalError",
     "filename": "report.20211003.115339.12236.0.001.json",
     "dumpEventTime": "2021-10-03T11:53:39Z",
