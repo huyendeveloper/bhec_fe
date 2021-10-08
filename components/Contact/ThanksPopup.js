@@ -74,7 +74,11 @@ const useStyles = makeStyles((theme) => ({
       width: '86%',
     },
   },
-
+  linkSubmit: {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
 }));
 
 const ThanksPopup = ({open, handleClose, requestNo}) => {
@@ -129,6 +133,7 @@ const ThanksPopup = ({open, handleClose, requestNo}) => {
             </div>
             <Link
               href='/'
+              className={classes.linkSubmit}
             >
               <Button
                 color='primary'
