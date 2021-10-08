@@ -39,10 +39,6 @@ const useStyles = makeStyles(() => ({
   },
   recommendedProducts: {
     marginTop: '2rem',
-    '& .MuiGrid-item': {
-      paddingTop: '0',
-      paddingBottom: '0',
-    },
   },
 }));
 
@@ -60,7 +56,7 @@ const buttonLinks = [
   {id: 6, label: 'フォロー中の出品者一覧', url: '/followed-seller-list'},
   {id: 7, label: '返品/交換申請', url: '/contacts/send-contact'},
   {id: 9, label: 'パスワードを変更', url: '/auth/change-password'},
-  {id: 3, label: '決済方法', url: '/payment-method'},
+  {id: 3, label: 'お支払い方法', url: '/payment-method'},
   {id: 10, label: 'ログアウト', url: '/'},
 ];
 
@@ -168,6 +164,8 @@ export default function MyPage() {
               key={item.url}
               item={true}
               md={4}
+              sm={6}
+              xs={6}
             >
               <BoxLink
                 link={item}
@@ -187,6 +185,8 @@ export default function MyPage() {
               key={item.id}
               item={true}
               md={4}
+              sm={4}
+              xs={12}
             >
               <ButtonLink
                 item={item}
@@ -199,20 +199,21 @@ export default function MyPage() {
 
       {recommendProducts?.length > 0 && (
         <ContentBlock
-          title={'あなたにオススメの商品'}
+          title={'オススメ商品'}
           bgColor='#faf6ef'
           bgImage='/img/noise.png'
         >
           <Grid
             container={true}
-            spacing={4}
+            spacing={3}
             className={classes.recommendedProducts}
           >
             {recommendProducts.map((product) => (
               <Grid
                 key={product.productId}
                 item={true}
-                md={4}
+                sm={4}
+                xs={6}
               >
                 <ProductWidget
                   data={product}
