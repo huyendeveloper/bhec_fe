@@ -4,14 +4,13 @@ import produce from 'immer';
 import PropTypes from 'prop-types';
 import React, {useEffect} from 'react';
 import {Controller} from 'react-hook-form';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import {BlockForm, Button, ConnectForm, DeliveryForm} from '~/components';
 import {DialogWidget} from '~/components/Widgets';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
 const useStyles = makeStyles(() => ({
@@ -44,7 +43,16 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = React.useState(false);
   const setLoading = useSetRecoilState(loadingState);
-  const order = useRecoilValue(orderState);
+
+  const setDefaultAdressShipping = () => {
+    if (user?.addresses) {
+      const addressDefault = user.addresses.find((item) => item.is_default === 1);
+      if (addressDefault?.id) {
+        return addressDefault?.id;
+      }
+    }
+    return '';
+  };
 
   const handleSubmitDeliveryForm = async (address) => {
     setLoading(true);
@@ -101,7 +109,7 @@ const FormShipping = ({isReadonly}) => {
                   <Controller
                     name={'addressShipping'}
                     control={control}
-                    defaultValue={order?.addressShipping || ''}
+                    defaultValue={setDefaultAdressShipping}
                     rules={{
                       required: rules.required,
                     }}
