@@ -2,7 +2,6 @@ import {Avatar} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import produce from 'immer';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 import {useSetRecoilState} from 'recoil';
 
@@ -68,25 +67,23 @@ const Notification = ({notification, readedNotify}) => {
         readedNotify(notification?.id);
       }
     }
+    window.open(url, '_blank');
   };
 
   return (
-    <Link href={url}>
-      <a
-        target='_blank'
-        className={clsx({[classes.root]: true, [classes.readed]: notification.read})}
-        onClick={handleRead}
-      >
-        <Avatar
-          src={notification.read ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
-        />
+    <div
+      className={clsx({[classes.root]: true, [classes.readed]: notification.read})}
+      onClick={handleRead}
+    >
+      <Avatar
+        src={notification.read ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
+      />
 
-        <div>
-          <div className={classes.content}>{notification.content}</div>
-          <span className={classes.dateTime}>{notification.created_at}</span>
-        </div>
-      </a>
-    </Link>
+      <div>
+        <div className={classes.content}>{notification.content}</div>
+        <span className={classes.dateTime}>{notification.created_at}</span>
+      </div>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 import {Avatar, Badge, CircularProgress, Fade, List, Popper} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
-import React, {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 
 import {Notification} from '~/components';
@@ -120,13 +120,13 @@ const Notifications = () => {
     setNotifications({...notifications, notifications: newNotifications});
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user?.noti_unread) {
       setUnread(user?.noti_unread);
     }
   }, [user]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchNotify();
   }, [page]);
 
