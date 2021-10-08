@@ -12,7 +12,8 @@ import {loadingState} from '~/store/loadingState';
 const Product = new ProductService();
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
-    margin: '2rem 0 3rem 0',
+    backgroundImage: 'url("/bg-login.png")',
+    backgroundSize: 'auto',
   },
   gridFilter: {
     '& .MuiSelect-select': {
@@ -98,6 +99,8 @@ export default function FavoriteProducts() {
   const changeFilterCategory = (value) => {
     if (value) {
       setCategoryId(value);
+    } else {
+      setCategoryId('');
     }
   };
 
@@ -135,10 +138,17 @@ export default function FavoriteProducts() {
                     key={product.productId}
                     item={true}
                     md={4}
+                    sm={4}
+                    xs={12}
                   >
                     <ProductWidget
-                      data={product}
+                      data={{
+                        ...product,
+                        is_favorite_product: true,
+                      }}
+                      loadListFavourite={getFavoriteProducts}
                       border={'borderNone'}
+                      heart={true}
                     />
                   </Grid>
                 ))}
