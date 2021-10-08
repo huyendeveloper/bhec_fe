@@ -226,10 +226,6 @@ const ReviewShop = ({productOwner}) => {
                     />
                   )}
                 />
-
-                <p className={classes.guide}>
-                  {''}
-                </p>
               </Grid>
             </Grid>
           </div>

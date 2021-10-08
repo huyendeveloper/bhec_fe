@@ -243,10 +243,6 @@ const ReviewProduct = ({product, images, addImage, removeImage}) => {
                     />
                   )}
                 />
-
-                <p className={classes.guide}>
-                  {''}
-                </p>
               </Grid>
 
               <Grid
