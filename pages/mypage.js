@@ -108,7 +108,7 @@ export default function MyPage() {
   const getListRecommendProducts = async () => {
     const query = {
       page: 1,
-      per_page: 10,
+      per_page: 3,
     };
     const result = await Product.getProducts(query);
     if (result && result.products && result.products.length) {
@@ -213,7 +213,7 @@ export default function MyPage() {
           >
             {recommendProducts.map((product) => (
               <Grid
-                key={product.productId}
+                key={product.id}
                 item={true}
                 sm={4}
                 xs={6}

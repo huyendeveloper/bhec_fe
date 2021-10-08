@@ -76,8 +76,8 @@ const Notifications = () => {
   const user = useRecoilValue(userState);
   const [unread, setUnread] = useState(0);
   // eslint-disable-next-line
-  const [limit, setLimit] = useState(10);
-  const [notifications, setNotifications] = useState([]);
+  const [page, setPage] = useState(1);
+  const [notifications, setNotifications] = useState({});
   const listInnerRef = useRef();
   const [loading, setLoading] = useState(true);
 
@@ -90,26 +90,34 @@ const Notifications = () => {
   };
 
   const onScroll = () => {
-    if (loading || notifications?.total === notifications?.notifications.length) {
+    if (loading || notifications?.page === notifications?.pages) {
       return;
     }
     const {scrollTop, scrollHeight, clientHeight} = listInnerRef.current;
     if (scrollTop + clientHeight > (scrollHeight - 50)) {
       setLoading(true);
-      setLimit(limit + 10);
+      setPage(page + 1);
     }
   };
 
   const fetchNotify = async () => {
     const payload = {
-      page: 1,
-      per_page: limit,
+      page,
+      per_page: 10,
     };
     const res = await NotificationService.getNotification(payload);
     if (res) {
-      setNotifications(res);
+      const oldNotifications = notifications?.notifications || [];
+      const newNotifications = res.notifications;
+      setNotifications({...res, notifications: oldNotifications.concat(newNotifications)});
       setLoading(false);
     }
+  };
+
+  const readedNotify = (id) => {
+    const oldNotifications = notifications?.notifications || [];
+    const newNotifications = oldNotifications.map((obj) => ((obj.id === id) ? {...obj, read: true} : obj));
+    setNotifications({...notifications, notifications: newNotifications});
   };
 
   React.useEffect(() => {
@@ -120,7 +128,7 @@ const Notifications = () => {
 
   React.useEffect(() => {
     fetchNotify();
-  }, [limit]);
+  }, [page]);
 
   return (
     <div
@@ -163,7 +171,7 @@ const Notifications = () => {
                   <Notification
                     key={item.id}
                     notification={item}
-                    fetchNotify={fetchNotify}
+                    readedNotify={readedNotify}
                   />
                 ))
               ) : (

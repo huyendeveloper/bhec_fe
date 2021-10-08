@@ -53,9 +53,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Notification = ({notification, fetchNotify}) => {
+const Notification = ({notification, readedNotify}) => {
   const classes = useStyles();
   const setUser = useSetRecoilState(userState);
+  const url = `/${notification?.type === 1 ? 'product' : 'articles'}/${notification?.notiable_id}`;
 
   const handleRead = async () => {
     if (!notification?.read) {
@@ -64,13 +65,13 @@ const Notification = ({notification, fetchNotify}) => {
         setUser(produce((draft) => {
           draft.noti_unread = res?.noti_unread;
         }));
-        fetchNotify();
+        readedNotify(notification?.id);
       }
     }
   };
 
   return (
-    <Link href={`/${notification?.type === 1 ? 'product' : 'articles'}/${notification?.notiable_id}`}>
+    <Link href={url}>
       <a
         target='_blank'
         className={clsx({[classes.root]: true, [classes.readed]: notification.read})}
@@ -91,7 +92,7 @@ const Notification = ({notification, fetchNotify}) => {
 
 Notification.propTypes = {
   notification: PropTypes.object,
-  fetchNotify: PropTypes.func,
+  readedNotify: PropTypes.func,
 };
 
 export default Notification;
