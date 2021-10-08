@@ -116,7 +116,7 @@ const FormShipping = ({isReadonly}) => {
                           <FormControlLabel
                             key={`address-${item?.id}`}
                             value={`${item?.id}`}
-                            control={<Radio/>}
+                            control={<Radio checked={item.is_default === 1}/>}
                             label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item?.province?.name ?? ''}${item.city}${item.address}`}
                             className={'labelRadioBtn'}
                             disabled={isReadonly}
