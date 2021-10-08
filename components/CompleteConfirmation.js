@@ -162,7 +162,7 @@ const CompleteConfirmation = ({type, isMale = false}) => {
               customBorder={'bdGray'}
               customSize={'extraLarge'}
             >
-              {'ホームページに戻る'}
+              {'TOPページへ戻る'}
             </Button>
           </Link>
         </div>

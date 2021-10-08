@@ -8,6 +8,7 @@ import {
   Radio,
   RadioGroup, Snackbar, TextField,
   useMediaQuery,
+  Button,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {
@@ -21,7 +22,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
 
-import {Alert, Button, ContentBlock, StyledForm} from '~/components';
+import {notFutureDate} from '~/lib/date';
+import {Alert, ContentBlock, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {isInteger} from '~/lib/number';
 import {rules} from '~/lib/validator';
@@ -33,6 +35,35 @@ const Auth = new AuthService();
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
+
+    '& .MuiFormHelperText-root': {
+      display: 'none',
+    },
+  },
+
+  btnSubmit: {
+    width: '22.75rem',
+    fontSize: '1.25rem',
+    fontWeight: '700',
+    background: theme.palette.red.main,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    borderRadius: '3rem',
+    color: theme.palette.background.default,
+    padding: '0.5rem 3rem',
+    height: '64px',
+    '&:hover': {
+      background: theme.palette.red.main,
+      color: theme.palette.background.default,
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      height: '40px',
+      lineHeight: '1.3125rem',
+      width: '14rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
 
   formBlock: {
@@ -78,7 +109,7 @@ export default function BasicInformationUpdate() {
     getListCity();
   }, []);
 
-  const {control, setValue, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
+  const {control, setValue, getValues, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleStopTypeZipcode = (e) => {
@@ -107,7 +138,13 @@ export default function BasicInformationUpdate() {
     if (res.user) {
       setLoading(false);
       for (const property in res.user) {
-        setValue(property, res.user[property]);
+        if (property === 'gender') {
+          if (res.user[property]) {
+            setValue(property, String(res.user[property]));
+          }
+        } else {
+          setValue(property, res.user[property]);
+        }
       }
     }
   };
@@ -123,9 +160,14 @@ export default function BasicInformationUpdate() {
   };
 
   const onSubmit = async (data) => {
+    const payload = {
+      ...data,
+      gender: parseInt(data.gender, 10),
+      dob: data.dob ? formatDate(new Date(data.dob), 'yyyy/MM/dd') : '',
+    };
     setLoading(true);
     setAlerts(null);
-    const res = await Auth.updateInfoUser(data);
+    const res = await Auth.updateInfoUser(payload);
     if (res.user) {
       setLoading(false);
       setAlerts({
@@ -176,7 +218,8 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
-                          md={12}
+                          sm={6}
+                          md={6}
                         >
                           <label
                             htmlFor='nickname'
@@ -220,6 +263,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -265,6 +309,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -310,6 +355,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -322,12 +368,13 @@ export default function BasicInformationUpdate() {
                           <Controller
                             name='gender'
                             control={control}
-                            defaultValue=''
+                            defaultValue='0'
                             rules={{required: '必須項目です。'}}
                             render={({field: {onChange, value}}) => (
                               <RadioGroup
                                 value={value}
                                 onChange={onChange}
+                                error={Boolean(errors.gender)}
                               >
                                 <Box
                                   display='flex'
@@ -337,17 +384,17 @@ export default function BasicInformationUpdate() {
                                   width={'100%'}
                                 >
                                   <FormControlLabel
-                                    value={0}
+                                    value='0'
                                     control={<Radio/>}
                                     label='男性'
                                   />
                                   <FormControlLabel
-                                    value={1}
+                                    value='1'
                                     control={<Radio/>}
                                     label='女性'
                                   />
                                   <FormControlLabel
-                                    value={3}
+                                    value='2'
                                     control={<Radio/>}
                                     label='他'
                                   />
@@ -355,10 +402,23 @@ export default function BasicInformationUpdate() {
                               </RadioGroup>
                             )}
                           />
+                          <ErrorMessage
+                            errors={errors}
+                            name='gender'
+                            render={({messages}) => {
+                              return messages ? Object.entries(messages).map(([type, message]) => (
+                                <p
+                                  className='inputErrorText'
+                                  key={type}
+                                >{`${message}`}</p>
+                              )) : null;
+                            }}
+                          />
                         </Grid>
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -372,25 +432,31 @@ export default function BasicInformationUpdate() {
                             name='dob'
                             control={control}
                             defaultValue={null}
-                            rules={{required: '必須項目です。'}}
+                            rules={{
+                              required: '必須項目です。',
+                              validate: {
+                                checkDayFeature: () => {
+                                  const {dob} = getValues();
+                                  if (!isNaN(new Date(dob).getTime())) {
+                                    return notFutureDate(dob) || '正しく入力してください。';
+                                  }
+                                  return '有効な日付を入力してください。';
+                                },
+                              },
+                            }}
                             render={({field: {value, onChange}}) => (
                               <KeyboardDatePicker
-                                disableToolbar={true}
                                 variant='inline'
                                 format='yyyy/MM/dd'
                                 id='dob'
                                 label='YYYY/MM/DD'
+                                disableOpenPicker={true}
                                 InputLabelProps={{shrink: false}}
                                 value={value}
-                                onChange={(date) => {
-                                  const formattedDate = formatDate(date, 'yyyy/MM/dd');
-                                  onChange(formattedDate);
-                                }}
+                                onChange={onChange}
                                 autoOk={true}
                                 error={Boolean(errors.dob)}
-                                KeyboardButtonProps={{
-                                  'aria-label': 'change date',
-                                }}
+                                keyboardIcon={null}
                               />
                             )}
                           />
@@ -419,6 +485,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -469,6 +536,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -525,6 +593,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -569,6 +638,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -613,6 +683,7 @@ export default function BasicInformationUpdate() {
                         <Grid
                           item={true}
                           xs={12}
+                          sm={6}
                           md={6}
                         >
                           <label
@@ -669,10 +740,9 @@ export default function BasicInformationUpdate() {
                     mt={5}
                   >
                     <Button
-                      variant='pill'
-                      customColor='red'
-                      customSize='extraLarge'
+                      variant='contained'
                       type='submit'
+                      className={classes.btnSubmit}
                     >
                       {'保存する'}
                     </Button>

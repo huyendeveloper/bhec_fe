@@ -1,7 +1,7 @@
 import url from 'url';
 
 import React, {useEffect} from 'react';
-import {Container, Grid, useMediaQuery} from '@material-ui/core';
+import {Container, Grid, useMediaQuery, Link} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
@@ -179,14 +179,16 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
                   sm={6}
                   lg={5}
                 >
-                  <Image
-                    src={article.image_url ?? '/logo.png'}
-                    alt='article'
-                    layout='intrinsic'
-                    width={364}
-                    height={208}
-                    objectFit={article.image_url ? 'cover' : 'contain'}
-                  />
+                  <Link href={`articles/${article.id}`}>
+                    <Image
+                      src={article.image_url ?? '/logo.png'}
+                      alt='article'
+                      layout='intrinsic'
+                      width={364}
+                      height={208}
+                      objectFit={article.image_url ? 'cover' : 'contain'}
+                    />
+                  </Link>
                 </Grid>
                 <Grid
                   item={true}
