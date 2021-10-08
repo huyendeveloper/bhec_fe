@@ -2,7 +2,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {FormControlLabel, makeStyles, Radio, RadioGroup, useMediaQuery, useTheme} from '@material-ui/core';
 import produce from 'immer';
 import PropTypes from 'prop-types';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 
@@ -41,7 +41,7 @@ const FormShipping = ({isReadonly}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const [openAddAddress, setOpenAddAddress] = React.useState(false);
   const [user, setUser] = useRecoilState(userState);
-  const [loaded, setLoaded] = React.useState(false);
+  const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
 
   const setDefaultAdressShipping = () => {
