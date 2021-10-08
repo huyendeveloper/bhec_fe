@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'auto',
   },
   gridFilter: {
+    display: 'flex',
+    justifyContent: 'flex-end',
     '& .MuiSelect-select': {
       width: '8rem',
     },
@@ -155,7 +157,6 @@ export default function FavoriteProducts() {
                 <Grid
                   item={true}
                   xs={12}
-                  className={classes.gridFilter}
                 >
                   {favoriteProducts?.length > 0 && totalPage > 0 &&
                     <Pagination
