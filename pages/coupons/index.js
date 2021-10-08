@@ -94,7 +94,7 @@ const Coupons = () => {
       }),
     );
 
-    return 0;
+    return response?.user;
   };
 
   const fetchCoupons = async (targetPage = 1) => {
@@ -116,7 +116,7 @@ const Coupons = () => {
 
     setCanLoadMore(haveNextPage);
 
-    return 0;
+    return userCoupons;
   };
 
   const loadMoreCoupons = () => {
@@ -148,7 +148,7 @@ const Coupons = () => {
       });
     }
 
-    return 0;
+    return userCoupon;
   };
 
   const useCoupon = (coupon) => {
