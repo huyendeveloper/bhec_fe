@@ -336,7 +336,7 @@ const Footer = (props) => {
                   className={classes.lastGrid}
                 >
                   <Link
-                    href='/about'
+                    href='/company'
                     color='inherit'
                   >
                     <span>{'会社概要'}</span>
