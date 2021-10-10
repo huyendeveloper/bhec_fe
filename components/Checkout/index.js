@@ -18,6 +18,7 @@ import FormCoupon from './FormCoupon';
 
 import {userState} from '~/store/userState';
 import {orderState} from '~/store/orderState';
+import FormKombini from '~/components/Checkout/FormKombini';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Checkout = () => {
   const classes = useStyles();
-  const {handleSubmit, ...methods} = useForm({criteriaMode: 'all'});
+  const {handleSubmit, watch, ...methods} = useForm({criteriaMode: 'all'});
   const user = useRecoilValue(userState);
   const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
@@ -99,7 +100,15 @@ const Checkout = () => {
 
           <FormPaymentMethods/>
 
-          <FormCreditCard/>
+          {/* creditcard payment */}
+          {parseInt(watch('payment_method'), 10) === 1 && (
+            <FormCreditCard/>
+          )}
+
+          {/* kombini (cvs) payment */}
+          {parseInt(watch('payment_method'), 10) === 3 && (
+            <FormKombini/>
+          )}
 
           <FormCoupon/>
 

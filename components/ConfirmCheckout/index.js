@@ -5,6 +5,8 @@ import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
+import {find, get} from 'lodash';
+
 import Button from '../Button';
 import {AlertMessageForSection, StyledForm} from '..';
 
@@ -18,6 +20,7 @@ import {userState} from '~/store/userState';
 import {billState, cartState} from '~/store/cartState';
 import {CommonService, OrderService, PaymentService} from '~/services';
 import {format as formatNumber} from '~/lib/number';
+import {order as orderConstants} from '~/constants';
 
 const Payment = new PaymentService();
 
@@ -68,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.5rem',
     margin: '0',
   },
+  totalRow: {
+    margin: theme.spacing(2, 0, 4),
+  },
 }));
 
 const ConfirmCheckout = () => {
@@ -85,26 +91,21 @@ const ConfirmCheckout = () => {
 
   const fetchAddressData = async () => {
     const res = order?.addressShipping ? await CommonService.getAddress(order?.addressShipping) : null;
-    if (!res?.address) {
-      router.push('/404');
+    if (res?.address) {
+      setAddressData(res.address);
     }
-    if (cart.items.length === 0) {
-      router.push('/cart');
-    }
-    setAddressData(res.address);
   };
 
   const fetchCardData = async () => {
     const res = order?.creditCard ? await Payment.getDetailCard(order?.creditCard) : null;
-    if (!res?.card) {
-      router.push('/404');
-    }
     setCardData(res.card);
   };
 
   useEffect(() => {
     fetchAddressData();
-    fetchCardData();
+    if (parseInt(order?.payment_method, 10) === 1) {
+      fetchCardData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // eslint-disable-next-line no-warning-comments
@@ -177,13 +178,6 @@ const ConfirmCheckout = () => {
           tel: shippingAddress?.tel,
           province: {name: shippingAddress?.province?.name},
         },
-        card: {
-          expiration_date: card?.expiration_date,
-          holder_name: card?.holder_name,
-          req_number: card?.req_number,
-          card_type: card?.card_type,
-          cvc_code: card?.cvc_code,
-        },
         user: {
           email: order?.email,
           nickname: order?.nickname,
@@ -191,15 +185,43 @@ const ConfirmCheckout = () => {
           password_confirmation: order?.confirm,
         },
       };
+      if (parseInt(order?.payment_method, 10) === 1) {
+        // creditcard payment
+        orderDetails = {
+          ...orderDetails,
+          card: {
+            expiration_date: card?.expiration_date,
+            holder_name: card?.holder_name,
+            req_number: card?.req_number,
+            card_type: card?.card_type,
+            cvc_code: card?.cvc_code,
+          },
+        };
+      }
     }
 
     if (user?.isAuthenticated) {
       orderDetails = {
         ...orderDetails,
         address_id: order?.addressShipping,
-        card_id: order?.creditCard,
         address: shippingAddress,
-        card,
+      };
+      if (parseInt(order?.payment_method, 10) === 1) {
+        // creditcard payment
+        orderDetails = {
+          ...orderDetails,
+          card_id: order?.creditCard,
+          card,
+        };
+      }
+    }
+
+    if (parseInt(order?.payment_method, 10) === 3) {
+      // kombini payment
+      orderDetails = {
+        ...orderDetails,
+        service_option_type: order?.service_option_type,
+        phone_no: order?.phone_no,
       };
     }
 
@@ -210,7 +232,12 @@ const ConfirmCheckout = () => {
         setUser({});
       }
       setCart({items: [], seller: null});
-      setOrder({order_number: result?.order.order_number});
+      setOrder({
+        id: result?.order?.id,
+        payment_method: result?.order?.payment_method,
+        order_number: result?.order?.order_number,
+        kombini_info: result?.kombini_info,
+      });
 
       router.push('/order-form/successded');
     } else {
@@ -295,6 +322,26 @@ const ConfirmCheckout = () => {
             </div>
           }
 
+          {parseInt(order?.payment_method, 10) === 3 &&
+            <div className={classes.infoBlock}>
+              <Typography
+                component='h3'
+                className={classes.infoBlockTitle}
+              >
+                {'コンビニでのお支払い'}
+              </Typography>
+
+              <div className={classes.infoBlockContent}>
+                <Typography component='p'>
+                  <span>{`支払先コンビニ： ${get(find(orderConstants.kombiniPayment, ['value', order.service_option_type]), 'label', '')}`}</span>
+                </Typography>
+                <Typography component='p'>
+                  <span>{`支払者電話番号： ${get(order, 'phone_no', '')}`}</span>
+                </Typography>
+              </div>
+            </div>
+          }
+
           {/*<FormCoupon isReadonly={true}/>*/}
 
           {order?.note?.length > 0 && (
@@ -367,7 +414,7 @@ const ConfirmCheckout = () => {
 
           <Divider/>
 
-          <div className={classes.calculatedBill}>
+          <div className={classes.totalRow}>
             <div
               className={classes.row}
             >
