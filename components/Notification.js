@@ -1,8 +1,12 @@
-import {makeStyles} from '@material-ui/core/styles';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
 import {Avatar} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
+import produce from 'immer';
+import PropTypes from 'prop-types';
+import {useSetRecoilState} from 'recoil';
+
+import {NotificationService} from '~/services';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,27 +52,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Notification = ({notification}) => {
+const Notification = ({notification, readedNotify}) => {
   const classes = useStyles();
+  const setUser = useSetRecoilState(userState);
+  const url = `/${notification?.type === 1 ? 'product' : 'articles'}/${notification?.notiable_id}`;
+
+  const handleRead = async () => {
+    if (!notification?.read) {
+      const res = await NotificationService.markReaded({id: notification?.id});
+      if (res?.noti_unread) {
+        setUser(produce((draft) => {
+          draft.noti_unread = res?.noti_unread;
+        }));
+        readedNotify(notification?.id);
+      }
+    }
+    window.open(url, '_blank');
+  };
 
   return (
-    <Link href='/product'>
-      <a className={clsx({[classes.root]: true, [classes.readed]: notification.readed})}>
-        <Avatar
-          src={notification.readed ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
-        />
+    <div
+      className={clsx({[classes.root]: true, [classes.readed]: notification.read})}
+      onClick={handleRead}
+    >
+      <Avatar
+        src={notification.read ? '/img/icons/mail_opened.png' : '/img/icons/new_email.png'}
+      />
 
-        <div>
-          <div className={classes.content}>{notification.content}</div>
-          <span className={classes.dateTime}>{notification.dateTime}</span>
-        </div>
-      </a>
-    </Link>
+      <div>
+        <div className={classes.content}>{notification.content}</div>
+        <span className={classes.dateTime}>{notification.created_at}</span>
+      </div>
+    </div>
   );
 };
 
 Notification.propTypes = {
   notification: PropTypes.object,
+  readedNotify: PropTypes.func,
 };
 
 export default Notification;

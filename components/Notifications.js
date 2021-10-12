@@ -1,10 +1,12 @@
+import {Avatar, Badge, CircularProgress, Fade, List, Popper} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import {useState} from 'react';
-import {Fade, Popper, List, Badge, Avatar} from '@material-ui/core';
+import {useEffect, useRef, useState} from 'react';
+import {useRecoilValue} from 'recoil';
 
 import {Notification} from '~/components';
+import {NotificationService} from '~/services';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,10 +69,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Notifications = ({notifications}) => {
+const Notifications = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const user = useRecoilValue(userState);
+  const [unread, setUnread] = useState(0);
+  // eslint-disable-next-line
+  const [page, setPage] = useState(1);
+  const [notifications, setNotifications] = useState({});
+  const listInnerRef = useRef();
+  const [loading, setLoading] = useState(true);
 
   const showNotification = (e) => {
     if (e.type === 'mouseenter') {
@@ -79,6 +88,47 @@ const Notifications = ({notifications}) => {
       setAnchorEl(null);
     }
   };
+
+  const onScroll = () => {
+    if (loading || notifications?.page === notifications?.pages) {
+      return;
+    }
+    const {scrollTop, scrollHeight, clientHeight} = listInnerRef.current;
+    if (scrollTop + clientHeight > (scrollHeight - 50)) {
+      setLoading(true);
+      setPage(page + 1);
+    }
+  };
+
+  const fetchNotify = async () => {
+    const payload = {
+      page,
+      per_page: 10,
+    };
+    const res = await NotificationService.getNotification(payload);
+    if (res) {
+      const oldNotifications = notifications?.notifications || [];
+      const newNotifications = res.notifications;
+      setNotifications({...res, notifications: oldNotifications.concat(newNotifications)});
+      setLoading(false);
+    }
+  };
+
+  const readedNotify = (id) => {
+    const oldNotifications = notifications?.notifications || [];
+    const newNotifications = oldNotifications.map((obj) => ((obj.id === id) ? {...obj, read: true} : obj));
+    setNotifications({...notifications, notifications: newNotifications});
+  };
+
+  useEffect(() => {
+    if (user?.noti_unread) {
+      setUnread(user?.noti_unread);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchNotify();
+  }, [page]);
 
   return (
     <div
@@ -93,7 +143,7 @@ const Notifications = ({notifications}) => {
         }}
         className={classes.badge}
         badgeContent={
-          notifications?.length ? (<div className={classes.notificationsNumber}>{notifications.length}</div>) : null
+          <div className={classes.notificationsNumber}>{unread}</div>
         }
       >
         <Avatar
@@ -111,19 +161,29 @@ const Notifications = ({notifications}) => {
       >
         {({TransitionProps}) => (
           <Fade {...TransitionProps}>
-            <List className={classes.notificationsBox}>
-              {notifications.length > 0 &&
-              notifications.map((item) => (
-                <Notification
-                  key={item.id}
-                  notification={item}
-                />
-              ))}
-
-              {(!notifications || notifications.length < 1) &&
-              <div className={classes.noNotifications}>
-                {'通知はありません。'}
-              </div>}
+            <List
+              className={classes.notificationsBox}
+              onScroll={() => onScroll()}
+              ref={listInnerRef}
+            >
+              {notifications?.notifications?.length > 0 ? (
+                notifications?.notifications.map((item) => (
+                  <Notification
+                    key={item.id}
+                    notification={item}
+                    readedNotify={readedNotify}
+                  />
+                ))
+              ) : (
+                <div className={classes.noNotifications}>
+                  {'通知はありません。'}
+                </div>
+              )}
+              {loading &&
+                <div style={{textAlign: 'center'}}>
+                  <CircularProgress color={'inherit'}/>
+                </div>
+              }
             </List>
           </Fade>
         )}
@@ -133,7 +193,6 @@ const Notifications = ({notifications}) => {
 };
 
 Notifications.propTypes = {
-  notifications: PropTypes.array,
 };
 
 export default Notifications;
