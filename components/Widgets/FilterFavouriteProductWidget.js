@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
     width: 'max-content',
     zIndex: '1001',
     justifyContent: 'flex-end',
-    position: 'relative',
   },
   filter: {
     border: `1px solid ${theme.palette.black4.main}`,
@@ -65,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
   searchBox: {
     position: 'absolute',
-    top: '52px',
+    top: '68px',
     width: 'auto',
     padding: '1.5rem 3rem',
     background: 'white',
