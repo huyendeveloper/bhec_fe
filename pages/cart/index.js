@@ -89,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   buttons: {
+    marginTop: '1.25rem',
     [theme.breakpoints.down('xs')]: {
       '& button': {
         width: '100%',
@@ -267,7 +268,7 @@ export default function Cart() {
                 <Button
                   variant='pill'
                   customColor='white'
-                  customBorder='bdGray'
+                  customBorder='bdBlack'
                   customSize='extraLarge'
                   onClick={() => router.push('/products')}
                 >

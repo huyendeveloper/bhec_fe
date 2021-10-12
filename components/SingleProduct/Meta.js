@@ -39,7 +39,7 @@ const Meta = () => {
                 <TableCell align='left'>{shippingDate}</TableCell>
               </TableRow>
             )}
-            {shippingDays.length > 0 && (
+            {shippingDays.length > 0 && shippingDays !== 'null' && (
               <TableRow>
                 <TableCell
                   component='th'

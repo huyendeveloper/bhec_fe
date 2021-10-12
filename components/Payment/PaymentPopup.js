@@ -291,6 +291,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
         aria-labelledby='customized-dialog-title'
         open={open}
         maxWidth='lg'
+        disableBackdropClick={true}
         classes={{
           root: classes.root,
         }}

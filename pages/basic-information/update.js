@@ -146,6 +146,7 @@ export default function BasicInformationUpdate() {
           setValue(property, res.user[property]);
         }
       }
+      setValue('province_id', res?.province?.id || 1);
     }
   };
 
@@ -499,7 +500,10 @@ export default function BasicInformationUpdate() {
                             name='zipcode'
                             control={control}
                             defaultValue=''
-                            rules={{required: rules.required}}
+                            rules={{
+                              required: rules.required,
+                              pattern: rules.isZipcode,
+                            }}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='zipcode'

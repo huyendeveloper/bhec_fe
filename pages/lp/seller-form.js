@@ -648,7 +648,10 @@ export default function SellerForm() {
                             name='zipcode'
                             control={control}
                             defaultValue=''
-                            rules={{required: rules.required}}
+                            rules={{
+                              required: rules.required,
+                              pattern: rules.isZipcode,
+                            }}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='zipcode'
