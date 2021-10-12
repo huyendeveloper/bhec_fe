@@ -43,12 +43,11 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
-
   const setDefaultAdressShipping = () => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);
       if (addressDefault?.id) {
-        return addressDefault?.id;
+        return String(addressDefault?.id);
       }
     }
     return '';
@@ -124,7 +123,7 @@ const FormShipping = ({isReadonly}) => {
                           <FormControlLabel
                             key={`address-${item?.id}`}
                             value={`${item?.id}`}
-                            control={<Radio checked={item.is_default === 1}/>}
+                            control={<Radio/>}
                             label={`住所${index + 1}  ${item.name}、${item.zipcode}、${item?.province?.name ?? ''}${item.city}${item.address}`}
                             className={'labelRadioBtn'}
                             disabled={isReadonly}

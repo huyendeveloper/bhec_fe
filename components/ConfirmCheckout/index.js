@@ -91,7 +91,7 @@ const ConfirmCheckout = () => {
     if (cart.items.length === 0) {
       router.push('/cart');
     }
-    setAddressData(res.address);
+    setAddressData(res?.address);
   };
 
   const fetchCardData = async () => {
@@ -204,13 +204,14 @@ const ConfirmCheckout = () => {
     }
 
     const result = await OrderService.createOrder(orderDetails);
-    if (result?.order) {
+    if (result?.orders && result?.orders?.length) {
       if (!user?.isAuthenticated) {
         // remove temporarily addresses, cards
         setUser({});
       }
       setCart({items: [], seller: null});
-      setOrder({order_number: result?.order.order_number});
+      const orderNumber = result?.orders.map((item) => item.order_number).join(', ');
+      setOrder({order_number: orderNumber});
 
       router.push('/order-form/successded');
     } else {
