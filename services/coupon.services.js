@@ -4,7 +4,13 @@ import {axios} from '~/modules/axios';
 const CouponService = {
   getCoupons,
   addCoupons,
+  getCouponDetails,
 };
+
+async function getCouponDetails(payload) {
+  const {data} = await axios.post('/coupons/check_valid', payload);
+  return data;
+}
 
 async function getCoupons(payload) {
   try {
