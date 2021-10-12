@@ -49,9 +49,7 @@ const notifications = [];
 const buttonLinks = [
   {id: 1, label: '基本情報', url: '/basic-information'},
   {id: 2, label: 'お届け先情報', url: '/delivery-info'},
-
-  // TODO: not implement yet
-  {id: 4, label: '割引クーポン', url: '/'},
+  {id: 4, label: '割引クーポン', url: '/coupons'},
 
   // TODO: not implement yet
   {id: 5, label: 'お問い合わせ一覧', url: '/contacts'},
