@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '0px',
     display: 'flex',
     alignItems: 'center',
-    width: '100%',
+    width: 'max-content',
     zIndex: '1001',
     justifyContent: 'flex-end',
     position: 'relative',
