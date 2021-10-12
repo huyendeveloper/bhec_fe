@@ -20,7 +20,16 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     margin: '0 auto 4rem',
     '& button': {
-      width: '30%',
+      width: '22.75rem',
+      fontSize: '1rem',
+      [theme.breakpoints.down('sm')]: {
+        width: '14rem',
+        minWidth: '14rem',
+        fontSize: '0.875rem',
+      },
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
     },
     [theme.breakpoints.down('sm')]: {
       marginBottom: '2.5rem',
