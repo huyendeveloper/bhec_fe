@@ -284,15 +284,11 @@ export default function BasicInformation() {
                 md={8}
               >
                 { user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? <>
-                  <span>{`〒${user.zipcode}`}</span>
-                  <br/>
-                  <span>{user.district}</span>
-                  <br/>
-                  {province && <span>{`${province?.name}`}</span>} {user.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''}
-                  <br/>
-                  <span>{user.office_room}</span>
-                  <br/>
-                  <span>{user.phone_no}</span>
+                  {user?.name} <br/>
+                  {`〒${user?.zipcode}`} <br/>
+                  {`${province?.name}`} {user?.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''} <br/>
+                  {user?.office_room} <br/>
+                  {user?.phone_no}
                 </> : <span className={classes.textDisable}>{'未登録'}</span>
                 }
               </Grid>
