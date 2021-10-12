@@ -133,6 +133,7 @@ export default function MyPage() {
 
     setUser(produce((draft) => {
       draft.profile = response?.user;
+      draft.noti_unread = response?.noti_unread;
     }));
   };
 
@@ -212,7 +213,7 @@ export default function MyPage() {
           >
             {recommendProducts.map((product) => (
               <Grid
-                key={product.productId}
+                key={product.id}
                 item={true}
                 sm={4}
                 xs={6}
