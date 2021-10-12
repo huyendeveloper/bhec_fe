@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable guard-for-in */
 import DateFnsUtils from '@date-io/date-fns';
 import {ErrorMessage} from '@hookform/error-message';
@@ -351,6 +352,63 @@ export default function BasicInformationUpdate() {
                             }}
                           />
                         </Grid>
+                        <Grid
+                          item={true}
+                          xs={12}
+                          sm={6}
+                          md={6}
+                        >
+                          <label
+                            htmlFor='email'
+                            className='formControlLabel'
+                          >
+                            {'メールアドレス '}
+                            <span className='formControlRequired'>{'*'}</span>
+                          </label>
+                          <Controller
+                            name='email'
+                            control={control}
+                            defaultValue=''
+                            rules={{
+                              required: '必須項目です。',
+                              pattern: {
+                                value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                message: '無効なメールアドレスです。',
+                              },
+                            }}
+                            render={({field: {name, value, ref, onChange}}) => (
+                              <TextField
+                                id='email'
+                                variant='outlined'
+                                placeholder='oshinagaki@gmail.com'
+                                error={Boolean(errors.email)}
+                                InputLabelProps={{shrink: false}}
+                                name={name}
+                                maxLength={254}
+                                onInput={(e) => {
+                                  e.target.value = e.target.value.slice(0, 254);
+                                }}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              />
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name='email'
+                            render={({messages}) => {
+                              return messages ? Object.entries(messages).map(([type, message]) => (
+                                <p
+                                  className='inputErrorText'
+                                  key={type}
+                                >
+                                  {message}
+                                </p>
+                              )) : null;
+                            }}
+                          />
+                        </Grid>
 
                         <Grid
                           item={true}
@@ -544,7 +602,6 @@ export default function BasicInformationUpdate() {
                             className='formControlLabel'
                           >
                             {'都道府県 '}
-                            <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='province_id'
