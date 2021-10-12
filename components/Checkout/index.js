@@ -75,6 +75,18 @@ const Checkout = () => {
   //   };
   // }, [isReadonly]);
 
+  const validate = () => {
+    const getValues = methods?.getValues;
+    const data = getValues();
+    if (!data?.addressShipping) {
+      router.push('#addressShipping');
+      return;
+    }
+    if (!data?.creditCard) {
+      router.push('#creditCard');
+    }
+  };
+
   const handleConfirmClick = (data) => {
     setOrder({...data, coupon_code: order?.coupon_code || '', discount: order?.discount || 0});
     router.push('/order-form/confirm');
@@ -118,6 +130,7 @@ const Checkout = () => {
               customColor='red'
               customSize='extraLarge'
               type='submit'
+              onClick={validate}
             >
               {'確認画面へ'}
             </Button>

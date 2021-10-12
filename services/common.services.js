@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {api} from '~/lib/api';
+import {errorMessage} from '~/constants';
 
 const CommonService = {
   getPrefectures,
@@ -28,9 +29,10 @@ async function getPrefectures() {
 }
 
 async function getAddresses() {
-  const [data, errors] = await api.get('/addresses');
-  if (errors.length) {
-    return parserError(errors);
+  const [data, , , error_code] = await api.get('/addresses');
+  if (error_code) {
+    const message = errorMessage.find((item) => item.code === error_code)?.message;
+    return message;
   }
   return data;
 }

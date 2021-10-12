@@ -103,6 +103,7 @@ const FormShipping = ({isReadonly}) => {
             <BlockForm
               themeStyle={'gray'}
               title={'お届け先の住所'}
+              id={'addressShipping'}
             >
               {loaded &&
                 <>

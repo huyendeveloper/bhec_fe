@@ -63,6 +63,7 @@ const DialogWidget = (props) => {
         aria-labelledby='customized-dialog-title'
         open={open}
         maxWidth={size}
+        disableBackdropClick={true}
       >
         <DialogTitle
           id='customized-dialog-title'

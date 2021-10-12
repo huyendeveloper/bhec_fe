@@ -648,7 +648,10 @@ export default function SellerForm() {
                             name='zipcode'
                             control={control}
                             defaultValue=''
-                            rules={{required: rules.required}}
+                            rules={{
+                              required: rules.required,
+                              pattern: rules.isZipcode,
+                            }}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='zipcode'
@@ -715,6 +718,7 @@ export default function SellerForm() {
                                   value={value}
                                   inputRef={ref}
                                   onChange={onChange}
+                                  style={value === 1 ? {color: '#757575'} : null}
                                 >
                                   {prefectures.map((pref) => (
                                     <option
