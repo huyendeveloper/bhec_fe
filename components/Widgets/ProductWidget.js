@@ -8,14 +8,13 @@ import CardMedia from '@material-ui/core/CardMedia';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
+import {get} from 'lodash';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
-import React from 'react';
+import {useState} from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
-
-import {get} from 'lodash';
 
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
@@ -129,6 +128,10 @@ const useStyles = makeStyles((theme) => ({
   borderNone: {
     boxShadow: 'none',
   },
+  redChip: {
+    backgroundColor: `${theme.palette.red.main} !important`,
+    color: theme.palette.white.main,
+  },
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -139,7 +142,9 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
   const router = useRouter();
   const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
-  const [isLike, setIsLike] = React.useState(data?.is_favorite_product || false);
+  const [isLike, setIsLike] = useState(data?.is_favorite_product || false);
+
+  const isInStock = data?.quantity > 0 && data?.maximum_quantity;
 
   if (!data) {
     return null;
@@ -217,6 +222,13 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
             className={classes.linkName}
           >
             <div className={classes.productTags}>
+              {!isInStock &&
+                <Chip
+                  size='small'
+                  label={'売り切れ'}
+                  className={classes.redChip}
+                />
+              }
               {tags && tags.length > 0 ? tags.map((tag, index) => {
                 return (
                   <Chip

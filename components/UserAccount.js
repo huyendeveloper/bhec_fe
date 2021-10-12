@@ -1,11 +1,16 @@
 import {Avatar, Badge, Input} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
+import produce from 'immer';
 import {useRouter} from 'next/router';
 import {useEffect, useState} from 'react';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
+import {AuthService, CommonService} from '~/services';
+import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
+
+const Auth = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,11 +80,11 @@ const useStyles = makeStyles((theme) => ({
 
 const UserAccount = () => {
   const classes = useStyles();
-  const user = useRecoilValue(userState);
   const [changeNameStatus, setchangeNameStatus] = useState(false);
   const [username, setUsername] = useState();
-  const [imagePreview, setImagePreview] = useState();
   const router = useRouter();
+  const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
 
   const handleUpdateStatus = () => {
     setchangeNameStatus(!changeNameStatus);
@@ -96,24 +101,28 @@ const UserAccount = () => {
   };
 
   // eslint-disable-next-line no-unused-vars
-  const handleChange = (e) => {
-    const newImage = e.target.files[0];
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
-    };
-
-    reader.readAsDataURL(newImage);
-
-    // eslint-disable-next-line no-warning-comments
-    // TODO: send new image to API for updating avatar
+  const handleChange = async (e) => {
+    setLoading(true);
+    const newImages = e.target.files[0];
+    if (newImages) {
+      const bodyFormData = new FormData();
+      bodyFormData.append('images[]', newImages);
+      const result = await CommonService.uploadFile(bodyFormData);
+      if (result && result.urls && result.urls.length) {
+        const res = await Auth.updateInfoUser({avatar: result.urls[0]});
+        if (res) {
+          setUser(produce((draft) => {
+            draft.profile = {...user?.profile, avatar: res?.user?.avatar};
+          }));
+        }
+      }
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
     if (user?.isAuthenticated) {
       setUsername(user?.profile?.nickname ?? user?.profile?.email);
-      setImagePreview(user?.profile?.avatar_url);
     } else {
       router.push('/auth/login');
     }
@@ -131,9 +140,7 @@ const UserAccount = () => {
         className={classes.badge}
         badgeContent={
           <>
-            {/* eslint-disable-next-line no-warning-comments */}
-            {/* TODO: not ready yet */}
-            {/* <Avatar
+            <Avatar
               alt={'アバター変更'}
               src={'/img/icons/camera.png'}
               className={classes.changeAvatarBtn}
@@ -145,13 +152,13 @@ const UserAccount = () => {
               id='image'
               onChange={handleChange}
               className={classes.uploadInput}
-            /> */}
+            />
           </>
         }
       >
         <Avatar
           className={classes.avatar}
-          src={imagePreview}
+          src={user?.profile?.avatar}
         />
       </Badge>
 

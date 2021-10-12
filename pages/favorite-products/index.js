@@ -109,7 +109,7 @@ export default function FavoriteProducts() {
   };
 
   return (
-    <DefaultLayout title='Favorite Product - Oshinagaki Store'>
+    <DefaultLayout title='お気に入り商品一覧'>
       <div className={'page'}>
         <div className='content'>
           <ContentBlock

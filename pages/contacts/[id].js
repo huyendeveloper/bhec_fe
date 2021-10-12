@@ -8,17 +8,15 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import Image from 'next/image';
 
+import {format} from '~/lib/date';
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContactService} from '~/services';
 const ContactCommon = new ContactService();
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-
-  },
   contactBox: {
-    padding: '1.5rem 2rem',
+    padding: '2rem 1.5rem',
     background: theme.palette.white.main,
     border: '1px solid #DBDBDB',
     borderRadius: '4px',
@@ -42,10 +40,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   infoBlockContent: {
-    margin: '0.5rem',
     flexWrap: 'wrap',
     '& p': {
-      margin: '3px 0',
       display: 'flex',
       fontSize: '0.875rem',
     },
@@ -86,6 +82,9 @@ const useStyles = makeStyles((theme) => ({
   infoBlockImage: {
     marginTop: '1.875rem',
   },
+  createdDate: {
+    marginBottom: '0.688rem',
+  },
 }));
 
 const Contacts = () => {
@@ -125,6 +124,14 @@ const Contacts = () => {
           >
             <div className={classes.infoBlock}>
               <div className={classes.infoBlockContent}>
+                {contact?.created_at &&
+                  <Typography
+                    component='p'
+                    className={classes.createdDate}
+                  >
+                    {format(contact?.created_at, 'dateTime1')}
+                  </Typography>
+                }
                 <Typography component='p'>
                   <span className={classes.title}>{'氏名 :'}</span>
                   {contact?.name}

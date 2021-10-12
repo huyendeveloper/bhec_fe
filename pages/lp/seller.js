@@ -9,42 +9,12 @@ import Router from 'next/router';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock, Button, Medias} from '~/components';
 import {FeatureWidget, TopBannerWidget, SpecificationsWidget, StepWidget as ProductArrivalStep} from '~/components/Widgets';
+import {medias} from '~/constants';
 
 export default function Seller() {
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-
-  const medias = [
-    {
-      id: 1,
-      image: '/img/media/media1.png',
-      time: '2021/07/15',
-      content: '畑や果樹の権利、すし職人の所作をデジタルデータに【お金の学校】',
-      url: 'https://www.google.co.jp/amp/s/news.yahoo.co.jp/amp/articles/bb8b83aecdfeb420a3f9b4f2a4ab6d65f4501698',
-    },
-    {
-      id: 2,
-      image: '/img/media/media2.png',
-      time: '2021/07/15',
-      content: 'Branding House、地域貢献型ECサイト「おしながき」を9月開設 日本の伝統や農業の課題解決目指す',
-      url: 'https://ecnomikata.com/ecnews/31231/',
-    },
-    {
-      id: 3,
-      image: '/img/media/media3.png',
-      time: '2021/07/15',
-      content: 'Branding House、地域貢献型ECサイト「おしながき」を9月開設 日本の伝統や農業の課題解決目指す',
-      url: 'https://netkeizai.com/articles/detail/4265',
-    },
-    {
-      id: 4,
-      image: '/img/media/media4.png',
-      time: '2021/07/15',
-      content: '【EC×ブロックチェーン】農産物だけでなく土地そのものも取引可能なECサイト『おしながき』がリリースへ',
-      url: 'https://news.goo.ne.jp/article/netkeizai/business/netkeizai-4265.html',
-    },
-  ];
 
   const callToAction = () => {
     Router.push('/lp/seller-form');

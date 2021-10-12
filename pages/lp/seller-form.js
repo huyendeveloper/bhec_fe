@@ -303,7 +303,7 @@ export default function SellerForm() {
   );
 
   return (
-    <DefaultLayout title='Seller Form - Oshinagaki Store'>
+    <DefaultLayout title='出品者応募フォーム'>
       <div className={classes.root}>
         <TopBannerWidget
           variant='titleBanner'

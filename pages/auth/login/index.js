@@ -416,7 +416,7 @@ const Login = () => {
   };
 
   return (
-    <DefaultLayout title='Login - Oshinagaki Store'>
+    <DefaultLayout title='ログイン'>
       <div className={classes.root}>
         <div className={classes.header}>
           <div>
