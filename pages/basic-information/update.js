@@ -569,6 +569,7 @@ export default function BasicInformationUpdate() {
                                   value={value}
                                   inputRef={ref}
                                   onChange={onChange}
+                                  style={value === 1 ? {color: '#757575'} : null}
                                 >
                                   {listCity.map((c, index) => (
                                     <option

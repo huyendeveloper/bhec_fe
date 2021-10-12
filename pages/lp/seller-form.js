@@ -718,6 +718,7 @@ export default function SellerForm() {
                                   value={value}
                                   inputRef={ref}
                                   onChange={onChange}
+                                  style={value === 1 ? {color: '#757575'} : null}
                                 >
                                   {prefectures.map((pref) => (
                                     <option
