@@ -428,7 +428,7 @@ export default function ContactPage() {
                         >
                           <span>{'法人のお客様は'}</span>
                           <a
-                            href='mailto:oshinagaki@gmail.com'
+                            href='mailto:business@oshinagaki-store.com'
                             target='_blank'
                             className='formBlockLink'
                             rel='noreferrer'
@@ -449,7 +449,7 @@ export default function ContactPage() {
                         >
                           <span>{'法人のお客様は'}</span>
                           <a
-                            href='mailto:oshinagaki@gmail.com'
+                            href='mailto:business@oshinagaki-store.com'
                             target='_blank'
                             className='formBlockLink'
                             rel='noreferrer'
