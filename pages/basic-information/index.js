@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock} from '~/components';
-import {AuthService, CommonService} from '~/services';
+import {AuthService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 const Auth = new AuthService();
 const useStyles = makeStyles((theme) => ({
@@ -68,11 +68,9 @@ export default function BasicInformation() {
   const classes = useStyles();
   const [user, setUser] = useState({});
   const [province, setProvince] = useState({});
-  const [listCity, setListCity] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
-    getListCity();
     getDetailUser();
   }, []);
 
@@ -94,13 +92,6 @@ export default function BasicInformation() {
 
   const formatDob = (dob) => {
     return moment(dob).format('yyyy/MM/DD');
-  };
-
-  const getListCity = async () => {
-    const res = await CommonService.getPrefectures();
-    if (res && res.length) {
-      setListCity(res);
-    }
   };
 
   const genderTemplate = (gender) => {
@@ -286,7 +277,7 @@ export default function BasicInformation() {
                 { user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? <>
                   {user?.name} <br/>
                   {`〒${user?.zipcode}`} <br/>
-                  {`${province?.name}`} {user?.city && listCity ? <span>{listCity.find((item) => item.id === parseInt(user.city, 10)) ? listCity.find((item) => item.id === parseInt(user.city, 10)).name : ''}</span> : ''} <br/>
+                  {province?.name} {user?.city} <br/>
                   {user?.office_room} <br/>
                   {user?.phone_no}
                 </> : <span className={classes.textDisable}>{'未登録'}</span>
