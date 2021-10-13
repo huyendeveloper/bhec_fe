@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   searchBox: {
     position: 'absolute',
     top: '68px',
-    width: 'auto',
+    width: 'max-content',
     padding: '1.5rem 3rem',
     background: 'white',
     border: '1px solid #DBDBDB',
