@@ -64,13 +64,14 @@ const ActionButtons = () => {
       const items = [...cart.items];
       const isExisting = items.findIndex((item) => item.productDetail?.id === product.productDetail?.id);
 
-      if (cart.seller?.id !== product.sellerInfo.id) {
-        setAlerts({
-          type: 'warning',
-          message: 'カートに他の出品者からの商品があります。',
-        });
-        return false;
-      } else if (isExisting >= 0) {
+      // if (cart.seller?.id !== product.sellerInfo.id) {
+      //   setAlerts({
+      //     type: 'warning',
+      //     message: 'カートに他の出品者からの商品があります。',
+      //   });
+      //   return false;
+      // } else
+      if (isExisting >= 0) {
         setCart(produce((draft) => {
           draft.items[isExisting].quantity += parseInt(product.quantity, 10);
         }));
