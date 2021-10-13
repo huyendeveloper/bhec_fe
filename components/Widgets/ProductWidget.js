@@ -148,7 +148,10 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
   const user = useRecoilValue(userState);
   const [isLike, setIsLike] = useState(data?.is_favorite_product || false);
 
-  const isInStock = data?.quantity > 0 && data?.maximum_quantity;
+  // eslint-disable-next-line no-warning-comments
+  // FIXME: remove check undefined after API response included quantity, maximum_quantity
+  const isInStock = (parseInt(data?.quantity, 10) > 0 && parseInt(data?.maximum_quantity, 10) > 0) ||
+    (typeof data.quantity === 'undefined');
 
   if (!data) {
     return null;

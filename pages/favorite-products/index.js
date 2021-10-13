@@ -89,7 +89,6 @@ export default function FavoriteProducts() {
     if (response?.products?.length) {
       setLoading(false);
       setFavoriteProducts(response?.products);
-      setPage(response?.page);
       setTotalPage(response?.pages);
     } else {
       setLoading(false);
