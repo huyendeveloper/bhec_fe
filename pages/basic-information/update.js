@@ -185,7 +185,7 @@ export default function BasicInformationUpdate() {
       setLoading(false);
       setAlerts({
         type: 'error',
-        message: res,
+        message: 'このメールアドレスはすでに登録されています',
       });
     }
   };
