@@ -170,7 +170,7 @@ export default function Cart() {
   };
 
   const generateSellerName = () => {
-    const lastItem = cart.items.length ? cart.items[cart.items.length - 1] : {};
+    const lastItem = cart?.items && cart?.items.length ? cart?.items[cart.items.length - 1] : {};
     const seller = lastItem?.sellerInfo ? lastItem.sellerInfo : {};
     if (seller?.id) {
       return `${seller?.name} (${seller.catch_phrase})`;
@@ -179,8 +179,6 @@ export default function Cart() {
   };
 
   const handleGoToOrderClick = () => {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: validate cart items before ordering
     router.push('/order-form');
   };
   useEffect(() => {
