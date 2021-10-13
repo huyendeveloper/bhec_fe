@@ -85,7 +85,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     [theme.breakpoints.down('xs')]: {
       width: '100%',
-      justifyContent: 'end',
+      flexWrap: 'wrap',
+      justifyContent: 'start',
     },
   },
   expiryDateContainer: {},
@@ -222,9 +223,7 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
                   component='p'
                   className={classes.expiryDate}
                 >
-                  {moment(coupon.coupon?.expiration_date).format('Y年')}
-                  <br/>
-                  {moment(coupon.coupon?.expiration_date).format('M月D日') + 'まで'}
+                  {moment(coupon.coupon?.expiration_date).format('YYYY年M月D日') + 'まで'}
                 </Typography>
               </div>
               <div className={`${classes.usabitityContainer} ${isExpired && classes.expiredCoupon}`}>
