@@ -169,12 +169,18 @@ export default function Cart() {
     }
   };
 
-  const handleGoToOrderClick = () => {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: validate cart items before ordering
-    router.push('/order-form');
+  const generateSellerName = () => {
+    const lastItem = cart?.items && cart?.items.length ? cart?.items[cart.items.length - 1] : {};
+    const seller = lastItem?.sellerInfo ? lastItem.sellerInfo : {};
+    if (seller?.id) {
+      return `${seller?.name} (${seller.catch_phrase})`;
+    }
+    return '';
   };
 
+  const handleGoToOrderClick = () => {
+    router.push('/order-form');
+  };
   useEffect(() => {
     if (session?.accessToken) {
       updateRemoteCart(cart.items);
@@ -231,7 +237,7 @@ export default function Cart() {
                       alt={'store'}
                     />}
                 >
-                  {`${cart.seller?.name ?? ''}`}{' '}{cart.seller.catch_phrase?.length > 0 ? `(${cart.seller.catch_phrase})` : ''}
+                  {generateSellerName()}
                 </Button>
               </Box>
             )}
