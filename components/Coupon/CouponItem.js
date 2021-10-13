@@ -223,7 +223,7 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
                   component='p'
                   className={classes.expiryDate}
                 >
-                  {moment(coupon.coupon?.expiration_date).format('YYYY年M月D日') + 'まで'}
+                  {moment(coupon.coupon?.expiration_date).format('YYYY年MM月DD日') + 'まで'}
                 </Typography>
               </div>
               <div className={`${classes.usabitityContainer} ${isExpired && classes.expiredCoupon}`}>
