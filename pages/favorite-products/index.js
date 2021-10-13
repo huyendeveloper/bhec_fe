@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   gridFilter: {
     display: 'flex',
     justifyContent: 'flex-end',
+    position: 'relative',
     '& .MuiSelect-select': {
       width: '8rem',
     },
