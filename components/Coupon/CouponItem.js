@@ -169,7 +169,7 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const isExpired = moment(coupon.coupon.expiration_date).isAfter(new Date());
+  const isExpired = moment(coupon.coupon.expiration_date).isBefore(new Date());
 
   const onSubmit = () => handleSubmit(coupon);
 
@@ -222,6 +222,8 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
                   component='p'
                   className={classes.expiryDate}
                 >
+                  {moment(coupon.coupon?.expiration_date).format('Y年')}
+                  <br/>
                   {moment(coupon.coupon?.expiration_date).format('M月D日') + 'まで'}
                 </Typography>
               </div>
