@@ -8,6 +8,8 @@ import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
+import {get, groupBy, map} from 'lodash';
+
 import {Button, CartItem, ContentBlock, ProductSwiper} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {CartService} from '~/services';
@@ -98,8 +100,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// eslint-disable-next-line no-warning-comments
-// TODO: get products in same category with cart item
 export default function Cart() {
   const classes = useStyles();
   const [session] = useSession();
@@ -169,15 +169,6 @@ export default function Cart() {
     }
   };
 
-  const generateSellerName = () => {
-    const lastItem = cart?.items && cart?.items.length ? cart?.items[cart.items.length - 1] : {};
-    const seller = lastItem?.sellerInfo ? lastItem.sellerInfo : {};
-    if (seller?.id) {
-      return `${seller?.name} (${seller.catch_phrase})`;
-    }
-    return '';
-  };
-
   const handleGoToOrderClick = () => {
     router.push('/order-form');
   };
@@ -189,6 +180,9 @@ export default function Cart() {
     setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, session]);
+
+  const sellerList = map(cart?.items ?? [], 'sellerInfo');
+  const groupedCartItems = groupBy(cart?.items ?? [], 'sellerInfo.id');
 
   /* eslint-disable max-lines */
   return (
@@ -219,46 +213,60 @@ export default function Cart() {
               </Box>
             }
 
-            {loaded && cart.seller && (
-              <Box
-                textAlign={'left'}
-                className={classes.store}
-              >
-                <Button
-                  variant='pill'
-                  customColor='yellow'
-                  customSize='medium'
-                  onClick={() => router.push(`/seller/${cart.seller?.id}`)}
-                  startIcon={
-                    <Image
-                      src={'/img/icons/store.svg'}
-                      width={24}
-                      height={26}
-                      alt={'store'}
-                    />}
-                >
-                  {generateSellerName()}
-                </Button>
-              </Box>
+            {loaded && cart.items?.length === 0 && (
+              <Typography align='center'>{'カートに商品はありません。'}</Typography>
             )}
           </Grid>
         </Grid>
 
-        {loaded && cart.items?.length === 0 && (
-          <Typography align='center'>{'カートに商品はありません。'}</Typography>
-        )}
+        <Grid container={true}>
+          {loaded && cart.items?.length > 0 &&
+              sellerList.map((s, i) => (
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  key={`seller-info-${i}`}
+                  style={{marginBottom: 32}}
+                >
+                  <Box
+                    textAlign={'left'}
+                    className={classes.store}
+                  >
+                    <Button
+                      variant='pill'
+                      customColor='yellow'
+                      customSize='medium'
+                      onClick={() => router.push(`/seller/${cart.seller?.id}`)}
+                      startIcon={
+                        <Image
+                          src={'/img/icons/store.svg'}
+                          width={24}
+                          height={26}
+                          alt={'store'}
+                        />}
+                    >
+                      {`${s?.name} (${s?.catch_phrase})`}
+                    </Button>
+                  </Box>
+
+                  {get(groupedCartItems, s.id, []).map((item, j) => (
+                    <CartItem
+                      item={item}
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`cart-item-${j}`}
+                      handleChangeQuantity={handleChangeQuantity}
+                      handleRemove={handleRemove}
+                    />
+                  ))}
+                </Grid>
+              ))
+          }
+        </Grid>
 
         {loaded && cart.items?.length > 0 && (
           <>
-            {cart.items?.map((item, idx) => (
-              <CartItem
-                item={item}
-                // eslint-disable-next-line react/no-array-index-key
-                key={`cart-item-${idx}`}
-                handleChangeQuantity={handleChangeQuantity}
-                handleRemove={handleRemove}
-              />
-            ))}
 
             <Grid
               container={true}
