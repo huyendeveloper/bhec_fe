@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
   stars: {
     display: 'flex',
     marginBottom: '1.5rem',
+    alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       marginBottom: '1rem',
     },
@@ -65,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.813rem',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '0.688rem',
     },
   },
@@ -82,6 +83,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
     borderRadius: '0.25rem',
+    fontFamily: theme.font.default,
+    '&:focus': {
+      border: '2px solid #3f51b5',
+    },
     [theme.breakpoints.down('sm')]: {
       height: '7rem !important',
       fontSize: '0.813rem',
@@ -110,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '0.813rem',
       lineHeight: '1.25rem',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       marginBottom: '1.5rem',
     },
   },
@@ -238,10 +243,6 @@ const ReviewProduct = ({product, images, addImage, removeImage}) => {
                     />
                   )}
                 />
-
-                <p className={classes.guide}>
-                  {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
-                </p>
               </Grid>
 
               <Grid

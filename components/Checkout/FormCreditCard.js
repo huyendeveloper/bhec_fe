@@ -85,6 +85,7 @@ const FormCreditCard = ({isReadonly}) => {
             <BlockForm
               themeStyle={'gray'}
               title={'お支払いクレジットカード'}
+              id={'creditCard'}
             >
               <Controller
                 name={'creditCard'}

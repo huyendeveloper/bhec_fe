@@ -17,13 +17,20 @@ const useStyles = makeStyles((theme) => ({
       '&.Mui-focused, &.MuiFormLabel-filled': {
         opacity: 0,
       },
+      '&.Mui-error': {
+        color: '#757575',
+      },
     },
     '& .MuiInput-formControl': {
       marginTop: 0,
     },
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: theme.palette.white.main,
+    },
     '& .MuiInput-underline': {
       border: `1px solid ${theme.styledForm.formControl.borderColor}`,
       height: '3rem',
+      backgroundColor: theme.palette.white.main,
       borderRadius: '4px',
       '&:hover': {
         borderColor: theme.styledForm.formControl.hoveredBorderColor,
@@ -131,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     '& .selectBoxError': {
       borderColor: `${theme.palette.red.light} !important`,
       '& .MuiInputBase-input': {
-        color: theme.palette.red.light,
+        color: '#757575',
       },
     },
   },

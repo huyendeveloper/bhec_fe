@@ -378,11 +378,11 @@ export default function ContactPage() {
   };
 
   return (
-    <DefaultLayout title='Contact - Oshinagaki Store'>
+    <DefaultLayout title={activeStep === 0 && tabActive === 1 ? 'お問い合わせ' : 'お問い合わせ確認'}>
       <div className={classes.root}>
         <div className='content'>
           <ContentBlock
-            title='お問い合わせフォーム'
+            title='お問い合わせ内容確認'
             bgImage='/img/noise.png'
             bgRepeat='repeat'
             mixBlendMode='multiply'
@@ -428,7 +428,7 @@ export default function ContactPage() {
                         >
                           <span>{'法人のお客様は'}</span>
                           <a
-                            href='mailto:oshinagaki@gmail.com'
+                            href='mailto:business@oshinagaki-store.com'
                             target='_blank'
                             className='formBlockLink'
                             rel='noreferrer'
@@ -449,7 +449,7 @@ export default function ContactPage() {
                         >
                           <span>{'法人のお客様は'}</span>
                           <a
-                            href='mailto:oshinagaki@gmail.com'
+                            href='mailto:business@oshinagaki-store.com'
                             target='_blank'
                             className='formBlockLink'
                             rel='noreferrer'

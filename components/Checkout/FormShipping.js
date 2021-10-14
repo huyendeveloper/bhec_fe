@@ -2,16 +2,15 @@ import {ErrorMessage} from '@hookform/error-message';
 import {FormControlLabel, makeStyles, Radio, RadioGroup, useMediaQuery, useTheme} from '@material-ui/core';
 import produce from 'immer';
 import PropTypes from 'prop-types';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller} from 'react-hook-form';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import {BlockForm, Button, ConnectForm, DeliveryForm} from '~/components';
 import {DialogWidget} from '~/components/Widgets';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
 const useStyles = makeStyles(() => ({
@@ -42,9 +41,17 @@ const FormShipping = ({isReadonly}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const [openAddAddress, setOpenAddAddress] = React.useState(false);
   const [user, setUser] = useRecoilState(userState);
-  const [loaded, setLoaded] = React.useState(false);
+  const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
-  const order = useRecoilValue(orderState);
+  const setDefaultAdressShipping = () => {
+    if (user?.addresses) {
+      const addressDefault = user.addresses.find((item) => item.is_default === 1);
+      if (addressDefault?.id) {
+        return String(addressDefault?.id);
+      }
+    }
+    return '';
+  };
 
   const handleSubmitDeliveryForm = async (address) => {
     setLoading(true);
@@ -95,13 +102,14 @@ const FormShipping = ({isReadonly}) => {
             <BlockForm
               themeStyle={'gray'}
               title={'お届け先の住所'}
+              id={'addressShipping'}
             >
               {loaded &&
                 <>
                   <Controller
                     name={'addressShipping'}
                     control={control}
-                    defaultValue={order?.addressShipping || ''}
+                    defaultValue={setDefaultAdressShipping}
                     rules={{
                       required: rules.required,
                     }}

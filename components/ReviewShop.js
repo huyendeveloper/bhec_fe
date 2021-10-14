@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   stars: {
     display: 'flex',
     marginBottom: '1.5rem',
+    alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       marginBottom: '1rem',
     },
@@ -70,6 +71,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
     borderRadius: '0.25rem',
+    fontFamily: theme.font.default,
+    '&:focus': {
+      border: '2px solid #3f51b5',
+    },
     [theme.breakpoints.down('sm')]: {
       height: '7rem !important',
       fontSize: '0.813rem',
@@ -196,6 +201,7 @@ const ReviewShop = ({productOwner}) => {
                 item={true}
                 md={2}
                 sm={3}
+                xs={12}
               >
                 <h3>{'レビュー内容'}</h3>
               </Grid>
@@ -203,6 +209,7 @@ const ReviewShop = ({productOwner}) => {
                 item={true}
                 md={10}
                 sm={9}
+                xs={12}
               >
                 <Controller
                   name='content_review_seller'
@@ -219,10 +226,6 @@ const ReviewShop = ({productOwner}) => {
                     />
                   )}
                 />
-
-                <p className={classes.guide}>
-                  {'案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。案内文章が入ります。'}
-                </p>
               </Grid>
             </Grid>
           </div>

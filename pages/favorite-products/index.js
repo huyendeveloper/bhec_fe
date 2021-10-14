@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'auto',
   },
   gridFilter: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    position: 'relative',
     '& .MuiSelect-select': {
       width: '8rem',
     },
@@ -77,16 +80,19 @@ export default function FavoriteProducts() {
 
   const getFavoriteProducts = async () => {
     setLoading(true);
-    const payload = {
+    let payload = {
       page,
       per_page: PER_PAGE,
-      category_id,
     };
+
+    if (category_id) {
+      payload = {...payload, category_id};
+    }
+
     const response = await Product.getListFavoriteProduct(payload);
     if (response?.products?.length) {
       setLoading(false);
       setFavoriteProducts(response?.products);
-      setPage(response?.page);
       setTotalPage(response?.pages);
     } else {
       setLoading(false);
@@ -100,7 +106,7 @@ export default function FavoriteProducts() {
     if (value) {
       setCategoryId(value);
     } else {
-      setCategoryId('');
+      setCategoryId();
     }
   };
 
@@ -109,7 +115,7 @@ export default function FavoriteProducts() {
   };
 
   return (
-    <DefaultLayout title='Favorite Product - Oshinagaki Store'>
+    <DefaultLayout title='お気に入り商品一覧'>
       <div className={'page'}>
         <div className='content'>
           <ContentBlock
@@ -155,7 +161,6 @@ export default function FavoriteProducts() {
                 <Grid
                   item={true}
                   xs={12}
-                  className={classes.gridFilter}
                 >
                   {favoriteProducts?.length > 0 && totalPage > 0 &&
                     <Pagination

@@ -49,9 +49,7 @@ const notifications = [];
 const buttonLinks = [
   {id: 1, label: '基本情報', url: '/basic-information'},
   {id: 2, label: 'お届け先情報', url: '/delivery-info'},
-
-  // TODO: not implement yet
-  {id: 4, label: '割引クーポン', url: '/'},
+  {id: 4, label: '割引クーポン', url: '/coupons'},
 
   // TODO: not implement yet
   {id: 5, label: 'お問い合わせ一覧', url: '/contacts'},
@@ -133,6 +131,7 @@ export default function MyPage() {
 
     setUser(produce((draft) => {
       draft.profile = response?.user;
+      draft.noti_unread = response?.noti_unread;
     }));
   };
 
@@ -212,7 +211,7 @@ export default function MyPage() {
           >
             {recommendProducts.map((product) => (
               <Grid
-                key={product.productId}
+                key={product.id}
                 item={true}
                 sm={4}
                 xs={6}

@@ -25,15 +25,16 @@ const useStyles = makeStyles((theme) => ({
 
     '& .rate': {
       marginBottom: '1rem',
+      display: 'flex',
       [theme.breakpoints.down('xs')]: {
         marginTop: '1.438rem',
       },
       '& span.noRating': {
-        position: 'absolute',
         paddingTop: '3px',
         textDecoration: 'underline',
         fontSize: '0.75rem',
         lineHeight: '1.125rem',
+        marginLeft: '0.625rem',
       },
     },
     '& span.price': {

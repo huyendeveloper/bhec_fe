@@ -416,7 +416,7 @@ const Login = () => {
   };
 
   return (
-    <DefaultLayout title='Login - Oshinagaki Store'>
+    <DefaultLayout title='ログイン'>
       <div className={classes.root}>
         <div className={classes.header}>
           <div>
@@ -429,7 +429,7 @@ const Login = () => {
             <Typography
               variant={'h4'}
               className={classes.description}
-            >{'まだ会員ではない方はこちら、以下の会員登録をお願いします。'}</Typography>
+            >{'まだ会員ではない方はこちらから会員登録をお願いします。'}</Typography>
           </div>
         </div>
         <StyledForm
@@ -540,7 +540,7 @@ const Login = () => {
                     <Typography
                       variant={'h2'}
                       className={classes.description}
-                    >{'会員の方はこちらログインお願いします。'}</Typography>
+                    >{'会員の方はこちらからログインをお願いします。'}</Typography>
                   </div>
                 </Box>
               </Grid>

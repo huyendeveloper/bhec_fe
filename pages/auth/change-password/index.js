@@ -164,7 +164,7 @@ function ChangePassword() {
   };
 
   return (
-    <DefaultLayout title='ChangePassword - Oshinagaki Store'>
+    <DefaultLayout title='パスワード変更'>
       <div className={classes.root}>
         <div
           className='content'

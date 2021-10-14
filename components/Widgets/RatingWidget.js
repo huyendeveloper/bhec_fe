@@ -8,12 +8,19 @@ import {Controller} from 'react-hook-form';
 
 import {ConnectForm} from '..';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiRating-decimal': {
       marginRight: '0.5rem',
-
-      // width: 28,
+    },
+    '& .MuiRating-root': {
+      color: theme.palette.yellow.main,
+    },
+    [theme.breakpoints.down('xs')]: {
+      '& .MuiSvgIcon-root': {
+        height: '1.25rem',
+        width: '1.25rem',
+      },
     },
   },
   rating: {
@@ -26,67 +33,68 @@ const RatingWidget = ({readOnly, rating, nameRating}) => {
   const classes = useStyles();
 
   return (
-    <ConnectForm>
-      {({control, errors, getValues}) => {
-        return (
-          <>
-            {readOnly ? (
-              <>
-                <Rating
-                  className={classes.root}
-                  name='read-only'
-                  value={rating}
-                  precision={0.5}
-                  readOnly={true}
-                  emptyIcon={<StarBorderIcon fontSize='inherit'/>}
-                />
-              </>
-            ) : (
-              <div className={rating}>
-                <Controller
-                  name={nameRating}
-                  control={control}
-                  defaultValue={rating}
-                  rules={{
-                    required: '必須項目です。',
-                    validate: {
-                      checkLengthPasswrod: () => {
-                        const rate = getValues(nameRating);
-                        return Number(rate) > 0 || 'レビュー点数を入力してください';
+    <div className={classes.root}>
+      <ConnectForm>
+        {({control, errors, getValues}) => {
+          return (
+            <>
+              {readOnly ? (
+                <>
+                  <Rating
+                    name='read-only'
+                    value={rating}
+                    precision={0.5}
+                    readOnly={true}
+                    emptyIcon={<StarBorderIcon/>}
+                  />
+                </>
+              ) : (
+                <div className={rating}>
+                  <Controller
+                    name={nameRating}
+                    control={control}
+                    defaultValue={rating}
+                    rules={{
+                      required: '必須項目です。',
+                      validate: {
+                        checkLengthPasswrod: () => {
+                          const rate = getValues(nameRating);
+                          return Number(rate) > 0 || 'レビュー点数を入力してください';
+                        },
                       },
-                    },
-                  }}
-                  render={({field: {name, value, onChange}}) => (
-                    <Rating
-                      name={name}
-                      value={Number(value)}
-                      precision={1}
-                      onChange={onChange}
-                      emptyIcon={<StarBorderIcon fontSize='inherit'/>}
-                    />
-                  )}
-                />
+                    }}
+                    render={({field: {name, value, onChange}}) => (
+                      <Rating
+                        name={name}
+                        value={Number(value)}
+                        precision={1}
+                        onChange={onChange}
+                        emptyIcon={<StarBorderIcon/>}
+                      />
+                    )}
+                  />
 
-                <ErrorMessage
-                  errors={errors}
-                  name={nameRating}
-                  render={({messages}) => {
-                    return messages ? Object.entries(messages).map(([type, message]) => (
-                      <p
-                        className='inputErrorText'
-                        key={type}
-                      >
-                        {message}
-                      </p>
-                    )) : null;
-                  }}
-                />
-              </div>
-            )}
-          </>
-        );
-      }}
-    </ConnectForm>
+                  <ErrorMessage
+                    errors={errors}
+                    name={nameRating}
+                    render={({messages}) => {
+                      return messages ? Object.entries(messages).map(([type, message]) => (
+                        <p
+                          className='inputErrorText'
+                          key={type}
+                        >
+                          {message}
+                        </p>
+                      )) : null;
+                    }}
+                  />
+                </div>
+              )}
+            </>
+          );
+        }}
+      </ConnectForm>
+    </div>
   );
 };
 
