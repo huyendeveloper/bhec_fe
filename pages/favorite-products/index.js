@@ -80,16 +80,19 @@ export default function FavoriteProducts() {
 
   const getFavoriteProducts = async () => {
     setLoading(true);
-    const payload = {
+    let payload = {
       page,
       per_page: PER_PAGE,
-      category_id,
     };
+
+    if (category_id) {
+      payload = {...payload, category_id};
+    }
+
     const response = await Product.getListFavoriteProduct(payload);
     if (response?.products?.length) {
       setLoading(false);
       setFavoriteProducts(response?.products);
-      setPage(response?.page);
       setTotalPage(response?.pages);
     } else {
       setLoading(false);
@@ -103,7 +106,7 @@ export default function FavoriteProducts() {
     if (value) {
       setCategoryId(value);
     } else {
-      setCategoryId('');
+      setCategoryId();
     }
   };
 

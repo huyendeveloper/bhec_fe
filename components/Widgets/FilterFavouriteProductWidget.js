@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   searchBox: {
     position: 'absolute',
     top: '68px',
-    width: 'auto',
+    width: 'max-content',
     padding: '1.5rem 3rem',
     background: 'white',
     border: '1px solid #DBDBDB',
@@ -84,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    cursor: 'pointer',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.3125rem',
@@ -239,7 +238,6 @@ const Search = ({changeFilterCategory}) => {
                       >
                         <span
                           className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
-                          onClick={() => onSelectCategory(category)}
                         >
                           {category.name_kana}
                         </span>
