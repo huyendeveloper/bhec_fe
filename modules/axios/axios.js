@@ -1,6 +1,7 @@
 import * as defaultAxios from 'axios';
 import {getSession, signOut} from 'next-auth/client';
 import Router from 'next/router';
+import {httpStatus} from '~/constants';
 
 const axios = defaultAxios.create({
   baseURL: process.env.API_DEFAULT_ENDPOINT,
@@ -23,18 +24,23 @@ axios.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error);
-  });
+  },
+);
 
-axios.interceptors.response.use((response) => {
-  return response;
-}, (error) => {
-  const {response: {status}} = error;
-  if ((status === 401 || status === 403)) {
-    signOut({redirect: false});
-    Router.replace('/auth/login');
-  }
-  return Promise.reject(error);
-});
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const {
+      response: {status},
+    } = error;
+    if (status === httpStatus.UN_AUTHORIZED || status === httpStatus.FOR_BIDDEN) {
+      signOut({redirect: false});
+      Router.replace('/auth/login');
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default axios;
-

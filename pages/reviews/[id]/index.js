@@ -1,14 +1,17 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {useSetRecoilState} from 'recoil';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
 import {AlertMessageForSection, Button, ReviewProduct, ReviewsBlock, ReviewShop, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
 
 const ProductServiceInstance = new ProductService();
 
@@ -61,14 +64,35 @@ export async function getServerSideProps({params}) {
 
 const ReviewsDetail = (props) => {
   const classes = useStyles();
+  const router = useRouter();
+
   const {productDetail, sellerInfo} = props;
+
   const {handleSubmit, ...methods} = useForm({criteriaMode: 'all'});
-  const [images, setImages] = React.useState([]);
-  const [alerts, setAlerts] = React.useState(null);
+
+  const [images, setImages] = useState([]);
+  const [alerts, setAlerts] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const addImage = (index, newImage) => {
-    if ((index + 1) > images.length) {
+    if (index + 1 > images.length) {
       setImages([...images, newImage]);
     } else {
       const newImages = [...images];
@@ -110,54 +134,54 @@ const ReviewsDetail = (props) => {
 
   return (
     <DefaultLayout title='商品レビューを書く - BH_EC'>
-      <FormProvider {...methods}>
-        <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
-          <>
-            <ReviewsBlock
-              title={'商品レビューを書く'}
-              bgImage='/img/noise.png'
-              bgRepeat='repeat'
-            >
-              <ReviewProduct
-                product={productDetail}
-                images={images}
-                addImage={addImage}
-                removeImage={removeImage}
-              />
-            </ReviewsBlock>
-
-            <ReviewsBlock
-              title={'店舗レビューを書く'}
-            >
-              <ReviewShop productOwner={sellerInfo}/>
-            </ReviewsBlock>
-
-            <Grid
-              container={true}
-              spacing={0}
-            >
-              <Grid
-                item={true}
-                xs={12}
-                md={12}
-                lg={12}
+      {isAuthenticated && (
+        <FormProvider {...methods}>
+          <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
+            <>
+              <ReviewsBlock
+                title={'商品レビューを書く'}
+                bgImage='/img/noise.png'
+                bgRepeat='repeat'
               >
-                <div className={classes.container}>
-                  <Button
-                    variant={'pill'}
-                    customColor={'red'}
-                    customSize={'medium'}
-                    customWidth={'fullwidth'}
-                    type='submit'
-                  >
-                    {'投稿'}
-                  </Button>
-                </div>
+                <ReviewProduct
+                  product={productDetail}
+                  images={images}
+                  addImage={addImage}
+                  removeImage={removeImage}
+                />
+              </ReviewsBlock>
+
+              <ReviewsBlock title={'店舗レビューを書く'}>
+                <ReviewShop productOwner={sellerInfo}/>
+              </ReviewsBlock>
+
+              <Grid
+                container={true}
+                spacing={0}
+              >
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                  lg={12}
+                >
+                  <div className={classes.container}>
+                    <Button
+                      variant={'pill'}
+                      customColor={'red'}
+                      customSize={'medium'}
+                      customWidth={'fullwidth'}
+                      type='submit'
+                    >
+                      {'投稿'}
+                    </Button>
+                  </div>
+                </Grid>
               </Grid>
-            </Grid>
-          </>
-        </StyledForm>
-      </FormProvider>
+            </>
+          </StyledForm>
+        </FormProvider>
+      )}
 
       <AlertMessageForSection
         alert={alerts}

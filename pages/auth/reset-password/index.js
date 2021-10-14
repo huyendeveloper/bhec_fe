@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Router, {useRouter} from 'next/router';
+import {useRouter} from 'next/router';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
@@ -141,7 +141,6 @@ const useStyles = makeStyles((theme) => ({
   required: {
     color: theme.palette.buttonLogin.default,
   },
-
 }));
 
 function RequestPassword() {
@@ -171,7 +170,7 @@ function RequestPassword() {
         message: 'パスワード再設定成功',
       });
       setTimeout(() => {
-        Router.push({
+        router.push({
           pathname: '/auth/login',
         });
       }, 1000);
@@ -187,12 +186,8 @@ function RequestPassword() {
   return (
     <DefaultLayout title='ResetPassword - Oshinagaki Store'>
       <div className={classes.root}>
-        <div
-          className='content'
-        >
-          <ContentBlock
-            title='新しいパスワードを登録'
-          >
+        <div className='content'>
+          <ContentBlock title='新しいパスワードを登録'>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <Container
                 maxWidth='lg'
@@ -332,7 +327,9 @@ function RequestPassword() {
                         variant='contained'
                         type='submit'
                         className={classes.btnSubmit}
-                      >{'送信する'}</Button>
+                      >
+                        {'送信する'}
+                      </Button>
                     </Grid>
                   </div>
                   <AlertMessageForSection

@@ -1,17 +1,15 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import produce from 'immer';
+import React, {useEffect, useState} from 'react';
+import {useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
 import {signOut} from 'next-auth/client';
-import Router from 'next/router';
-import {useEffect, useState} from 'react';
-import {useRecoilState, useSetRecoilState} from 'recoil';
+import produce from 'immer';
 
 import {BoxLink, ButtonLink, ContentBlock, Notifications, UserAccount} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductWidget} from '~/components/Widgets';
 import {AuthService, ProductService} from '~/services';
-import {cartState} from '~/store/cartState';
-import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
 const Product = new ProductService();
@@ -80,24 +78,40 @@ const boxLinks = [
 // TODO: retrieve recommend products via API
 
 export default function MyPage() {
+  const router = useRouter();
   const classes = useStyles();
-  const [user, setUser] = useRecoilState(userState);
-  const setCart = useSetRecoilState(cartState);
-  const setOrder = useSetRecoilState(orderState);
+
   const [recommendProducts, setRecommendProducts] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [user, setUser] = useRecoilState(userState);
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      fetchUserInfo();
+      getListRecommendProducts();
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const actionButton = (item) => {
     if (item.id === 10) {
       // clear local storage data in logging out
       setUser({});
-      setCart({items: [], seller: null});
-      setOrder();
       signOut({redirect: false});
-      Router.push({
-        pathname: 'auth/login',
+      router.push({
+        pathname: '/auth/login',
       });
     } else {
-      Router.push({
+      router.push({
         pathname: item.url,
       });
     }
@@ -120,83 +134,75 @@ export default function MyPage() {
       // has smt wrong to fetch user info
       // logout then redirect back to login
       setUser({});
-      setCart({items: [], seller: null});
-      setOrder();
       signOut({redirect: false});
-      Router.push({
-        pathname: 'auth/login',
-      });
+      router.push({pathname: '/auth/login'});
       return;
     }
 
-    setUser(produce((draft) => {
-      draft.profile = response?.user;
-      draft.noti_unread = response?.noti_unread;
-    }));
+    setUser(
+      produce((draft) => {
+        draft.profile = response?.user;
+        draft.noti_unread = response?.noti_unread;
+      }),
+    );
   };
-
-  useEffect(() => {
-    if (user?.isAuthenticated) {
-      fetchUserInfo();
-    }
-    getListRecommendProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <DefaultLayout title={'マイページ'}>
-      <ContentBlock
-        title='マイページ'
-        bgImage='/img/noise.png'
-      >
-        <div className={classes.userInfo}>
-          <UserAccount/>
-
-          <Notifications notifications={notifications}/>
-        </div>
-
-        <Grid
-          container={true}
-          spacing={3}
-          className={classes.boxLink}
+      {isAuthenticated && (
+        <ContentBlock
+          title='マイページ'
+          bgImage='/img/noise.png'
         >
-          {boxLinks.map((item) => (
-            <Grid
-              key={item.url}
-              item={true}
-              md={4}
-              sm={6}
-              xs={6}
-            >
-              <BoxLink
-                link={item}
-                colorLabel={item.colorLabel}
-              />
-            </Grid>
-          ))}
-        </Grid>
+          <div className={classes.userInfo}>
+            <UserAccount/>
 
-        <Grid
-          container={true}
-          spacing={3}
-          className={classes.buttonLink}
-        >
-          {buttonLinks.map((item) => (
-            <Grid
-              key={item.id}
-              item={true}
-              md={4}
-              sm={4}
-              xs={12}
-            >
-              <ButtonLink
-                item={item}
-                actionButton={actionButton}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </ContentBlock>
+            <Notifications notifications={notifications}/>
+          </div>
+
+          <Grid
+            container={true}
+            spacing={3}
+            className={classes.boxLink}
+          >
+            {boxLinks.map((item) => (
+              <Grid
+                key={item.url}
+                item={true}
+                md={4}
+                sm={6}
+                xs={6}
+              >
+                <BoxLink
+                  link={item}
+                  colorLabel={item.colorLabel}
+                />
+              </Grid>
+            ))}
+          </Grid>
+
+          <Grid
+            container={true}
+            spacing={3}
+            className={classes.buttonLink}
+          >
+            {buttonLinks.map((item) => (
+              <Grid
+                key={item.id}
+                item={true}
+                md={4}
+                sm={4}
+                xs={12}
+              >
+                <ButtonLink
+                  item={item}
+                  actionButton={actionButton}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </ContentBlock>
+      )}
 
       {recommendProducts?.length > 0 && (
         <ContentBlock

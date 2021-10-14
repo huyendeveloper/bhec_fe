@@ -1,25 +1,28 @@
-/* eslint-disable max-lines */
-/* eslint-disable no-useless-escape */
-import {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
-import Image from 'next/image';
 import TextField from '@material-ui/core/TextField';
-import Router, {useRouter} from 'next/router';
-import {signIn, signOut} from 'next-auth/client';
-import {ErrorMessage} from '@hookform/error-message';
+import {useState, useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {ErrorMessage} from '@hookform/error-message';
+import {useRouter} from 'next/router';
+import {signIn, signOut} from 'next-auth/client';
+import Image from 'next/image';
 import {useSetRecoilState} from 'recoil';
-import produce from 'immer';
 import {GoogleLogin} from 'react-google-login';
+import produce from 'immer';
 
 import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
 import {AlertMessageForSection, StyledForm} from '~/components';
-import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
-const Auth = new AuthService();
 import {DefaultLayout} from '~/components/Layouts';
 import {userState} from '~/store/userState';
+import {loadingState} from '~/store/loadingState';
+import {cartState} from '~/store/cartState';
+import {orderState} from '~/store/orderState';
+import {couponState, userSelectedCouponState} from '~/store/couponState';
+import {rules} from '~/lib/validator';
+
+const Auth = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -146,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
 
-  forgotPassText: {
+  forgotPasswordText: {
     cursor: 'pointer',
     color: theme.palette.buttonLogin.default,
   },
@@ -309,16 +312,22 @@ const useStyles = makeStyles((theme) => ({
   filedValue: {
     marginBottom: '1rem',
   },
-
 }));
 
 const Login = () => {
   const classes = useStyles();
+  const router = useRouter();
+
   const [open, setOpen] = useState(false);
   const [setPayload] = useState(null);
   const [setIdToken] = useState(null);
-  const router = useRouter();
+
   const setLoading = useSetRecoilState(loadingState);
+  const setCart = useSetRecoilState(cartState);
+  const setOrder = useSetRecoilState(orderState);
+  const setCoupon = useSetRecoilState(couponState);
+  const setUserSelectedCouponState = useSetRecoilState(userSelectedCouponState);
+
   const {
     control,
     handleSubmit,
@@ -329,6 +338,12 @@ const Login = () => {
   const [alerts, setAlerts] = useState(null);
 
   useEffect(() => {
+    // clear local storage data in logging out
+    setCart({items: [], seller: null});
+    setOrder();
+    setCoupon({items: []});
+    setUserSelectedCouponState({});
+    setUser({});
     signOut({redirect: false});
   }, []);
 
@@ -336,43 +351,45 @@ const Login = () => {
     setOpen(false);
   };
 
-  function forgotPass() {
+  function forgotPassword() {
     setLoading(true);
-    Router.push({
+    router.push({
       pathname: '/auth/forgot',
     });
   }
 
   function goToRegisterEmail() {
     setLoading(true);
-    Router.push({
+    router.push({
       pathname: '/auth/register-email',
     });
   }
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const res = await Auth.loginByEmail({user: {
-      email: data.email.trim(),
-      password: data.password.trim(),
-    }});
+    const res = await Auth.loginByEmail({
+      user: {
+        email: data.email.trim(),
+        password: data.password.trim(),
+      },
+    });
     if (res.id) {
       if (res.is_confirmed) {
-        setUser(produce((draft) => {
-          draft.isAuthenticated = true;
-        }));
-        await signIn('credentials',
-          {
-            data: res,
-            token: res.access_token,
-            callbackUrl: router?.query?.callbackUrl || `${window.location.origin}`,
-          },
+        setUser(
+          produce((draft) => {
+            draft.isAuthenticated = true;
+          }),
         );
+        await signIn('credentials', {
+          data: res,
+          token: res.access_token,
+          callbackUrl: router?.query?.callbackUrl || `${window.location.origin}`,
+        });
 
         setLoading(false);
       } else {
         setLoading(false);
-        Router.push({
+        router.push({
           pathname: '/auth/account-confirm',
           query: {token: res.access_token},
         });
@@ -394,16 +411,16 @@ const Login = () => {
         id_token: response.tokenId,
       });
       if (res.id) {
-        setUser(produce((draft) => {
-          draft.isAuthenticated = true;
-        }));
-        await signIn('credentials',
-          {
-            data: res,
-            token: res.access_token,
-            callbackUrl: `${window.location.origin}`,
-          },
+        setUser(
+          produce((draft) => {
+            draft.isAuthenticated = true;
+          }),
         );
+        await signIn('credentials', {
+          data: res,
+          token: res.access_token,
+          callbackUrl: `${window.location.origin}`,
+        });
         setLoading(false);
       } else {
         setLoading(false);
@@ -423,13 +440,17 @@ const Login = () => {
             <Typography
               variant={'h2'}
               className={classes.title}
-            >{'無料会員登録'}</Typography>
+            >
+              {'無料会員登録'}
+            </Typography>
           </div>
           <div>
             <Typography
               variant={'h4'}
               className={classes.description}
-            >{'まだ会員ではない方はこちらから会員登録をお願いします。'}</Typography>
+            >
+              {'まだ会員ではない方はこちらから会員登録をお願いします。'}
+            </Typography>
           </div>
         </div>
         <StyledForm
@@ -481,9 +502,7 @@ const Login = () => {
                           height='32'
                           alt=''
                         />
-                        <div
-                          className={classes.labelLogin + ' ' + classes.labelGoogle}
-                        >{'Google で会員登録'}</div>
+                        <div className={classes.labelLogin + ' ' + classes.labelGoogle}>{'Google で会員登録'}</div>
                       </div>
                     )}
                     onSuccess={responseGoogle}
@@ -501,12 +520,9 @@ const Login = () => {
                       height='32'
                       alt=''
                     />
-                    <div
-                      className={classes.labelLogin + ' ' + classes.labelEmail}
-                    >{'メールアドレスで会員登録'}</div>
+                    <div className={classes.labelLogin + ' ' + classes.labelEmail}>{'メールアドレスで会員登録'}</div>
                   </div>
                 </div>
-
               </Grid>
               <Grid
                 item={true}
@@ -517,11 +533,15 @@ const Login = () => {
                     <Typography
                       variant={'h2'}
                       className={classes.note}
-                    >{'会員登録することで、'}</Typography>
+                    >
+                      {'会員登録することで、'}
+                    </Typography>
                     <Typography
                       variant={'h2'}
                       className={classes.note}
-                    >{'おしながきの利用規約、プライバシーポリシーに同意したものとします。'}</Typography>
+                    >
+                      {'おしながきの利用規約、プライバシーポリシーに同意したものとします。'}
+                    </Typography>
                   </div>
                 </div>
               </Grid>
@@ -530,17 +550,19 @@ const Login = () => {
                 xs={12}
               >
                 <Box className={classes.titleBox}>
-                  <div
-                    className={classes.gridTextLogin}
-                  >
+                  <div className={classes.gridTextLogin}>
                     <Typography
                       variant={'h2'}
                       className={classes.title}
-                    >{'ログイン'}</Typography>
+                    >
+                      {'ログイン'}
+                    </Typography>
                     <Typography
                       variant={'h2'}
                       className={classes.description}
-                    >{'会員の方はこちらからログインをお願いします。'}</Typography>
+                    >
+                      {'会員の方はこちらからログインをお願いします。'}
+                    </Typography>
                   </div>
                 </Box>
               </Grid>
@@ -573,9 +595,7 @@ const Login = () => {
                           height='32'
                           alt=''
                         />
-                        <div
-                          className={classes.labelLogin + ' ' + classes.labelGoogle}
-                        >{'Google でログイン'}</div>
+                        <div className={classes.labelLogin + ' ' + classes.labelGoogle}>{'Google でログイン'}</div>
                       </div>
                     )}
                     onSuccess={responseGoogle}
@@ -591,9 +611,7 @@ const Login = () => {
               >
                 <div className={classes.gridText}>
                   <div>
-                    <Typography
-                      variant={'span'}
-                    >
+                    <Typography variant={'subtitle1'}>
                       <span className={classes.titleNotBold}>{'又は'}</span>
                       <span className={classes.titleMethod}>{'メールアドレスでログイン'}</span>
                     </Typography>
@@ -611,10 +629,7 @@ const Login = () => {
                     control={control}
                     rules={{
                       required: '必須項目です。',
-                      pattern: {
-                        value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: '無効なメールアドレスです。',
-                      },
+                      pattern: rules.isEmail,
                     }}
                     render={({field: {name, value, ref, onChange}}) => (
                       <TextField
@@ -716,26 +731,27 @@ const Login = () => {
                 xs={12}
               >
                 <div className={classes.grid}>
-                  <span
-                    className={classes.note}
-                  >{'パスワードをお忘れの方は'}
+                  <span className={classes.note}>
+                    {'パスワードをお忘れの方は'}
                     <span
-                      onClick={() => forgotPass()}
-                      className={classes.forgotPassText}
-                    >{'こちら'}</span>
+                      onClick={() => forgotPassword()}
+                      className={classes.forgotPasswordText}
+                    >
+                      {'こちら'}
+                    </span>
                   </span>
                 </div>
               </Grid>
-
             </Grid>
           </Container>
         </StyledForm>
-        {open &&
-        <SignInModal
-          open={open}
-          handleClose={handleClose}
-        />
-        }
+        {open && (
+          <SignInModal
+            open={open}
+            handleClose={handleClose}
+            // eslint-disable-next-line react/jsx-closing-bracket-location
+          />
+        )}
       </div>
       <AlertMessageForSection
         alert={alerts}

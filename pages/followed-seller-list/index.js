@@ -1,13 +1,18 @@
 import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box} from '@material-ui/core';
 import {useState, useEffect} from 'react';
+import {useRouter} from 'next/router';
+import {useRecoilState} from 'recoil';
+import {signOut} from 'next-auth/client';
 import Pagination from '@material-ui/lab/Pagination';
 
 import {SellerService} from '~/services';
+import {userState} from '~/store/userState';
 const SellerInstance = new SellerService();
 import {ContentBlock} from '~/components';
 import {SellerWidget} from '~/components/Widgets';
 import {DefaultLayout} from '~/components/Layouts';
+
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
     marginTop: '2rem',
@@ -64,12 +69,20 @@ const DEFAULT_PER_PAGE = 6;
 
 export default function FollowedSellerList() {
   const classes = useStyles();
+  const router = useRouter();
   const [sellers, setSellers] = useState([]);
   const [pages, setPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useRecoilState(userState);
 
   useEffect(() => {
-    getSellersFollowed();
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      getSellersFollowed();
+    } else {
+      requestLogin();
+    }
   }, []);
 
   const getSellersFollowed = async () => {
@@ -91,55 +104,61 @@ export default function FollowedSellerList() {
     getSellersFollowed();
   };
 
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
+
   return (
     <DefaultLayout title='フォロー中の出品者一覧'>
-      <div className={'page'}>
-        <div className='content'>
-          <ContentBlock
-            title='フォロー中の出品者一覧'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <Box
-              m={'0 auto'}
+      {isAuthenticated && (
+        <div className={'page'}>
+          <div className='content'>
+            <ContentBlock
+              title='フォロー中の出品者一覧'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
             >
-              <Grid
-                container={true}
-                spacing={3}
-                className={classes.favouriteProducts}
-              >
-                {sellers.map((seller) => (
-                  <Grid
-                    key={seller.id}
-                    item={true}
-                    md={4}
-                    sm={4}
-                    xs={12}
-                  >
-                    <SellerWidget
-                      data={seller}
-                      border={'borderNone'}
-                      reload={getSellersFollowed}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-            {sellers?.length > 0 && pages > 0 &&
-              <Pagination
-                count={pages}
-                variant={'outlined'}
-                color={'primary'}
-                size={'large'}
-                defaultPage={1}
-                onChange={changePage}
-                className={classes.pagination}
-              />
-            }
-          </ContentBlock>
+              <Box m={'0 auto'}>
+                <Grid
+                  container={true}
+                  spacing={3}
+                  className={classes.favouriteProducts}
+                >
+                  {sellers.map((seller) => (
+                    <Grid
+                      key={seller.id}
+                      item={true}
+                      md={4}
+                      sm={4}
+                      xs={12}
+                    >
+                      <SellerWidget
+                        data={seller}
+                        border={'borderNone'}
+                        reload={getSellersFollowed}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+              {sellers?.length > 0 && pages > 0 && (
+                <Pagination
+                  count={pages}
+                  variant={'outlined'}
+                  color={'primary'}
+                  size={'large'}
+                  defaultPage={1}
+                  onChange={changePage}
+                  className={classes.pagination}
+                />
+              )}
+            </ContentBlock>
+          </div>
         </div>
-      </div>
+      )}
     </DefaultLayout>
   );
 }

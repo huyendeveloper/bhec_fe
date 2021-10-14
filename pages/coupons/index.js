@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import Image from 'next/image';
-import produce from 'immer';
 import {signOut} from 'next-auth/client';
 import {useRouter} from 'next/router';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
@@ -8,17 +7,14 @@ import {Typography, Box, useMediaQuery, useTheme} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Swal from 'sweetalert2';
 
-import {AuthService, CouponService} from '~/services';
+import {CouponService} from '~/services';
 import {userState} from '~/store/userState';
 import {cartState} from '~/store/cartState';
 import {userSelectedCouponState} from '~/store/couponState';
-import {httpStatus} from '~/constants';
 import {getErrorMessage} from '~/lib/getErrorMessage';
 import {ContentBlock, AlertMessageForSection, Button} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ApplyCouponBar, CouponItem} from '~/components/Coupon';
-
-const AuthServiceInstance = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
   couponContainer: {
@@ -74,27 +70,9 @@ const Coupons = () => {
   }, []);
 
   const requestLogin = () => {
-    setCoupons([]);
     setUser({});
     signOut({redirect: false});
-    router.push({
-      pathname: 'auth/login',
-    });
-  };
-
-  const fetchUserInfo = async () => {
-    const response = await AuthServiceInstance.getInfoUser();
-    if (!response?.user) {
-      return requestLogin();
-    }
-
-    setUser(
-      produce((draft) => {
-        draft.profile = response?.user;
-      }),
-    );
-
-    return response?.user;
+    router.push({pathname: '/auth/login'});
   };
 
   const fetchCoupons = async (targetPage = 1) => {
@@ -106,9 +84,11 @@ const Coupons = () => {
     });
 
     if (error) {
-      fetchUserInfo();
-      if (error === httpStatus.UN_AUTHORIZED) {
-        requestLogin();
+      if (error.errorCode) {
+        setAlerts({
+          type: 'error',
+          message: getErrorMessage(error.errorCode),
+        });
       }
     } else {
       setCoupons([...coupons, ...userCoupons]);
@@ -130,10 +110,6 @@ const Coupons = () => {
     });
 
     if (error) {
-      fetchUserInfo();
-      if (error === httpStatus.UN_AUTHORIZED) {
-        requestLogin();
-      }
       if (error.errorCode) {
         setAlerts({
           type: 'error',

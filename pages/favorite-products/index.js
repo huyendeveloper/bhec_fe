@@ -2,14 +2,19 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Grid, Box} from '@material-ui/core';
 import {useState, useEffect} from 'react';
 import Pagination from '@material-ui/lab/Pagination';
-import {useSetRecoilState} from 'recoil';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
 import {ContentBlock} from '~/components';
 import {ProductWidget, TopBannerWidget, FilterFavouriteProductWidget} from '~/components/Widgets';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
+
 const Product = new ProductService();
+
 const useStyles = makeStyles((theme) => ({
   favouriteProducts: {
     backgroundImage: 'url("/bg-login.png")',
@@ -67,15 +72,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FavoriteProducts() {
   const classes = useStyles();
+  const router = useRouter();
+
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [category_id, setCategoryId] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
+
   useEffect(() => {
-    getFavoriteProducts();
-    // eslint-disable-next-line
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      getFavoriteProducts();
+    } else {
+      requestLogin();
+    }
   }, [page, category_id]);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
+
   const PER_PAGE = 6;
 
   const getFavoriteProducts = async () => {
@@ -116,96 +138,96 @@ export default function FavoriteProducts() {
 
   return (
     <DefaultLayout title='お気に入り商品一覧'>
-      <div className={'page'}>
-        <div className='content'>
-          <ContentBlock
-            title='お気に入り商品'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <Box
-              m={'0 auto'}
+      {isAuthenticated && (
+        <div className={'page'}>
+          <div className='content'>
+            <ContentBlock
+              title='お気に入り商品'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
             >
-              <Grid
-                container={true}
-                spacing={3}
-                className={classes.favouriteProducts}
-              >
+              <Box m={'0 auto'}>
                 <Grid
-                  item={true}
-                  xs={12}
-                  className={classes.gridFilter}
+                  container={true}
+                  spacing={3}
+                  className={classes.favouriteProducts}
                 >
-                  <FilterFavouriteProductWidget changeFilterCategory={changeFilterCategory}/>
-                </Grid>
-                {favoriteProducts.map((product) => (
                   <Grid
-                    key={product.productId}
                     item={true}
-                    md={4}
-                    sm={4}
+                    xs={12}
+                    className={classes.gridFilter}
+                  >
+                    <FilterFavouriteProductWidget changeFilterCategory={changeFilterCategory}/>
+                  </Grid>
+                  {favoriteProducts.map((product) => (
+                    <Grid
+                      key={product.productId}
+                      item={true}
+                      md={4}
+                      sm={4}
+                      xs={12}
+                    >
+                      <ProductWidget
+                        data={{
+                          ...product,
+                          is_favorite_product: true,
+                        }}
+                        loadListFavourite={getFavoriteProducts}
+                        border={'borderNone'}
+                        heart={true}
+                      />
+                    </Grid>
+                  ))}
+                  <Grid
+                    item={true}
                     xs={12}
                   >
-                    <ProductWidget
-                      data={{
-                        ...product,
-                        is_favorite_product: true,
-                      }}
-                      loadListFavourite={getFavoriteProducts}
-                      border={'borderNone'}
-                      heart={true}
-                    />
+                    {favoriteProducts?.length > 0 && totalPage > 0 && (
+                      <Pagination
+                        count={totalPage}
+                        variant={'outlined'}
+                        color={'primary'}
+                        size={'large'}
+                        defaultPage={1}
+                        onChange={changePage}
+                        className={classes.pagination}
+                      />
+                    )}
                   </Grid>
-                ))}
+                </Grid>
                 <Grid
                   item={true}
                   xs={12}
+                  md={12}
+                  style={{marginBottom: '2rem'}}
                 >
-                  {favoriteProducts?.length > 0 && totalPage > 0 &&
-                    <Pagination
-                      count={totalPage}
-                      variant={'outlined'}
-                      color={'primary'}
-                      size={'large'}
-                      defaultPage={1}
-                      onChange={changePage}
-                      className={classes.pagination}
-                    />
-                  }
+                  <TopBannerWidget
+                    variant='titleBanner'
+                    imgSrc='/img/banner-favorite1.png'
+                    imgWidth={1140}
+                    imgHeight={192}
+                    imgAlt='Seller Form'
+                  />
                 </Grid>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                md={12}
-                style={{marginBottom: '2rem'}}
-              >
-                <TopBannerWidget
-                  variant='titleBanner'
-                  imgSrc='/img/banner-favorite1.png'
-                  imgWidth={1140}
-                  imgHeight={192}
-                  imgAlt='Seller Form'
-                />
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                md={12}
-              >
-                <TopBannerWidget
-                  variant='titleBanner'
-                  imgSrc='/img/banner-favorite2.png'
-                  imgWidth={1140}
-                  imgHeight={192}
-                  imgAlt='Seller Form'
-                />
-              </Grid>
-            </Box>
-          </ContentBlock>
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                >
+                  <TopBannerWidget
+                    variant='titleBanner'
+                    imgSrc='/img/banner-favorite2.png'
+                    imgWidth={1140}
+                    imgHeight={192}
+                    imgAlt='Seller Form'
+                  />
+                </Grid>
+              </Box>
+            </ContentBlock>
+          </div>
         </div>
-      </div>
+      )}
     </DefaultLayout>
   );
 }

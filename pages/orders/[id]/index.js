@@ -1,17 +1,19 @@
 /* eslint-disable new-cap */
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
-import {useSetRecoilState} from 'recoil';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
+import {OrderService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
 import {Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
-import {OrderService} from '~/services';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -106,8 +108,27 @@ export async function getServerSideProps({params}) {
 const OrdersDetail = ({id}) => {
   const classes = useStyles();
   const router = useRouter();
+
   const [order, setOrder] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      fetchOrder();
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const fetchOrder = async () => {
     const response = await OrderService.getOrderDetail(id);
@@ -123,15 +144,9 @@ const OrdersDetail = ({id}) => {
     }
   };
 
-  useEffect(() => {
-    fetchOrder();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <DefaultLayout title={'注文詳細'}>
-
-      {order && (
+      {isAuthenticated && order && (
         <ContentBlock
           title={'注文詳細'}
           bgImage='/img/noise.png'
@@ -191,10 +206,15 @@ const OrdersDetail = ({id}) => {
                 xs={8}
                 className={classes.multiLine}
               >
-                {order.address?.name}<br/>
-                {order.address?.zipcode}<br/>
-                {order.address?.city}{order.address?.address}<br/>
-                {order.address?.company_name}&nbsp;&nbsp;{order.address?.department}<br/>
+                {order.address?.name}
+                <br/>
+                {order.address?.zipcode}
+                <br/>
+                {order.address?.city}
+                {order.address?.address}
+                <br/>
+                {order.address?.company_name}&nbsp;&nbsp;{order.address?.department}
+                <br/>
                 {order.address?.tel}
               </Grid>
             </div>
@@ -241,9 +261,12 @@ const OrdersDetail = ({id}) => {
               >
                 <h4>{'購入明細書'}</h4>
                 <div className={classes.secondLevelTitle}>
-                  {'商品の小計'}<br/>
-                  {'配送料'}<br/>
-                  {'クーポン利用'}<br/>
+                  {'商品の小計'}
+                  <br/>
+                  {'配送料'}
+                  <br/>
+                  {'クーポン利用'}
+                  <br/>
                 </div>
                 <h4>{'ご請求金額'}</h4>
               </Grid>
@@ -255,13 +278,14 @@ const OrdersDetail = ({id}) => {
               >
                 <br/>
                 <div className={classes.multiLine}>
-                  {`¥${formatNumber(parseInt(order?.net_amount, 10))}`}<br/>
-                  {`¥${formatNumber(parseInt(order?.shipping_fee, 10))}`}<br/>
-                  {order?.shipping_fee > 0 ? `-¥${formatNumber(parseInt(order?.discount, 10))}` : '割引無し'}<br/>
+                  {`¥${formatNumber(parseInt(order?.net_amount, 10))}`}
+                  <br/>
+                  {`¥${formatNumber(parseInt(order?.shipping_fee, 10))}`}
+                  <br/>
+                  {order?.shipping_fee > 0 ? `-¥${formatNumber(parseInt(order?.discount, 10))}` : '割引無し'}
+                  <br/>
                 </div>
-                <h4>
-                  {`¥${formatNumber(parseInt(order?.total_amount, 10))}`}
-                </h4>
+                <h4>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</h4>
               </Grid>
 
               {/* eslint-disable-next-line no-warning-comments */}

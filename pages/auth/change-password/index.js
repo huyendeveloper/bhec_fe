@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, FormControl, Button} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
-import {useSetRecoilState} from 'recoil';
-import Router from 'next/router';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
 import {DefaultLayout} from '~/components/Layouts';
+import {userState} from '~/store/userState';
 import {httpStatus} from '~/constants';
 import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
@@ -126,19 +128,39 @@ const useStyles = makeStyles((theme) => ({
   required: {
     color: theme.palette.buttonLogin.default,
   },
-
 }));
 
 function ChangePassword() {
   const classes = useStyles();
+  const router = useRouter();
+
   const {
     control,
     handleSubmit,
     formState: {errors},
     getValues,
   } = useForm({criteriaMode: 'all'});
+
   const setLoading = useSetRecoilState(loadingState);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useRecoilState(userState);
+
   const [alerts, setAlerts] = useState(null);
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     setAlerts(null);
@@ -150,7 +172,7 @@ function ChangePassword() {
         message: 'パスワードを正常に変更する',
       });
       setTimeout(() => {
-        Router.push({
+        router.push({
           pathname: '/mypage',
         });
       }, 1000);
@@ -165,202 +187,202 @@ function ChangePassword() {
 
   return (
     <DefaultLayout title='パスワード変更'>
-      <div className={classes.root}>
-        <div
-          className='content'
-        >
-          <ContentBlock
-            title='パスワードを変更する'
-          >
-            <StyledForm onSubmit={handleSubmit(onSubmit)}>
-              <Container
-                maxWidth='lg'
-                className={classes.container}
-              >
-                <FormControl component='fieldset'/>
-                <Grid
-                  container={true}
-                  spacing={3}
-                  justifyContent='center'
+      {isAuthenticated && (
+        <div className={classes.root}>
+          <div className='content'>
+            <ContentBlock title='パスワードを変更する'>
+              <StyledForm onSubmit={handleSubmit(onSubmit)}>
+                <Container
+                  maxWidth='lg'
+                  className={classes.container}
                 >
-                  <div className={classes.content}>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <label
-                        htmlFor='current_password'
-                        className='formControlLabel'
+                  <FormControl component='fieldset'/>
+                  <Grid
+                    container={true}
+                    spacing={3}
+                    justifyContent='center'
+                  >
+                    <div className={classes.content}>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
                       >
-                        {'以前のパスワード '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='current_password'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: '必須項目です。',
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='current_password'
-                            variant='outlined'
-                            error={Boolean(errors.current_password)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            type='password'
-                            inputRef={ref}
-                            placeholder='以前のパスワードご記入ください。'
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='current_password'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >
-                              {message}
-                            </p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <label
-                        htmlFor='password'
-                        className='formControlLabel'
+                        <label
+                          htmlFor='current_password'
+                          className='formControlLabel'
+                        >
+                          {'以前のパスワード '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='current_password'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: '必須項目です。',
+                          }}
+                          render={({field: {name, value, ref, onChange}}) => (
+                            <TextField
+                              id='current_password'
+                              variant='outlined'
+                              error={Boolean(errors.current_password)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              type='password'
+                              inputRef={ref}
+                              placeholder='以前のパスワードご記入ください。'
+                              onChange={onChange}
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='current_password'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >
+                                {message}
+                              </p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
                       >
-                        {'新しいパスワード '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='password'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: '必須項目です。',
-                          validate: {
-                            checkLengthPasswrod: () => {
-                              const {password} = getValues();
-                              return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
+                        <label
+                          htmlFor='password'
+                          className='formControlLabel'
+                        >
+                          {'新しいパスワード '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='password'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: '必須項目です。',
+                            validate: {
+                              checkLengthPasswrod: () => {
+                                const {password} = getValues();
+                                return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
+                              },
                             },
-                          },
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='password'
-                            variant='outlined'
-                            error={Boolean(errors.password)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            type='password'
-                            inputRef={ref}
-                            placeholder='パスワードを８文字以上ご記入ください。'
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='password'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >
-                              {message}
-                            </p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                    >
-                      <label
-                        htmlFor='password_confirm'
-                        className='formControlLabel'
+                          }}
+                          render={({field: {name, value, ref, onChange}}) => (
+                            <TextField
+                              id='password'
+                              variant='outlined'
+                              error={Boolean(errors.password)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              type='password'
+                              inputRef={ref}
+                              placeholder='パスワードを８文字以上ご記入ください。'
+                              onChange={onChange}
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='password'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >
+                                {message}
+                              </p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
                       >
-                        {'新しいパスワード（確認） '}
-                        <span className='formControlRequired'>{'*'}</span>
-                      </label>
-                      <Controller
-                        name='password_confirm'
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: '必須項目です。',
-                          validate: {
-                            matchesPreviousPassword: (value) => {
-                              const {password} = getValues();
-                              return password === value || 'パスワードは一致する必要があります！';
+                        <label
+                          htmlFor='password_confirm'
+                          className='formControlLabel'
+                        >
+                          {'新しいパスワード（確認） '}
+                          <span className='formControlRequired'>{'*'}</span>
+                        </label>
+                        <Controller
+                          name='password_confirm'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: '必須項目です。',
+                            validate: {
+                              matchesPreviousPassword: (value) => {
+                                const {password} = getValues();
+                                return password === value || 'パスワードは一致する必要があります！';
+                              },
                             },
-                          },
-                        }}
-                        render={({field: {name, value, ref, onChange}}) => (
-                          <TextField
-                            id='password_confirm'
-                            variant='outlined'
-                            error={Boolean(errors.password_confirm)}
-                            InputLabelProps={{shrink: false}}
-                            name={name}
-                            value={value}
-                            type='password'
-                            inputRef={ref}
-                            onChange={onChange}
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name='password_confirm'
-                        render={({messages}) => {
-                          return messages ? Object.entries(messages).map(([type, message]) => (
-                            <p
-                              className='inputErrorText'
-                              key={type}
-                            >
-                              {message}
-                            </p>
-                          )) : null;
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item={true}
-                      xs={12}
-                      className={classes.grid}
-                      style={{textAlign: 'center'}}
-                    >
-                      <Button
-                        variant='contained'
-                        type='submit'
-                        className={classes.btnSubmit}
-                      >{'登録する'}</Button>
-                    </Grid>
-                  </div>
-                </Grid>
-              </Container>
-            </StyledForm>
-          </ContentBlock>
+                          }}
+                          render={({field: {name, value, ref, onChange}}) => (
+                            <TextField
+                              id='password_confirm'
+                              variant='outlined'
+                              error={Boolean(errors.password_confirm)}
+                              InputLabelProps={{shrink: false}}
+                              name={name}
+                              value={value}
+                              type='password'
+                              inputRef={ref}
+                              onChange={onChange}
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          errors={errors}
+                          name='password_confirm'
+                          render={({messages}) => {
+                            return messages ? Object.entries(messages).map(([type, message]) => (
+                              <p
+                                className='inputErrorText'
+                                key={type}
+                              >
+                                {message}
+                              </p>
+                            )) : null;
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item={true}
+                        xs={12}
+                        className={classes.grid}
+                        style={{textAlign: 'center'}}
+                      >
+                        <Button
+                          variant='contained'
+                          type='submit'
+                          className={classes.btnSubmit}
+                        >
+                          {'登録する'}
+                        </Button>
+                      </Grid>
+                    </div>
+                  </Grid>
+                </Container>
+              </StyledForm>
+            </ContentBlock>
+          </div>
         </div>
-      </div>
+      )}
       <AlertMessageForSection
         alert={alerts}
         handleCloseAlert={() => setAlerts(null)}
