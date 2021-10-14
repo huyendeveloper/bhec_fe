@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.313rem',
     borderRadius: '0.25rem',
     fontFamily: theme.font.default,
+    marginBottom: '2.25rem',
     '&:focus': {
       border: '2px solid #3f51b5',
     },
@@ -91,9 +92,11 @@ const useStyles = makeStyles((theme) => ({
       height: '7rem !important',
       fontSize: '0.813rem',
       lineHeight: '1.25rem',
+      marginBottom: '0.75rem',
     },
     [theme.breakpoints.down('xs')]: {
       height: '8rem !important',
+      marginBottom: '1.5rem',
     },
     '&::placeholder': {
       color: theme.palette.grey.dark,

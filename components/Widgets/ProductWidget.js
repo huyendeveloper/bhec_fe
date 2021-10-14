@@ -12,7 +12,7 @@ import {get} from 'lodash';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 
@@ -147,8 +147,8 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
   const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
   const [isLike, setIsLike] = useState(data?.is_favorite_product || false);
-
-  const isInStock = data?.quantity > 0 && data?.maximum_quantity;
+  const hasQuantity = 'quantity' in data && 'maximum_quantity' in data;
+  const isInStock = hasQuantity ? (data?.quantity > 0 && data?.maximum_quantity > 0) : true;
 
   if (!data) {
     return null;

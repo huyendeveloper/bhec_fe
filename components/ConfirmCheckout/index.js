@@ -82,6 +82,7 @@ const ConfirmCheckout = () => {
   const [addressData, setAddressData] = useState(null);
   const [cardData, setCardData] = useState(null);
   const {subTotal, shippingFee} = useRecoilValue(billState);
+  const [loaded, setLoaded] = useState(false);
 
   const fetchAddressData = async () => {
     const res = order?.addressShipping ? await CommonService.getAddress(order?.addressShipping) : null;
@@ -105,6 +106,7 @@ const ConfirmCheckout = () => {
   useEffect(() => {
     fetchAddressData();
     fetchCardData();
+    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // eslint-disable-next-line no-warning-comments
@@ -261,7 +263,6 @@ const ConfirmCheckout = () => {
               </Typography>
             </div>
           </div>
-
           <div className={classes.infoBlock}>
             <Typography
               component='h3'
@@ -324,7 +325,7 @@ const ConfirmCheckout = () => {
             </Typography>
 
             <div className={classes.infoBlockContent}>
-              {cart.items?.map((item, index) => (
+              {loaded && cart.items?.map((item, index) => (
                 <OrderFormItem
                   key={item.productDetail?.id}
                   data={item}
@@ -338,6 +339,7 @@ const ConfirmCheckout = () => {
 
           <Divider/>
 
+          {loaded &&
           <div className={classes.calculatedBill}>
             <div
               className={classes.row}
@@ -365,6 +367,7 @@ const ConfirmCheckout = () => {
               <b>{formatNumber(-(order?.discount ?? 0), 'currency')}</b>
             </div>
           </div>
+          }
 
           <Divider/>
 
@@ -374,9 +377,11 @@ const ConfirmCheckout = () => {
             >
               <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
-              <h1 className={classes.total}>
-                {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
-              </h1>
+              {loaded &&
+                <h1 className={classes.total}>
+                  {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
+                </h1>
+              }
             </div>
           </div>
 
