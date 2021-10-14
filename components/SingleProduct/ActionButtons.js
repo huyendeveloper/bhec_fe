@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Swal from 'sweetalert2';
 import produce from 'immer';
 import {useRouter} from 'next/router';
+import PropTypes from 'prop-types';
 
 import Button from '../Button';
 import {AlertMessageForSection} from '..';
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ActionButtons = () => {
+const ActionButtons = ({isPreview}) => {
   const classes = useStyles();
   const [cart, setCart] = useRecoilState(cartState);
   const [product, setProduct] = useRecoilState(productState);
@@ -85,18 +86,27 @@ const ActionButtons = () => {
   };
 
   const handleAddToCartClick = () => {
+    if (isPreview) {
+      return;
+    }
     if (addToCart()) {
       router.push('/cart');
     }
   };
 
   const handleInstantBuyClick = () => {
+    if (isPreview) {
+      return;
+    }
     if (addToCart()) {
       router.push('/order-form');
     }
   };
 
   const handleLikeProduct = async (likeStatus) => {
+    if (isPreview) {
+      return;
+    }
     let isAuthenticated = user?.isAuthenticated;
     if (isAuthenticated) {
       setLoading(true);
@@ -150,7 +160,7 @@ const ActionButtons = () => {
               alt={'cart'}
             />}
           onClick={handleAddToCartClick}
-          disabled={isOutStock}
+          disabled={isPreview ? false : isOutStock}
         >
           {'カートに入れる'}
         </Button>
@@ -198,7 +208,7 @@ const ActionButtons = () => {
               height={32}
               alt={'touch'}
             />}
-          disabled={isOutStock}
+          disabled={isPreview ? false : isOutStock}
         >
           {'今すぐ購入する'}
         </Button>
@@ -210,6 +220,14 @@ const ActionButtons = () => {
       />
     </div>
   );
+};
+
+ActionButtons.propTypes = {
+  isPreview: PropTypes.boolean,
+};
+
+ActionButtons.defaultProps = {
+  isPreview: false,
 };
 
 export default ActionButtons;
