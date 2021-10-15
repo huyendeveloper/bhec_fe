@@ -4,6 +4,7 @@ import {clean} from '~/lib/object';
 const ArticleService = {
   getArticles,
   getArticleDetail,
+  previewArticle,
 };
 
 // eslint-disable-next-line no-warning-comments
@@ -45,6 +46,14 @@ async function getArticles(payload) {
 
 async function getArticleDetail(id) {
   const [data, errors] = await api.get(`/articles/${id}`);
+  if (errors.length) {
+    return parserError(errors);
+  }
+  return data;
+}
+
+async function previewArticle(key) {
+  const [data, errors] = await api.get(`/article_previews/detail?preview_key=${key}`);
   if (errors.length) {
     return parserError(errors);
   }

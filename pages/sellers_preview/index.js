@@ -170,16 +170,16 @@ const Seller = () => {
   const router = useRouter();
 
   const getSellerInfo = async () => {
-    const {id} = router.query;
-    if (id) {
-      const response = await SellerInstance.getSellerDetail(id);
-      if (!response?.seller?.id) {
+    const {preview_key} = router.query;
+    if (preview_key) {
+      const response = await SellerInstance.previewSeller(preview_key);
+      if (!response?.seller_preview?.id) {
         return {
           notFound: true,
         };
       }
 
-      getListRelatedProduct(response?.seller?.id);
+      getListRelatedProduct(response?.seller_preview?.id);
       getListLastestProduct();
       const current = [
         {
@@ -189,15 +189,15 @@ const Seller = () => {
         },
         {
           id: 2,
-          linkLabel: response?.seller?.name,
+          linkLabel: response?.seller_preview?.name,
           linkUrl: '#',
         },
       ];
       setLinkProps(current);
 
-      setSeller(response?.seller);
-      setIsFollowing(response?.seller?.followed);
-      const rawHTML = response?.seller?.description;
+      setSeller(response?.seller_preview);
+      setIsFollowing(response?.seller_preview?.followed);
+      const rawHTML = response?.seller_preview?.description;
       const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
       let match;
       let refinedHTMLGenerate = rawHTML;

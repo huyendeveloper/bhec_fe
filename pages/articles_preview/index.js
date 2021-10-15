@@ -263,16 +263,16 @@ SingleArticle.defaultProps = {
 
 export default SingleArticle;
 
-export async function getServerSideProps({params}) {
-  const {id} = params;
-  const response = await ArticleService.getArticleDetail(id);
-  if (!response?.id) {
+export async function getServerSideProps({query}) {
+  const {preview_key} = query;
+  const response = await ArticleService.previewArticle(preview_key);
+  if (!response?.article_preview) {
     return {
       notFound: true,
     };
   }
 
-  const rawHTML = response?.description;
+  const rawHTML = response?.article_preview?.description;
   const productsRegrex = /\[product_ids=([\s\S]*?)\]/gm;
   let match;
   let refinedHTML = rawHTML;
@@ -292,7 +292,7 @@ export async function getServerSideProps({params}) {
   return {
     props: {
       article: {
-        ...response,
+        ...response?.article_preview,
       },
       shortcodes,
       refinedHTML,
