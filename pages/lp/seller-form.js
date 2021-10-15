@@ -471,6 +471,7 @@ export default function SellerForm() {
                                 format='yyyy/MM/dd'
                                 id='dob'
                                 label='YYYY/MM/DD'
+                                emptyLabel='YYYY/MM/DD'
                                 InputLabelProps={{shrink: false}}
                                 value={value}
                                 onChange={onChange}
