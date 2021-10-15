@@ -38,4 +38,12 @@ export default class SellerService {
     }
     return data;
   }
+
+  async previewSeller(key) {
+    const [data, errors] = await api.get(`/admins/seller_previews/detail?preview_key=${key}`);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }
