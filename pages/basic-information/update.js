@@ -185,7 +185,7 @@ export default function BasicInformationUpdate() {
       setLoading(false);
       setAlerts({
         type: 'error',
-        message: '出品者情報が更新できませんでした。',
+        message: 'このメールアドレスはすでに登録されています。',
       });
     }
   };
