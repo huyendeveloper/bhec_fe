@@ -23,6 +23,11 @@ const order = {
       label: 'コンビニ払い',
     },
   ],
+  kombiniPayment: [
+    {label: 'セブン-イレブン', value: 'sej'},
+    {label: 'イーコン（ローソン、ファミリーマート、ミニストップ、セイコーマート）', value: 'econ'},
+    {label: 'その他（デイリーヤマザキ）', value: 'other'},
+  ],
 };
 
 export default order;

@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SingleProduct = ({getDetailProduct}) => {
+const SingleProduct = ({getDetailProduct, isPreview}) => {
   const classes = useStyles();
 
   return (
@@ -134,7 +134,7 @@ const SingleProduct = ({getDetailProduct}) => {
 
             <Meta/>
 
-            <ActionButtons/>
+            <ActionButtons isPreview={isPreview}/>
           </Grid>
 
           <Grid
@@ -156,6 +156,10 @@ const SingleProduct = ({getDetailProduct}) => {
 
 SingleProduct.propTypes = {
   getDetailProduct: PropTypes.func,
+  isPreview: PropTypes.boolean,
 };
 
+SingleProduct.defaultProps = {
+  isPreview: false,
+};
 export default SingleProduct;
