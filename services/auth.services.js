@@ -91,4 +91,12 @@ export default class AuthService {
     }
     return data;
   }
+
+  async updateAvatarUser(payload) {
+    const [data, errors] = await api.patch('/users/update_avatar', payload);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
 }

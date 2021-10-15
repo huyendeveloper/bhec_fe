@@ -109,7 +109,7 @@ const UserAccount = () => {
       bodyFormData.append('images[]', newImages);
       const result = await CommonService.uploadFile(bodyFormData);
       if (result && result.urls && result.urls.length) {
-        const res = await Auth.updateInfoUser({avatar: result.urls[0]});
+        const res = await Auth.updateAvatarUser({avatar: result.urls[0]});
         if (res) {
           setUser(produce((draft) => {
             draft.profile = {...user?.profile, avatar: res?.user?.avatar};
