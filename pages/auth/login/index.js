@@ -345,7 +345,6 @@ const Login = () => {
     setUser({});
     setCouponEnableUse({items: []});
     signOut({redirect: false});
-    setCouponEnableUse({items: []});
   }, []);
 
   const handleClose = () => {
