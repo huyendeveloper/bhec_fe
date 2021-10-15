@@ -52,6 +52,14 @@ export default class ProductService {
     return data;
   }
 
+  async previewProduct(key) {
+    const [data, errors] = await api.get(`/product_previews?preview_key=${key}`);
+    if (errors.length) {
+      return parserError(errors);
+    }
+    return data;
+  }
+
   async getTags() {
     const [data, errors] = await api.get('/tags');
     if (errors.length) {

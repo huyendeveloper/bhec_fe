@@ -44,15 +44,15 @@ function ProductDetail(props) {
   const router = useRouter();
 
   useEffect(() => {
-    getDetailProduct();
+    getPreviewProduct();
   }, [props, setProduct]);
 
-  const getDetailProduct = async () => {
-    const {id} = router.query;
-    const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+  const getPreviewProduct = async () => {
+    const {preview_key} = router.query;
+    const res = preview_key ? await ProductServiceInstance.previewProduct(preview_key) : null;
     if (res) {
       const productRes = {
-        productDetail: res.product_detail,
+        productDetail: res.product_preview,
         sellerInfo: res.seller_info,
         sellerProduct: res.seller_products,
         recommendProduct: res.recommend_products,
@@ -108,7 +108,7 @@ function ProductDetail(props) {
 
         {/* Product details */}
         <SingleProduct
-          getDetailProduct={getDetailProduct}
+          getPreviewProduct={getPreviewProduct}
           isPreview={true}
         />
 
