@@ -53,23 +53,19 @@ const FormPaymentMethods = ({isReadonly}) => {
                     className={'labelRadioBtn'}
                   />
 
-                  {/* eslint-disable-next-line no-warning-comments */}
-                  {/* TODO: hide not-ready-yet feature */}
-                  {/* <FormControlLabel
+                  <FormControlLabel
                     value={'2'}
                     control={<Radio/>}
-                    label={'UnionPay'}
+                    label={'銀聯カード（UnionPay）払い'}
                     className={'labelRadioBtn'}
-                  /> */}
+                  />
 
-                  {/* eslint-disable-next-line no-warning-comments */}
-                  {/* TODO: hide not-ready-yet feature */}
-                  {/* <FormControlLabel
+                  <FormControlLabel
                     value={'3'}
                     control={<Radio/>}
                     label={'コンビニ払い'}
                     className={'labelRadioBtn'}
-                  /> */}
+                  />
                 </RadioGroup>
               )}
             />
