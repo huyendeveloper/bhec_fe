@@ -28,26 +28,26 @@ const Meta = () => {
                 <TableCell align='left'>{shippingType}</TableCell>
               </TableRow>
             )}
-            {shippingDate.length > 0 && (
-              <TableRow>
-                <TableCell
-                  component='th'
-                  scope='row'
-                >
-                  {'発送'}
-                </TableCell>
-                <TableCell align='left'>{shippingDate}</TableCell>
-              </TableRow>
-            )}
             {shippingDays.length > 0 && shippingDays !== 'null' && (
               <TableRow>
                 <TableCell
                   component='th'
                   scope='row'
                 >
-                  {'発送日数'}
+                  {'商品準備'}
                 </TableCell>
-                <TableCell align='left'>{shippingDays}</TableCell>
+                <TableCell align='left'>{`${shippingDays}営業日以内に発送予定`}</TableCell>
+              </TableRow>
+            )}
+            {shippingDate.length > 0 && (
+              <TableRow>
+                <TableCell
+                  component='th'
+                  scope='row'
+                >
+                  {'営業日'}
+                </TableCell>
+                <TableCell align='left'>{shippingDate}</TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -4,6 +4,7 @@ const CouponService = {
   getCoupons,
   addCoupons,
   getCouponDetails,
+  getCouponsActive,
 };
 
 async function getCouponDetails(payload) {
@@ -25,6 +26,25 @@ async function getCoupons(payload) {
     return {haveNextPage, userCoupons: data.data.user_coupons, error: null};
   } catch (error) {
     return {haveNextPage: false, userCoupons: [], error};
+  }
+}
+
+async function getCouponsActive() {
+  try {
+    const {data} = await axios.get('/user_coupons/all?active=1');
+    const {success, message, status, error_code} = data;
+
+    if (status === httpStatus.UN_AUTHORIZED) {
+      return {userCoupons: [], error: httpStatus.UN_AUTHORIZED};
+    }
+
+    if (!success) {
+      return {userCoupons: [], error: {errorCode: error_code, message}};
+    }
+
+    return {userCoupons: data.data.user_coupons, error: null};
+  } catch (error) {
+    return {userCoupons: [], error};
   }
 }
 

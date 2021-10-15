@@ -1,15 +1,22 @@
 import {FormControlLabel, InputBase, makeStyles, Paper, Radio, RadioGroup} from '@material-ui/core';
 import produce from 'immer';
+import {signOut} from 'next-auth/client';
+import {useRouter} from 'next/router';
 import React, {useState} from 'react';
 import {Controller} from 'react-hook-form';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {AlertMessageForSection, BlockForm, Button, ConnectForm} from '~/components';
+import {httpStatus} from '~/constants';
 import {format} from '~/lib/date';
-import {CouponService} from '~/services';
+import {AuthService, CouponService} from '~/services';
 import {billState} from '~/store/cartState';
-import {couponState} from '~/store/couponState';
+import {couponEnableUseState} from '~/store/couponState';
 import {orderState} from '~/store/orderState';
+import {userState} from '~/store/userState';
+import {getErrorMessage} from '~/lib/getErrorMessage';
+
+const AuthServiceInstance = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -81,16 +88,18 @@ const useStyles = makeStyles((theme) => ({
 
 // eslint-disable-next-line no-unused-vars
 const FormCoupon = () => {
+  const router = useRouter();
   const classes = useStyles();
   const [alerts, setAlerts] = useState(null);
-  const [coupons, setCoupons] = useRecoilState(couponState);
+  const [coupons, setCoupons] = useRecoilState(couponEnableUseState);
   const [loaded, setLoaded] = React.useState(false);
   const [order, setOrder] = useRecoilState(orderState);
   const {subTotal, shippingFee} = useRecoilValue(billState);
+  const setUser = useSetRecoilState(userState);
 
   const handleChange = (e) => {
-    const coupon = coupons.items.find((item) => item.code === e.target.value);
-    const discount = coupon ? (coupon.coupon_type === 1 ? calDiscountByPercent(coupon.value) : coupon.value) : 0;
+    const coupon = coupons.find((item) => item.coupon.code === e.target.value);
+    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : coupon.coupon.value) : 0;
     setOrder({...order, coupon_code: e.target.value, discount});
   };
 
@@ -102,8 +111,35 @@ const FormCoupon = () => {
     return discount;
   };
 
+  const addCoupon = async (code) => {
+    // add coupon
+    const {userCoupon, error} = await CouponService.addCoupons({
+      coupon_code: code,
+    });
+
+    if (error) {
+      fetchUserInfo();
+      if (error === httpStatus.UN_AUTHORIZED) {
+        requestLogin();
+      }
+      if (error.errorCode) {
+        setAlerts({
+          type: 'error',
+          message: getErrorMessage(error.errorCode),
+        });
+      }
+    } else {
+      setCoupons([...coupons, userCoupon]);
+      setAlerts({
+        type: 'success',
+        message: 'クーポンが適用されました。',
+      });
+    }
+  };
+
   const handleCheckCoupon = async (code) => {
-    const isExistCoupon = coupons.items.find((item) => item.code === code);
+    // validate
+    const isExistCoupon = coupons.find((item) => item.coupon.code === code);
     if (isExistCoupon) {
       setAlerts({
         type: 'error',
@@ -111,21 +147,12 @@ const FormCoupon = () => {
       });
       return;
     }
-
     const res = await CouponService.getCouponDetails({code});
     if (res?.success && res?.data) {
-      setAlerts({
-        type: 'success',
-        message: 'クーポンが適用されました。',
-      });
       const {coupon} = res.data;
 
       if (coupon) {
-        const discountInfo = (coupon.value || '0') + (coupon.coupon_type === 1 ? '%' : '円');
-        const expiration_date = format(coupon.expiration_date, 'jaDateMD');
-        setCoupons(produce((draft) => {
-          draft.items.push({...coupon, code, label: `クーポン名  ${discountInfo}  ${expiration_date}`});
-        }));
+        addCoupon(code);
       }
 
       if (!coupon) {
@@ -143,7 +170,47 @@ const FormCoupon = () => {
     }
   };
 
+  const fetchUserInfo = async () => {
+    const response = await AuthServiceInstance.getInfoUser();
+    if (!response?.user) {
+      return requestLogin();
+    }
+
+    setUser(
+      produce((draft) => {
+        draft.profile = response?.user;
+      }),
+    );
+
+    return response?.user;
+  };
+
+  const requestLogin = () => {
+    setCoupons([]);
+    setUser({});
+    signOut({redirect: false});
+    router.push({
+      pathname: 'auth/login',
+    });
+  };
+
+  const fetchCoupons = async () => {
+    const {userCoupons, error} = await CouponService.getCouponsActive();
+
+    if (error) {
+      fetchUserInfo();
+      if (error === httpStatus.UN_AUTHORIZED) {
+        requestLogin();
+      }
+    } else {
+      setCoupons([...userCoupons]);
+    }
+
+    return userCoupons;
+  };
+
   React.useEffect(() => {
+    fetchCoupons();
     setLoaded(true);
   }, []);
 
@@ -157,7 +224,7 @@ const FormCoupon = () => {
             title={'クーポン利用'}
             id={'coupon'}
           >
-            {loaded && coupons && coupons?.items?.length > 0 &&
+            {loaded && coupons && coupons?.length > 0 &&
             <>
               <Controller
                 name={'coupon_code'}
@@ -173,12 +240,12 @@ const FormCoupon = () => {
                     }}
                     className={classes.radioGroup}
                   >
-                    {coupons?.items.map((item) => (
+                    {coupons?.map((item) => (
                       <FormControlLabel
-                        key={item.code}
-                        value={item.code}
+                        key={item?.coupon?.code}
+                        value={item?.coupon?.code}
                         control={<Radio/>}
-                        label={item.label}
+                        label={`クーポン名  ${(item?.coupon?.value || '0') + (item?.coupon?.coupon_type === 1 ? '%' : '円')}  ${format(item?.coupon?.expiration_date, 'jaDateMD')}`}
                         className={'labelRadioBtn'}
                       />
                     ))}

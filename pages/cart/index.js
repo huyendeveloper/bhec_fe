@@ -286,7 +286,7 @@ export default function Cart() {
                   customSize='extraLarge'
                   onClick={() => router.push('/products')}
                 >
-                  {'買物を続く'}
+                  {'商品一覧に戻る'}
                 </Button>
               </Grid>
 
