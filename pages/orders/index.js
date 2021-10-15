@@ -1,18 +1,27 @@
 import {
-  Table, TableBody, TableCell,
+  Table,
+  TableBody,
+  TableCell,
   TableContainer,
-  TableHead, TablePagination, TableRow, Typography,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import moment from 'moment';
 import Link from 'next/link';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {OrderService} from '~/services';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   containerTable: {
@@ -80,18 +89,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const headCells = [
-  'ご注文番号',
-  'ご注文日時',
-  '決済金額',
-  'お支払い方法',
-];
+const headCells = ['ご注文番号', 'ご注文日時', '決済金額', 'お支払い方法'];
 
 const Orders = () => {
   const classes = useStyles();
+  const router = useRouter();
+
   const [page, setPage] = useState(0);
   const [orders, setOrders] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [user, setUser] = useRecoilState(userState);
+
   const PER_PAGE = 10;
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      fetchOrders();
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
@@ -102,62 +127,59 @@ const Orders = () => {
     setOrders(response?.orders);
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   return (
     <DefaultLayout title={'注文一覧'}>
-      <ContentBlock
-        title={'注文一覧'}
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-      >
-
-        {orders?.length ? (
-          <>
-            <TableContainer className={classes.containerTable}>
-              <Table
-                className={classes.table}
-              >
-                <TableHead className={classes.tableHead}>
-                  <TableRow>
-                    {headCells.map((headCell) => (
-                      <TableCell
-                        key={headCell}
-                      >
-                        {headCell}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody className={classes.tableBody}>
-                  {orders.slice(page * PER_PAGE, PER_PAGE * (page + 1)).map((order) => (
-                    <TableRow key={order?.id}>
-                      <TableCell>
-                        <Link href={`/orders/${order?.id}`}><a className={classes.orderLink}>{order?.order_number}</a></Link>
-                      </TableCell>
-                      <TableCell>{moment(order?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
-                      <TableCell>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</TableCell>
-                      <TableCell>{orderConstants.paymentMethods?.find((p) => p.id === order.payment_method)?.label}</TableCell>
+      {isAuthenticated && (
+        <ContentBlock
+          title={'注文一覧'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
+          {orders?.length ? (
+            <>
+              <TableContainer className={classes.containerTable}>
+                <Table className={classes.table}>
+                  <TableHead className={classes.tableHead}>
+                    <TableRow>
+                      {headCells.map((headCell) => (
+                        <TableCell key={headCell}>{headCell}</TableCell>
+                      ))}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
 
-            <TablePagination
-              rowsPerPageOptions={[]}
-              component='div'
-              count={orders.length}
-              rowsPerPage={PER_PAGE}
-              page={page}
-              onPageChange={handleChangePage}
-            />
-          </>
-        ) : <Typography align='center'>{'注文情報はありません。'}</Typography>}
-      </ContentBlock>
+                  <TableBody className={classes.tableBody}>
+                    {orders.slice(page * PER_PAGE, PER_PAGE * (page + 1)).map((order) => (
+                      <TableRow key={order?.id}>
+                        <TableCell>
+                          <Link href={`/orders/${order?.id}`}>
+                            <a className={classes.orderLink}>{order?.order_number}</a>
+                          </Link>
+                        </TableCell>
+                        <TableCell>{moment(order?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                        <TableCell>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</TableCell>
+                        <TableCell>
+                          {orderConstants.paymentMethods?.find((p) => p.id === order.payment_method)?.label}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                rowsPerPageOptions={[]}
+                component='div'
+                count={orders.length}
+                rowsPerPage={PER_PAGE}
+                page={page}
+                onPageChange={handleChangePage}
+              />
+            </>
+          ) : (
+            <Typography align='center'>{'注文情報はありません。'}</Typography>
+          )}
+        </ContentBlock>
+      )}
     </DefaultLayout>
   );
 };

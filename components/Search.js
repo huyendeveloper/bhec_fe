@@ -4,7 +4,7 @@ import {Button, IconButton, Divider, Paper, useTheme, useMediaQuery, Grid, Click
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
-import Router from 'next/router';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 
 import {ProductService} from '~/services';
@@ -173,6 +173,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Search = ({query = {}}) => {
+  const router = useRouter();
+  const classes = useStyles();
+  const theme = useTheme();
+
   const [isExpandedCategory, toggleCategory] = useState(false);
   const [isExpandedTag, toggleTag] = useState(false);
   const [currentCategory, setCurrentCategory] = useState();
@@ -180,8 +184,7 @@ const Search = ({query = {}}) => {
   const [tags, setTags] = useState([]);
   const [activeTags, setActiveTags] = useState([]);
   const [keywordSearch, setKeywordSearch] = useState();
-  const classes = useStyles();
-  const theme = useTheme();
+
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   useEffect(() => {
     getInitData();
@@ -233,7 +236,7 @@ const Search = ({query = {}}) => {
     toggleTag(false);
   };
 
-  const isActiveCategory = (id) => (currentCategory?.id === id);
+  const isActiveCategory = (id) => currentCategory?.id === id;
 
   const isActiveTag = (id) => {
     if (activeTags.length) {
@@ -275,7 +278,7 @@ const Search = ({query = {}}) => {
     const cleanObj = clean(newQuery);
     toggleCategory(false);
     toggleTag(false);
-    Router.push({
+    router.push({
       pathname: '/search-page',
       query: cleanObj,
     });
@@ -314,11 +317,7 @@ const Search = ({query = {}}) => {
               alt={'arrow right'}
             />
           </IconButton>
-          {
-            isMobile ? (null) : (
-              <span>{currentCategory ? currentCategory.name_kana : 'カテゴリー'}</span>
-            )
-          }
+          {isMobile ? null : <span>{currentCategory ? currentCategory.name_kana : 'カテゴリー'}</span>}
         </div>
 
         <Divider
@@ -368,7 +367,7 @@ const Search = ({query = {}}) => {
           {'検索'}
         </Button>
 
-        {isExpandedCategory &&
+        {isExpandedCategory && (
           <ClickAwayListener onClickAway={handleClickAwayCategory}>
             <div className={classes.searchBox}>
               <Grid
@@ -386,7 +385,10 @@ const Search = ({query = {}}) => {
                         key={`${category.name}-${category.id}`}
                       >
                         <span
-                          className={clsx(classes.parentCategoryLabel, isActiveCategory(category.id) ? classes.active : '')}
+                          className={clsx(
+                            classes.parentCategoryLabel,
+                            isActiveCategory(category.id) ? classes.active : '',
+                          )}
                           onClick={() => onSelectCategory(category)}
                         >
                           {category.name_kana}
@@ -405,7 +407,10 @@ const Search = ({query = {}}) => {
                                   style={{marginBottom: '1rem'}}
                                 >
                                   <span
-                                    className={clsx(classes.childCategoryLabel, isActiveCategory(c.id) ? classes.active : '')}
+                                    className={clsx(
+                                      classes.childCategoryLabel,
+                                      isActiveCategory(c.id) ? classes.active : '',
+                                    )}
                                     onClick={() => onSelectCategory(c)}
                                   >
                                     {c.name_kana}
@@ -422,8 +427,8 @@ const Search = ({query = {}}) => {
               </Grid>
             </div>
           </ClickAwayListener>
-        }
-        {isExpandedTag &&
+        )}
+        {isExpandedTag && (
           <ClickAwayListener onClickAway={handleClickAwayTag}>
             <div className={classes.searchBox}>
               <Grid
@@ -451,7 +456,7 @@ const Search = ({query = {}}) => {
               </Grid>
             </div>
           </ClickAwayListener>
-        }
+        )}
       </Paper>
     </>
   );

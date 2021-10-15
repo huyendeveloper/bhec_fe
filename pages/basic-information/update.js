@@ -1,35 +1,37 @@
-/* eslint-disable no-useless-escape */
-/* eslint-disable guard-for-in */
-import DateFnsUtils from '@date-io/date-fns';
-import {ErrorMessage} from '@hookform/error-message';
 import {
-  Box, FormControl,
+  Box,
+  FormControl,
   FormControlLabel,
-  Grid, NativeSelect,
+  Grid,
+  NativeSelect,
   Radio,
-  RadioGroup, Snackbar, TextField,
+  RadioGroup,
+  Snackbar,
+  TextField,
   useMediaQuery,
   Button,
 } from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {
-  KeyboardDatePicker, MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import {format as formatDate} from 'date-fns';
-import {ja as jaLocale} from 'date-fns/locale';
-import Router from 'next/router';
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import PropTypes from 'prop-types';
+import {format as formatDate} from 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {ja as jaLocale} from 'date-fns/locale';
 import React, {useEffect, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {useSetRecoilState} from 'recoil';
+import {ErrorMessage} from '@hookform/error-message';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
-import {notFutureDate} from '~/lib/date';
 import {Alert, ContentBlock, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
+import {notFutureDate} from '~/lib/date';
 import {isInteger} from '~/lib/number';
 import {rules} from '~/lib/validator';
 import {AuthService, CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
 
 const Auth = new AuthService();
 
@@ -89,7 +91,8 @@ const AlertMessageForSection = ({alert, handleCloseAlert}) => {
       anchorOrigin={{vertical: 'top', horizontal: 'right'}}
     >
       <Alert severity={alert.type}>{alert.message}</Alert>
-    </Snackbar>) : null;
+    </Snackbar>
+  ) : null;
 };
 
 AlertMessageForSection.propTypes = {
@@ -100,18 +103,42 @@ AlertMessageForSection.propTypes = {
 export default function BasicInformationUpdate() {
   const theme = useTheme();
   const classes = useStyles();
-  const [listCity, setListCity] = useState([]);
-  const [alerts, setAlerts] = useState(null);
-  const setLoading = useSetRecoilState(loadingState);
+  const router = useRouter();
+
   const typingTimeoutRef = useRef(null);
 
+  const [listCity, setListCity] = useState([]);
+  const [alerts, setAlerts] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
+
+  const {
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({criteriaMode: 'all'});
+
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+
   useEffect(() => {
-    getDetailUser();
-    getListCity();
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      getDetailUser();
+      getListCity();
+    } else {
+      requestLogin();
+    }
   }, []);
 
-  const {control, setValue, getValues, handleSubmit, formState: {errors}} = useForm({criteriaMode: 'all'});
-  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const handleStopTypeZipcode = (e) => {
     if (typingTimeoutRef.current) {
@@ -154,10 +181,13 @@ export default function BasicInformationUpdate() {
   const getListCity = async () => {
     const res = await CommonService.getPrefectures();
     if (res && res.length) {
-      setListCity([{
-        id: 1,
-        name: '都道府県',
-      }, ...res]);
+      setListCity([
+        {
+          id: 1,
+          name: '都道府県',
+        },
+        ...res,
+      ]);
     }
   };
 
@@ -177,7 +207,7 @@ export default function BasicInformationUpdate() {
         message: '情報を正常に更新する。',
       });
       setTimeout(() => {
-        Router.push({
+        router.push({
           pathname: '/basic-information',
         });
       }, 1000);
@@ -192,635 +222,632 @@ export default function BasicInformationUpdate() {
 
   return (
     <DefaultLayout title='基本情報'>
-      <div className={classes.root}>
-        <div className='content'>
-
-          <ContentBlock
-            title='基本情報'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-
-            <Box
-              m={'0 auto'}
-              width={isTablet ? '100%' : '58rem'}
+      {isAuthenticated && (
+        <div className={classes.root}>
+          <div className='content'>
+            <ContentBlock
+              title='基本情報'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
             >
-              <StyledForm onSubmit={handleSubmit(onSubmit)}>
-                <MuiPickersUtilsProvider
-                  utils={DateFnsUtils}
-                  locale={jaLocale}
-                >
-                  <div className={classes.formBlock}>
-                    <div className='formBlockControls'>
-                      <Grid
-                        container={true}
-                        spacing={3}
-                      >
+              <Box
+                m={'0 auto'}
+                width={isTablet ? '100%' : '58rem'}
+              >
+                <StyledForm onSubmit={handleSubmit(onSubmit)}>
+                  <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    locale={jaLocale}
+                  >
+                    <div className={classes.formBlock}>
+                      <div className='formBlockControls'>
                         <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
+                          container={true}
+                          spacing={3}
                         >
-                          <label
-                            htmlFor='nickname'
-                            className='formControlLabel'
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
                           >
-                            {'ニックネーム '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='nickname'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='nickname'
-                                label='ニックネーム'
-                                variant='outlined'
-                                error={Boolean(errors.nickname)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                value={value}
-                                onChange={onChange}
-                                inputRef={ref}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='nickname'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='name'
-                            className='formControlLabel'
+                            <label
+                              htmlFor='nickname'
+                              className='formControlLabel'
+                            >
+                              {'ニックネーム '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='nickname'
+                              control={control}
+                              defaultValue=''
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='nickname'
+                                  label='ニックネーム'
+                                  variant='outlined'
+                                  error={Boolean(errors.nickname)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  value={value}
+                                  onChange={onChange}
+                                  inputRef={ref}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='nickname'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
                           >
-                            {'氏名 '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='name'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='name'
-                                variant='outlined'
-                                label='氏名'
-                                error={Boolean(errors.name)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='name'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='name_kana'
-                            className='formControlLabel'
-                          >
-                            {'氏名カナ '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='name_kana'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='name_kana'
-                                variant='outlined'
-                                label='氏名カナ'
-                                error={Boolean(errors.name_kana)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='name_kana'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='email'
-                            className='formControlLabel'
-                          >
-                            {'メールアドレス '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='email'
-                            control={control}
-                            defaultValue=''
-                            rules={{
-                              required: '必須項目です。',
-                              pattern: {
-                                value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                message: '無効なメールアドレスです。',
-                              },
-                            }}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='email'
-                                variant='outlined'
-                                placeholder='oshinagaki@gmail.com'
-                                error={Boolean(errors.email)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                maxLength={254}
-                                onInput={(e) => {
-                                  e.target.value = e.target.value.slice(0, 254);
-                                }}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='email'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >
-                                  {message}
-                                </p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='gender'
-                            className='formControlLabel'
-                          >
-                            {'性別 '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='gender'
-                            control={control}
-                            defaultValue='0'
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {onChange, value}}) => (
-                              <RadioGroup
-                                value={value}
-                                onChange={onChange}
-                                error={Boolean(errors.gender)}
-                              >
-                                <Box
-                                  display='flex'
-                                  height='3rem'
-                                  alignItems='center'
-                                  justifyContent={'space-between'}
-                                  width={'100%'}
-                                >
-                                  <FormControlLabel
-                                    value='0'
-                                    control={<Radio/>}
-                                    label='男性'
-                                  />
-                                  <FormControlLabel
-                                    value='1'
-                                    control={<Radio/>}
-                                    label='女性'
-                                  />
-                                  <FormControlLabel
-                                    value='2'
-                                    control={<Radio/>}
-                                    label='他'
-                                  />
-                                </Box>
-                              </RadioGroup>
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='gender'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='dob'
-                            className='formControlLabel'
-                          >
-                            {'生年月日 '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='dob'
-                            control={control}
-                            defaultValue={null}
-                            rules={{
-                              required: '必須項目です。',
-                              validate: {
-                                checkDayFeature: () => {
-                                  const {dob} = getValues();
-                                  if (!isNaN(new Date(dob).getTime())) {
-                                    return notFutureDate(dob) || '正しく入力してください。';
-                                  }
-                                  return '有効な日付を入力してください。';
-                                },
-                              },
-                            }}
-                            render={({field: {value, onChange}}) => (
-                              <KeyboardDatePicker
-                                variant='inline'
-                                format='yyyy/MM/dd'
-                                id='dob'
-                                label='YYYY/MM/DD'
-                                disableOpenPicker={true}
-                                InputLabelProps={{shrink: false}}
-                                value={value}
-                                onChange={onChange}
-                                autoOk={true}
-                                error={Boolean(errors.dob)}
-                                keyboardIcon={null}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='dob'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                      </Grid>
-                    </div>
-                  </div>
-                  <div className='formBlock'>
-                    <div className='formBlockControls'>
-                      <Grid
-                        container={true}
-                        spacing={3}
-                      >
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='zipcode'
-                            className='formControlLabel'
-                          >
-                            {'郵便番号（半角数字、 ハイフン（-） なしでご入力ください。）'}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='zipcode'
-                            control={control}
-                            defaultValue=''
-                            rules={{
-                              required: rules.required,
-                              pattern: rules.isZipcode,
-                            }}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='zipcode'
-                                variant='outlined'
-                                label='郵便番号'
-                                error={Boolean(errors.zipcode)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={(e) => {
-                                  if (isInteger(e.target.value)) {
-                                    onChange(e);
-                                    handleStopTypeZipcode(e);
-                                  }
-                                }}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='zipcode'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='province_id'
-                            className='formControlLabel'
-                          >
-                            {'都道府県 '}
-                          </label>
-                          <Controller
-                            name='province_id'
-                            control={control}
-                            defaultValue={1}
-                            rules={{
-                              validate: {
-                                matchesPreviousPassword: (value) => {
-                                  return value > 1 || '必須項目です。';
-                                },
-                              },
-                            }}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <FormControl>
-                                <NativeSelect
-                                  className={errors.province_id ? 'selectBoxError' : ''}
+                            <label
+                              htmlFor='name'
+                              className='formControlLabel'
+                            >
+                              {'氏名 '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='name'
+                              control={control}
+                              defaultValue=''
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='name'
+                                  variant='outlined'
+                                  label='氏名'
+                                  error={Boolean(errors.name)}
+                                  InputLabelProps={{shrink: false}}
                                   name={name}
                                   value={value}
                                   inputRef={ref}
                                   onChange={onChange}
-                                  style={value === 1 ? {color: '#757575'} : null}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='name'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='name_kana'
+                              className='formControlLabel'
+                            >
+                              {'氏名カナ '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='name_kana'
+                              control={control}
+                              defaultValue=''
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='name_kana'
+                                  variant='outlined'
+                                  label='氏名カナ'
+                                  error={Boolean(errors.name_kana)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='name_kana'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='email'
+                              className='formControlLabel'
+                            >
+                              {'メールアドレス '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='email'
+                              control={control}
+                              defaultValue=''
+                              rules={{
+                                required: '必須項目です。',
+                                pattern: rules.isEmail,
+                              }}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='email'
+                                  variant='outlined'
+                                  placeholder='oshinagaki@gmail.com'
+                                  error={Boolean(errors.email)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  maxLength={254}
+                                  onInput={(e) => {
+                                    e.target.value = e.target.value.slice(0, 254);
+                                  }}
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='email'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >
+                                    {message}
+                                  </p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='gender'
+                              className='formControlLabel'
+                            >
+                              {'性別 '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='gender'
+                              control={control}
+                              defaultValue='0'
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {onChange, value}}) => (
+                                <RadioGroup
+                                  value={value}
+                                  onChange={onChange}
+                                  error={Boolean(errors.gender)}
                                 >
-                                  {listCity.map((c, index) => (
-                                    <option
-                                      key={String(index)}
-                                      value={c.id}
-                                    >{c.name}</option>
-                                  ))}
-                                </NativeSelect>
-                              </FormControl>
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='province_id'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='city'
-                            className='formControlLabel'
+                                  <Box
+                                    display='flex'
+                                    height='3rem'
+                                    alignItems='center'
+                                    justifyContent={'space-between'}
+                                    width={'100%'}
+                                  >
+                                    <FormControlLabel
+                                      value='0'
+                                      control={<Radio/>}
+                                      label='男性'
+                                    />
+                                    <FormControlLabel
+                                      value='1'
+                                      control={<Radio/>}
+                                      label='女性'
+                                    />
+                                    <FormControlLabel
+                                      value='2'
+                                      control={<Radio/>}
+                                      label='他'
+                                    />
+                                  </Box>
+                                </RadioGroup>
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='gender'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
                           >
-                            {'市区町村（全角でご入力ください。) '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='city'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='city'
-                                variant='outlined'
-                                error={Boolean(errors.city)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                label='市区町村'
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='city'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
+                            <label
+                              htmlFor='dob'
+                              className='formControlLabel'
+                            >
+                              {'生年月日 '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='dob'
+                              control={control}
+                              defaultValue={null}
+                              rules={{
+                                required: '必須項目です。',
+                                validate: {
+                                  checkDayFeature: () => {
+                                    const {dob} = getValues();
+                                    if (!isNaN(new Date(dob).getTime())) {
+                                      return notFutureDate(dob) || '正しく入力してください。';
+                                    }
+                                    return '有効な日付を入力してください。';
+                                  },
+                                },
+                              }}
+                              render={({field: {value, onChange}}) => (
+                                <KeyboardDatePicker
+                                  variant='inline'
+                                  format='yyyy/MM/dd'
+                                  id='dob'
+                                  label='YYYY/MM/DD'
+                                  disableOpenPicker={true}
+                                  InputLabelProps={{shrink: false}}
+                                  value={value}
+                                  onChange={onChange}
+                                  autoOk={true}
+                                  error={Boolean(errors.dob)}
+                                  keyboardIcon={null}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='dob'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='office_room'
-                            className='formControlLabel'
-                          >
-                            {'番地・建物名 (全角でご入力ください。) '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='office_room'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='office_room'
-                                variant='outlined'
-                                error={Boolean(errors.office_room)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                label='番地・建物名'
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='office_room'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                        <Grid
-                          item={true}
-                          xs={12}
-                          sm={6}
-                          md={6}
-                        >
-                          <label
-                            htmlFor='phone_no'
-                            className='formControlLabel'
-                          >
-                            {'電話番号（半角数字、ハイフン（-） なしでご入力ください。）'}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='phone_no'
-                            control={control}
-                            defaultValue=''
-                            rules={{
-                              required: rules.required,
-                              pattern: rules.isPhoneNumber,
-                            }}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='phone_no'
-                                variant='outlined'
-                                error={Boolean(errors.phone_no)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                label='電話番号'
-                                value={value}
-                                inputRef={ref}
-                                onChange={(e) => {
-                                  if (isInteger(e.target.value)) {
-                                    onChange(e);
-                                  }
-                                }}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name='phone_no'
-                            render={({messages}) => {
-                              return messages ? Object.entries(messages).map(([type, message]) => (
-                                <p
-                                  className='inputErrorText'
-                                  key={type}
-                                >{`${message}`}</p>
-                              )) : null;
-                            }}
-                          />
-                        </Grid>
-                      </Grid>
+                      </div>
                     </div>
-                  </div>
-                  <Box
-                    textAlign='center'
-                    mt={5}
-                  >
-                    <Button
-                      variant='contained'
-                      type='submit'
-                      className={classes.btnSubmit}
+                    <div className='formBlock'>
+                      <div className='formBlockControls'>
+                        <Grid
+                          container={true}
+                          spacing={3}
+                        >
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='zipcode'
+                              className='formControlLabel'
+                            >
+                              {'郵便番号（半角数字、 ハイフン（-） なしでご入力ください。）'}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='zipcode'
+                              control={control}
+                              defaultValue=''
+                              rules={{
+                                required: rules.required,
+                                pattern: rules.isZipcode,
+                              }}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='zipcode'
+                                  variant='outlined'
+                                  label='郵便番号'
+                                  error={Boolean(errors.zipcode)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={(e) => {
+                                    if (isInteger(e.target.value)) {
+                                      onChange(e);
+                                      handleStopTypeZipcode(e);
+                                    }
+                                  }}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='zipcode'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='province_id'
+                              className='formControlLabel'
+                            >
+                              {'都道府県 '}
+                            </label>
+                            <Controller
+                              name='province_id'
+                              control={control}
+                              defaultValue={1}
+                              rules={{
+                                validate: {
+                                  matchesPreviousPassword: (value) => {
+                                    return value > 1 || '必須項目です。';
+                                  },
+                                },
+                              }}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <FormControl>
+                                  <NativeSelect
+                                    className={errors.province_id ? 'selectBoxError' : ''}
+                                    name={name}
+                                    value={value}
+                                    inputRef={ref}
+                                    onChange={onChange}
+                                    style={value === 1 ? {color: '#757575'} : null}
+                                  >
+                                    {listCity.map((c, index) => (
+                                      <option
+                                        key={String(index)}
+                                        value={c.id}
+                                      >
+                                        {c.name}
+                                      </option>
+                                    ))}
+                                  </NativeSelect>
+                                </FormControl>
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='province_id'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='city'
+                              className='formControlLabel'
+                            >
+                              {'市区町村（全角でご入力ください。) '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='city'
+                              control={control}
+                              defaultValue=''
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='city'
+                                  variant='outlined'
+                                  error={Boolean(errors.city)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  label='市区町村'
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='city'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='office_room'
+                              className='formControlLabel'
+                            >
+                              {'番地・建物名 (全角でご入力ください。) '}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='office_room'
+                              control={control}
+                              defaultValue=''
+                              rules={{required: '必須項目です。'}}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='office_room'
+                                  variant='outlined'
+                                  error={Boolean(errors.office_room)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  label='番地・建物名'
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='office_room'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='phone_no'
+                              className='formControlLabel'
+                            >
+                              {'電話番号（半角数字、ハイフン（-） なしでご入力ください。）'}
+                              <span className='formControlRequired'>{'*'}</span>
+                            </label>
+                            <Controller
+                              name='phone_no'
+                              control={control}
+                              defaultValue=''
+                              rules={{
+                                required: rules.required,
+                                pattern: rules.isPhoneNumber,
+                              }}
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='phone_no'
+                                  variant='outlined'
+                                  error={Boolean(errors.phone_no)}
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  label='電話番号'
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={(e) => {
+                                    if (isInteger(e.target.value)) {
+                                      onChange(e);
+                                    }
+                                  }}
+                                />
+                              )}
+                            />
+                            <ErrorMessage
+                              errors={errors}
+                              name='phone_no'
+                              render={({messages}) => {
+                                return messages ? Object.entries(messages).map(([type, message]) => (
+                                  <p
+                                    className='inputErrorText'
+                                    key={type}
+                                  >{`${message}`}</p>
+                                )) : null;
+                              }}
+                            />
+                          </Grid>
+                        </Grid>
+                      </div>
+                    </div>
+                    <Box
+                      textAlign='center'
+                      mt={5}
                     >
-                      {'保存する'}
-                    </Button>
-                  </Box>
-                </MuiPickersUtilsProvider>
-              </StyledForm>
-            </Box>
-
-          </ContentBlock>
-
+                      <Button
+                        variant='contained'
+                        type='submit'
+                        className={classes.btnSubmit}
+                      >
+                        {'保存する'}
+                      </Button>
+                    </Box>
+                  </MuiPickersUtilsProvider>
+                </StyledForm>
+              </Box>
+            </ContentBlock>
+          </div>
+          <AlertMessageForSection
+            alert={alerts}
+            handleCloseAlert={() => setAlerts(null)}
+          />
         </div>
-        <AlertMessageForSection
-          alert={alerts}
-          handleCloseAlert={() => setAlerts(null)}
-        />
-      </div>
+      )}
     </DefaultLayout>
   );
 }

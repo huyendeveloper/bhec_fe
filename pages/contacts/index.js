@@ -1,18 +1,28 @@
 import {
-  Table, TableBody, TableCell,
+  Table,
+  TableBody,
+  TableCell,
   TableContainer,
-  TableHead, TablePagination, TableRow, Typography,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
   Box,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import moment from 'moment';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
+import {useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 import Image from 'next/image';
 
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContactService} from '~/services';
+import {userState} from '~/store/userState';
+
 const ContactCommon = new ContactService();
 
 const useStyles = makeStyles((theme) => ({
@@ -88,18 +98,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const headCells = [
-  '受付番号',
-  '種別',
-  '日時',
-  'お問い合わせ内容',
-];
+const headCells = ['受付番号', '種別', '日時', 'お問い合わせ内容'];
 
 const Contacts = () => {
   const classes = useStyles();
+  const router = useRouter();
+
   const [page, setPage] = useState(0);
   const [contacts, setContacts] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [user, setUser] = useRecoilState(userState);
+
   const PER_PAGE = 10;
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      fetchContacts();
+    } else {
+      requestLogin();
+    }
+  }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
@@ -110,80 +136,75 @@ const Contacts = () => {
     setContacts(response?.contacts);
   };
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
   return (
     <DefaultLayout title={'問い合わせ一覧'}>
-      <ContentBlock
-        title={'問い合わせ一覧'}
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-      >
-
-        {contacts?.length ? (
-          <>
-            <TableContainer className={classes.containerTable}>
-              <Table
-                className={classes.table}
-              >
-                <TableHead className={classes.tableHead}>
-                  <TableRow>
-                    {headCells.map((headCell) => (
-                      <TableCell
-                        key={headCell}
-                      >
-                        {headCell}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody className={classes.tableBody}>
-                  {contacts.slice(page * PER_PAGE, PER_PAGE * (page + 1)).map((contact) => (
-                    <TableRow key={contact?.id}>
-                      <TableCell>
-                        <Link href={`/contacts/${contact?.id}`}><a className={classes.orderLink}>{contact?.request_no}</a></Link>
-                      </TableCell>
-                      <TableCell>{contact?.contact_category?.name}</TableCell>
-                      <TableCell>{moment(contact?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
-                      <TableCell>{contact?.description}</TableCell>
+      {isAuthenticated && (
+        <ContentBlock
+          title={'問い合わせ一覧'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
+          {contacts?.length ? (
+            <>
+              <TableContainer className={classes.containerTable}>
+                <Table className={classes.table}>
+                  <TableHead className={classes.tableHead}>
+                    <TableRow>
+                      {headCells.map((headCell) => (
+                        <TableCell key={headCell}>{headCell}</TableCell>
+                      ))}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
 
-            <TablePagination
-              rowsPerPageOptions={[]}
-              component='div'
-              count={contacts.length}
-              rowsPerPage={PER_PAGE}
-              page={page}
-              onPageChange={handleChangePage}
-            />
-          </>
-        ) : (
-          <Box
-            textAlign='center'
-            mt={2}
-            mb={-4}
-          >
-            <Image
-              width={201}
-              height={192}
-              alt='簡単３ステップで商品到着 - STEP3'
-              src='/img/seller-step-3.png'
-            />
-            <Typography
-              component='h3'
-              align='center'
-              className={classes.noteContactNull}
-            >{'お問い合わせはありません。'}</Typography>
-          </Box>
-        )}
-      </ContentBlock>
+                  <TableBody className={classes.tableBody}>
+                    {contacts.slice(page * PER_PAGE, PER_PAGE * (page + 1)).map((contact) => (
+                      <TableRow key={contact?.id}>
+                        <TableCell>
+                          <Link href={`/contacts/${contact?.id}`}>
+                            <a className={classes.orderLink}>{contact?.request_no}</a>
+                          </Link>
+                        </TableCell>
+                        <TableCell>{contact?.contact_category?.name}</TableCell>
+                        <TableCell>{moment(contact?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                        <TableCell>{contact?.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                rowsPerPageOptions={[]}
+                component='div'
+                count={contacts.length}
+                rowsPerPage={PER_PAGE}
+                page={page}
+                onPageChange={handleChangePage}
+              />
+            </>
+          ) : (
+            <Box
+              textAlign='center'
+              mt={2}
+              mb={-4}
+            >
+              <Image
+                width={201}
+                height={192}
+                alt='簡単３ステップで商品到着 - STEP3'
+                src='/img/seller-step-3.png'
+              />
+              <Typography
+                component='h3'
+                align='center'
+                className={classes.noteContactNull}
+              >
+                {'お問い合わせはありません。'}
+              </Typography>
+            </Box>
+          )}
+        </ContentBlock>
+      )}
     </DefaultLayout>
   );
 };

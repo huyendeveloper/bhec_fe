@@ -1,17 +1,17 @@
-import {
-  Typography,
-  Box,
-  useMediaQuery,
-} from '@material-ui/core';
+import {Typography, Box, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {useEffect, useState} from 'react';
+import {useRecoilState} from 'recoil';
 import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 import Image from 'next/image';
 
 import {format} from '~/lib/date';
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContactService} from '~/services';
+import {userState} from '~/store/userState';
+
 const ContactCommon = new ContactService();
 
 const useStyles = makeStyles((theme) => ({
@@ -89,13 +89,33 @@ const useStyles = makeStyles((theme) => ({
 
 const Contacts = () => {
   const classes = useStyles();
-  const [contact, setContact] = useState([]);
   const router = useRouter();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const imgWidth = isMobile ? 80 : (isTablet ? 120 : 120);
-  const imgHeight = isMobile ? 80 : (isTablet ? 120 : 120);
+
+  const imgWidth = isMobile ? 80 : isTablet ? 120 : 120;
+  const imgHeight = isMobile ? 80 : isTablet ? 120 : 120;
+
+  const [contact, setContact] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [user, setUser] = useRecoilState(userState);
+
+  useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      getDetailContact();
+    } else {
+      requestLogin();
+    }
+  }, [router]);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const getDetailContact = async () => {
     const {id} = router?.query;
@@ -105,119 +125,122 @@ const Contacts = () => {
     }
   };
 
-  useEffect(() => {
-    getDetailContact();
-  }, [router]);
-
   return (
     <DefaultLayout title={'問い合わせ詳細'}>
-      <ContentBlock
-        title={'問い合わせ詳細'}
-        bgImage='/img/noise.png'
-        bgRepeat='repeat'
-      >
-        <div className={classes.root}>
-          <Box
-            mt={2}
-            mb={-4}
-            className={classes.contactBox}
-          >
-            <div className={classes.infoBlock}>
-              <div className={classes.infoBlockContent}>
-                {contact?.created_at &&
-                  <Typography
-                    component='p'
-                    className={classes.createdDate}
-                  >
-                    {format(contact?.created_at, 'dateTime1')}
-                  </Typography>
-                }
-                <Typography component='p'>
-                  <span className={classes.title}>{'氏名 :'}</span>
-                  {contact?.name}
-                </Typography>
-                <Typography component='p'>
-                  <span className={classes.title}>{'メールアドレス：'}</span>
-                  {contact?.email}
-                </Typography>
-                <Typography component='p'>
-                  <span className={classes.title}>{'種別：'}</span>
-                  {contact?.contact_category ? contact.contact_category.name : ''}
-                </Typography>
-                {contact?.contact_category_id === 5 ? (<Typography component='p'>
-                  <span className={classes.title}>{'問い合わせ内容：'}</span>
-                  {contact?.description}
-                </Typography>) : null}
-              </div>
-            </div>
-            {contact?.contact_category_id === 5 ? (
+      {isAuthenticated && (
+        <ContentBlock
+          title={'問い合わせ詳細'}
+          bgImage='/img/noise.png'
+          bgRepeat='repeat'
+        >
+          <div className={classes.root}>
+            <Box
+              mt={2}
+              mb={-4}
+              className={classes.contactBox}
+            >
               <div className={classes.infoBlock}>
                 <div className={classes.infoBlockContent}>
-                  <div className={classes.productCategory}>
-                    {contact.contact_products.length && contact.contact_products.map((product, index) => (
-                      <div
-                        key={product.id}
-                        style={{marginTop: '1rem'}}
-                      >
-                        <Typography
-                          component='h4'
-                          className={classes.infoBlockTitle}
-                        >
-                          {`商品情報${index + 1}`}
-                        </Typography>
-                        <div className={classes.infoBlockContent}>
-                          <Typography component='p'>
-                            <span className={classes.title}>{'注文番号 :'}</span>
-                            <span>{product.order_number}</span>
-                          </Typography>
-                          <Typography component='p'>
-                            <span className={classes.title}>{'商品コード：'}</span>
-                            {product.product_code}
-                          </Typography>
-                          <Typography component='p'>
-                            <span className={classes.title}>{'問い合わせ内容：'}</span>
-                            {product.description}
-                          </Typography>
-                          {product.image_urls.length && <div className={classes.infoBlock}>
-                            <div className={classes.productImages}>
-                              {product.image_urls.map((img, prodIndex) => (
-                                <Image
-                                  key={String(prodIndex)}
-                                  src={img}
-                                  width={imgWidth}
-                                  height={imgHeight}
-                                  alt={'product-image'}
-                                />
-                              ))}
+                  {contact?.created_at && (
+                    <Typography
+                      component='p'
+                      className={classes.createdDate}
+                    >
+                      {format(contact?.created_at, 'dateTime1')}
+                    </Typography>
+                  )}
+                  <Typography component='p'>
+                    <span className={classes.title}>{'氏名 :'}</span>
+                    {contact?.name}
+                  </Typography>
+                  <Typography component='p'>
+                    <span className={classes.title}>{'メールアドレス：'}</span>
+                    {contact?.email}
+                  </Typography>
+                  <Typography component='p'>
+                    <span className={classes.title}>{'種別：'}</span>
+                    {contact?.contact_category ? contact.contact_category.name : ''}
+                  </Typography>
+                  {contact?.contact_category_id === 5 ? (
+                    <Typography component='p'>
+                      <span className={classes.title}>{'問い合わせ内容：'}</span>
+                      {contact?.description}
+                    </Typography>
+                  ) : null}
+                </div>
+              </div>
+              {contact?.contact_category_id === 5 ? (
+                <div className={classes.infoBlock}>
+                  <div className={classes.infoBlockContent}>
+                    <div className={classes.productCategory}>
+                      {contact.contact_products.length &&
+                        contact.contact_products.map((product, index) => (
+                          <div
+                            key={product.id}
+                            style={{marginTop: '1rem'}}
+                          >
+                            <Typography
+                              component='h4'
+                              className={classes.infoBlockTitle}
+                            >
+                              {`商品情報${index + 1}`}
+                            </Typography>
+                            <div className={classes.infoBlockContent}>
+                              <Typography component='p'>
+                                <span className={classes.title}>{'注文番号 :'}</span>
+                                <span>{product.order_number}</span>
+                              </Typography>
+                              <Typography component='p'>
+                                <span className={classes.title}>{'商品コード：'}</span>
+                                {product.product_code}
+                              </Typography>
+                              <Typography component='p'>
+                                <span className={classes.title}>{'問い合わせ内容：'}</span>
+                                {product.description}
+                              </Typography>
+                              {product.image_urls.length && (
+                                <div className={classes.infoBlock}>
+                                  <div className={classes.productImages}>
+                                    {product.image_urls.map((img, prodIndex) => (
+                                      <Image
+                                        key={String(prodIndex)}
+                                        src={img}
+                                        width={imgWidth}
+                                        height={imgHeight}
+                                        alt={'product-image'}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>}
-                        </div>
-                      </div>
-                    ))}
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : null}
-            {contact?.image_urls && contact?.contact_category_id !== 5 && contact?.image_urls.length > 0 ? (
-              <div className={classes.infoBlockImage}>
-                <div className={classes.infoBlockContent}>
-                  <div className={classes.productImages}>
-                    {contact.image_urls.map((img, prodIndex) => (
-                      <Image
-                        key={String(prodIndex)}
-                        src={img}
-                        width={imgWidth}
-                        height={imgHeight}
-                        alt={`product-image-${prodIndex + 1}`}
-                      />
-                    ))}
+              ) : null}
+              {contact?.image_urls && contact?.contact_category_id !== 5 && contact?.image_urls.length > 0 ? (
+                <div className={classes.infoBlockImage}>
+                  <div className={classes.infoBlockContent}>
+                    <div className={classes.productImages}>
+                      {contact.image_urls.map((img, prodIndex) => (
+                        <Image
+                          key={String(prodIndex)}
+                          src={img}
+                          width={imgWidth}
+                          height={imgHeight}
+                          alt={`product-image-${prodIndex + 1}`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : null}
-          </Box>
-        </div>
-      </ContentBlock>
+              ) : null}
+            </Box>
+          </div>
+        </ContentBlock>
+      )}
     </DefaultLayout>
   );
 };

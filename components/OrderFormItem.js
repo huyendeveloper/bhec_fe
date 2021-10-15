@@ -1,11 +1,21 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {Card, CardActionArea, CardMedia, FormControl, Grid, IconButton, NativeSelect, Typography, useMediaQuery} from '@material-ui/core';
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  FormControl,
+  Grid,
+  IconButton,
+  NativeSelect,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import clsx from 'clsx';
 import 'date-fns';
 import produce from 'immer';
-import Router from 'next/router';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Controller} from 'react-hook-form';
@@ -167,6 +177,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
+  const router = useRouter();
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -179,17 +190,21 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       handleDelete();
     } else {
       const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
-      setCart(produce((draft) => {
-        draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
-      }));
+      setCart(
+        produce((draft) => {
+          draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
+        }),
+      );
     }
   };
 
   const handleChangeNote = (event) => {
     const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
-    setCart(produce((draft) => {
-      draft.items[itemIdx].note = event.target.value;
-    }));
+    setCart(
+      produce((draft) => {
+        draft.items[itemIdx].note = event.target.value;
+      }),
+    );
   };
 
   const handleDelete = () => {
@@ -206,12 +221,14 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setCart(produce((draft) => {
-          // eslint-disable-next-line max-nested-callbacks
-          draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
-        }));
+        setCart(
+          produce((draft) => {
+            // eslint-disable-next-line max-nested-callbacks
+            draft.items = draft.items.filter((item) => item.productDetail?.id !== data.productDetail.id);
+          }),
+        );
         if (cart.items.length === 1) {
-          Router.push('/cart');
+          router.push('/cart');
         }
       }
     });
@@ -235,8 +252,8 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                 className={clsx(data.productDetail.images?.length ? '' : classes.bgImg)}
                 component='img'
                 alt={data.productDetail.name}
-                width={isMobile ? 87 : (isTablet ? 124 : 170)}
-                height={isMobile ? 56 : (isTablet ? 80 : 111)}
+                width={isMobile ? 87 : isTablet ? 124 : 170}
+                height={isMobile ? 56 : isTablet ? 80 : 111}
                 image={data.productDetail?.image_urls?.length ? data.productDetail.image_urls[0] : '/logo.png'}
                 title={data.productDetail.name}
               />
@@ -266,7 +283,9 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               <Typography
                 variant={'h6'}
                 className={classes.productName}
-              >{data.productDetail.name}</Typography>
+              >
+                {data.productDetail.name}
+              </Typography>
             </Grid>
 
             <Grid
@@ -282,7 +301,9 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               <Typography
                 variant={'h5'}
                 className={classes.price}
-              >{formatNumber(data.productDetail.price, 'currency')}</Typography>
+              >
+                {formatNumber(data.productDetail.price, 'currency')}
+              </Typography>
             </Grid>
 
             <Grid
@@ -366,7 +387,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             name={`product_id${data.productDetail.id}`}
             control={control}
             defaultValue={data.productDetail.id}
-            render={() => (<div>{''}</div>)}
+            render={() => <div>{''}</div>}
           />
 
           {disabled ? (
@@ -393,14 +414,15 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
                       <option
                         key={time.value}
                         value={time.value}
-                      >{time.value}</option>
+                      >
+                        {time.value}
+                      </option>
                     ))}
                   </NativeSelect>
                 </FormControl>
               )}
             />
           )}
-
         </Grid>
       </Grid>
     </div>

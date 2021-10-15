@@ -1,15 +1,19 @@
 import {Grid, Typography, Button, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Router from 'next/router';
 import {useEffect, useState} from 'react';
-import {useSetRecoilState} from 'recoil';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 import moment from 'moment';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock} from '~/components';
 import {AuthService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
+
 const Auth = new AuthService();
+
 const useStyles = makeStyles((theme) => ({
   block: {
     width: '100%',
@@ -66,13 +70,29 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BasicInformation() {
   const classes = useStyles();
+  const router = useRouter();
+
   const [user, setUser] = useState({});
   const [province, setProvince] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const setLoading = useSetRecoilState(loadingState);
+  const [userCredential, setUserCredential] = useRecoilState(userState);
 
   useEffect(() => {
-    getDetailUser();
+    if (userCredential?.isAuthenticated) {
+      setIsAuthenticated(userCredential?.isAuthenticated);
+      getDetailUser();
+    } else {
+      requestLogin();
+    }
   }, []);
+
+  const requestLogin = () => {
+    setUserCredential({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const getDetailUser = async () => {
     setLoading(true);
@@ -100,208 +120,242 @@ export default function BasicInformation() {
       1: '女性',
       2: '他',
     };
-    return (
-      <span>{genderList[gender]}</span>
-    );
+    return <span>{genderList[gender]}</span>;
   };
 
   function updateInfo() {
     setLoading(true);
-    Router.push({
+    router.push({
       pathname: '/basic-information/update',
     });
   }
 
   return (
     <DefaultLayout title='基本情報'>
-      <div className='content'>
-        <ContentBlock
-          title={'基本情報'}
-        >
-          <Grid
-            container={true}
-            spacing={3}
-            style={{padding: '0 1rem'}}
-          >
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'ニックネーム'}</Typography>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {user && user.nickname ? <span>{user.nickname}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
-              </Grid>
-            </div>
-
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'ログインID'}</Typography>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {user && user.email ? <span>{user.email}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
-              </Grid>
-            </div>
-
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'氏名'}</Typography>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {user && user.name ? <span>{user.name}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
-              </Grid>
-            </div>
-
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'ひらがな'}</Typography>
-              </Grid>
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                { user && user.name_kana ? <span>{user.name_kana}</span> : <span className={classes.textDisable}>{'未登録'}</span>}
-              </Grid>
-            </div>
-
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'性別'}</Typography>
-              </Grid>
-
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {user ? genderTemplate(user.gender) : <span className={classes.textDisable}>{'はなこ'}</span>}
-              </Grid>
-            </div>
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'生年月日'}</Typography>
-              </Grid>
-
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                {user && user.dob ? <span>{formatDob(user.dob)}</span> : <span className={classes.textDisable}>{'はなこ'}</span>}
-              </Grid>
-            </div>
-            <div className={classes.block}>
-              <Grid
-                item={true}
-                xs={12}
-                sm={4}
-                md={4}
-              >
-                <Typography
-                  variant={'h4'}
-                  className={classes.title}
-                >{'住所'}</Typography>
-              </Grid>
-
-              <Grid
-                item={true}
-                xs={12}
-                sm={8}
-                md={8}
-              >
-                { user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? <>
-                  {user?.name} <br/>
-                  {`〒${user?.zipcode}`} <br/>
-                  {province?.name} {user?.city} <br/>
-                  {user?.office_room} <br/>
-                  {user?.phone_no}
-                </> : <span className={classes.textDisable}>{'未登録'}</span>
-                }
-              </Grid>
-            </div>
-          </Grid>
-          <Box
-            textAlign='center'
-            mt={5}
-            className={classes.divAction}
-          >
-            <Button
-              variant='contained'
-              type='submit'
-              className={classes.btnSubmit}
-              onClick={() => updateInfo()}
+      {isAuthenticated && (
+        <div className='content'>
+          <ContentBlock title={'基本情報'}>
+            <Grid
+              container={true}
+              spacing={3}
+              style={{padding: '0 1rem'}}
             >
-              {'基本情報を編集'}
-            </Button>
-          </Box>
-        </ContentBlock>
-      </div>
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'ニックネーム'}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user && user.nickname ? (
+                    <span>{user.nickname}</span>
+                  ) : (
+                    <span className={classes.textDisable}>{'はなこ'}</span>
+                  )}
+                </Grid>
+              </div>
 
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'ログインID'}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user && user.email ? (
+                    <span>{user.email}</span>
+                  ) : (
+                    <span className={classes.textDisable}>{'はなこ'}</span>
+                  )}
+                </Grid>
+              </div>
+
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'氏名'}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user && user.name ? (
+                    <span>{user.name}</span>
+                  ) : (
+                    <span className={classes.textDisable}>{'はなこ'}</span>
+                  )}
+                </Grid>
+              </div>
+
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'ひらがな'}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user && user.name_kana ? (
+                    <span>{user.name_kana}</span>
+                  ) : (
+                    <span className={classes.textDisable}>{'未登録'}</span>
+                  )}
+                </Grid>
+              </div>
+
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'性別'}
+                  </Typography>
+                </Grid>
+
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user ? genderTemplate(user.gender) : <span className={classes.textDisable}>{'はなこ'}</span>}
+                </Grid>
+              </div>
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'生年月日'}
+                  </Typography>
+                </Grid>
+
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user && user.dob ? (
+                    <span>{formatDob(user.dob)}</span>
+                  ) : (
+                    <span className={classes.textDisable}>{'はなこ'}</span>
+                  )}
+                </Grid>
+              </div>
+              <div className={classes.block}>
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={4}
+                  md={4}
+                >
+                  <Typography
+                    variant={'h4'}
+                    className={classes.title}
+                  >
+                    {'住所'}
+                  </Typography>
+                </Grid>
+
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                >
+                  {user.zipcode || user.city || user.district || user.phone_no || user.office_room || province ? (
+                    <>
+                      {user?.name} <br/>
+                      {`〒${user?.zipcode}`} <br/>
+                      {province?.name} {user?.city} <br/>
+                      {user?.office_room} <br/>
+                      {user?.phone_no}
+                    </>
+                  ) : (
+                    <span className={classes.textDisable}>{'未登録'}</span>
+                  )}
+                </Grid>
+              </div>
+            </Grid>
+            <Box
+              textAlign='center'
+              mt={5}
+              className={classes.divAction}
+            >
+              <Button
+                variant='contained'
+                type='submit'
+                className={classes.btnSubmit}
+                onClick={() => updateInfo()}
+              >
+                {'基本情報を編集'}
+              </Button>
+            </Box>
+          </ContentBlock>
+        </div>
+      )}
     </DefaultLayout>
   );
 }

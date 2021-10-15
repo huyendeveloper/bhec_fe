@@ -2,7 +2,9 @@ import {Container, Grid, Typography, Icon, Snackbar} from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import {useSetRecoilState} from 'recoil';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {signOut} from 'next-auth/client';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock} from '~/components';
@@ -10,6 +12,7 @@ import {PaymentService} from '~/services';
 const Payment = new PaymentService();
 import {PaymentWidget} from '~/components/Widgets';
 import {DeletePaymentPopup, PaymentPopup} from '~/components/Payment';
+import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
 
 const useStyles = makeStyles((theme) => ({
@@ -125,6 +128,8 @@ const useStyles = makeStyles((theme) => ({
 
 function PaymentMethod() {
   const classes = useStyles();
+  const router = useRouter();
+
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [openUpdatePopup, setOpenUpdatePopup] = useState(false);
   const [listPayment, setListPayment] = useState([]);
@@ -133,11 +138,25 @@ function PaymentMethod() {
   const [message, setMessage] = useState();
   const [openMess, setOpenMess] = useState(false);
   const [typeMess, setTypeMess] = useState('success');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const setLoading = useSetRecoilState(loadingState);
+  const [user, setUser] = useRecoilState(userState);
 
   useEffect(() => {
-    getListCard();
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(user?.isAuthenticated);
+      getListCard();
+    } else {
+      requestLogin();
+    }
   }, []);
+
+  const requestLogin = () => {
+    setUser({});
+    signOut({redirect: false});
+    router.push({pathname: '/auth/login'});
+  };
 
   const getListCard = async () => {
     setLoading(true);
@@ -199,86 +218,82 @@ function PaymentMethod() {
 
   return (
     <DefaultLayout title='お支払い方法'>
-      <div className={classes.root}>
-        <div
-          className='content'
-          style={{marginBottom: '3rem'}}
-        >
-          <ContentBlock
-            title='お支払い方法'
+      {isAuthenticated && (
+        <div className={classes.root}>
+          <div
+            className='content'
+            style={{marginBottom: '3rem'}}
           >
-            <Container maxWidth='lg'>
-              <Grid
-                container={true}
-                spacing={3}
-              >
+            <ContentBlock title='お支払い方法'>
+              <Container maxWidth='lg'>
                 <Grid
-                  item={true}
-                  xs={12}
+                  container={true}
+                  spacing={3}
                 >
-                  <div className={classes.labelPayment}>
-                    <div className={classes.icon}/>
-                    <Typography
-                      gutterBottom={true}
-                      component='h3'
-                      className={classes.title}
-                    >
-                      {'クレジットカード'}
-                    </Typography>
-                  </div>
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                >
-                  <PaymentWidget
-                    data={listPayment}
-                    openPopupDelete={openPopupDelete}
-                    openPopupUpdate={openPopupUpdate}
-                  />
-                </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                >
-                  <div
-                    className={classes.divAddPayment}
-                    onClick={() => openPopupUpdate()}
+                  <Grid
+                    item={true}
+                    xs={12}
                   >
-                    <div className={classes.divAdd}>
-                      <Icon
-                        className={classes.icAdd}
-                      >{'add_box'}</Icon>
-                      <span className={classes.labelAdd}>{'新しいクレジットカードを追加'}</span>
+                    <div className={classes.labelPayment}>
+                      <div className={classes.icon}/>
+                      <Typography
+                        gutterBottom={true}
+                        component='h3'
+                        className={classes.title}
+                      >
+                        {'クレジットカード'}
+                      </Typography>
                     </div>
-                    <div className={classes.note}>
-                      {'クレジットカード又はデビットカードを追加する。'}
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                  >
+                    <PaymentWidget
+                      data={listPayment}
+                      openPopupDelete={openPopupDelete}
+                      openPopupUpdate={openPopupUpdate}
+                    />
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                  >
+                    <div
+                      className={classes.divAddPayment}
+                      onClick={() => openPopupUpdate()}
+                    >
+                      <div className={classes.divAdd}>
+                        <Icon className={classes.icAdd}>{'add_box'}</Icon>
+                        <span className={classes.labelAdd}>{'新しいクレジットカードを追加'}</span>
+                      </div>
+                      <div className={classes.note}>{'クレジットカード又はデビットカードを追加する。'}</div>
                     </div>
-                  </div>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Container>
-          </ContentBlock>
+              </Container>
+            </ContentBlock>
+          </div>
+          {openUpdatePopup && (
+            <PaymentPopup
+              open={openUpdatePopup}
+              onClose={handleCloseUpdatePopup}
+              style={{width: '80%'}}
+              onSubmit={createPaymentSuccess}
+              dataUpdate={dataUpdate}
+            />
+          )}
+          {openDeletePopup && (
+            <DeletePaymentPopup
+              open={openDeletePopup}
+              handleClose={handleCloseDeletePopup}
+              style={{width: '80%'}}
+              idRemove={idRemove}
+              actionFinish={actionFinish}
+            />
+          )}
         </div>
-        {openUpdatePopup &&
-        <PaymentPopup
-          open={openUpdatePopup}
-          onClose={handleCloseUpdatePopup}
-          style={{width: '80%'}}
-          onSubmit={createPaymentSuccess}
-          dataUpdate={dataUpdate}
-        />
-        }
-        {openDeletePopup &&
-          <DeletePaymentPopup
-            open={openDeletePopup}
-            handleClose={handleCloseDeletePopup}
-            style={{width: '80%'}}
-            idRemove={idRemove}
-            actionFinish={actionFinish}
-          />
-        }
-      </div>
+      )}
       <Snackbar
         open={openMess}
         autoHideDuration={3000}

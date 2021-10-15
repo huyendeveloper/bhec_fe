@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import React, {useEffect} from 'react';
-import Router, {useRouter} from 'next/router';
+import {useRouter} from 'next/router';
 
 import {AuthService} from '~/services';
 const Auth = new AuthService();
@@ -15,21 +15,18 @@ function AccountConfirm() {
       };
       const res = await Auth.confirmAccount(body);
       if (res.user) {
-        Router.push({
+        router.push({
           pathname: '/auth/login',
         });
       } else {
-        Router.push({
+        router.push({
           pathname: '/auth/login',
         });
       }
     }
   }, [router.query.confirmation_token]);
 
-  return (
-    <>
-    </>
-  );
+  return <></>;
 }
 
 export default AccountConfirm;

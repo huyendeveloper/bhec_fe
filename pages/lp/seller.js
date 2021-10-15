@@ -1,23 +1,26 @@
-/* eslint-disable no-nested-ternary */
-import Image from 'next/image';
-
-import {useTheme} from '@material-ui/core/styles';
 import {Box, Grid, Icon, useMediaQuery} from '@material-ui/core';
-
-import Router from 'next/router';
+import {useTheme} from '@material-ui/core/styles';
+import {useRouter} from 'next/router';
+import Image from 'next/image';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ContentBlock, Button, Medias} from '~/components';
-import {FeatureWidget, TopBannerWidget, SpecificationsWidget, StepWidget as ProductArrivalStep} from '~/components/Widgets';
+import {
+  FeatureWidget,
+  TopBannerWidget,
+  SpecificationsWidget,
+  StepWidget as ProductArrivalStep,
+} from '~/components/Widgets';
 import {medias} from '~/constants';
 
 export default function Seller() {
   const theme = useTheme();
+  const router = useRouter();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const callToAction = () => {
-    Router.push('/lp/seller-form');
+    router.push('/lp/seller-form');
   };
 
   return (
@@ -131,7 +134,6 @@ export default function Seller() {
               {'管理方法までサポート。'}
             </FeatureWidget>
           </Grid>
-
         </Grid>
       </ContentBlock>
 
@@ -210,7 +212,6 @@ export default function Seller() {
               </Box>
             </FeatureWidget>
           </Grid>
-
         </Grid>
 
         <Box
@@ -237,9 +238,7 @@ export default function Seller() {
         </Box>
       </ContentBlock>
 
-      <ContentBlock
-        title='簡単！出品までのステップ'
-      >
+      <ContentBlock title='簡単！出品までのステップ'>
         <Grid
           container={true}
           justifyContent='center'
@@ -250,9 +249,7 @@ export default function Seller() {
             xs={12}
             sm={4}
           >
-            <ProductArrivalStep
-              title='Step1'
-            >
+            <ProductArrivalStep title='Step1'>
               <Box
                 fontWeight='bold'
                 lineHeight={5}
@@ -279,9 +276,7 @@ export default function Seller() {
             xs={12}
             sm={4}
           >
-            <ProductArrivalStep
-              title='Step2'
-            >
+            <ProductArrivalStep title='Step2'>
               <Box
                 fontWeight='bold'
                 my={isTablet ? 1 : 3}
@@ -309,12 +304,10 @@ export default function Seller() {
             xs={12}
             sm={4}
           >
-            <ProductArrivalStep
-              title='Step3'
-            >
+            <ProductArrivalStep title='Step3'>
               <Box
                 fontWeight='bold'
-                fontSize={isMobile ? '1.25rem' : (isTablet ? '0.75rem' : 'inherit')}
+                fontSize={isMobile ? '1.25rem' : isTablet ? '0.75rem' : 'inherit'}
               >
                 {'審査に通過したら出品準備完了！'} <br/>
                 {'ページを作成し商品を出品しま'} <br/>

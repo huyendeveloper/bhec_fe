@@ -1,4 +1,3 @@
-import {httpStatus} from '~/constants';
 import {axios} from '~/modules/axios';
 
 const CouponService = {
@@ -15,13 +14,9 @@ async function getCouponDetails(payload) {
 async function getCoupons(payload) {
   try {
     const {data} = await axios.get(`/user_coupons?page=${payload.page}&per_page=${payload.per_page}`, {progress: true});
-    const {success, message, status, error_code} = data;
+    const {success, message, error_code} = data;
 
     const haveNextPage = data.data.page < data.data.pages;
-
-    if (status === httpStatus.UN_AUTHORIZED) {
-      return {haveNextPage: false, userCoupons: [], error: httpStatus.UN_AUTHORIZED};
-    }
 
     if (!success) {
       return {haveNextPage: false, userCoupons: [], error: {errorCode: error_code, message}};
@@ -36,11 +31,7 @@ async function getCoupons(payload) {
 async function addCoupons(payload) {
   try {
     const {data} = await axios.post('/user_coupons', payload, {progress: true});
-    const {success, message, status, error_code} = data;
-
-    if (status === httpStatus.UN_AUTHORIZED) {
-      return {userCoupon: [], error: httpStatus.UN_AUTHORIZED};
-    }
+    const {success, message, error_code} = data;
 
     if (!success) {
       return {userCoupon: [], error: {errorCode: error_code, message}};
