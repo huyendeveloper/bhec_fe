@@ -2,13 +2,14 @@ import {FormControlLabel, InputBase, makeStyles, Paper, Radio, RadioGroup} from 
 import produce from 'immer';
 import {signOut} from 'next-auth/client';
 import {useRouter} from 'next/router';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller} from 'react-hook-form';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
+import moment from 'moment';
+
 import {AlertMessageForSection, BlockForm, Button, ConnectForm} from '~/components';
 import {httpStatus} from '~/constants';
-import {format} from '~/lib/date';
 import {AuthService, CouponService} from '~/services';
 import {billState} from '~/store/cartState';
 import {couponEnableUseState} from '~/store/couponState';
@@ -118,7 +119,7 @@ const FormCoupon = () => {
     });
 
     if (error) {
-      fetchUserInfo();
+      await fetchUserInfo();
       if (error === httpStatus.UN_AUTHORIZED) {
         requestLogin();
       }
@@ -152,7 +153,7 @@ const FormCoupon = () => {
       const {coupon} = res.data;
 
       if (coupon) {
-        addCoupon(code);
+        await addCoupon(code);
       }
 
       if (!coupon) {
@@ -196,22 +197,20 @@ const FormCoupon = () => {
 
   const fetchCoupons = async () => {
     const {userCoupons, error} = await CouponService.getCouponsActive();
-
     if (error) {
-      fetchUserInfo();
+      await fetchUserInfo();
       if (error === httpStatus.UN_AUTHORIZED) {
         requestLogin();
       }
     } else {
       setCoupons([...userCoupons]);
     }
-
-    return userCoupons;
   };
 
-  React.useEffect(() => {
-    fetchCoupons();
-    setLoaded(true);
+  useEffect(() => {
+    fetchCoupons().finally(() => {
+      setLoaded(true);
+    });
   }, []);
 
   return (
@@ -245,7 +244,7 @@ const FormCoupon = () => {
                         key={item?.coupon?.code}
                         value={item?.coupon?.code}
                         control={<Radio/>}
-                        label={`クーポン名  ${(item?.coupon?.value || '0') + (item?.coupon?.coupon_type === 1 ? '%' : '円')}  ${format(item?.coupon?.expiration_date, 'jaDateMD')}`}
+                        label={`${item?.coupon?.title}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
                         className={'labelRadioBtn'}
                       />
                     ))}

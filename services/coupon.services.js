@@ -1,4 +1,5 @@
 import {axios} from '~/modules/axios';
+import {httpStatus} from '~/constants';
 
 const CouponService = {
   getCoupons,
