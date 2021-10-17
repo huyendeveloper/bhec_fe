@@ -60,12 +60,14 @@ const FormPaymentMethods = ({isReadonly}) => {
                     className={'labelRadioBtn'}
                   />
 
-                  <FormControlLabel
-                    value={'3'}
-                    control={<Radio/>}
-                    label={'コンビニ払い'}
-                    className={'labelRadioBtn'}
-                  />
+                  {/* eslint-disable-next-line no-warning-comments */}
+                  {/* TODO: uncomment me after client finished to register with Veritrans provider */}
+                  {/*<FormControlLabel*/}
+                  {/*  value={'3'}*/}
+                  {/*  control={<Radio/>}*/}
+                  {/*  label={'コンビニ払い'}*/}
+                  {/*  className={'labelRadioBtn'}*/}
+                  {/*/>*/}
                 </RadioGroup>
               )}
             />
