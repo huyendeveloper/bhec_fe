@@ -341,6 +341,18 @@ const OrdersDetail = ({id}) => {
             >
               {'注文一覧へ'}
             </Button>
+
+            {order?.invoice_flag === 1 &&
+              <Button
+                variant={'pill'}
+                customColor={'yellow'}
+                customBorder={'bdGray'}
+                customSize={'extraLarge'}
+                onClick={() => exportOrder()}
+              >
+                {'領収書発行'}
+              </Button>
+            }
           </div>
         </ContentBlock>
       )}

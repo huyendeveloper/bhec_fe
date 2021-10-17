@@ -10,8 +10,10 @@ export const couponState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const userSelectedCouponState = atom({
-  key: 'userSelectedCouponState',
-  default: {},
+export const couponEnableUseState = atom({
+  key: 'couponEnableUse',
+  default: {
+    items: [],
+  },
   effects_UNSTABLE: [persistAtom],
 });

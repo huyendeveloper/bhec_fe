@@ -1,26 +1,26 @@
-import {makeStyles} from '@material-ui/core/styles';
-import {Box, Container, Grid, FormControl, Button, Typography} from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import {useState, useEffect} from 'react';
-import {Controller, useForm} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
-import {useRouter} from 'next/router';
+import {Box, Button, Container, FormControl, Grid, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import produce from 'immer';
 import {signIn, signOut} from 'next-auth/client';
 import Image from 'next/image';
-import {useSetRecoilState} from 'recoil';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 import {GoogleLogin} from 'react-google-login';
-import produce from 'immer';
+import {Controller, useForm} from 'react-hook-form';
+import {useSetRecoilState} from 'recoil';
 
-import {SignInModal, LineLogin, StepLogin} from '~/components/Auth';
 import {AlertMessageForSection, StyledForm} from '~/components';
-import {AuthService} from '~/services';
+import {LineLogin, SignInModal, StepLogin} from '~/components/Auth';
 import {DefaultLayout} from '~/components/Layouts';
-import {userState} from '~/store/userState';
-import {loadingState} from '~/store/loadingState';
-import {cartState} from '~/store/cartState';
-import {orderState} from '~/store/orderState';
-import {couponState, userSelectedCouponState} from '~/store/couponState';
 import {rules} from '~/lib/validator';
+import {AuthService} from '~/services';
+import {cartState} from '~/store/cartState';
+import {couponEnableUseState, couponState} from '~/store/couponState';
+import {loadingState} from '~/store/loadingState';
+import {orderState} from '~/store/orderState';
+import {userState} from '~/store/userState';
 
 const Auth = new AuthService();
 
@@ -326,7 +326,7 @@ const Login = () => {
   const setCart = useSetRecoilState(cartState);
   const setOrder = useSetRecoilState(orderState);
   const setCoupon = useSetRecoilState(couponState);
-  const setUserSelectedCouponState = useSetRecoilState(userSelectedCouponState);
+  const setCouponEnableUse = useSetRecoilState(couponEnableUseState);
 
   const {
     control,
@@ -342,8 +342,8 @@ const Login = () => {
     setCart({items: [], seller: null});
     setOrder();
     setCoupon({items: []});
-    setUserSelectedCouponState({});
     setUser({});
+    setCouponEnableUse({items: []});
     signOut({redirect: false});
   }, []);
 

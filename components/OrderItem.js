@@ -2,6 +2,7 @@ import {Grid, Step, StepLabel, Stepper, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
+import {useState, useEffect} from 'react';
 
 import {get} from 'lodash';
 
@@ -157,6 +158,23 @@ const OrderItem = ({item, status}) => {
 
   const product = item?.product;
   const thumbnail = get(product, 'image_urls.0', 'logo.png');
+  const [delivereStatus, setDelivereStatus] = useState(1);
+
+  useEffect(() => {
+    switch (status) {
+    case 2:
+      setDelivereStatus(2);
+      break;
+    case 3:
+      setDelivereStatus(-1);
+      break;
+    case 4:
+      setDelivereStatus(2.5);
+      break;
+    default:
+      break;
+    }
+  }, []);
 
   return item ? (
     <div className={classes.root}>
@@ -251,10 +269,13 @@ const OrderItem = ({item, status}) => {
           <div>{item?.quantity}</div>
           <div>{formatNumber(product?.price ?? 0, 'currency')}</div>
           <div>{formatNumber((item?.quantity ?? 1) * (product?.price ?? 0), 'currency')}</div>
+          {delivereStatus === -1 &&
+            <div>{'キャンセル'}</div>
+          }
 
-          {!isMobile && (
+          {!isMobile && delivereStatus > -1 && (
             <Stepper
-              activeStep={status}
+              activeStep={delivereStatus}
               alternativeLabel={true}
               className={classes.stepper}
             >
@@ -267,13 +288,13 @@ const OrderItem = ({item, status}) => {
           )}
         </Grid>
 
-        {isMobile && (
+        {isMobile && delivereStatus > -1 && (
           <Grid
             item={true}
             xs={12}
           >
             <Stepper
-              activeStep={status}
+              activeStep={delivereStatus}
               alternativeLabel={true}
               className={classes.stepper}
             >

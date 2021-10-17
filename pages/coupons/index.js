@@ -1,20 +1,20 @@
-import {useEffect, useState} from 'react';
-import Image from 'next/image';
-import {signOut} from 'next-auth/client';
-import {useRouter} from 'next/router';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
-import {Typography, Box, useMediaQuery, useTheme} from '@material-ui/core';
+import {Box, Typography, useMediaQuery, useTheme} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import {signOut} from 'next-auth/client';
+import Image from 'next/image';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import Swal from 'sweetalert2';
 
-import {CouponService} from '~/services';
-import {userState} from '~/store/userState';
-import {cartState} from '~/store/cartState';
-import {userSelectedCouponState} from '~/store/couponState';
-import {getErrorMessage} from '~/lib/getErrorMessage';
-import {ContentBlock, AlertMessageForSection, Button} from '~/components';
-import {DefaultLayout} from '~/components/Layouts';
+import {AlertMessageForSection, Button, ContentBlock} from '~/components';
 import {ApplyCouponBar, CouponItem} from '~/components/Coupon';
+import {DefaultLayout} from '~/components/Layouts';
+import {getErrorMessage} from '~/lib/getErrorMessage';
+import {CouponService} from '~/services';
+import {cartState} from '~/store/cartState';
+import {orderState} from '~/store/orderState';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   couponContainer: {
@@ -49,13 +49,13 @@ const Coupons = () => {
 
   const [user, setUser] = useRecoilState(userState);
   const cartStateData = useRecoilValue(cartState);
-  const setUserSelectedCoupon = useSetRecoilState(userSelectedCouponState);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [alerts, setAlerts] = useState(null);
   const [page, setPage] = useState(1);
   const [coupons, setCoupons] = useState([]);
+  const [order, setOrder] = useRecoilState(orderState);
 
   // Default
   const PER_PAGE = 10;
@@ -129,7 +129,7 @@ const Coupons = () => {
 
   const useCoupon = (coupon) => {
     if (cartStateData.items[0]) {
-      setUserSelectedCoupon(coupon);
+      setOrder({...order, coupon_code: coupon?.coupon?.code});
       router.push('/cart');
     } else {
       Swal.fire({
