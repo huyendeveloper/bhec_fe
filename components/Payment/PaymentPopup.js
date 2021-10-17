@@ -383,17 +383,13 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       rules={{
                         required: rules.required,
                       }}
-                      render={({field: {name, value, ref, onChange}}) => (
+                      render={({field: {name, value, onChange}}) => (
                         <input
                           className={classes.inputPayment}
-                          variant='outlined'
-                          error={Boolean(errors.card_number)}
-                          InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
-                          inputRef={ref}
                           onChange={onChange}
-                          {...getCardNumberProps({onChange})}
+                          {...getCardNumberProps({onChange, type: 'password'})}
                           placeholder={'カード番号'}
                         />
                       )}
@@ -436,15 +432,11 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       control={control}
                       defaultValue=''
                       rules={{required: rules.required}}
-                      render={({field: {name, value, ref, onChange}}) => (
+                      render={({field: {name, value, onChange}}) => (
                         <input
                           className={classes.inputPayment}
-                          variant='outlined'
-                          error={Boolean(errors.card_expire)}
-                          InputLabelProps={{shrink: true}}
                           name={name}
                           value={value}
-                          inputRef={ref}
                           onChange={onChange}
                           {...getExpiryDateProps({onChange})}
                           placeholder={'月/年'}
@@ -484,18 +476,13 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                       rules={{
                         required: rules.required,
                       }}
-                      render={({field: {name, value, ref, onChange}}) => (
+                      render={({field: {name, value, onChange}}) => (
                         <input
                           className={classes.inputPayment}
-                          variant='outlined'
-                          label={'セキュリティーコード'}
-                          error={Boolean(errors.security_code)}
-                          InputLabelProps={{shrink: false}}
                           name={name}
                           value={value}
-                          inputRef={ref}
                           onChange={onChange}
-                          {...getCVCProps({onChange})}
+                          {...getCVCProps({onChange, type: 'password'})}
                         />
                       )}
                     />
