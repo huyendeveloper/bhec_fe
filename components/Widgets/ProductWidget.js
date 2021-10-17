@@ -148,7 +148,7 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
   const user = useRecoilValue(userState);
   const [isLike, setIsLike] = useState(data?.is_favorite_product || false);
   const hasQuantity = 'quantity' in data && 'maximum_quantity' in data;
-  const isInStock = hasQuantity ? (data?.quantity > 0 && data?.maximum_quantity > 0) : true;
+  const isInStock = hasQuantity ? (data?.quantity > 0) : true;
 
   if (!data) {
     return null;

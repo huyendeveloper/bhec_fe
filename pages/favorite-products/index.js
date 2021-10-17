@@ -86,7 +86,9 @@ export default function FavoriteProducts() {
   useEffect(() => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(user?.isAuthenticated);
-      getFavoriteProducts();
+      getFavoriteProducts().finally(() => {
+        setLoading(false);
+      });
     } else {
       requestLogin();
     }
@@ -113,11 +115,9 @@ export default function FavoriteProducts() {
 
     const response = await Product.getListFavoriteProduct(payload);
     if (response?.products?.length) {
-      setLoading(false);
       setFavoriteProducts(response?.products);
       setTotalPage(response?.pages);
     } else {
-      setLoading(false);
       setFavoriteProducts([]);
       setPage(1);
       setTotalPage(1);
