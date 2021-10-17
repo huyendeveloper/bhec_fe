@@ -43,6 +43,7 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
+
   const setDefaultAdressShipping = () => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);

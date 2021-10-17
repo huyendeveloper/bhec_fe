@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const Notification = ({notification, readedNotify}) => {
   const classes = useStyles();
   const setUser = useSetRecoilState(userState);
-  const url = `/${notification?.type === 1 ? 'product' : 'articles'}/${notification?.notiable_id}`;
+  const url = `/${notification?.type === 1 ? 'articles' : 'product'}/${notification?.notiable_id}`;
 
   const handleRead = async () => {
     if (!notification?.read) {
