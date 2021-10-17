@@ -470,8 +470,7 @@ export default function SellerForm() {
                                 variant='inline'
                                 format='yyyy/MM/dd'
                                 id='dob'
-                                label='YYYY/MM/DD'
-                                emptyLabel='YYYY/MM/DD'
+                                placeholder='生年月日'
                                 InputLabelProps={{shrink: false}}
                                 value={value}
                                 onChange={onChange}
@@ -1099,13 +1098,16 @@ export default function SellerForm() {
                               validate: {
                                 checkDayFeature: () => {
                                   const {time_sell} = getValues();
-                                  if (!isNaN(new Date(time_sell).getTime())) {
-                                    if (notFutureDate(time_sell)) {
-                                      return '正しく入力してください。';
+                                  if (time_sell) {
+                                    if (!isNaN(new Date(time_sell).getTime())) {
+                                      if (notFutureDate(time_sell)) {
+                                        return '正しく入力してください。';
+                                      }
+                                      return true;
                                     }
-                                    return true;
+                                    return '有効な日付を入力してください。';
                                   }
-                                  return '有効な日付を入力してください。';
+                                  return true;
                                 },
                               },
                             }}
@@ -1115,7 +1117,7 @@ export default function SellerForm() {
                                 variant='inline'
                                 format='yyyy/MM/dd'
                                 id='time_sell'
-                                label='YYYY/MM/DD'
+                                placeholder='出品予定の時期'
                                 InputLabelProps={{shrink: false}}
                                 value={value}
                                 onChange={onChange}
