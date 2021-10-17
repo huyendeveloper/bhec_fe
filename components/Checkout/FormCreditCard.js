@@ -4,15 +4,16 @@ import {Controller} from 'react-hook-form';
 import {FormControlLabel, makeStyles, Radio, RadioGroup} from '@material-ui/core';
 import {ErrorMessage} from '@hookform/error-message';
 
-import {useRecoilValue, useRecoilState} from 'recoil';
+import {useRecoilState} from 'recoil';
 import produce from 'immer';
+
+import {get} from 'lodash';
 
 import {BlockForm, Button, ConnectForm} from '~/components';
 import {rules} from '~/lib/validator';
 import {PaymentPopup} from '~/components/Payment';
 import {userState} from '~/store/userState';
 import {PaymentService} from '~/services';
-import {orderState} from '~/store/orderState';
 
 const Payment = new PaymentService();
 
@@ -43,7 +44,6 @@ const FormCreditCard = ({isReadonly}) => {
 
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = React.useState(false);
-  const order = useRecoilValue(orderState);
 
   const handleClosePaymentPopup = () => {
     setOpenPaymentPopup(false);
@@ -51,7 +51,7 @@ const FormCreditCard = ({isReadonly}) => {
 
   const handleSubmitPayment = async (card) => {
     if (user?.isAuthenticated) {
-      fetchCards();
+      await fetchCards();
     } else {
       setUser(produce((draft) => {
         draft.cards = draft.cards ?? [];
@@ -69,11 +69,18 @@ const FormCreditCard = ({isReadonly}) => {
     }
   };
 
+  const getDefaultCard = () => {
+    return String(get(user?.cards ?? [], '0.id', ''));
+  };
+
   useEffect(() => {
     if (user?.isAuthenticated) {
-      fetchCards();
+      fetchCards().finally(() => {
+        setLoaded(true);
+      });
+    } else {
+      setLoaded(true);
     }
-    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,7 +97,7 @@ const FormCreditCard = ({isReadonly}) => {
               <Controller
                 name={'creditCard'}
                 control={control}
-                defaultValue={order?.creditCard || ''}
+                defaultValue={getDefaultCard}
                 rules={{
                   required: rules.required,
                 }}
