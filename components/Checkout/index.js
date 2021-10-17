@@ -1,4 +1,4 @@
-import {makeStyles} from '@material-ui/core';
+import {Grid, makeStyles} from '@material-ui/core';
 import router from 'next/router';
 import React, {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
@@ -134,15 +134,46 @@ const Checkout = () => {
             className={classes.row}
             style={{justifyContent: 'center'}}
           >
-            <Button
-              variant='pill'
-              customColor='red'
-              customSize='extraLarge'
-              type='submit'
-              onClick={validate}
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.buttons}
             >
-              {'確認画面へ'}
-            </Button>
+              <Grid
+                item={true}
+                sm={6}
+                xs={12}
+                style={{justifyContent: 'flex-end', display: 'flex'}}
+              >
+                <Button
+                  variant='pill'
+                  customColor='white'
+                  customBorder='bdGray'
+                  customSize='extraLarge'
+                  onClick={() => {
+                    router.push('/cart');
+                  }}
+                >
+                  {'カートに戻る'}
+                </Button>
+              </Grid>
+
+              <Grid
+                item={true}
+                sm={6}
+                xs={12}
+              >
+                <Button
+                  variant='pill'
+                  customColor='red'
+                  customSize='extraLarge'
+                  type='submit'
+                  onClick={validate}
+                >
+                  {'確認画面へ'}
+                </Button>
+              </Grid>
+            </Grid>
           </div>
         </>
       </StyledForm>
