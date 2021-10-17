@@ -44,7 +44,7 @@ const FormShipping = ({isReadonly}) => {
   const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
 
-  const setDefaultAdressShipping = () => {
+  const setDefaultAddressShipping = () => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);
       if (addressDefault?.id) {
@@ -59,7 +59,7 @@ const FormShipping = ({isReadonly}) => {
     if (user?.isAuthenticated) {
       const response = await CommonService.addAddress(address);
       if (response) {
-        fetchAddresses();
+        await fetchAddresses();
       } else {
         // eslint-disable-next-line no-warning-comments
         // TODO: handle error
@@ -89,9 +89,12 @@ const FormShipping = ({isReadonly}) => {
 
   useEffect(() => {
     if (user?.isAuthenticated) {
-      fetchAddresses();
+      fetchAddresses().finally(() => {
+        setLoaded(true);
+      });
+    } else {
+      setLoaded(true);
     }
-    setLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -110,7 +113,7 @@ const FormShipping = ({isReadonly}) => {
                   <Controller
                     name={'addressShipping'}
                     control={control}
-                    defaultValue={setDefaultAdressShipping}
+                    defaultValue={setDefaultAddressShipping}
                     rules={{
                       required: rules.required,
                     }}
