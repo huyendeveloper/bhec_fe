@@ -1,4 +1,3 @@
-import {ErrorMessage} from '@hookform/error-message';
 import {makeStyles} from '@material-ui/core/styles';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import {Rating} from '@material-ui/lab';
@@ -35,7 +34,7 @@ const RatingWidget = ({readOnly, rating, nameRating}) => {
   return (
     <div className={classes.root}>
       <ConnectForm>
-        {({control, errors, getValues}) => {
+        {({control, getValues}) => {
           return (
             <>
               {readOnly ? (
@@ -72,21 +71,6 @@ const RatingWidget = ({readOnly, rating, nameRating}) => {
                         emptyIcon={<StarBorderIcon/>}
                       />
                     )}
-                  />
-
-                  <ErrorMessage
-                    errors={errors}
-                    name={nameRating}
-                    render={({messages}) => {
-                      return messages ? Object.entries(messages).map(([type, message]) => (
-                        <p
-                          className='inputErrorText'
-                          key={type}
-                        >
-                          {message}
-                        </p>
-                      )) : null;
-                    }}
                   />
                 </div>
               )}
