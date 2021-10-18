@@ -12,6 +12,7 @@ import {DefaultLayout} from '~/components/Layouts';
 import {ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
+import {productState} from '~/store/productState';
 
 const ProductServiceInstance = new ProductService();
 
@@ -65,8 +66,7 @@ export async function getServerSideProps({params}) {
 const ReviewsDetail = (props) => {
   const classes = useStyles();
   const router = useRouter();
-
-  const {productDetail, sellerInfo} = props;
+  const [product, setProduct] = useRecoilState(productState);
 
   const {handleSubmit, ...methods} = useForm({criteriaMode: 'all'});
 
@@ -113,8 +113,8 @@ const ReviewsDetail = (props) => {
       ...data,
       rating_product: Number(data?.rating_product),
       rating_seller: Number(data?.rating_seller),
-      product_id: productDetail?.id,
-      seller_id: sellerInfo?.id,
+      product_id: product.sellerInfo,
+      seller_id: product.sellerProduct,
       product_images: images,
     };
     const response = await ProductServiceInstance.reviewProduct(reviewData);
@@ -132,6 +132,27 @@ const ReviewsDetail = (props) => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    getDetailProduct();
+  }, [props]);
+
+  const getDetailProduct = async () => {
+    const {id} = router.query;
+    const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+    if (res) {
+      const productRes = {
+        productDetail: res.product_detail,
+        sellerInfo: res.seller_info,
+        sellerProduct: res.seller_products,
+        recommendProduct: res.recommend_products,
+      };
+      setProduct((oldValue) => ({
+        ...oldValue,
+        ...productRes,
+      }));
+    }
+  };
+
   return (
     <DefaultLayout title='商品レビューを書く - BH_EC'>
       {isAuthenticated && (
@@ -144,7 +165,6 @@ const ReviewsDetail = (props) => {
                 bgRepeat='repeat'
               >
                 <ReviewProduct
-                  product={productDetail}
                   images={images}
                   addImage={addImage}
                   removeImage={removeImage}
@@ -152,7 +172,7 @@ const ReviewsDetail = (props) => {
               </ReviewsBlock>
 
               <ReviewsBlock title={'店舗レビューを書く'}>
-                <ReviewShop productOwner={sellerInfo}/>
+                <ReviewShop getDetailProduct={getDetailProduct}/>
               </ReviewsBlock>
 
               <Grid

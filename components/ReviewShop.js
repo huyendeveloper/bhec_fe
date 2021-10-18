@@ -1,11 +1,21 @@
 import {Avatar, Grid, TextareaAutosize, useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Controller} from 'react-hook-form';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
 
 import {Button, ConnectForm} from '~/components';
-import {RatingWidget} from '~/components/Widgets';
+import {ErrorMessageWidget, RatingWidget} from '~/components/Widgets';
+import {SellerService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {productState} from '~/store/productState';
+import {userState} from '~/store/userState';
+
+const SellerInstance = new SellerService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,10 +53,15 @@ const useStyles = makeStyles((theme) => ({
   },
   stars: {
     display: 'flex',
-    marginBottom: '1.5rem',
     alignItems: 'center',
+  },
+  ratingBox: {
+    marginBottom: '1.5rem',
     [theme.breakpoints.down('sm')]: {
       marginBottom: '1rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1.5rem',
     },
   },
   guideRating: {
@@ -118,63 +133,129 @@ const useStyles = makeStyles((theme) => ({
       height: '5rem',
     },
   },
+  btnFollow: {
+    backgroundColor: theme.btnFollow.backgroundColor,
+    color: theme.palette.white.main,
+    fontWeight: 'bold',
+    fontSize: '0.8125rem',
+    padding: '0 2.5rem',
+    height: '40px',
+    '&:hover': {
+      backgroundColor: theme.btnFollow.backgroundColor,
+    },
+  },
+  isFollowing: {
+    border: `1px solid ${theme.btnFollow.isFollowing}`,
+    backgroundColor: theme.palette.white.main,
+    color: theme.btnFollow.isFollowing,
+    borderColor: theme.btnFollow.isFollowing,
+    '&:hover': {
+      backgroundColor: theme.palette.white.main,
+    },
+  },
 }));
 
-const ReviewShop = ({productOwner}) => {
+const ReviewShop = ({getDetailProduct}) => {
   const classes = useStyles();
+  const router = useRouter();
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const product = useRecoilValue(productState);
+  const sellerInfo = product?.sellerInfo;
+  const user = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
+
+  const toggleFollow = async () => {
+    setLoading(true);
+    if (user?.isAuthenticated) {
+      const payload = {
+        seller_id: sellerInfo.id,
+      };
+      if (sellerInfo.followed) {
+        const response = await SellerInstance.unFollowSeller(payload);
+        if (response) {
+          getDetailProduct();
+        }
+      } else {
+        const response = await SellerInstance.followSeller(payload);
+        if (response) {
+          getDetailProduct();
+        }
+      }
+    } else {
+      Swal.fire({
+        title: '通知',
+        text: '利用するためにログインが必要です。',
+        showCancelButton: true,
+        reverseButtons: true,
+        cancelButtonText: '閉じる',
+        confirmButtonText: 'ログイン画面へ',
+        backdrop: false,
+        customClass: {
+          container: 'swal2-warning-1',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/auth/login?callbackUrl=${router.asPath}`);
+        }
+      });
+    }
+    setLoading(false);
+  };
 
   return (
     <ConnectForm>
-      {({control}) => {
+      {({control, errors}) => {
         return (
           <div className={classes.root}>
             <Grid
               container={true}
               spacing={0}
             >
-              <Grid
-                item={true}
-                sm={12}
-              >
+              {sellerInfo &&
                 <Grid
-                  container={true}
-                  spacing={0}
+                  item={true}
+                  sm={12}
                 >
                   <Grid
-                    item={true}
-                    md={2}
-
-                    style={{marginBottom: isMobile ? '1.5rem' : (isTablet ? '1.625rem' : '2.125rem')}}
+                    container={true}
+                    spacing={0}
                   >
-                    <Avatar
-                      alt={productOwner.name}
-                      src={productOwner.avatar_url}
-                      className={classes.avatar}
-                    />
-                  </Grid>
-                  <Grid
-                    item={true}
-                    md={10}
-                    style={{marginLeft: isTablet ? '1rem' : null}}
-                  >
-                    <h2
-                      className={classes.productName}
-                    >
-                      {productOwner.name}
-                    </h2>
+                    <Grid
+                      item={true}
+                      md={2}
 
-                    <Button
-                      customColor={'yellow'}
-                      customSize={'small'}
+                      style={{marginBottom: isMobile ? '1.5rem' : (isTablet ? '1.625rem' : '2.125rem')}}
                     >
-                      {'フォロー中'}
-                    </Button>
+                      <Avatar
+                        alt={sellerInfo.name}
+                        src={sellerInfo.avatar_url}
+                        className={classes.avatar}
+                      />
+                    </Grid>
+                    <Grid
+                      item={true}
+                      md={10}
+                      style={{marginLeft: isTablet ? '1rem' : null}}
+                    >
+                      <h2
+                        className={classes.productName}
+                      >
+                        {sellerInfo.name}
+                      </h2>
+
+                      <Button
+                        variant='contained'
+                        onClick={toggleFollow}
+                        className={clsx(classes.btnFollow, sellerInfo?.followed ? classes.isFollowing : '')}
+                      >
+                        {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
+              }
 
               <Grid
                 item={true}
@@ -189,6 +270,7 @@ const ReviewShop = ({productOwner}) => {
                 md={10}
                 sm={9}
                 xs={12}
+                className={classes.ratingBox}
               >
                 <div className={classes.stars}>
                   <RatingWidget
@@ -198,6 +280,11 @@ const ReviewShop = ({productOwner}) => {
 
                   <span className={classes.guideRating}>{'星をクリックして入力してください'}</span>
                 </div>
+
+                <ErrorMessageWidget
+                  errors={errors}
+                  name='rating_seller'
+                />
               </Grid>
 
               <Grid
@@ -239,7 +326,7 @@ const ReviewShop = ({productOwner}) => {
 };
 
 ReviewShop.propTypes = {
-  productOwner: PropTypes.object,
+  getDetailProduct: PropTypes.func.isRequired,
 };
 
 ReviewShop.defaultProps = {

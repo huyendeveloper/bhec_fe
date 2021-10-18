@@ -14,7 +14,9 @@ import {Button} from '..';
 import {productState} from '~/store/productState';
 import {userState} from '~/store/userState';
 import {SellerService} from '~/services';
+
 const SellerInstance = new SellerService();
+
 const useStyles = makeStyles((theme) => ({
   seller: {
     '& .info': {
