@@ -2,13 +2,14 @@ import {Container, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {useRouter} from 'next/router';
 
 import {Breadcrumbs, Search, SingleProduct} from '~/components';
 import {productState} from '~/store/productState';
 import {ProductService} from '~/services';
 import {DefaultLayout} from '~/components/Layouts';
+import {loadingState} from '~/store/loadingState';
 
 const ProductServiceInstance = new ProductService();
 
@@ -37,20 +38,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const getServerSideProps = async ({params}) => {
+  const {id} = params;
+  const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
+  if (!res?.product_detail) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      productDetail: res.product_detail,
+      sellerInfo: res.seller_info,
+      sellerProduct: res.seller_products,
+      recommendProduct: res.recommend_products,
+    },
+  };
+};
+
 function ProductDetail(props) {
   const classes = useStyles();
   const [product, setProduct] = useRecoilState(productState);
   const [linkProps, setLinkProps] = useState([]);
   const router = useRouter();
+  const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
-    getDetailProduct();
-  }, [props, setProduct]);
+    setProduct((oldValue) => ({
+      ...oldValue,
+      ...props,
+    }));
+  }, []);
 
   const getDetailProduct = async () => {
+    setLoading(true);
     const {id} = router.query;
     const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
     if (res) {
+      if (!res?.product_detail) {
+        router.push('/404');
+      }
       const productRes = {
         productDetail: res.product_detail,
         sellerInfo: res.seller_info,
@@ -62,6 +90,7 @@ function ProductDetail(props) {
         ...productRes,
       }));
     }
+    setLoading(false);
   };
 
   useEffect(() => {
