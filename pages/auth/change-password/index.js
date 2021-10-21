@@ -259,10 +259,12 @@ function ChangePassword() {
                           control={control}
                           defaultValue=''
                           rules={{
-                            required: '必須項目です。',
                             validate: {
                               checkLengthPasswrod: () => {
                                 const {password} = getValues();
+                                if (!password) {
+                                  return '必須項目です。';
+                                }
                                 return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
                               },
                             },
