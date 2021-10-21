@@ -77,6 +77,7 @@ function ProductDetail(props) {
     const res = id ? await ProductServiceInstance.getProductDetail(id) : null;
     if (res) {
       if (!res?.product_detail) {
+        setLoading(false);
         router.push('/404');
       }
       const productRes = {
