@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '1rem',
       fontSize: '1rem',
       lineHeight: '1.563rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.8125rem',
+      },
     },
     [theme.breakpoints.down('sm')]: {
       marginBottom: '1.75rem',
@@ -114,10 +117,25 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1.25rem',
     [theme.breakpoints.down('xs')]: {
       '& button': {
-        width: '100%',
+        width: '65%',
+        margin: '0 17.5%',
       },
     },
   },
+
+  label: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.25rem !important',
+    },
+  },
+
+  blockCart: {
+    marginBottom: '2rem',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '0',
+    },
+  },
+
 }));
 
 export default function Cart() {
@@ -228,7 +246,10 @@ export default function Cart() {
                 textAlign={'center'}
                 className={classes.title}
               >
-                <Typography variant={'h2'}>{'カート内の商品' + (cart.items?.length > 0 ? ` (${cart.items?.length}点)` : '')}</Typography>
+                <Typography
+                  variant={'h2'}
+                  className={classes.label}
+                >{'カート内の商品' + (cart.items?.length > 0 ? ` (${cart.items?.length}点)` : '')}</Typography>
                 <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div>
               </Box>
             }
@@ -248,7 +269,7 @@ export default function Cart() {
                   md={12}
                   lg={12}
                   key={`seller-info-${i}`}
-                  style={{marginBottom: 32}}
+                  className={classes.blockCart}
                 >
                   <Box
                     textAlign={'left'}
