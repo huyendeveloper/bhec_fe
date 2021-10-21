@@ -50,6 +50,26 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
 }));
 
 // eslint-disable-next-line no-warning-comments
@@ -134,24 +154,31 @@ export default function OrderForm() {
           bgColor='#faf6ef'
           bgImage='/img/noise.png'
         >
+          <div className={classes.categoryBlock}>
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.recommendedProducts}
+            >
+              {recommendProducts.map((product) => (
+                <Grid
+                  key={product.productId}
+                  item={true}
+                  sm={4}
+                >
+                  <ProductWidget
+                    data={product}
+                    border={'borderNone'}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </div>
           <Grid
             container={true}
             spacing={3}
             className={classes.recommendedProducts}
           >
-            {recommendProducts.map((product) => (
-              <Grid
-                key={product.productId}
-                item={true}
-                sm={4}
-              >
-                <ProductWidget
-                  data={product}
-                  border={'borderNone'}
-                />
-              </Grid>
-            ))}
-
             <Grid
               item={true}
               xs={12}

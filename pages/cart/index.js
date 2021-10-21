@@ -63,6 +63,26 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
   continueShop: {
     paddingTop: '2rem',
     [theme.breakpoints.down('sm')]: {
@@ -308,7 +328,6 @@ export default function Cart() {
           </>
         )}
       </ContentBlock>
-
       <ProductSwiper/>
     </DefaultLayout>
   );

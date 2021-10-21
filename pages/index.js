@@ -49,6 +49,26 @@ const useStyles = makeStyles((theme) => ({
       padding: '2.5rem 0',
     },
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
   lastBlock: {
     marginBottom: '4rem',
   },
@@ -242,101 +262,107 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
 
         {/* Product by category*/}
         {traditional_craft?.length ? (
-          <CategoryBlock
-            title='オススメ商品'
-            category='伝統工芸品'
-            categoryLink='traditional_craft'
-            bgColor='#FAF6EF'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <Grid
-              container={true}
-              spacing={3}
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              title='オススメ商品'
+              category='伝統工芸品'
+              categoryLink='traditional_craft'
+              bgColor='#FAF6EF'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
             >
-              {traditional_craft.map((item) => (
-                <Grid
-                  key={item.id}
-                  item={true}
-                  sm={4}
-                  xs={6}
-                  className={classes.product}
-                >
-                  <ProductWidget
-                    data={item}
-                    border={'borderNone'}
-                    heart={true}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </CategoryBlock>) : null
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {traditional_craft.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </CategoryBlock>
+          </div>) : null
         }
 
         {food_and_beverage?.length ? (
-          <CategoryBlock
-            category='食品・飲料'
-            categoryLink='food_and_beverage'
-            bgColor='#FAF6EF'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <Grid
-              container={true}
-              spacing={3}
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='食品・飲料'
+              categoryLink='food_and_beverage'
+              bgColor='#FAF6EF'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
             >
-              {food_and_beverage.map((item) => (
-                <Grid
-                  key={item.id}
-                  item={true}
-                  sm={4}
-                  xs={6}
-                  className={classes.product}
-                >
-                  <ProductWidget
-                    data={item}
-                    border={'borderNone'}
-                    heart={true}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </CategoryBlock>) : null
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {food_and_beverage.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </CategoryBlock>
+          </div>) : null
         }
 
         {lifestyle?.length ? (
-          <CategoryBlock
-            category='ライフスタイル'
-            categoryLink='lifestyle'
-            bgColor='#FAF6EF'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-            padding='2rem 0 4rem 0'
-          >
-            <Grid
-              container={true}
-              spacing={3}
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='ライフスタイル'
+              categoryLink='lifestyle'
+              bgColor='#FAF6EF'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
+              padding='2rem 0 4rem 0'
             >
-              {lifestyle.map((item) => (
-                <Grid
-                  key={item.id}
-                  item={true}
-                  sm={4}
-                  xs={6}
-                  className={classes.product}
-                >
-                  <ProductWidget
-                    data={item}
-                    border={'borderNone'}
-                    heart={true}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </CategoryBlock>) : null
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {lifestyle.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </CategoryBlock>
+          </div>) : null
         }
 
         {/* Ads */}
