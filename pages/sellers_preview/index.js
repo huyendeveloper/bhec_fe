@@ -324,7 +324,7 @@ const Seller = () => {
                     </Typography>
                     <Rating
                       name='read-only'
-                      value={seller?.rating || 1}
+                      value={seller?.rating || 0}
                       readOnly={true}
                       emptyIcon={<StarBorderIcon fontSize='inherit'/>}
                     />
