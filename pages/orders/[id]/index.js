@@ -334,7 +334,7 @@ const OrdersDetail = ({id}) => {
             <Button
               variant={'pill'}
               customColor={'white'}
-              customBorder={'bdGray'}
+              customBorder={'bdBlack'}
               customSize={'extraLarge'}
               style={{marginRight: '1rem'}}
               onClick={() => router.push('/orders')}
@@ -346,7 +346,7 @@ const OrdersDetail = ({id}) => {
               <Button
                 variant={'pill'}
                 customColor={'yellow'}
-                customBorder={'bdGray'}
+                customBorder={'bdBlack'}
                 customSize={'extraLarge'}
                 onClick={() => exportOrder()}
               >

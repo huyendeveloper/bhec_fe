@@ -232,7 +232,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
           <Button
             variant={'pill'}
             customColor={'white'}
-            customBorder={'bdGray'}
+            customBorder={'bdBlack'}
             customSize={'extraLarge'}
             onClick={() => router.push('/articles')}
           >

@@ -159,7 +159,7 @@ const CompleteConfirmation = ({type, isMale = false}) => {
             <Button
               variant={'pill'}
               customColor={'red'}
-              customBorder={'bdGray'}
+              customBorder={'bdBlack'}
               customSize={'extraLarge'}
             >
               {'TOPページへ戻る'}

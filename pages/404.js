@@ -44,7 +44,7 @@ const Custom404 = () => {
             <Button
               variant={'pill'}
               customColor={'white'}
-              customBorder={'bdGray'}
+              customBorder={'bdBlack'}
               customSize={'extraLarge'}
               onClick={() => router.push('/')}
             >
