@@ -61,6 +61,7 @@ function ProductDetail(props) {
   const classes = useStyles();
   const [product, setProduct] = useRecoilState(productState);
   const [linkProps, setLinkProps] = useState([]);
+  const [loadSuccess, setLoadSuccess] = useState(false);
   const router = useRouter();
   const setLoading = useSetRecoilState(loadingState);
 
@@ -90,6 +91,9 @@ function ProductDetail(props) {
         ...oldValue,
         ...productRes,
       }));
+    } else if (res?.message.indexOf('Inaccessible product') !== -1) {
+      setLoadSuccess(true);
+      router.push('/404');
     }
     setLoading(false);
   };
@@ -124,44 +128,48 @@ function ProductDetail(props) {
   }, [linkProps, product]);
 
   return (
-    <DefaultLayout title={product?.productDetail?.name ?? '商品詳細'}>
-      <div className={classes.content}>
-        <Container className={classes.searchBox}>
-          {/* Breadcrumbs */}
-          {linkProps && (
-            <Breadcrumbs linkProps={linkProps}/>
-          )}
+    <div>
+      {loadSuccess === true &&
+        <DefaultLayout title={product?.productDetail?.name ?? '商品詳細'}>
+          <div className={classes.content}>
+            <Container className={classes.searchBox}>
+              {/* Breadcrumbs */}
+              {linkProps && (
+                <Breadcrumbs linkProps={linkProps}/>
+              )}
 
-          {/* Search */}
-          <Search/>
-        </Container>
+              {/* Search */}
+              <Search/>
+            </Container>
 
-        {/* Product details */}
-        <SingleProduct getDetailProduct={getDetailProduct}/>
+            {/* Product details */}
+            <SingleProduct getDetailProduct={getDetailProduct}/>
 
-        {/* Banner */}
-        <Container>
-          <Grid
-            container={true}
-            className={classes.banner}
-          >
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-            >
-              <Image
-                src={'/img/banner-botton.png'}
-                alt='banner bottom'
-                layout={'responsive'}
-                width={'1140'}
-                height={'192'}
-              />
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
-    </DefaultLayout>
+            {/* Banner */}
+            <Container>
+              <Grid
+                container={true}
+                className={classes.banner}
+              >
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                >
+                  <Image
+                    src={'/img/banner-botton.png'}
+                    alt='banner bottom'
+                    layout={'responsive'}
+                    width={'1140'}
+                    height={'192'}
+                  />
+                </Grid>
+              </Grid>
+            </Container>
+          </div>
+        </DefaultLayout>
+      }
+    </div>
   );
 }
 
