@@ -41,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.5rem',
     lineHeight: '2rem',
     color: theme.palette.solidBlack.default,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.815rem',
+      lineHeight: '1.1815rem',
+    },
   },
 
   divAddPayment: {

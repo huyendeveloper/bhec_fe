@@ -74,14 +74,14 @@ const ProductGallery = () => {
     <div className={classes.root}>
       <Swiper
         style={{'--swiper-navigation-color': '#fff', '--swiper-pagination-color': '#fff'}}
-        loop={true}
+        loop={false}
         spaceBetween={10}
         navigation={false}
         thumbs={{swiper: thumbsSwiper}}
         className={classes.thumbnail}
       >
         {images?.map((img, idx) => (
-          <SwiperSlide key={`img-${idx}`}>
+          <SwiperSlide key={`slide_${idx}`}>
             <Image
               src={img || '/logo.png'}
               alt='banner top'
@@ -105,7 +105,7 @@ const ProductGallery = () => {
         className={classes.preview}
       >
         {images?.map((img, idx) => (
-          <SwiperSlide key={`img-${idx}`}>
+          <SwiperSlide key={`slide_${idx}`}>
             <Image
               src={img || '/logo.png'}
               alt='banner top'
