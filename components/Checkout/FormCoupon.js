@@ -3,16 +3,14 @@ import produce from 'immer';
 import {signOut} from 'next-auth/client';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
-import {Controller} from 'react-hook-form';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
-
+import {useForm, Controller} from 'react-hook-form';
 import moment from 'moment';
 
 import {AlertMessageForSection, BlockForm, Button, ConnectForm} from '~/components';
 import {httpStatus} from '~/constants';
 import {AuthService, CouponService} from '~/services';
 import {billState} from '~/store/cartState';
-import {couponEnableUseState} from '~/store/couponState';
 import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 import {getErrorMessage} from '~/lib/getErrorMessage';
@@ -92,16 +90,23 @@ const FormCoupon = () => {
   const router = useRouter();
   const classes = useStyles();
   const [alerts, setAlerts] = useState(null);
-  const [coupons, setCoupons] = useRecoilState(couponEnableUseState);
-  const [loaded, setLoaded] = React.useState(false);
+  const [coupons, setCoupons] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [couponCode, setCouponCode] = useState(false);
   const [order, setOrder] = useRecoilState(orderState);
   const {subTotal, shippingFee} = useRecoilValue(billState);
   const setUser = useSetRecoilState(userState);
-
+  const {
+    getValues,
+  } = useForm({criteriaMode: 'all'});
   const handleChange = (e) => {
-    const coupon = coupons.find((item) => item.coupon.code === e.target.value);
-    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
-    setOrder({...order, coupon_code: e.target.value, discount});
+    if (e) {
+      const coupon = coupons?.find((item) => item.coupon.code === e.target.value);
+      const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
+      setOrder({...order, coupon_code: e.target.value, discount});
+    } else {
+      setOrder({...order, coupon_code: '', discount: 0});
+    }
   };
 
   const calDiscountByPercent = (value) => {
@@ -213,20 +218,33 @@ const FormCoupon = () => {
       setCoupons([...userCoupons]);
     }
   };
+  useEffect(() => {
+    const coupon = coupons?.find((item) => item.coupon.code === order?.coupon_code);
+    setCouponCode(coupon?.coupon?.code);
+    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
+    setOrder({...order, discount});
+  }, [coupons]);
 
   useEffect(() => {
     fetchCoupons().finally(() => {
       setLoaded(true);
     });
-    const coupon = coupons.find((item) => item.coupon.code === order?.coupon_code);
-    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
-    setOrder({...order, discount});
   }, []);
+
+  const handleSelectedCoupon = (event) => {
+    if (event.target.value === couponCode) {
+      setCouponCode('');
+      handleChange(null);
+    } else {
+      setCouponCode(event.target.value);
+      handleChange(event);
+    }
+  };
 
   return (
     <ConnectForm>
       {/* eslint-disable-next-line no-unused-vars */}
-      {({control, getValues}) => {
+      {({control}) => {
         return (
           <BlockForm
             themeStyle={'gray'}
@@ -239,21 +257,20 @@ const FormCoupon = () => {
                 name={'coupon_code'}
                 control={control}
                 defaultValue={order?.coupon_code || ''}
-                render={({field: {onChange, value}}) => (
+                render={() => (
                   <RadioGroup
                     name={'coupon_code'}
-                    value={value}
-                    onChange={(e) => {
-                      onChange(e);
-                      handleChange(e);
-                    }}
+                    value={couponCode}
                     className={classes.radioGroup}
                   >
                     {coupons?.map((item) => (
                       <FormControlLabel
                         key={item?.coupon?.code}
                         value={item?.coupon?.code}
-                        control={<Radio/>}
+                        control={
+                          <Radio
+                            onClick={handleSelectedCoupon}
+                          />}
                         label={`${item?.coupon?.title} ${item?.coupon?.value}${item?.coupon?.coupon_type === 1 ? '%' : '円'}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
                         className={'labelRadioBtn'}
                       />

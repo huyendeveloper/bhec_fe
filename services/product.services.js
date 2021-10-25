@@ -47,7 +47,7 @@ export default class ProductService {
   async getProductDetail(id) {
     const [data, errors] = await api.get(`/products/${id}`);
     if (errors.length) {
-      return errors[0];
+      return parserError(errors);
     }
     return data;
   }

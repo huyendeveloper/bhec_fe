@@ -130,7 +130,7 @@ const Coupons = () => {
   const useCoupon = (coupon) => {
     if (cartStateData.items[0]) {
       setOrder({...order, coupon_code: coupon?.coupon?.code});
-      router.push('/cart');
+      router.push('/order-form');
     } else {
       Swal.fire({
         title: 'まず商品をカートに入れてください',
