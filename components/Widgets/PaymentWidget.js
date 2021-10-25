@@ -16,6 +16,21 @@ const Accordion = withStyles((theme) => ({
     marginBottom: '1rem',
     boxShadow: 'none',
     borderRadius: 4,
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    flexDirection: 'column',
+
+    '& .MuiAccordionSummary-root': {
+      width: '100%',
+      height: '80px',
+      [theme.breakpoints.down('sm')]: {
+        height: '64px',
+      },
+      [theme.breakpoints.down('xs')]: {
+        height: '48px',
+      },
+    },
     '&:last-child': {
       marginBottom: 0,
     },
@@ -53,6 +68,13 @@ const Accordion = withStyles((theme) => ({
       },
     },
   },
+
+  icVisa: {
+    paddingLeft: '1.5rem',
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: '1rem',
+    },
+  },
   expanded: {},
 }))(MuiAccordion);
 
@@ -66,7 +88,7 @@ const AccordionSummary = withStyles((theme) => ({
   content: {
     '& .MuiTypography-root': {
       color: theme.selectBox.borderColor,
-      paddingLeft: '0.5rem',
+      paddingLeft: '1.5rem',
     },
     '&$expanded': {
       margin: '12px 0',
@@ -111,8 +133,9 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: 5,
     },
     '& .MuiAccordionSummary-root': {
-      [theme.breakpoints.down('sm')]: {
-        padding: '0 12px 0 8px',
+      padding: '0 1.5rem',
+      [theme.breakpoints.down('xs')]: {
+        padding: '0 1rem',
       },
     },
     '& > div[class*="-expanded"]': {
@@ -133,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.font.default,
     fontStyle: 'normal',
     fontWeight: 'normal',
-    fontSize: '0.9rem',
+    fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.palette.black.default,
   },
@@ -208,6 +231,7 @@ const PaymentWidget = ({data, openPopupDelete}) => {
                 width={34}
                 height={24}
                 alt={'heart'}
+                className={classes.icVisa}
               />
               <Typography className={classes.title}>
                 {payment.req_number}
