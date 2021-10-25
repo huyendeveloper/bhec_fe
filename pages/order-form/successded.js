@@ -107,7 +107,7 @@ export default function OrderForm() {
             <Button
               variant={'pill'}
               customColor={'white'}
-              customBorder={'bdGray'}
+              customBorder={'bdBlack'}
               customSize={'extraLarge'}
               onClick={() => router.push('/')}
             >

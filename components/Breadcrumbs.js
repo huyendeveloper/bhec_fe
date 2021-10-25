@@ -8,6 +8,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.813rem',
     lineHeight: '1.188rem',
     margin: '0 0 1.688rem',
+    '& .MuiBreadcrumbs-ol': {
+      display: 'block',
+    },
+    '& li': {
+      display: 'inline',
+    },
     [theme.breakpoints.down('sm')]: {
       margin: '0 0 1.25rem',
     },

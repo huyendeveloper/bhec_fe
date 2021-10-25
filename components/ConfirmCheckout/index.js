@@ -449,7 +449,7 @@ const ConfirmCheckout = () => {
                 <Button
                   variant='pill'
                   customColor='white'
-                  customBorder='bdGray'
+                  customBorder='bdBlack'
                   customSize='extraLarge'
                   onClick={() => {
                     window.history.back();

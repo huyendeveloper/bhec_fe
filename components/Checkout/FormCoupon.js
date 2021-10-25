@@ -100,7 +100,7 @@ const FormCoupon = () => {
 
   const handleChange = (e) => {
     const coupon = coupons.find((item) => item.coupon.code === e.target.value);
-    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : coupon.coupon.value) : 0;
+    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
     setOrder({...order, coupon_code: e.target.value, discount});
   };
 
@@ -110,6 +110,13 @@ const FormCoupon = () => {
       return subTotal + shippingFee;
     }
     return discount;
+  };
+
+  const calDiscountNotByPercent = (value) => {
+    if (subTotal + shippingFee < value) {
+      return subTotal + shippingFee;
+    }
+    return value;
   };
 
   const addCoupon = async (code) => {
@@ -211,6 +218,9 @@ const FormCoupon = () => {
     fetchCoupons().finally(() => {
       setLoaded(true);
     });
+    const coupon = coupons.find((item) => item.coupon.code === order?.coupon_code);
+    const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
+    setOrder({...order, discount});
   }, []);
 
   return (
@@ -244,7 +254,7 @@ const FormCoupon = () => {
                         key={item?.coupon?.code}
                         value={item?.coupon?.code}
                         control={<Radio/>}
-                        label={`${item?.coupon?.title}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
+                        label={`${item?.coupon?.title} ${item?.coupon?.value}${item?.coupon?.coupon_type === 1 ? '%' : '円'}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
                         className={'labelRadioBtn'}
                       />
                     ))}

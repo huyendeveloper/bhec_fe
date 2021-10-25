@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Container, Grid, FormControl, Button} from '@material-ui/core';
+import {Container, Grid, FormControl} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import {ErrorMessage} from '@hookform/error-message';
 import {Controller, useForm} from 'react-hook-form';
@@ -15,12 +15,18 @@ import {loadingState} from '~/store/loadingState';
 import {AuthService} from '~/services';
 const Auth = new AuthService();
 
-import {StyledForm, ContentBlock, AlertMessageForSection} from '~/components';
+import {StyledForm, ContentBlock, AlertMessageForSection, Button} from '~/components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '2rem 0',
     fontFamily: theme.font.default,
+    '& button': {
+      fontSize: '1rem',
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
+    },
   },
 
   header: {
@@ -76,22 +82,6 @@ const useStyles = makeStyles((theme) => ({
 
   content: {
     width: '100%',
-  },
-
-  btnSubmit: {
-    fontFamily: theme.font.default,
-    background: theme.palette.buttonLogin.default,
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-    borderRadius: '45px',
-    width: '60%',
-    color: theme.palette.background.default,
-    '&:hover': {
-      background: theme.palette.buttonLogin.default,
-      color: theme.palette.background.default,
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-    },
   },
 
   label: {
@@ -269,10 +259,12 @@ function ChangePassword() {
                           control={control}
                           defaultValue=''
                           rules={{
-                            required: '必須項目です。',
                             validate: {
                               checkLengthPasswrod: () => {
                                 const {password} = getValues();
+                                if (!password) {
+                                  return '必須項目です。';
+                                }
                                 return password.length >= 8 || 'パスワードは8文字以上でなければなりません！';
                               },
                             },
@@ -368,9 +360,10 @@ function ChangePassword() {
                         style={{textAlign: 'center'}}
                       >
                         <Button
-                          variant='contained'
+                          variant='pill'
                           type='submit'
-                          className={classes.btnSubmit}
+                          customSize='extraLarge'
+                          customColor='red'
                         >
                           {'登録する'}
                         </Button>

@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiCardContent-root': {
       flex: '1 1 auto',
     },
+    '& .MuiCardContent-root:last-child': {
+      paddingBottom: '0rem',
+    },
     '& .MuiCardActionArea-root': {
       flex: '0 1 auto',
       display: 'flex',
@@ -56,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
   productName: {
     fontWeight: 'bold',
-    fontSize: '0.813rem',
+    fontSize: '0.875rem',
     lineHeight: '1.188rem',
     marginBottom: '0.75rem',
     color: '#333',
@@ -64,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     display: '-webkit-box',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.813rem',
+    },
   },
   productTags: {
     marginBottom: '1rem',
