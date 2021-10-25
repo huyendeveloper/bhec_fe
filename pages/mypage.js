@@ -15,7 +15,7 @@ import {userState} from '~/store/userState';
 const Product = new ProductService();
 const AuthServiceInstance = new AuthService();
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   userInfo: {
     padding: '1.875rem 0 3rem',
     display: 'flex',
@@ -37,6 +37,26 @@ const useStyles = makeStyles(() => ({
   },
   recommendedProducts: {
     marginTop: '2rem',
+  },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
   },
 }));
 
@@ -205,32 +225,34 @@ export default function MyPage() {
       )}
 
       {recommendProducts?.length > 0 && (
-        <ContentBlock
-          title={'オススメ商品'}
-          bgColor='#faf6ef'
-          bgImage='/img/noise.png'
-        >
-          <Grid
-            container={true}
-            spacing={3}
-            className={classes.recommendedProducts}
+        <div className={classes.categoryBlock}>
+          <ContentBlock
+            title={'オススメ商品'}
+            bgColor='#faf6ef'
+            bgImage='/img/noise.png'
           >
-            {recommendProducts.map((product) => (
-              <Grid
-                key={product.id}
-                item={true}
-                sm={4}
-                xs={6}
-              >
-                <ProductWidget
-                  data={product}
-                  heart={false}
-                  border={'borderNone'}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </ContentBlock>
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.recommendedProducts}
+            >
+              {recommendProducts.map((product) => (
+                <Grid
+                  key={product.id}
+                  item={true}
+                  sm={4}
+                  xs={6}
+                >
+                  <ProductWidget
+                    data={product}
+                    heart={false}
+                    border={'borderNone'}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </ContentBlock>
+        </div>
       )}
     </DefaultLayout>
   );

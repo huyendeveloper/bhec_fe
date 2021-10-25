@@ -155,6 +155,26 @@ const useStyles = makeStyles((theme) => ({
   sellerAvatar: {
     borderRadius: '50%',
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
 }));
 
 const Seller = () => {
@@ -417,25 +437,29 @@ const Seller = () => {
 
         {/* Product by category*/}
         {relatedProduct?.length ? (
-          <CategoryBlock
-            category='この生産者の商品'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <ProductSwiperSeller items={relatedProduct}/>
-          </CategoryBlock>) : null
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='この生産者の商品'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
+            >
+              <ProductSwiperSeller items={relatedProduct}/>
+            </CategoryBlock>
+          </div>) : null
         }
 
         {lastestProduct?.length ? (
-          <CategoryBlock
-            category='オススメ商品'
-            bgImage='/img/noise.png'
-            bgRepeat='repeat'
-            mixBlendMode='multiply'
-          >
-            <ProductSwiperSeller items={lastestProduct}/>
-          </CategoryBlock>) : null
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='オススメ商品'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
+            >
+              <ProductSwiperSeller items={lastestProduct}/>
+            </CategoryBlock>
+          </div>) : null
         }
 
       </div>

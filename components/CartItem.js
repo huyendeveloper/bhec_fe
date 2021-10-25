@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('xs')]: {
         justifyContent: 'space-around',
         gap: '1rem',
-        marginTop: '1rem',
+        marginTop: '1.5rem',
       },
 
       '& .productNameMobile': {
@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
         whiteSpace: 'nowrap',
         width: '12.75rem',
         fontSize: '0.875rem',
+        [theme.breakpoints.down('xs')]: {
+          marginTop: '-3.2rem',
+        },
       },
       '& .label': {
         fontSize: '0.875rem',

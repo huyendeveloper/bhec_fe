@@ -2,7 +2,7 @@ import {Grid, makeStyles} from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {ContentBlock} from '~/components';
+import {ContentBlock, CategoryBlock} from '~/components';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import {ProductService} from '~/services';
 
@@ -16,6 +16,26 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '1.25rem !important',
     [theme.breakpoints.down('sm')]: {
       paddingTop: '0.25rem !important',
+    },
+  },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
     },
   },
 }));
@@ -45,26 +65,38 @@ const ProductSwiper = ({widthMedia}) => {
       bgColor='#faf6ef'
       bgImage='/img/noise.png'
     >
+      <div className={classes.categoryBlock}>
+        <CategoryBlock
+          bgColor='transparent'
+        >
+          <Grid
+            container={true}
+            spacing={3}
+            className={classes.recommendedProducts}
+          >
+            {recommendProducts.map((product) => (
+              <Grid
+                key={product.id}
+                item={true}
+                sm={4}
+                xs={12}
+              >
+                <ProductWidget
+                  data={product}
+                  border={'borderNone'}
+                  widthMedia={widthMedia}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </CategoryBlock>
+      </div>
+
       <Grid
         container={true}
         spacing={3}
         className={classes.recommendedProducts}
       >
-        {recommendProducts.map((product) => (
-          <Grid
-            key={product.id}
-            item={true}
-            sm={4}
-            xs={12}
-          >
-            <ProductWidget
-              data={product}
-              border={'borderNone'}
-              widthMedia={widthMedia}
-            />
-          </Grid>
-        ))}
-
         <Grid
           item={true}
           xs={12}
@@ -89,7 +121,6 @@ const ProductSwiper = ({widthMedia}) => {
           />
         </Grid>
       </Grid>
-
     </ContentBlock>
   );
 };

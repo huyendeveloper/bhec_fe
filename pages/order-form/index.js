@@ -175,6 +175,26 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
 }));
 
 export default function OrderForm() {
@@ -213,25 +233,32 @@ export default function OrderForm() {
             bgColor='#faf6ef'
             bgImage='/img/noise.png'
           >
+            <div className={classes.categoryBlock}>
+              <Grid
+                container={true}
+                spacing={3}
+                className={classes.recommendedProducts}
+              >
+                {recommendProducts.map((product) => (
+                  <Grid
+                    key={product.id}
+                    item={true}
+                    sm={4}
+                    xs={12}
+                  >
+                    <ProductWidget
+                      data={product}
+                      border={'borderNone'}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
             <Grid
               container={true}
               spacing={3}
               className={classes.recommendedProducts}
             >
-              {recommendProducts.map((product) => (
-                <Grid
-                  key={product.id}
-                  item={true}
-                  sm={4}
-                  xs={12}
-                >
-                  <ProductWidget
-                    data={product}
-                    border={'borderNone'}
-                  />
-                </Grid>
-              ))}
-
               <Grid
                 item={true}
                 xs={12}
@@ -256,7 +283,6 @@ export default function OrderForm() {
                 />
               </Grid>
             </Grid>
-
           </ContentBlock>
         )}
       </div>
