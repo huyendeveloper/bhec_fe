@@ -58,12 +58,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'flex-end',
       '& button:first-child': {
-        marginRight: '1.5rem',
-      },
-      [theme.breakpoints.down('xs')]: {
-        '& button:first-child': {
-          marginRight: '1.063rem',
-        },
+        marginRight: '0',
       },
     },
   },
@@ -124,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   actions: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     display: 'flex',
     justifyContent: 'flex-end',
     [theme.breakpoints.down('xs')]: {
@@ -257,22 +252,37 @@ const SellerInfo = ({getDetailProduct}) => {
               >
                 {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
               </Button> */}
-              <Button
-                variant='contained'
-                onClick={() => toggleFollow()}
-                className={clsx(classes.btnFollow, sellerInfo?.followed ? classes.isFollowing : '')}
+              <Grid
+                container={true}
+                spacing={3}
               >
-                {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
-              </Button>
-              <Button
-                variant='contained'
-                customSize='small'
-                customColor='white'
-                customBorder='bdGray'
-                onClick={goToDetailSeller}
-              >
-                {'プロフィールを見る'}
-              </Button>
+                <Grid
+                  item={true}
+                  xs={6}
+                >
+                  <Button
+                    variant='contained'
+                    onClick={() => toggleFollow()}
+                    className={clsx(classes.btnFollow, sellerInfo?.followed ? classes.isFollowing : '')}
+                  >
+                    {sellerInfo?.followed ? 'フォロー中' : 'フォローする'}
+                  </Button>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={6}
+                >
+                  <Button
+                    variant='contained'
+                    customSize='small'
+                    customColor='white'
+                    customBorder='bdGray'
+                    onClick={goToDetailSeller}
+                  >
+                    {'プロフィールを見る'}
+                  </Button>
+                </Grid>
+              </Grid>
             </Box>
           </Grid>
 

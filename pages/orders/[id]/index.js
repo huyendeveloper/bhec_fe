@@ -45,11 +45,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0.25rem',
     color: theme.palette.white.main,
     [theme.breakpoints.down('md')]: {
-      width: '8rem',
+      width: '9rem',
       marginLeft: '1rem',
     },
     [theme.breakpoints.down('xs')]: {
-      width: '6rem',
+      width: '9rem',
       margin: '0 0 1rem',
     },
   },
