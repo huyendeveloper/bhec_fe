@@ -271,7 +271,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
         </div>
       ) : null}
       {data.images && data.contact_category_id !== '5' && data.images.length > 0 ? (
-        <>
+        <div className={classes.infoBlockContent}>
           <Typography component='p'>
             <span>{'問い合わせ内容：'}</span>
             {data.description ? data.description : ''}
@@ -301,7 +301,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
               </div>
             </div>
           </div>
-        </>
+        </div>
       ) : null}
 
       <div className={classes.actions}>

@@ -233,7 +233,7 @@ const FormCoupon = () => {
 
   const handleSelectedCoupon = (event) => {
     if (event.target.value === couponCode) {
-      setCouponCode('');
+      setCouponCode(null);
       handleChange(null);
     } else {
       setCouponCode(event.target.value);
@@ -270,6 +270,7 @@ const FormCoupon = () => {
                         control={
                           <Radio
                             onClick={handleSelectedCoupon}
+                            checked={couponCode === item?.coupon?.code}
                           />}
                         label={`${item?.coupon?.title} ${item?.coupon?.value}${item?.coupon?.coupon_type === 1 ? '%' : '円'}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
                         className={'labelRadioBtn'}
