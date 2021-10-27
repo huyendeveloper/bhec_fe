@@ -11,8 +11,8 @@ import moment from 'moment';
 
 import {DefaultLayout} from '~/components/Layouts';
 import {ArticleService, ProductService} from '~/services';
-import {Breadcrumbs, ContentBlock, Search, Button} from '~/components';
-import {AdsWidget, ProductWidget} from '~/components/Widgets';
+import {Breadcrumbs, ContentBlock, Search, Button, CategoryBlock} from '~/components';
+import {AdsWidget, ProductWidget, ArticleWidget} from '~/components/Widgets';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -60,6 +60,26 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
+  categoryBlock: {
+    margin: theme.spacing(4, 0),
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '0',
+      '& .MuiGrid-container': {
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+      },
+      '& .MuiGrid-item': {
+        minWidth: '16.688rem',
+      },
+    },
+  },
   buttons: {
     textAlign: 'center',
     marginTop: theme.spacing(4),
@@ -73,6 +93,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
   const classes = useStyles();
   const router = useRouter();
   const [linkProps, setLinkProps] = useState([]);
+  const [lasestArticles, setLasestArticles] = useState([]);
 
   const toArchivePage = (tag) => {
     router.push(`/articles?tag=${tag?.name}`);
@@ -148,7 +169,18 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
     );
 
     renderShortcodes();
+    getNewArticles();
   }, []);
+
+  const getNewArticles = async () => {
+    const queryParams = {per_page: 3};
+    const response = await ArticleService.getArticles(queryParams);
+    if (response.data) {
+      setLasestArticles(response.data);
+    } else {
+      setLasestArticles([]);
+    }
+  };
 
   return (
     <DefaultLayout title={`${article?.title}`}>
@@ -240,6 +272,31 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
           </Button>
         </div>
 
+        <div className={classes.categoryBlock}>
+          <CategoryBlock
+            bgColor='transparent'
+            title={'関連の記事'}
+          >
+            <Grid
+              container={true}
+              spacing={3}
+              className={classes.recommendedProducts}
+            >
+              {lasestArticles.map((articleItem) => (
+                <Grid
+                  key={articleItem.id}
+                  item={true}
+                  sm={4}
+                  xs={12}
+                >
+                  <ArticleWidget
+                    article={articleItem}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </CategoryBlock>
+        </div>
         <AdsWidget
           imgSrc={'/img/ad/ad5.png'}
           imgWidth={'1140'}
