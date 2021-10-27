@@ -121,9 +121,7 @@ const Notifications = () => {
   };
 
   useEffect(() => {
-    if (user?.noti_unread) {
-      setUnread(user?.noti_unread);
-    }
+    setUnread(user?.noti_unread || 0);
   }, [user]);
 
   useEffect(() => {
