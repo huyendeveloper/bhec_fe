@@ -14,6 +14,7 @@ import {useRouter} from 'next/router';
 import {DefaultLayout} from '~/components/Layouts';
 import {Search, CategoryBlock, ProductSwiperSeller, Breadcrumbs} from '~/components';
 import 'swiper/swiper.min.css';
+import {ProductWidget} from '~/components/Widgets';
 import {SellerService, ProductService} from '~/services';
 import {userState} from '~/store/userState';
 const ProductServiceInstance = new ProductService();
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiRating-root': {
       color: '#E6B422',
     },
+    backgroundColor: '#f8f8f8',
   },
   topBanner: {
     backgroundImage: 'url("/img/noise.png")',
@@ -440,26 +442,62 @@ const Seller = () => {
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='この生産者の商品'
-              bgImage='/img/noise.png'
-              bgRepeat='repeat'
-              mixBlendMode='multiply'
+              bgColor='transparent'
             >
-              <ProductSwiperSeller items={relatedProduct}/>
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {relatedProduct?.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
             </CategoryBlock>
-          </div>) : null
+          </div>
+        ) : null
         }
 
         {lastestProduct?.length ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='オススメ商品'
-              bgImage='/img/noise.png'
-              bgRepeat='repeat'
-              mixBlendMode='multiply'
+              bgColor='transparent'
             >
-              <ProductSwiperSeller items={lastestProduct}/>
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {lastestProduct?.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
             </CategoryBlock>
-          </div>) : null
+          </div>
+        ) : null
         }
 
       </div>
