@@ -27,7 +27,7 @@ function Guide() {
   const classes = useStyles();
 
   return (
-    <DefaultLayout title='Guide - Oshinagaki Store'>
+    <DefaultLayout title='お買い物ガイド - Oshinagaki Store'>
       <div className={classes.root}>
         <div
           className='content'

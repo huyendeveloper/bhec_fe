@@ -198,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.white.main,
 
     '&:hover': {
-      background: theme.palette.red.main,
+      backgroundColor: theme.palette.red.dark,
       color: theme.palette.white.main,
     },
     [theme.breakpoints.down('xs')]: {

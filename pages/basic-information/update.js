@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0.5rem 3rem',
     height: '64px',
     '&:hover': {
-      background: theme.palette.red.main,
+      backgroundColor: theme.palette.red.dark,
       color: theme.palette.background.default,
     },
     [theme.breakpoints.down('sm')]: {
