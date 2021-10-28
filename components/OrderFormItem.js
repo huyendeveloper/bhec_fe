@@ -173,6 +173,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    height: 'max-content',
   },
 }));
 
@@ -244,7 +245,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           item={true}
           md={2}
           sm={3}
-          xs={4}
+          xs={3}
         >
           <Card className={classes.card}>
             <CardActionArea>
@@ -266,12 +267,12 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           md={9}
           sm={8}
           xs={7}
-          style={isMobile ? {marginBottom: '2rem'} : null}
+          style={isMobile ? {marginBottom: '2rem', marginLeft: '0.75rem'} : null}
         >
           <Grid
             container={true}
-            spacing={isMobile ? 2 : 3}
-            style={{height: 'calc(100% + 24px)'}}
+            spacing={isMobile ? 0 : 3}
+            style={{height: 'calc(100% + 12px)'}}
           >
             <Grid
               item={true}
@@ -294,7 +295,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               sm={3}
               xs={6}
               className={classes.centerCell}
-              style={{justifyContent: 'center'}}
+              style={{justifyContent: 'flex-start'}}
             >
               <div className={classes.title}>{'税込価格'}</div>
 
@@ -312,7 +313,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
               sm={3}
               xs={6}
               className={classes.centerCell}
-              style={{justifyContent: 'center'}}
+              style={{justifyContent: 'flex-start'}}
             >
               <div className={classes.selectBox}>
                 <div className={classes.title}>{'数量'}</div>
