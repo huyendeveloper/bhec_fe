@@ -1,4 +1,4 @@
-import {Grid} from '@material-ui/core';
+import {Grid, useMediaQuery, useTheme} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme) => ({
     padding: '1.875rem 0 3rem',
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: '1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      paddingBottom: '2rem',
+    },
   },
   boxLink: {
     marginTop: '0',
@@ -100,11 +106,13 @@ const boxLinks = [
 export default function MyPage() {
   const router = useRouter();
   const classes = useStyles();
+  const theme = useTheme();
 
   const [recommendProducts, setRecommendProducts] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [user, setUser] = useRecoilState(userState);
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     if (user?.isAuthenticated) {
@@ -182,7 +190,7 @@ export default function MyPage() {
 
           <Grid
             container={true}
-            spacing={3}
+            spacing={isMobile ? 2 : 3}
             className={classes.boxLink}
           >
             {boxLinks.map((item) => (
@@ -203,7 +211,7 @@ export default function MyPage() {
 
           <Grid
             container={true}
-            spacing={3}
+            spacing={isMobile ? 1 : 3}
             className={classes.buttonLink}
           >
             {buttonLinks.map((item) => (
