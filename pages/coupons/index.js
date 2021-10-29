@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // Default
-const PER_PAGE = 2;
+const PER_PAGE = 10;
 
 const Coupons = ({queryParams}) => {
   const router = useRouter();
