@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
   },
   block: {
     marginBottom: '1.5rem',
+    fontSize: '0.875rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+    },
   },
 }));
 
