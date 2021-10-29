@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
     '& h4': {
       margin: '0rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.3125rem',
+    },
   },
 
   title: {

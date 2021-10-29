@@ -38,10 +38,16 @@ const REGISTER_STEPS = [
   '送信完了',
 ];
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiFormHelperText-root': {
       display: 'none',
+    },
+    '& .MuiTypography-body1': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.875rem',
+        lineHeight: '1.3125rem',
+      },
     },
   },
 }));
