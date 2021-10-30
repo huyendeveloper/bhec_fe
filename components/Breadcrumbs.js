@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: '0.875rem',
     lineHeight: '1.313rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.815rem',
+      lineHeight: '1.1875rem',
+    },
   },
 }));
 

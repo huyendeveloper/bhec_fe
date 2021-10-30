@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bgRepeat, mixBlendMode, children, padding}) => {
+const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bgRepeat, mixBlendMode, children, padding, styleTitle}) => {
   const classes = useStyles();
   const newDesc = description ? description.split('\n').
     map((str, index) => (
@@ -97,8 +97,13 @@ const ContentBlock = ({title, description, descriptionType, bgColor, bgImage, bg
     >
       <Container>
         {title && title !== '' ? (
-          <div className={classes.title}>
-            <Typography variant={'h2'}>{title}</Typography>
+          <div
+            className={classes.title}
+          >
+            <Typography
+              variant={'h2'}
+              style={styleTitle}
+            >{title}</Typography>
           </div>
         ) : null}
 
@@ -147,6 +152,7 @@ ContentBlock.propTypes = {
   descriptionType: PropTypes.string,
   children: PropTypes.any,
   padding: PropTypes.string,
+  styleTitle: PropTypes.object,
 };
 
 export default ContentBlock;
