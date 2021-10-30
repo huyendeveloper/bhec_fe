@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '0',
       paddingBottom: '2.063rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      height: '3rem',
+    },
   },
 }));
 
