@@ -25,7 +25,6 @@ const Product = new ProductService();
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
-    marginBottom: '10rem',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -63,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.188rem',
     marginBottom: '0.75rem',
     color: '#333',
-    height: '2.376rem',
+    height: 'auto',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     display: '-webkit-box',
@@ -85,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
       },
       '&:not(:last-child)': {
         marginRight: '0.5rem',
+        marginBottom: '0.2rem',
       },
     },
   },
@@ -103,10 +103,12 @@ const useStyles = makeStyles((theme) => ({
     borderTop: '1px solid #f1ebdf',
   },
   subContent: {
-    position: 'absolute',
-    bottom: '0',
-    right: '0',
-    left: '0',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    '& .MuiCardContent-root': {
+      padding: '5px 16px',
+    },
   },
   productSeller: {
     display: 'flex',

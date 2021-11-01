@@ -43,7 +43,7 @@ const FormShipping = ({isReadonly}) => {
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
-
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const setDefaultAddressShipping = () => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);
@@ -163,6 +163,7 @@ const FormShipping = ({isReadonly}) => {
                   customBorder='bdRed'
                   onClick={() => setOpenAddAddress(true)}
                   disabled={isReadonly}
+                  style={isMobile ? {width: '14rem', padding: '0'} : {}}
                 >
                   {'お届け先を登録する'}
                 </Button>

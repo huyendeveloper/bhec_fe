@@ -1,4 +1,4 @@
-import {Grid, makeStyles} from '@material-ui/core';
+import {Grid, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
 import router from 'next/router';
 import React, {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
@@ -48,7 +48,8 @@ const Checkout = () => {
   const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving checkout
   // useEffect(() => {
@@ -143,7 +144,7 @@ const Checkout = () => {
                 item={true}
                 sm={6}
                 xs={12}
-                style={{justifyContent: 'flex-end', display: 'flex'}}
+                style={{justifyContent: 'center', display: 'flex'}}
               >
                 <Button
                   variant='pill'
@@ -153,6 +154,7 @@ const Checkout = () => {
                   onClick={() => {
                     router.push('/cart');
                   }}
+                  style={isMobile ? {width: '14rem', padding: '0'} : {}}
                 >
                   {'カートに戻る'}
                 </Button>
@@ -162,6 +164,7 @@ const Checkout = () => {
                 item={true}
                 sm={6}
                 xs={12}
+                style={{justifyContent: 'center', display: 'flex'}}
               >
                 <Button
                   variant='pill'
@@ -169,6 +172,7 @@ const Checkout = () => {
                   customSize='extraLarge'
                   type='submit'
                   onClick={validate}
+                  style={isMobile ? {width: '14rem', padding: '0'} : {}}
                 >
                   {'確認画面へ'}
                 </Button>

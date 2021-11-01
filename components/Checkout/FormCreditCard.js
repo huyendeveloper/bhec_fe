@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Controller} from 'react-hook-form';
-import {FormControlLabel, makeStyles, Radio, RadioGroup} from '@material-ui/core';
+import {FormControlLabel, makeStyles, Radio, RadioGroup, useMediaQuery, useTheme} from '@material-ui/core';
 import {ErrorMessage} from '@hookform/error-message';
 
 import {useRecoilState} from 'recoil';
@@ -44,7 +44,8 @@ const FormCreditCard = ({isReadonly}) => {
 
   const [user, setUser] = useRecoilState(userState);
   const [loaded, setLoaded] = React.useState(false);
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const handleClosePaymentPopup = () => {
     setOpenPaymentPopup(false);
   };
@@ -144,6 +145,7 @@ const FormCreditCard = ({isReadonly}) => {
                   customColor='whiteRed'
                   customBorder='bdRed'
                   onClick={() => setOpenPaymentPopup(true)}
+                  style={isMobile ? {width: '14rem', padding: '0'} : {}}
                   disabled={isReadonly}
                 >
                   {'クレジットカードを登録する'}

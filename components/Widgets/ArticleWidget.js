@@ -13,6 +13,10 @@ const useStyles = makeStyles(() => ({
     position: 'relative',
     marginBottom: '1rem',
     height: '100%',
+
+    '& .MuiCardActionArea-root': {
+      height: '100%',
+    },
   },
   articelName: {
     fontWeight: 'bold',
@@ -33,10 +37,10 @@ const ArticleWidget = ({article}) => {
       <CardActionArea>
         <CardMedia
           component='img'
-          alt={article.productName}
+          alt={article.title}
           height='160'
-          image={article.productThumb}
-          title={article.productName}
+          image={article.image_url}
+          title={article.title}
         />
         <CardContent>
           <Typography
@@ -44,7 +48,7 @@ const ArticleWidget = ({article}) => {
             component='h3'
             className={classes.articelName}
           >
-            {article.productName}
+            {article.title}
           </Typography>
 
         </CardContent>
