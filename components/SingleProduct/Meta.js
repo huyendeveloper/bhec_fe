@@ -47,7 +47,7 @@ const Meta = () => {
                       className={classes.expressDeliveryCell}
                       align='left'
                     >
-                      {`${expressDelivery}で配送する予定`}
+                      {`${expressDelivery}にて配送予定`}
                     </TableCell>
                   </TableRow>
                 )}

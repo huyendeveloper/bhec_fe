@@ -7,6 +7,7 @@ const OrderService = {
   getOrders,
   getOrderDetail,
   exportOrderPdf,
+  cancelOrder,
 };
 
 // eslint-disable-next-line no-warning-comments
@@ -57,6 +58,15 @@ async function exportOrderPdf(id) {
     return parserError(errors);
   }
   return data;
+}
+
+async function cancelOrder(id) {
+  const [, , response, error_code] = await api.put(`/orders/${id}/cancel`);
+  if (error_code) {
+    const message = errorMessage.find((item) => item.code === error_code)?.message;
+    return message;
+  }
+  return response;
 }
 
 export default OrderService;
