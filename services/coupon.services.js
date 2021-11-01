@@ -1,4 +1,5 @@
 import {axios} from '~/modules/axios';
+import {api} from '~/lib/api';
 import {httpStatus} from '~/constants';
 
 const CouponService = {
@@ -15,18 +16,17 @@ async function getCouponDetails(payload) {
 
 async function getCoupons(payload) {
   try {
-    const {data} = await axios.get(`/user_coupons?page=${payload.page}&per_page=${payload.per_page}`, {progress: true});
-    const {success, message, error_code} = data;
+    const [data, _, response] = await api.get('/user_coupons', payload, {progress: true});
+    const {page, pages, user_coupons} = data;
+    const {error_code, message} = response.data;
 
-    const haveNextPage = data.data.page < data.data.pages;
-
-    if (!success) {
-      return {haveNextPage: false, userCoupons: [], error: {errorCode: error_code, message}};
+    if (error_code) {
+      return {page: 0, pages: 0, userCoupons: [], error: {errorCode: error_code, message}};
     }
 
-    return {haveNextPage, userCoupons: data.data.user_coupons, error: null};
+    return {page, pages, userCoupons: user_coupons, error: null};
   } catch (error) {
-    return {haveNextPage: false, userCoupons: [], error};
+    return {page: 0, pages: 0, userCoupons: [], error};
   }
 }
 

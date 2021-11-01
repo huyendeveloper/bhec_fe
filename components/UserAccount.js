@@ -20,21 +20,38 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: '7rem',
     height: '7rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '5rem',
+      height: '5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '4rem',
+      height: '4rem',
+    },
   },
   changeAvatarBtn: {
     background: theme.palette.white.main,
     border: '1px solid ' + theme.palette.grey.dark,
     width: '2rem',
     height: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '1.5rem',
+      height: '1.5rem',
+    },
     '& img': {
       width: '1.25rem',
       height: '1.25rem',
+      [theme.breakpoints.down('sm')]: {
+        width: '0.938rem',
+        height: '0.938rem',
+      },
     },
   },
   badge: {
     '& .MuiBadge-badge': {
       padding: '0',
       height: 'auto',
+      zIndex: '0',
     },
   },
   username: {
@@ -46,6 +63,13 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.typography.fontFamily,
     display: 'flex',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      marginLeft: '1.125rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: '0.5rem',
+    },
   },
   editIcon: {
     marginLeft: '1rem',
