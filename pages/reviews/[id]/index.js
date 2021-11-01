@@ -1,18 +1,18 @@
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
-import React, {useState, useEffect} from 'react';
-import {FormProvider, useForm} from 'react-hook-form';
-import {useSetRecoilState, useRecoilState} from 'recoil';
-import {useRouter} from 'next/router';
 import {signOut} from 'next-auth/client';
+import {useRouter} from 'next/router';
+import PropTypes from 'prop-types';
+import React, {useEffect, useState} from 'react';
+import {FormProvider, useForm} from 'react-hook-form';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import {AlertMessageForSection, Button, ReviewProduct, ReviewsBlock, ReviewShop, StyledForm} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
-import {ProductService} from '~/services';
+import {CommonService, ProductService} from '~/services';
 import {loadingState} from '~/store/loadingState';
-import {userState} from '~/store/userState';
 import {productState} from '~/store/productState';
+import {userState} from '~/store/userState';
 
 const ProductServiceInstance = new ProductService();
 
@@ -91,14 +91,18 @@ const ReviewsDetail = (props) => {
     router.push({pathname: '/auth/login'});
   };
 
-  const addImage = (index, newImage) => {
-    if (index + 1 > images.length) {
-      setImages([...images, newImage]);
-    } else {
-      const newImages = [...images];
-      newImages[index] = newImage;
-      setImages(newImages);
+  const addImage = async (index, newImage) => {
+    setLoading(true);
+    if (newImage) {
+      const bodyFormData = new FormData();
+      bodyFormData.append('images[]', newImage);
+      const result = await CommonService.uploadFile(bodyFormData);
+      if (result && result.urls && result.urls.length) {
+        const newImages = [...images, ...result.urls];
+        setImages(newImages);
+      }
     }
+    setLoading(false);
   };
 
   const removeImage = (index) => {
@@ -113,8 +117,8 @@ const ReviewsDetail = (props) => {
       ...data,
       rating_product: Number(data?.rating_product),
       rating_seller: Number(data?.rating_seller),
-      product_id: product.sellerInfo,
-      seller_id: product.sellerProduct,
+      product_id: product?.productDetail?.id,
+      seller_id: product?.sellerInfo?.id,
       product_images: images,
     };
     const response = await ProductServiceInstance.reviewProduct(reviewData);

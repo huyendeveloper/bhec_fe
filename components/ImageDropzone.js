@@ -63,25 +63,9 @@ const useStyles = makeStyles((theme) => ({
 const ImageDropzone = ({index, image, setImages, removeImage}) => {
   const classes = useStyles();
   const [haveError, setHaveError] = React.useState(false);
-  const [imagePreview, setImagePreview] = React.useState(null);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-
-  React.useEffect(() => {
-    if (image) {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        setHaveError(false);
-        setImagePreview(reader.result);
-      };
-
-      reader.readAsDataURL(image);
-    } else {
-      setImagePreview(null);
-    }
-  }, [image]);
 
   const handleChange = (e) => {
     const newImage = e.target.files[0];
@@ -102,12 +86,12 @@ const ImageDropzone = ({index, image, setImages, removeImage}) => {
 
   return (
     <div className={classes.root}>
-      <div className={clsx({[classes.dropzone]: true, [classes.imageUpLoaded]: imagePreview})}>
-        {imagePreview ? (
+      <div className={clsx({[classes.dropzone]: true, [classes.imageUpLoaded]: image})}>
+        {image ? (
           <>
             <Image
               className={classes.imageUpLoad}
-              src={imagePreview}
+              src={image}
               width={200}
               height={200}
               alt={'image preview'}
