@@ -95,7 +95,7 @@ const DefaultLayout = ({title, metaDescription, children}) => {
   return (
     <div className={classes.root}>
       <Head>
-        <title>{title}</title>
+        <title className={classes.root}>{title}</title>
         <meta
           name='description'
           content={metaDescription}

@@ -38,10 +38,16 @@ const REGISTER_STEPS = [
   '送信完了',
 ];
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiFormHelperText-root': {
       display: 'none',
+    },
+    '& .MuiTypography-body1': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.875rem',
+        lineHeight: '1.3125rem',
+      },
     },
   },
 }));
@@ -546,7 +552,7 @@ export default function SellerForm() {
                         component='h3'
                         className='formBlockTitle'
                       >
-                        {'代表者情報'}
+                        {'事業者情報'}
                       </Typography>
                     </div>
 
@@ -592,45 +598,6 @@ export default function SellerForm() {
                           />
                         </Grid>
                         {/*END STORE NAME*/}
-
-                        {/*STORE ADDRESS*/}
-                        <Grid
-                          item={true}
-                          xs={12}
-                        >
-                          <label
-                            htmlFor='company_address'
-                            className='formControlLabel'
-                          >
-                            {'事業者住所 '}
-                            <span className='formControlRequired'>{'*'}</span>
-                          </label>
-                          <Controller
-                            name='company_address'
-                            control={control}
-                            defaultValue=''
-                            rules={{required: '必須項目です。'}}
-                            render={({field: {name, value, ref, onChange}}) => (
-                              <TextField
-                                id='company_address'
-                                variant='outlined'
-                                label='事業者住所'
-                                error={Boolean(errors.company_address)}
-                                InputLabelProps={{shrink: false}}
-                                name={name}
-                                value={value}
-                                inputRef={ref}
-                                onChange={onChange}
-                              />
-                            )}
-                          />
-                          <ErrorMessageWidget
-                            errors={errors}
-                            name='company_address'
-                          />
-                        </Grid>
-                        {/*END STORE ADDRESS*/}
-
                         {/*POSTAL CODE*/}
                         <Grid
                           item={true}
@@ -1036,8 +1003,26 @@ export default function SellerForm() {
                         {/*IF USER ABOVE IS NOT DEPUTY*/}
                         {iamDeputy ? null : DeputyInputRender}
                         {/*END IF USER ABOVE IS NOT DEPUTY*/}
+                      </Grid>
+                    </div>
+                  </div>
+                  {/*END THIRD BLOCK*/}
 
-                        {/*EXHIBITED PRODUCTS*/}
+                  <div className='formBlock'>
+                    <div className='formBlockHeader'>
+                      <Typography
+                        component='h3'
+                        className='formBlockTitle'
+                      >
+                        {'出品情報'}
+                      </Typography>
+                    </div>
+
+                    <div className='formBlockControls'>
+                      <Grid
+                        container={true}
+                        spacing={3}
+                      >
                         <Grid
                           item={true}
                           xs={12}
@@ -1054,7 +1039,6 @@ export default function SellerForm() {
                             name='product_sell'
                             control={control}
                             defaultValue=''
-                            rules={{required: '必須項目です。'}}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='product_sell'
@@ -1094,7 +1078,6 @@ export default function SellerForm() {
                             control={control}
                             defaultValue={null}
                             rules={{
-                              required: '必須項目です。',
                               validate: {
                                 checkDayFeature: () => {
                                   const {time_sell} = getValues();
@@ -1132,11 +1115,9 @@ export default function SellerForm() {
                             name='time_sell'
                           />
                         </Grid>
-                        {/*END EXHIBITED DATE*/}
                       </Grid>
                     </div>
                   </div>
-                  {/*END THIRD BLOCK*/}
 
                   {/*FOURTH BLOCK*/}
                   <div className='formBlock'>

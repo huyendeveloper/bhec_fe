@@ -3,7 +3,7 @@ import Image from 'next/image';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import {Box, Chip, Container, Grid, makeStyles, Typography} from '@material-ui/core';
+import {Box, Chip, Container, Grid, useTheme, makeStyles, Typography, useMediaQuery} from '@material-ui/core';
 
 import {useRouter} from 'next/router';
 
@@ -93,6 +93,8 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
   const classes = useStyles();
   const router = useRouter();
   const [linkProps, setLinkProps] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [lasestArticles, setLasestArticles] = useState([]);
 
   const toArchivePage = (tag) => {
@@ -217,6 +219,7 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
         title={article?.title}
         bgImage={'/img/noise.png'}
         bgRepeat={'repeat'}
+        styleTitle={isMobile ? {fontSize: '1rem'} : {}}
       >
 
         <div className={classes.chipList}>

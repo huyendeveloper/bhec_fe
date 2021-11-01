@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '2rem',
     fontWeight: 'bold',
     cursor: 'pointer',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.3125rem',
+    },
   },
 
   chipList: {
@@ -46,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1rem',
     cursor: 'pointer',
     [theme.breakpoints.down('sm')]: {
-      marginTop: '0.75rem',
+      fontSize: '0.875rem',
+      lineHeight: '1.25rem',
     },
   },
 
@@ -56,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'normal',
     fontSize: '0.9rem',
     lineHeight: '1.25rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
+      lineHeight: '1.25rem',
+    },
   },
 
   text: {
