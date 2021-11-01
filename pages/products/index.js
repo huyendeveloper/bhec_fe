@@ -5,13 +5,14 @@ import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useState, useEffect} from 'react';
 
-import {
-  Breadcrumbs, ContentBlock, Search,
-} from '~/components';
+import {Breadcrumbs, ContentBlock, Search} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import {ProductService} from '~/services';
 const Product = new ProductService();
+
+// Default
+const PER_PAGE = 12;
 
 const useStyles = makeStyles((theme) => ({
   products: {
@@ -103,17 +104,20 @@ const ProductNotFound = () => {
       >
         {'該当する商品ありません'}
       </Box>
-    </Box>);
+    </Box>
+  );
 };
 
 const ArchiveProduct = ({queryParams}) => {
   const classes = useStyles();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
+  const [countPages, setCountPages] = useState(0);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    setCurrentPage(queryParams?.page ?? 0);
     fetchData();
     return () => {
       // return an anonymous clean up function
@@ -125,7 +129,8 @@ const ArchiveProduct = ({queryParams}) => {
     const response = await Product.getProducts(queryParams);
     setProducts(response.products ?? []);
     setCategories(response.categories ?? []);
-    setCurrentPage(response.pages ?? 0);
+    setCurrentPage(response.page ?? 0);
+    setCountPages(response.pages ?? 0);
   };
 
   const linkProps = [
@@ -186,7 +191,8 @@ const ArchiveProduct = ({queryParams}) => {
           }
           {products?.length > 0 && currentPage > 0 &&
             <Pagination
-              count={currentPage}
+              count={countPages}
+              page={currentPage}
               variant={'outlined'}
               color={'primary'}
               size={'large'}
@@ -217,7 +223,7 @@ ArchiveProduct.defaultProps = {
 };
 
 export async function getServerSideProps({query}) {
-  const queryParams = {...query, per_page: 12};
+  const queryParams = {...query, page: Number(query?.page ?? 1), per_page: PER_PAGE};
 
   return {
     props: {
