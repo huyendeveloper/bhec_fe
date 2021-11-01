@@ -181,7 +181,7 @@ export default function About() {
   const classes = useStyles();
 
   return (
-    <DefaultLayout title='About - Oshinagaki Store'>
+    <DefaultLayout title='おしながきの特徴 - Oshinagaki Store'>
       <TopBannerWidget
         imgSrc='/img/video-banner.png'
         imgAlt='Oshinagaki Store'

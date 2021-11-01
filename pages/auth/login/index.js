@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
 
   btnSubmit: {
     fontFamily: theme.font.default,
-    background: theme.palette.buttonLogin.default,
+    background: theme.palette.red.main,
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     borderRadius: '45px',
     fontWeight: '700',
     width: '100%',
     color: theme.palette.background.default,
     '&:hover': {
-      background: theme.palette.buttonLogin.default,
+      backgroundColor: theme.palette.red.dark,
       color: theme.palette.background.default,
     },
   },

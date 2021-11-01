@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     height: '3rem',
     color: theme.palette.background.default,
     '&:hover': {
-      background: theme.palette.buttonLogin.default,
+      backgroundColor: theme.palette.red.dark,
       color: theme.palette.background.default,
     },
     [theme.breakpoints.down('md')]: {
@@ -216,7 +216,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <DefaultLayout title='ForgotPassword - Oshinagaki Store'>
+    <DefaultLayout title='パスワードをお忘れの方 - Oshinagaki Store'>
       <div className={classes.root}>
         <div
           className='content'

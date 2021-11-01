@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '45px',
     color: theme.palette.background.default,
     '&:hover': {
-      background: theme.palette.buttonLogin.default,
+      backgroundColor: theme.palette.red.dark,
       color: theme.palette.background.default,
     },
     [theme.breakpoints.down('md')]: {
@@ -177,7 +177,7 @@ function RegisterEmail() {
   };
 
   return (
-    <DefaultLayout title='Register Email - Oshinagaki Store'>
+    <DefaultLayout title='メールアドレスで会員登録 - Oshinagaki Store'>
       <div className={classes.root}>
         <div
           className='content'
