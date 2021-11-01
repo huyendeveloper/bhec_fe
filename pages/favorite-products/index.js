@@ -146,6 +146,7 @@ export default function FavoriteProducts() {
               bgImage='/img/noise.png'
               bgRepeat='repeat'
               mixBlendMode='multiply'
+              bgColor='#F8F8F8'
             >
               <Box m={'0 auto'}>
                 <Grid

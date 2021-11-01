@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme) => ({
       width: '1.688rem',
       height: '1.688rem',
     },
+    [theme.breakpoints.down('xs')]: {
+      width: '2.5rem',
+      height: '2.5rem',
+    },
   },
   notificationsNumber: {
     fontFamily: theme.typography.fontFamily,
@@ -121,9 +125,7 @@ const Notifications = () => {
   };
 
   useEffect(() => {
-    if (user?.noti_unread) {
-      setUnread(user?.noti_unread);
-    }
+    setUnread(user?.noti_unread || 0);
   }, [user]);
 
   useEffect(() => {

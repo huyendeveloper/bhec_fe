@@ -1,20 +1,21 @@
 /* eslint-disable new-cap */
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import {signOut} from 'next-auth/client';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
-import {useSetRecoilState, useRecoilState} from 'recoil';
-import {useRouter} from 'next/router';
-import {signOut} from 'next-auth/client';
-import clsx from 'clsx';
+import {useRecoilState, useSetRecoilState} from 'recoil';
+import Swal from 'sweetalert2';
 
-import {OrderService} from '~/services';
-import {loadingState} from '~/store/loadingState';
-import {userState} from '~/store/userState';
-import {Button, ContentBlock, OrderItem} from '~/components';
+import {AlertMessageForSection, Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
+import {OrderService} from '~/services';
+import {loadingState} from '~/store/loadingState';
+import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -45,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0.25rem',
     color: theme.palette.white.main,
     [theme.breakpoints.down('md')]: {
-      width: '8rem',
+      width: '9rem',
       marginLeft: '1rem',
     },
     [theme.breakpoints.down('xs')]: {
-      width: '6rem',
+      width: '9rem',
       margin: '0 0 1rem',
     },
   },
@@ -115,6 +116,7 @@ const OrdersDetail = ({id}) => {
 
   const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useRecoilState(userState);
+  const [alerts, setAlerts] = useState(null);
 
   useEffect(() => {
     if (user?.isAuthenticated) {
@@ -147,8 +149,40 @@ const OrdersDetail = ({id}) => {
   };
 
   const cancelOrder = async () => {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: confirm user before cancelling order
+    setLoading(true);
+    const res = await OrderService.cancelOrder(id);
+    if (res && res?.data?.success) {
+      setAlerts({
+        type: 'success',
+        message: '注文をキャンセルしました。',
+      });
+      fetchOrder();
+    } else {
+      setAlerts({
+        type: 'error',
+        message: res,
+      });
+    }
+    setLoading(false);
+  };
+
+  const handleCancelOrder = async () => {
+    Swal.fire({
+      title: '注文をキャンセル',
+      text: 'この注文をキャンセルしてもよろしいですか。',
+      showCancelButton: true,
+      reverseButtons: true,
+      cancelButtonText: '戻る',
+      confirmButtonText: '注文をキャンセル',
+      backdrop: false,
+      customClass: {
+        container: 'swal2-warning',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        cancelOrder();
+      }
+    });
   };
 
   return (
@@ -313,7 +347,7 @@ const OrdersDetail = ({id}) => {
                 {parseInt(order?.status ?? 0, 10) === 1 && (
                   <Button
                     className={clsx(classes.button, classes.whiteButton)}
-                    onClick={cancelOrder}
+                    onClick={handleCancelOrder}
                   >
                     {'注文をキャンセル'}
                   </Button>
@@ -356,6 +390,10 @@ const OrdersDetail = ({id}) => {
           </div>
         </ContentBlock>
       )}
+      <AlertMessageForSection
+        alert={alerts}
+        handleCloseAlert={() => setAlerts(null)}
+      />
     </DefaultLayout>
   );
 };

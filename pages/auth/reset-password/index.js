@@ -184,7 +184,7 @@ function RequestPassword() {
   };
 
   return (
-    <DefaultLayout title='ResetPassword - Oshinagaki Store'>
+    <DefaultLayout title='新しいパスワードを登録 - Oshinagaki Store'>
       <div className={classes.root}>
         <div className='content'>
           <ContentBlock title='新しいパスワードを登録'>

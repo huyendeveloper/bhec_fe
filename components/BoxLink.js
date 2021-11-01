@@ -21,6 +21,16 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '1rem',
       lineHeight: '2.25rem',
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.25rem',
+      height: '10.5rem',
+      marginBottom: '1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+      height: '8rem',
+      marginBottom: '1rem',
+    },
   },
 }));
 

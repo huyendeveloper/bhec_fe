@@ -24,7 +24,7 @@ export default function Seller() {
   };
 
   return (
-    <DefaultLayout title='Seller - Oshinagaki Store'>
+    <DefaultLayout title='おしながきストアとは？ - Oshinagaki Store'>
       <TopBannerWidget
         imgSrc='/img/banner-seller.png'
         imgAlt='Oshinagaki Store'

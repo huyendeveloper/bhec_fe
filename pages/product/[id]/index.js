@@ -57,7 +57,7 @@ export const getServerSideProps = async ({params}) => {
   };
 };
 
-function ProductDetail(props) {
+function ProductDetail() {
   const classes = useStyles();
   const [product, setProduct] = useRecoilState(productState);
   const [linkProps, setLinkProps] = useState([]);
@@ -65,10 +65,7 @@ function ProductDetail(props) {
   const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
-    setProduct((oldValue) => ({
-      ...oldValue,
-      ...props,
-    }));
+    getDetailProduct();
   }, []);
 
   const getDetailProduct = async () => {

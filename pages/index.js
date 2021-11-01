@@ -1,6 +1,6 @@
 import url from 'url';
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Container, Grid, useMediaQuery, Link} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopPage({traditional_craft, food_and_beverage, lifestyle, articles}) {
+export default function TopPage() {
   const classes = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.down('lg'));
@@ -90,6 +90,10 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
   const redirectURI = process.env.NEXT_PUBLIC_LINE_REDIRECT_URL;
   const clientID = process.env.NEXT_PUBLIC_LINE_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET;
+  const [traditional_craft, setTraditionalCraft] = useState({});
+  const [food_and_beverage, setFoodAndBeverage] = useState({});
+  const [lifestyle, setLifestyle] = useState({});
+  const [articles, setArticles] = useState({});
 
   const slideData = [
     {
@@ -102,8 +106,29 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
     },
   ];
 
+  const fetchData = async () => {
+    //traditional_craft
+    const lstProduct1 = await ProductServiceInstance.getProducts({category: 'traditional_craft', limit: '4'});
+    setTraditionalCraft(lstProduct1?.products?.length ? lstProduct1.products : []);
+
+    //food_and_beverage
+    const lstProduct2 = await ProductServiceInstance.getProducts({category: 'food_and_beverage', limit: '4'});
+    setFoodAndBeverage(lstProduct2?.products?.length ? lstProduct2.products : []);
+
+    //lifestyle
+    const lstProduct3 = await ProductServiceInstance.getProducts({category: 'lifestyle', limit: '4'});
+    setLifestyle(lstProduct3?.products?.length ? lstProduct3.products : []);
+
+    // articles
+    const result = await ArticleService.getArticles({limit: 3, per_page: 3});
+    if (result && result.data) {
+      setArticles(result.data);
+    }
+  };
+
   useEffect(() => {
     getAccessToken(window.location.href);
+    fetchData();
   }, []);
 
   const getAccessToken = (callbackURL) => {
@@ -404,36 +429,6 @@ export default function TopPage({traditional_craft, food_and_beverage, lifestyle
     </DefaultLayout>
   );
 }
-
-export const getServerSideProps = async () => {
-  //traditional_craft
-  const lstProduct1 = await ProductServiceInstance.getProducts({category: 'traditional_craft', limit: '4'});
-  const traditional_craft = lstProduct1?.products?.length ? lstProduct1.products : [];
-
-  //food_and_beverage
-  const lstProduct2 = await ProductServiceInstance.getProducts({category: 'food_and_beverage', limit: '4'});
-  const food_and_beverage = lstProduct2?.products?.length ? lstProduct2.products : [];
-
-  //lifestyle
-  const lstProduct3 = await ProductServiceInstance.getProducts({category: 'lifestyle', limit: '4'});
-  const lifestyle = lstProduct3?.products?.length ? lstProduct3.products : [];
-
-  // articles
-  let articles = [];
-  const result = await ArticleService.getArticles({limit: 3, per_page: 3});
-  if (result && result.data) {
-    articles = result.data;
-  }
-
-  return {
-    props: {
-      traditional_craft,
-      food_and_beverage,
-      lifestyle,
-      articles,
-    },
-  };
-};
 
 TopPage.propTypes = {
   traditional_craft: PropTypes.array,

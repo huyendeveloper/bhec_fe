@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.red.main,
     borderRadius: '0.15rem',
     marginRight: '0.5rem',
+    [theme.breakpoints.down('sm')]: {
+      height: '1.5rem',
+    },
   },
   title: {
     fontFamily: theme.font.default,

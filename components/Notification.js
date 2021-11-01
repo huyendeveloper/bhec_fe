@@ -2,11 +2,15 @@ import {Avatar} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import produce from 'immer';
+import {signOut} from 'next-auth/client';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useSetRecoilState} from 'recoil';
 
-import {NotificationService} from '~/services';
+import {AuthService, NotificationService} from '~/services';
 import {userState} from '~/store/userState';
+
+const AuthServiceInstance = new AuthService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,18 +60,34 @@ const Notification = ({notification, readedNotify}) => {
   const classes = useStyles();
   const setUser = useSetRecoilState(userState);
   const url = `/${notification?.type === 1 ? 'articles' : 'product'}/${notification?.notiable_id}`;
+  const router = useRouter();
 
   const handleRead = async () => {
     if (!notification?.read) {
       const res = await NotificationService.markReaded({id: notification?.id});
-      if (res?.noti_unread) {
-        setUser(produce((draft) => {
-          draft.noti_unread = res?.noti_unread;
-        }));
+      if (res?.noti_unread >= 0) {
+        fetchUserInfo();
         readedNotify(notification?.id);
       }
     }
     window.open(url, '_blank');
+  };
+
+  const fetchUserInfo = async () => {
+    const response = await AuthServiceInstance.getInfoUser();
+    if (!response?.user) {
+      setUser({});
+      signOut({redirect: false});
+      router.push({pathname: '/auth/login'});
+      return;
+    }
+
+    setUser(
+      produce((draft) => {
+        draft.profile = response?.user;
+        draft.noti_unread = response?.noti_unread;
+      }),
+    );
   };
 
   return (

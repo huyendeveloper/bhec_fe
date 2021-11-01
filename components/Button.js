@@ -44,14 +44,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.white.main,
     color: `${theme.palette.black3.main}`,
     '&:hover': {
-      backgroundColor: theme.palette.white.main,
+      backgroundColor: theme.palette.gray.light,
     },
   },
   whiteRed: {
     backgroundColor: theme.palette.white.main,
     color: theme.palette.red.main,
     '&:hover': {
-      backgroundColor: theme.palette.white.main,
+      backgroundColor: theme.palette.gray.light,
       color: theme.palette.red.main,
     },
   },

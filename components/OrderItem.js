@@ -174,7 +174,7 @@ const OrderItem = ({item, status}) => {
     default:
       break;
     }
-  }, []);
+  }, [status]);
 
   return item ? (
     <div className={classes.root}>
