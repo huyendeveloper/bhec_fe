@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     alignItems: 'flex-start',
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     [theme.breakpoints.down('xs')]: {
       marginTop: '0.5rem',
     },
@@ -135,6 +135,9 @@ const useStyles = makeStyles((theme) => ({
     height: '40px',
     '&:hover': {
       backgroundColor: theme.btnFollow.backgroundColor,
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '0 2rem',
     },
   },
   isFollowing: {
