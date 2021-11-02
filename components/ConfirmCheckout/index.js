@@ -51,18 +51,27 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     lineHeight: '1.5rem',
     marginBottom: '1.5rem',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '1rem',
       lineHeight: '1.5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.875rem',
     },
   },
   infoBlockContent: {
     '& p': {
       margin: '3px 0',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.8125rem',
+      },
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.25rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
     },
   },
   calculatedBill: {
