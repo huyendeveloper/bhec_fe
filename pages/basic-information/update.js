@@ -206,7 +206,7 @@ export default function BasicInformationUpdate() {
     if (resUpdateEmail) {
       setAlerts({
         type: 'success',
-        message: 'メールアドレスの変更は暫定的に完了しました。メールアドレスの変更をご確認ください。',
+        message: `メールアドレス変更が受付されました。${data.email}に確認メールが送信されました。`,
       });
       setTimeout(async () => {
         const res = await Auth.updateInfoUser(payload);
