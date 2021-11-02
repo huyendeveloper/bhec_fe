@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       padding: '1rem 0 1.5rem',
+      fontSize: '0.8125rem',
     },
   },
   title: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       padding: theme.spacing(0, 2),
+      fontSize: '0.875rem',
     },
   },
   gray: {

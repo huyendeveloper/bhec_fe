@@ -13,7 +13,7 @@ import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   button: {
     display: 'flex',
     justifyContent: 'center',
@@ -30,6 +30,9 @@ const useStyles = makeStyles(() => ({
     '& .MuiTypography-root': {
       fontSize: '0.875rem',
       lineHeight: '1.313rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.8125rem',
+      },
     },
   },
 
