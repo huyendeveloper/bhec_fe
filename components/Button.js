@@ -168,13 +168,13 @@ const Button = (props) => {
   *
   * https://stackoverflow.com/a/49358913
   * */
-  const {children, variant, customColor, customSize, customBorder, customWidth, ...rest} = props;
+  const {children, variant, customColor, customSize, customBorder, customWidth, customStyle, ...rest} = props;
   const className = clsx(classes.root, classes[variant], classes[customColor], classes[customSize], classes[customBorder], classes[customWidth]);
-
   return (
     <MuiButton
       className={className}
       {...rest}
+      style={customStyle || {}}
     >
       {children}
     </MuiButton>
@@ -188,6 +188,7 @@ Button.propTypes = {
   customBorder: PropTypes.oneOf(['bdRed', 'bdGray', 'bdBlack']),
   customWidth: PropTypes.oneOf(['fullwidth', 'halfwidth']),
   children: PropTypes.any.isRequired,
+  customStyle: PropTypes.any,
 };
 
 export default Button;

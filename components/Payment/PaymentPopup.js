@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import React, {useState} from 'react';
-import {makeStyles, withStyles} from '@material-ui/core/styles';
-import {Button, Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
+import {makeStyles, withStyles, useTheme} from '@material-ui/core/styles';
+import {Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import PropTypes from 'prop-types';
@@ -17,6 +17,8 @@ import {usePaymentInputs} from 'react-payment-inputs';
 import Image from 'next/image';
 import {nanoid} from 'nanoid';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
+
+import Button from '~/components/Button';
 
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
@@ -40,6 +42,16 @@ const useStyles = makeStyles((theme) => ({
       },
       [theme.breakpoints.down('sm')]: {
         width: '90%',
+      },
+      [theme.breakpoints.down('xs')]: {
+        width: '90%',
+        margin: 0,
+      },
+    },
+    '& .formControlLabel': {
+      fontSize: '0.875rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.8125rem',
       },
     },
     '& .Mui-focused': {
@@ -89,6 +101,11 @@ const useStyles = makeStyles((theme) => ({
 
   form: {
     width: '100%',
+  },
+
+  formAction: {
+    width: '100%',
+    margin: '2rem 0',
   },
 
   divPayment: {
@@ -193,6 +210,9 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const user = useRecoilValue(userState);
+  const theme = useTheme();
+  const isTablet = theme.breakpoints.down('sm');
+  const isMobile = theme.breakpoints.down('sm');
   const setLoading = useSetRecoilState(loadingState);
 
   const handleSubmitClick = async (data) => {
@@ -520,14 +540,23 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                 <Grid
                   container={true}
                   spacing={3}
-                  className={classes.form}
+                  className={classes.formAction}
                   justifyContent='center'
                 >
-                  <Button
+                  {/* <Button
                     autoFocus={true}
                     color='primary'
                     className={classes.submitButton}
                     onClick={handleSubmit(handleSubmitClick)}
+                  >
+                    {'保存する'}
+                  </Button> */}
+                  <Button
+                    customColor='red'
+                    customSize='small'
+                    onClick={handleSubmit(handleSubmitClick)}
+                    customStyle={{borderRadius: '45px', width: isMobile ? 224 : (isTablet ? 224 : 364)}}
+                    // eslint-disable-next-line
                   >
                     {'保存する'}
                   </Button>
