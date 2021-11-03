@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: '1rem',
     lineHeight: '2.5rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      lineHeight: '1.3125rem',
+    },
   },
 
   textDisable: {
