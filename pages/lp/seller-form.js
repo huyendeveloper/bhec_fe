@@ -70,7 +70,7 @@ export default function SellerForm() {
   const [isViewedTerms, setIsViewedTerms] = useState(false);
   const [isViewedPolicy, setIsViewedPolicy] = useState(false);
   const [loading] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [formData, setFormData] = useState({});
   const [prefectures, setPrefectures] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
