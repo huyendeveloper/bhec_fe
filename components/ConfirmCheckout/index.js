@@ -427,7 +427,7 @@ const ConfirmCheckout = () => {
                 {'クーポン '}
                 {/*{isMobile ? <br/> : null}*/}
               </div>
-              <b>{formatNumber(-(order?.discount ?? 0), 'currency')}</b>
+              <b>{formatNumber((order?.discount ?? 0), 'currency')}</b>
             </div>
           </div>
           }
