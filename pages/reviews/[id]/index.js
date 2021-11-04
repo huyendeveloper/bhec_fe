@@ -127,6 +127,7 @@ const ReviewsDetail = (props) => {
         type: 'success',
         message: '成功したレビュー。',
       });
+      router.push(`/product/${product?.productDetail?.id}`);
     } else {
       setAlerts({
         type: 'error',
