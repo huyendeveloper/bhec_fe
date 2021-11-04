@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
       '& select': {
         border: `1px solid ${theme.styledForm.formControl.borderColor}`,
         borderRadius: '4px !important',
-        color: theme.palette.gray.dark,
         fontSize: '0.875rem',
         background: 'url("/img/icons/dropdown-icon.png") right 1rem center no-repeat',
         backgroundColor: theme.palette.white.main,
