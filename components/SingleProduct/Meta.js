@@ -1,4 +1,5 @@
 import {Box, makeStyles, Table, TableBody, TableCell, TableContainer, TableRow} from '@material-ui/core';
+import {join, map, split, trim} from 'lodash';
 import React from 'react';
 import {useRecoilValue} from 'recoil';
 
@@ -10,6 +11,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const allDays = [
+  '月曜',
+  '火曜',
+  '水曜',
+  '木曜',
+  '金曜',
+  '土曜',
+  '日曜',
+];
+
 const Meta = () => {
   const classes = useStyles();
 
@@ -17,8 +28,31 @@ const Meta = () => {
 
   const expressDelivery = product?.sellerInfo?.express_delivery;
   const shippingType = product?.productDetail?.shipping_type || '';
-  const shippingDate = product?.productDetail?.shipping_date || '';
   const shippingDays = product?.productDetail?.shipping_days || '';
+
+  const sortShippingDate = () => {
+    const shipping_date = map(split(product?.productDetail?.shipping_date, '　'), (s) => trim(s, '　'));
+
+    const sortedShippingDate = [];
+
+    allDays.forEach((item) => {
+      if (shipping_date.includes(item)) {
+        sortedShippingDate.push(item);
+      }
+    });
+    const sortedStr = join(sortedShippingDate, '　').trim('　');
+    if (sortedStr === '月曜　火曜　水曜　木曜　金曜　土曜　日曜') {
+      return 'すべて';
+    }
+
+    if (sortedStr === '月曜　火曜　水曜　木曜　金曜') {
+      return '平日';
+    }
+
+    return sortedStr;
+  };
+
+  const shippingDate = sortShippingDate();
 
   return (
     <Box component='div'>
