@@ -135,28 +135,6 @@ function ProductDetail() {
 
         {/* Product details */}
         <SingleProduct getDetailProduct={getDetailProduct}/>
-
-        {/* Banner */}
-        <Container>
-          <Grid
-            container={true}
-            className={classes.banner}
-          >
-            <Grid
-              item={true}
-              xs={12}
-              md={12}
-            >
-              <Image
-                src={'/img/banner-botton.png'}
-                alt='banner bottom'
-                layout={'responsive'}
-                width={'1140'}
-                height={'192'}
-              />
-            </Grid>
-          </Grid>
-        </Container>
       </div>
     </DefaultLayout>
   );
