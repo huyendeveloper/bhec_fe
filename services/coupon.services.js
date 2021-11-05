@@ -16,7 +16,7 @@ async function getCouponDetails(payload) {
 
 async function getCoupons(payload) {
   try {
-    const [data, response] = await api.get('/user_coupons', payload, {progress: true});
+    const [data, _, response] = await api.get('/user_coupons', payload, {progress: true});
     const {page, pages, user_coupons} = data;
     const {error_code, message} = response.data;
 
