@@ -107,7 +107,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     height: '100%',
     '& .MuiCardContent-root': {
-      padding: '5px 16px',
+      padding: '5px 16px 20px 16px',
+      display: 'flex',
+      flexDirection: 'column',
+
+      '& .linkName': {
+        flex: '1 1 auto',
+      },
     },
   },
   productSeller: {
