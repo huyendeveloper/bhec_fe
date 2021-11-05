@@ -1,6 +1,5 @@
-import {Container, Grid} from '@material-ui/core';
+import {Container} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {useRouter} from 'next/router';
