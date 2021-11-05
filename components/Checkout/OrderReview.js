@@ -105,7 +105,7 @@ const OrderReview = ({isReadonly}) => {
                     <a onClick={() => setValue('couponCode', '')}>{'他のクーポンを使う'}</a>
                   </Link>
                 </div>
-                <b>{formatNumber(-(order?.discount ?? 0), 'currency')}</b>
+                <b>{formatNumber((order?.discount ?? 0), 'currency')}</b>
               </div>
             </div>
 

@@ -275,31 +275,29 @@ const SingleArticle = ({article, shortcodes, refinedHTML}) => {
           </Button>
         </div>
 
-        <div className={classes.categoryBlock}>
-          <CategoryBlock
-            bgColor='transparent'
-            title={'関連の記事'}
+        <CategoryBlock
+          bgColor='transparent'
+          title={'関連の記事'}
+        >
+          <Grid
+            container={true}
+            spacing={3}
+            className={classes.recommendedProducts}
           >
-            <Grid
-              container={true}
-              spacing={3}
-              className={classes.recommendedProducts}
-            >
-              {lasestArticles.map((articleItem) => (
-                <Grid
-                  key={articleItem.id}
-                  item={true}
-                  sm={4}
-                  xs={12}
-                >
-                  <ArticleWidget
-                    article={articleItem}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </CategoryBlock>
-        </div>
+            {lasestArticles.map((articleItem) => (
+              <Grid
+                key={articleItem.id}
+                item={true}
+                sm={4}
+                xs={12}
+              >
+                <ArticleWidget
+                  article={articleItem}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </CategoryBlock>
         <AdsWidget
           imgSrc={'/img/ad/ad5.png'}
           imgWidth={'1140'}

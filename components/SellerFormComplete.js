@@ -52,7 +52,13 @@ const SellerFormComplete = () => {
           component='p'
           className={classes.description}
         >
-          {'この度はご登録を頂き、誠にありがとうございます。折り返しご連絡させて頂きますので、今しばらくお待ちくださいますよう、お願いいたします。'}
+          {'この度はご登録を頂き、誠にありがとうございます。'}
+        </Typography>
+        <Typography
+          component='p'
+          className={classes.description}
+        >
+          {'折り返しご連絡させて頂きますので、今しばらくお待ちくださいますよう、お願いいたします。'}
         </Typography>
       </AlertBox>
     </div>

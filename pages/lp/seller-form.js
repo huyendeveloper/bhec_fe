@@ -70,7 +70,7 @@ export default function SellerForm() {
   const [isViewedTerms, setIsViewedTerms] = useState(false);
   const [isViewedPolicy, setIsViewedPolicy] = useState(false);
   const [loading] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [formData, setFormData] = useState({});
   const [prefectures, setPrefectures] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
@@ -1033,7 +1033,6 @@ export default function SellerForm() {
                             className='formControlLabel'
                           >
                             {'出品予定の商品（※具体的な品⽬をお答え下さい）'}
-                            <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='product_sell'
@@ -1071,7 +1070,6 @@ export default function SellerForm() {
                             className='formControlLabel'
                           >
                             {'出品予定の時期 '}
-                            <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
                             name='time_sell'
