@@ -117,8 +117,16 @@ const ArchiveProduct = ({queryParams}) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    setCurrentPage(queryParams?.page ?? 0);
-    fetchData();
+    if (queryParams?.page < 1) {
+      router.push({
+        pathname: '/products',
+        query: {...router.query, page: 1},
+      });
+    } else {
+      setCurrentPage(queryParams?.page ?? 1);
+      fetchData();
+    }
+
     return () => {
       // return an anonymous clean up function
     };

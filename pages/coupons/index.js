@@ -92,9 +92,14 @@ const Coupons = ({queryParams}) => {
   const [order, setOrder] = useRecoilState(orderState);
 
   useEffect(() => {
-    if (user?.isAuthenticated) {
+    if (queryParams?.page < 1) {
+      router.push({
+        pathname: '/coupons',
+        query: {...router.query, page: 1},
+      });
+    } else if (user?.isAuthenticated) {
       setIsAuthenticated(user?.isAuthenticated);
-      setCurrentPage(queryParams?.page ?? 0);
+      setCurrentPage(queryParams?.page ?? 1);
       fetchCoupons();
     } else {
       requestLogin();
