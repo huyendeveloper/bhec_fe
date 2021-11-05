@@ -250,7 +250,7 @@ export default function Cart() {
                   variant={'h2'}
                   className={classes.label}
                 >{'カート内の商品' + (cart.items?.length > 0 ? ` (${cart.items?.length}点)` : '')}</Typography>
-                <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div>
+                {cart.items?.length ? <div className={'notice'}>{'注文画面にて送料を必ずご確認ください。'}</div> : null}
               </Box>
             }
 
