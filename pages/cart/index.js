@@ -288,7 +288,8 @@ export default function Cart() {
                           alt={'store'}
                         />}
                     >
-                      {`${s?.name} (${s?.catch_phrase})`}
+                      {`${s?.name}`}
+                      {s?.catch_phrase ? ` (${s?.catch_phrase})` : ''}
                     </Button>
                   </Box>
 
