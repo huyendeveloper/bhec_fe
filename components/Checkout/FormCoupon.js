@@ -94,7 +94,7 @@ const FormCoupon = () => {
   const [loaded, setLoaded] = useState(false);
   const [couponCode, setCouponCode] = useState(false);
   const [order, setOrder] = useRecoilState(orderState);
-  const {subTotal, shippingFee} = useRecoilValue(billState);
+  const {net_amount, total_shipping_fee} = useRecoilValue(billState);
   const setUser = useSetRecoilState(userState);
   const {
     getValues,
@@ -110,16 +110,16 @@ const FormCoupon = () => {
   };
 
   const calDiscountByPercent = (value) => {
-    const discount = (subTotal + shippingFee) * (value / 100);
-    if (discount > (subTotal + shippingFee)) {
-      return subTotal + shippingFee;
+    const discount = (net_amount + total_shipping_fee) * (value / 100);
+    if (discount > (net_amount + total_shipping_fee)) {
+      return net_amount + total_shipping_fee;
     }
     return discount;
   };
 
   const calDiscountNotByPercent = (value) => {
-    if (subTotal + shippingFee < value) {
-      return subTotal + shippingFee;
+    if (net_amount + total_shipping_fee < value) {
+      return net_amount + total_shipping_fee;
     }
     return value;
   };

@@ -1,4 +1,4 @@
-import {atom, selector} from 'recoil';
+import {atom} from 'recoil';
 
 import persistAtom from './persistAtom';
 
@@ -22,13 +22,11 @@ export const cartState = atom({
   ],
 });
 
-export const billState = selector({
+export const billState = atom({
   key: 'billState',
-  get: ({get}) => {
-    const {items} = get(cartState);
-    const subTotal = items.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0);
-    const shippingFee = items.reduce((total, item) => total + (parseInt(item.productDetail.shipping_fee ?? 0, 10) * item.quantity), 0);
-
-    return {subTotal, shippingFee};
+  default: {
+    net_amount: 0,
+    total_shipping_fee: 0,
   },
+  effects_UNSTABLE: [persistAtom],
 });

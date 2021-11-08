@@ -8,6 +8,7 @@ const OrderService = {
   getOrderDetail,
   exportOrderPdf,
   cancelOrder,
+  getTotalCost,
 };
 
 // eslint-disable-next-line no-warning-comments
@@ -67,6 +68,15 @@ async function cancelOrder(id) {
     return message;
   }
   return response;
+}
+
+async function getTotalCost(payload) {
+  const [, , response, error_code] = await api.post('orders/total_cost', payload);
+  if (error_code) {
+    const message = errorMessage.find((item) => item.code === error_code)?.message;
+    return message;
+  }
+  return response?.data;
 }
 
 export default OrderService;
