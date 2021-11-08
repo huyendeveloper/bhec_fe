@@ -5,9 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import {
-  useMediaQuery,
-} from '@material-ui/core';
+import {useMediaQuery} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {useSession} from 'next-auth/client';
@@ -189,12 +187,12 @@ const useStyles = makeStyles((theme) => ({
 
 const listNavigation = [
   {
-    name: '伝統工芸品',
-    url: '/products?category=伝統工芸品',
-  },
-  {
     name: '食品・飲料',
     url: '/products?category=食品・飲料',
+  },
+  {
+    name: '伝統工芸品',
+    url: '/products?category=伝統工芸品',
   },
   {
     name: 'ライフスタイル',
@@ -219,11 +217,11 @@ const Header = (props) => {
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const logoWidth = isMobile ? 110 : (isTablet ? 138 : 162);
-  const logoHeight = isMobile ? 32 : (isTablet ? 40 : 48);
+  const logoWidth = isMobile ? 110 : isTablet ? 138 : 162;
+  const logoHeight = isMobile ? 32 : isTablet ? 40 : 48;
   const user = useRecoilValue(userState);
 
-  const displaySameRow = isMobile ? false : (!isTablet);
+  const displaySameRow = isMobile ? false : !isTablet;
 
   const {setOpenNav, openNav} = props;
 
@@ -240,9 +238,7 @@ const Header = (props) => {
     <>
       <div id='back-to-top-anchor'/>
       <HideOnScroll {...props}>
-        <AppBar
-          className={classes.appBar}
-        >
+        <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
             <div className={classes.iconWrapper}>
               {!displaySameRow && (
@@ -272,77 +268,78 @@ const Header = (props) => {
                 </a>
               </Link>
             </div>
-            {!isTablet && !isMobile && <div className={classes.navigation}>
-              {listNavigation.map((nav) =>
-                (
+            {!isTablet && !isMobile && (
+              <div className={classes.navigation}>
+                {listNavigation.map((nav) => (
                   <Link
                     href={nav.url}
                     key={nav.name}
                   >
-                    <a className={classes.naviLink}>
-                      {nav.name}
+                    <a className={classes.naviLink}>{nav.name}</a>
+                  </Link>
+                ))}
+              </div>
+            )}
+            {displaySameRow && (
+              <div className={classes.personalAction}>
+                {isAuthenticated && (
+                  <Link href={'/mypage'}>
+                    <a className={classes.linkPersonal}>
+                      <div className={classes.personalItem}>
+                        <Image
+                          src='/img/icons/ic-user.png'
+                          alt='user icon'
+                          width={24}
+                          height={24}
+                        />
+                        {'マイページ'}
+                      </div>
                     </a>
                   </Link>
-                ),
-              )}
-            </div>}
-            {displaySameRow && <div className={classes.personalAction}>
-              {isAuthenticated &&
-              <Link href={'/mypage'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem}>
-                    <Image
-                      src='/img/icons/ic-user.png'
-                      alt='user icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'マイページ'}
-                  </div>
-                </a>
-              </Link>
-              }
-              {!isAuthenticated &&
-              <Link href={'/auth/login'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem} >
-                    <Image
-                      src='/img/icons/ic-user.png'
-                      alt='user icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'登録・ログイン'}
-                  </div>
-                </a>
-              </Link>}
-              <Link href={'/contacts/send-contact'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem} >
-                    <Image
-                      src='/img/icons/ic-mail.png'
-                      alt='mail icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'お問い合わせ'}
-                  </div>
-                </a>
-              </Link>
-              <Link href={'/cart'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem}>
-                    <Image
-                      src='/img/icons/ic-cart.png'
-                      alt='cart icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'カート'}
-                  </div>
-                </a>
-              </Link>
-            </div>}
+                )}
+                {!isAuthenticated && (
+                  <Link href={'/auth/login'}>
+                    <a className={classes.linkPersonal}>
+                      <div className={classes.personalItem}>
+                        <Image
+                          src='/img/icons/ic-user.png'
+                          alt='user icon'
+                          width={24}
+                          height={24}
+                        />
+                        {'登録・ログイン'}
+                      </div>
+                    </a>
+                  </Link>
+                )}
+                <Link href={'/contacts/send-contact'}>
+                  <a className={classes.linkPersonal}>
+                    <div className={classes.personalItem}>
+                      <Image
+                        src='/img/icons/ic-mail.png'
+                        alt='mail icon'
+                        width={24}
+                        height={24}
+                      />
+                      {'お問い合わせ'}
+                    </div>
+                  </a>
+                </Link>
+                <Link href={'/cart'}>
+                  <a className={classes.linkPersonal}>
+                    <div className={classes.personalItem}>
+                      <Image
+                        src='/img/icons/ic-cart.png'
+                        alt='cart icon'
+                        width={24}
+                        height={24}
+                      />
+                      {'カート'}
+                    </div>
+                  </a>
+                </Link>
+              </div>
+            )}
             <div className={classes.languageSwitcher}>
               <SelectBox
                 options={[
@@ -353,70 +350,71 @@ const Header = (props) => {
               />
             </div>
           </Toolbar>
-          {!displaySameRow && <Toolbar className={classes.toolBarPersonal}>
-            <div className={classes.personalAction}>
-              {isAuthenticated &&
-              <Link href={'/mypage'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem}>
-                    <Image
-                      src='/img/icons/ic-user.png'
-                      alt='user icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'マイページ'}
-                  </div>
-                </a>
-              </Link>
-              }
-              {!isAuthenticated &&
-              <Link href={'/auth/login'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem} >
-                    <Image
-                      src='/img/icons/ic-user.png'
-                      alt='user icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'登録・ログイン'}
-                  </div>
-                </a>
-              </Link>}
-              <Link href={'/contacts/send-contact'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem} >
-                    <Image
-                      src='/img/icons/ic-mail.png'
-                      alt='mail icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'お問い合わせ'}
-                  </div>
-                </a>
-              </Link>
-              <Link href={'/cart'}>
-                <a className={classes.linkPersonal}>
-                  <div className={classes.personalItem}>
-                    <Image
-                      src='/img/icons/ic-cart.png'
-                      alt='cart icon'
-                      width={24}
-                      height={24}
-                    />
-                    {'カート'}
-                  </div>
-                </a>
-              </Link>
-            </div>
-          </Toolbar>}
+          {!displaySameRow && (
+            <Toolbar className={classes.toolBarPersonal}>
+              <div className={classes.personalAction}>
+                {isAuthenticated && (
+                  <Link href={'/mypage'}>
+                    <a className={classes.linkPersonal}>
+                      <div className={classes.personalItem}>
+                        <Image
+                          src='/img/icons/ic-user.png'
+                          alt='user icon'
+                          width={24}
+                          height={24}
+                        />
+                        {'マイページ'}
+                      </div>
+                    </a>
+                  </Link>
+                )}
+                {!isAuthenticated && (
+                  <Link href={'/auth/login'}>
+                    <a className={classes.linkPersonal}>
+                      <div className={classes.personalItem}>
+                        <Image
+                          src='/img/icons/ic-user.png'
+                          alt='user icon'
+                          width={24}
+                          height={24}
+                        />
+                        {'登録・ログイン'}
+                      </div>
+                    </a>
+                  </Link>
+                )}
+                <Link href={'/contacts/send-contact'}>
+                  <a className={classes.linkPersonal}>
+                    <div className={classes.personalItem}>
+                      <Image
+                        src='/img/icons/ic-mail.png'
+                        alt='mail icon'
+                        width={24}
+                        height={24}
+                      />
+                      {'お問い合わせ'}
+                    </div>
+                  </a>
+                </Link>
+                <Link href={'/cart'}>
+                  <a className={classes.linkPersonal}>
+                    <div className={classes.personalItem}>
+                      <Image
+                        src='/img/icons/ic-cart.png'
+                        alt='cart icon'
+                        width={24}
+                        height={24}
+                      />
+                      {'カート'}
+                    </div>
+                  </a>
+                </Link>
+              </div>
+            </Toolbar>
+          )}
         </AppBar>
       </HideOnScroll>
-      <Toolbar
-        className={classes.toolBarPlaceholder}
-      />
+      <Toolbar className={classes.toolBarPlaceholder}/>
     </>
   );
 };
