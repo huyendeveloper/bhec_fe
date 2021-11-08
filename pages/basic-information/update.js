@@ -117,6 +117,7 @@ export default function BasicInformationUpdate() {
   const [listCity, setListCity] = useState([]);
   const [alerts, setAlerts] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState();
 
   const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useRecoilState(userState);
@@ -172,6 +173,7 @@ export default function BasicInformationUpdate() {
     const res = await Auth.getInfoUser();
     if (res.user) {
       setLoading(false);
+      setCurrentEmail(res.user.email);
       for (const property in res.user) {
         if (property === 'gender') {
           if (res.user[property]) {
@@ -206,35 +208,43 @@ export default function BasicInformationUpdate() {
     };
     setLoading(true);
     setAlerts(null);
-    const bodyUpdateEmail = {
-      new_email: data.email,
-    };
-    const resUpdateEmail = await Auth.updateEmailUser(bodyUpdateEmail);
-    if (resUpdateEmail) {
+    if (payload.email === currentEmail) {
+      updateInfo(payload);
+    } else {
+      const bodyUpdateEmail = {
+        new_email: data.email,
+      };
+      const resUpdateEmail = await Auth.updateEmailUser(bodyUpdateEmail);
+      if (resUpdateEmail) {
+        setAlerts({
+          type: 'success',
+          message: `メールアドレス変更が受付されました。${data.email}に確認メールが送信されました。`,
+        });
+        setTimeout(async () => {
+          updateInfo(payload);
+        }, 1000);
+      } else {
+        setLoading(false);
+        setAlerts({
+          type: 'error',
+          message: 'このメールアドレスはすでに登録されています。',
+        });
+      }
+    }
+  };
+
+  const updateInfo = async (payload) => {
+    const res = await Auth.updateInfoUser(payload);
+    if (res.user) {
+      setLoading(false);
       setAlerts({
         type: 'success',
-        message: `メールアドレス変更が受付されました。${data.email}に確認メールが送信されました。`,
+        message: '情報を正常に更新する。',
       });
-      setTimeout(async () => {
-        const res = await Auth.updateInfoUser(payload);
-        if (res.user) {
-          setLoading(false);
-          setAlerts({
-            type: 'success',
-            message: '情報を正常に更新する。',
-          });
-          setTimeout(() => {
-            router.push({
-              pathname: '/basic-information',
-            });
-          }, 1000);
-        } else {
-          setLoading(false);
-          setAlerts({
-            type: 'error',
-            message: 'このメールアドレスはすでに登録されています。',
-          });
-        }
+      setTimeout(() => {
+        router.push({
+          pathname: '/basic-information',
+        });
       }, 1000);
     } else {
       setLoading(false);

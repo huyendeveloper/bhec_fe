@@ -342,7 +342,7 @@ export default function TopPage() {
                 container={true}
                 spacing={3}
               >
-                {lifestyle.map((item) => (
+                {lifestyle.length && lifestyle.map((item) => (
                   <Grid
                     key={item.id}
                     item={true}
