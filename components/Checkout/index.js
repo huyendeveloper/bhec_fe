@@ -1,12 +1,13 @@
 import {Grid, makeStyles, useMediaQuery, useTheme} from '@material-ui/core';
 import router from 'next/router';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {AlertMessageForSection, StyledForm} from '..';
 import Button from '../Button';
 
+import FormCoupon from './FormCoupon';
 import FormCreditCard from './FormCreditCard';
 import FormInvoice from './FormInvoice';
 import FormNote from './FormNote';
@@ -14,11 +15,13 @@ import FormPaymentMethods from './FormPaymentMethods';
 import FormShipping from './FormShipping';
 import FormSignup from './FormSignup';
 import OrderReview from './OrderReview';
-import FormCoupon from './FormCoupon';
 
-import {userState} from '~/store/userState';
-import {orderState} from '~/store/orderState';
 import FormKombini from '~/components/Checkout/FormKombini';
+import {OrderService} from '~/services';
+import {billState, cartState} from '~/store/cartState';
+import {orderState} from '~/store/orderState';
+import {userState} from '~/store/userState';
+import {loadingState} from '~/store/loadingState';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -50,6 +53,10 @@ const Checkout = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const cart = useRecoilValue(cartState);
+  const [bill, setBill] = useRecoilState(billState);
+  const setLoading = useSetRecoilState(loadingState);
+
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving checkout
   // useEffect(() => {
@@ -94,6 +101,45 @@ const Checkout = () => {
     router.push('/order-form/confirm');
   };
 
+  const getTotalCost = async () => {
+    setLoading(true);
+    const products = cart?.items?.reduce((newRes, item) => {
+      return [...newRes, {
+        product_id: item?.productDetail?.id,
+        quantity: item?.quantity,
+      }];
+    }, []);
+    let payload = {
+      products,
+    };
+    if (isAuthenticated) {
+      payload = {
+        ...payload,
+        address_id: order?.addressShipping,
+      };
+    }
+    if (!isAuthenticated) {
+      payload = {
+        ...payload,
+        address: order?.address,
+      };
+    }
+    const res = await OrderService.getTotalCost(payload);
+    if (res?.success) {
+      setBill(res?.data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if ((order?.addressShipping || order?.address) && cart?.items) {
+      getTotalCost();
+    }
+    if (!(order?.addressShipping || order?.address) && !cart?.items) {
+      setBill({...bill, total_shipping_fee: 0});
+    }
+  }, [order?.addressShipping, order?.address, cart]);
+
   React.useEffect(() => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
@@ -123,7 +169,7 @@ const Checkout = () => {
             <FormKombini/>
           )}
 
-          <FormCoupon/>
+          {isAuthenticated && <FormCoupon/>}
 
           <FormNote/>
 

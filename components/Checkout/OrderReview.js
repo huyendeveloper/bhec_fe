@@ -39,7 +39,7 @@ const OrderReview = ({isReadonly}) => {
   const classes = useStyles();
   const theme = useTheme();
   const cart = useRecoilValue(cartState);
-  const {subTotal, shippingFee} = useRecoilValue(billState);
+  const {net_amount, total_shipping_fee} = useRecoilValue(billState);
   const [loaded, setLoaded] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const order = useRecoilValue(orderState);
@@ -82,7 +82,7 @@ const OrderReview = ({isReadonly}) => {
               >
                 <div>{'商品合計'}</div>
 
-                <b>{formatNumber(subTotal, 'currency')}</b>
+                <b>{formatNumber(net_amount || cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0), 'currency')}</b>
               </div>
 
               <div
@@ -90,7 +90,7 @@ const OrderReview = ({isReadonly}) => {
               >
                 <div>{'送料合計'}</div>
 
-                <b>{formatNumber(shippingFee, 'currency')}</b>
+                <b>{formatNumber(total_shipping_fee, 'currency')}</b>
               </div>
 
               <div
@@ -118,7 +118,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
+                  {formatNumber(((net_amount || cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
                 </h1>
               </div>
             </div>

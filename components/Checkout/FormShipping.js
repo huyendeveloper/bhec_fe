@@ -11,6 +11,7 @@ import {DialogWidget} from '~/components/Widgets';
 import {rules} from '~/lib/validator';
 import {CommonService} from '~/services';
 import {loadingState} from '~/store/loadingState';
+import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +48,8 @@ const FormShipping = ({isReadonly}) => {
   const [loaded, setLoaded] = useState(false);
   const setLoading = useSetRecoilState(loadingState);
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const [order, setOrder] = useRecoilState(orderState);
+
   const setDefaultAddressShipping = () => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);
@@ -101,6 +104,15 @@ const FormShipping = ({isReadonly}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleChangeAddressShipping = (e) => {
+    if (user?.isAuthenticated) {
+      setOrder({...order, addressShipping: e.target.value});
+    } else {
+      const address = user?.addresses?.find((x) => x.id === e.target.value);
+      setOrder({...order, address});
+    }
+  };
+
   return (
     <>
       <ConnectForm>
@@ -123,7 +135,10 @@ const FormShipping = ({isReadonly}) => {
                     render={({field: {onChange, value}}) => (
                       <RadioGroup
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => {
+                          handleChangeAddressShipping(e);
+                          onChange(e);
+                        }}
                         className={classes.radioGroup}
                         style={{marginBottom: '2.563rem'}}
                       >

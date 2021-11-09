@@ -104,7 +104,7 @@ const ConfirmCheckout = () => {
   const setLoading = useSetRecoilState(loadingState);
   const [addressData, setAddressData] = useState(null);
   const [cardData, setCardData] = useState(null);
-  const {subTotal, shippingFee} = useRecoilValue(billState);
+  const {net_amount, total_shipping_fee} = useRecoilValue(billState);
   const [loaded, setLoaded] = useState(false);
 
   const fetchAddressData = async () => {
@@ -409,7 +409,7 @@ const ConfirmCheckout = () => {
             >
               <div>{'商品合計'}</div>
 
-              <b>{formatNumber(subTotal, 'currency')}</b>
+              <b>{formatNumber(net_amount, 'currency')}</b>
             </div>
 
             <div
@@ -417,7 +417,7 @@ const ConfirmCheckout = () => {
             >
               <div>{'送料合計'}</div>
 
-              <b>{formatNumber(shippingFee, 'currency')}</b>
+              <b>{formatNumber(total_shipping_fee, 'currency')}</b>
             </div>
 
             <div
@@ -442,7 +442,7 @@ const ConfirmCheckout = () => {
 
               {loaded &&
                 <h1 className={classes.total}>
-                  {formatNumber((subTotal + shippingFee) - (order?.discount ?? 0), 'currency')}
+                  {formatNumber((net_amount + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
                 </h1>
               }
             </div>
