@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   linkName: {
     width: '100%',
+    flex: '1 1 auto',
     '&:hover': {
       textDecoration: 'none',
     },
@@ -72,6 +73,11 @@ const useStyles = makeStyles((theme) => ({
   },
   productTags: {
     marginBottom: '1rem',
+    display: '-webkit-box',
+    lineClamp: 2,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    boxOrient: 'vertical',
     '& > div': {
       height: '16px',
       borderRadius: '4px',
