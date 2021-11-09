@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {Container, Grid, useTheme, Button, useMediaQuery, Typography, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import Pagination from '@material-ui/lab/Pagination';
 import ReactDOM from 'react-dom';
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -177,6 +178,42 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '3rem 0',
+    [theme.breakpoints.down('md')]: {
+      margin: '1.5rem 0',
+    },
+    '& .MuiButtonBase-root': {
+      width: '3rem',
+      height: '3rem',
+      borderRadius: '50%',
+      border: '1px solid ' + theme.palette.grey.dark,
+      margin: '0 0.5rem',
+      background: theme.palette.white.main,
+      fontWeight: '700',
+      fontSize: '1rem',
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        background: theme.palette.red.main,
+        borderColor: theme.palette.red.main,
+        color: theme.palette.white.main,
+      },
+      [theme.breakpoints.down('md')]: {
+        width: '2.5rem',
+        height: '2.5rem',
+        margin: '0 0.25rem',
+        fontSize: '0.875rem',
+      },
+    },
+    '& .Mui-selected': {
+      background: theme.palette.red.main,
+      borderColor: theme.palette.red.main,
+      color: theme.palette.white.main,
+    },
+  },
 }));
 
 const Seller = () => {
@@ -184,6 +221,7 @@ const Seller = () => {
   const theme = useTheme();
   const [isFollowing, setIsFollowing] = useState(false);
   const [seller, setSeller] = useState();
+  const [sellerId, setSellerId] = useState();
   const [refinedHTML, setRefinedHTML] = useState();
   const [user] = useRecoilState(userState);
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
@@ -193,7 +231,13 @@ const Seller = () => {
   const [linkProps, setLinkProps] = useState([]);
   const [relatedProduct, setRelatedProduct] = useState([]);
   const [lastestProduct, setLastestProduct] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [countPages, setCountPages] = useState(0);
   const router = useRouter();
+
+  const changePage = (e, pageNumber) => {
+    getListRelatedProduct(sellerId, {page: pageNumber});
+  };
 
   const toggleFollow = async () => {
     if (user?.isAuthenticated) {
@@ -234,6 +278,7 @@ const Seller = () => {
   const getSellerInfo = async () => {
     const {id} = router.query;
     if (id) {
+      setSellerId(id);
       const response = await SellerInstance.getSellerDetail(id);
       if (!response?.seller?.id) {
         return {
@@ -241,7 +286,7 @@ const Seller = () => {
         };
       }
 
-      getListRelatedProduct(response?.seller?.id);
+      getListRelatedProduct(response?.seller?.id, {});
       getListLastestProduct();
       const current = [
         {
@@ -302,11 +347,11 @@ const Seller = () => {
     }
   };
 
-  const getListRelatedProduct = async (id) => {
-    const result = await ProductServiceInstance.getProducts({seller_ids: id, per_page: 3});
-    if (result && result.products.length) {
-      setRelatedProduct(result.products);
-    }
+  const getListRelatedProduct = async (id, query) => {
+    const result = await ProductServiceInstance.getProducts({...query, seller_ids: id, per_page: 9});
+    setRelatedProduct(result.products ?? []);
+    setCurrentPage(result.page ?? 0);
+    setCountPages(result.pages ?? 0);
   };
 
   const getListLastestProduct = async () => {
@@ -467,6 +512,19 @@ const Seller = () => {
             </CategoryBlock>
           </div>
         ) : null
+        }
+
+        {relatedProduct?.length && currentPage > 0 &&
+          <Pagination
+            count={countPages}
+            page={currentPage}
+            variant={'outlined'}
+            color={'primary'}
+            size={'large'}
+            defaultPage={1}
+            onChange={changePage}
+            className={classes.pagination}
+          />
         }
 
         {lastestProduct?.length ? (
