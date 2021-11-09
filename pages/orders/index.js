@@ -4,10 +4,10 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
 } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 import {makeStyles} from '@material-ui/core/styles';
 import moment from 'moment';
 import Link from 'next/link';
@@ -87,6 +87,41 @@ const useStyles = makeStyles((theme) => ({
   orderLink: {
     color: theme.palette.red.main,
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '3rem 0',
+    [theme.breakpoints.down('md')]: {
+      margin: '1.5rem 0',
+    },
+    '& .MuiButtonBase-root': {
+      width: '3rem',
+      height: '3rem',
+      borderRadius: '50%',
+      border: '1px solid ' + theme.palette.grey.dark,
+      margin: '0 0.5rem',
+      background: theme.palette.white.main,
+      fontWeight: '700',
+      fontSize: '1rem',
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        background: theme.palette.red.main,
+        borderColor: theme.palette.red.main,
+        color: theme.palette.white.main,
+      },
+      [theme.breakpoints.down('md')]: {
+        width: '2.5rem',
+        height: '2.5rem',
+        margin: '0 0.25rem',
+        fontSize: '0.875rem',
+      },
+    },
+    '& .Mui-selected': {
+      background: theme.palette.red.main,
+      borderColor: theme.palette.red.main,
+      color: theme.palette.white.main,
+    },
+  },
 }));
 
 const headCells = ['ご注文番号', 'ご注文日時', '決済金額', 'お支払い方法'];
@@ -94,8 +129,9 @@ const headCells = ['ご注文番号', 'ご注文日時', '決済金額', 'お支
 const Orders = () => {
   const classes = useStyles();
   const router = useRouter();
-
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [countPages, setCountPages] = useState(0);
+  const [page] = useState(0);
   const [orders, setOrders] = useState();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -119,12 +155,15 @@ const Orders = () => {
   };
 
   const handleChangePage = (e, newPage) => {
-    setPage(newPage);
+    setCurrentPage(newPage);
+    fetchOrders({page: newPage});
   };
 
-  const fetchOrders = async () => {
-    const response = await OrderService.getOrders({per_page: PER_PAGE});
+  const fetchOrders = async (query) => {
+    const response = await OrderService.getOrders({page, per_page: PER_PAGE, ...query});
     setOrders(response?.orders);
+    setCurrentPage(response.page ?? 0);
+    setCountPages(response.pages ?? 0);
   };
 
   return (
@@ -166,14 +205,18 @@ const Orders = () => {
                 </Table>
               </TableContainer>
 
-              <TablePagination
-                rowsPerPageOptions={[]}
-                component='div'
-                count={orders.length}
-                rowsPerPage={PER_PAGE}
-                page={page}
-                onPageChange={handleChangePage}
-              />
+              {currentPage > 0 &&
+                <Pagination
+                  count={countPages}
+                  page={currentPage}
+                  variant={'outlined'}
+                  color={'primary'}
+                  size={'large'}
+                  defaultPage={1}
+                  onChange={handleChangePage}
+                  className={classes.pagination}
+                />
+              }
             </>
           ) : (
             <Typography align='center'>{'注文情報はありません。'}</Typography>

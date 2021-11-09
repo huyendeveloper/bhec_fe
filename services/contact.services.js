@@ -36,7 +36,7 @@ export default class ContactService {
     const DEFAULT_PER_PAGE = 10;
     const cleanPayload = clean(payload);
     const activeParam = {
-      per_page: DEFAULT_PER_PAGE,
+      per_page: payload.per_page || DEFAULT_PER_PAGE,
       page: payload.page || 1,
     };
     if (payload?.page) {
