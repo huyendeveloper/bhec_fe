@@ -19,13 +19,34 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiCardActionArea-root': {
       height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      '& .MuiCardMedia-img': {
+        maxHeight: '13rem',
+        flex: '1 1 auto',
+        [theme.breakpoints.down('sm')]: {
+          maxHeight: '8rem',
+        },
+        [theme.breakpoints.down('xs')]: {
+          maxHeight: '12.5rem',
+        },
+      },
+      '& .MuiCardContent-root': {
+        flex: '1 1 auto',
+        padding: '1rem 1rem 0 1rem',
+      },
     },
   },
   articelName: {
     fontSize: '1rem',
     lineHeight: '1.5rem',
     fontWeight: 'bold',
-    marginBottom: '0.75rem',
+    marginBottom: '0',
+    display: '-webkit-box',
+    lineClamp: 2,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    boxOrient: 'vertical',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.375rem',

@@ -4,11 +4,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   Box,
 } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 import {makeStyles} from '@material-ui/core/styles';
 import moment from 'moment';
 import Link from 'next/link';
@@ -96,6 +96,41 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '700',
     marginTop: '2rem',
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '3rem 0',
+    [theme.breakpoints.down('md')]: {
+      margin: '1.5rem 0',
+    },
+    '& .MuiButtonBase-root': {
+      width: '3rem',
+      height: '3rem',
+      borderRadius: '50%',
+      border: '1px solid ' + theme.palette.grey.dark,
+      margin: '0 0.5rem',
+      background: theme.palette.white.main,
+      fontWeight: '700',
+      fontSize: '1rem',
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        background: theme.palette.red.main,
+        borderColor: theme.palette.red.main,
+        color: theme.palette.white.main,
+      },
+      [theme.breakpoints.down('md')]: {
+        width: '2.5rem',
+        height: '2.5rem',
+        margin: '0 0.25rem',
+        fontSize: '0.875rem',
+      },
+    },
+    '& .Mui-selected': {
+      background: theme.palette.red.main,
+      borderColor: theme.palette.red.main,
+      color: theme.palette.white.main,
+    },
+  },
 }));
 
 const headCells = ['受付番号', '種別', '日時', 'お問い合わせ内容'];
@@ -104,18 +139,19 @@ const Contacts = () => {
   const classes = useStyles();
   const router = useRouter();
 
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
   const [contacts, setContacts] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [user, setUser] = useRecoilState(userState);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const [countPages, setCountPages] = useState(0);
   const PER_PAGE = 10;
 
   useEffect(() => {
     if (user?.isAuthenticated) {
       setIsAuthenticated(user?.isAuthenticated);
-      fetchContacts();
+      fetchContacts({});
     } else {
       requestLogin();
     }
@@ -128,12 +164,15 @@ const Contacts = () => {
   };
 
   const handleChangePage = (e, newPage) => {
-    setPage(newPage);
+    setCurrentPage(newPage);
+    fetchContacts({page: newPage});
   };
 
-  const fetchContacts = async () => {
-    const response = await ContactCommon.getContacts({page, per_page: PER_PAGE});
+  const fetchContacts = async (query) => {
+    const response = await ContactCommon.getContacts({page, per_page: PER_PAGE, ...query});
     setContacts(response?.contacts);
+    setCurrentPage(response.page ?? 0);
+    setCountPages(response.pages ?? 0);
   };
 
   return (
@@ -172,15 +211,18 @@ const Contacts = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-
-              <TablePagination
-                rowsPerPageOptions={[]}
-                component='div'
-                count={contacts.length}
-                rowsPerPage={PER_PAGE}
-                page={page}
-                onPageChange={handleChangePage}
-              />
+              {currentPage > 0 &&
+                <Pagination
+                  count={countPages}
+                  page={currentPage}
+                  variant={'outlined'}
+                  color={'primary'}
+                  size={'large'}
+                  defaultPage={1}
+                  onChange={handleChangePage}
+                  className={classes.pagination}
+                />
+              }
             </>
           ) : (
             <Box

@@ -208,6 +208,12 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
             <span>{'種別：'}</span>
             {data.contact_category_id ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)) ? listContactCategory.find((item) => item.id === Number(data.contact_category_id)).name : '' : ''}
           </Typography>
+          {data.contact_category_id !== '5' &&
+            <Typography component='p'>
+              <span>{'問い合わせ内容：'}</span>
+              {data.description ? data.description : ''}
+            </Typography>
+          }
         </div>
       </div>
       {data.contact_category_id === '5' ? (
@@ -245,7 +251,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                       <span>{'問い合わせ内容：'}</span>
                       {data[`description${index}`] ? data[`description${index}`] : ''}
                     </Typography>
-                    {data[`productImages${index}`].length && <div className={classes.infoBlock}>
+                    {data[`productImages${index}`] && data[`productImages${index}`].length && <div className={classes.infoBlock}>
                       <Typography
                         component='p'
                       >
@@ -272,10 +278,6 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
       ) : null}
       {data.images && data.contact_category_id !== '5' && data.images.length > 0 ? (
         <div className={classes.infoBlockContent}>
-          <Typography component='p'>
-            <span>{'問い合わせ内容：'}</span>
-            {data.description ? data.description : ''}
-          </Typography>
           <div
             className={classes.infoBlock}
             style={{marginTop: '2.5rem'}}

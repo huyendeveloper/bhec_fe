@@ -108,15 +108,24 @@ export default function TopPage() {
 
   const fetchData = async () => {
     //traditional_craft
-    const lstProduct1 = await ProductServiceInstance.getProducts({category: 'traditional_craft', limit: '4'});
+    const lstProduct1 = await ProductServiceInstance.getProducts({
+      category: 'traditional_craft',
+      limit: '4',
+    });
     setTraditionalCraft(lstProduct1?.products?.length ? lstProduct1.products : []);
 
     //food_and_beverage
-    const lstProduct2 = await ProductServiceInstance.getProducts({category: 'food_and_beverage', limit: '4'});
+    const lstProduct2 = await ProductServiceInstance.getProducts({
+      category: 'food_and_beverage',
+      limit: '4',
+    });
     setFoodAndBeverage(lstProduct2?.products?.length ? lstProduct2.products : []);
 
     //lifestyle
-    const lstProduct3 = await ProductServiceInstance.getProducts({category: 'lifestyle', limit: '4'});
+    const lstProduct3 = await ProductServiceInstance.getProducts({
+      category: 'lifestyle',
+      limit: '4',
+    });
     setLifestyle(lstProduct3?.products?.length ? lstProduct3.products : []);
 
     // articles
@@ -148,33 +157,32 @@ export default function TopPage() {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       };
-      axios.post(
-        'https://api.line.me/oauth2/v2.1/token',
-        qs.stringify(reqBody),
-        reqConfig,
-      ).then(async (res) => {
-        if (res.status === httpStatus.SUCCESS) {
-          const result = await Auth.loginBySNS({
-            type: 'line',
-            id_token: res.data.id_token,
-            client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
-          });
-          if (result && result.access_token) {
-            setUser(produce((draft) => {
-              draft.isAuthenticated = true;
-            }));
-            await signIn('credentials',
-              {
+      axios.
+        post('https://api.line.me/oauth2/v2.1/token', qs.stringify(reqBody), reqConfig).
+        then(async (res) => {
+          if (res.status === httpStatus.SUCCESS) {
+            const result = await Auth.loginBySNS({
+              type: 'line',
+              id_token: res.data.id_token,
+              client_id: process.env.NEXT_PUBLIC_LINE_CLIENT_ID,
+            });
+            if (result && result.access_token) {
+              setUser(
+                produce((draft) => {
+                  draft.isAuthenticated = true;
+                }),
+              );
+              await signIn('credentials', {
                 data: result,
                 token: result.access_token,
                 redirect: false,
-              },
-            );
+              });
+            }
           }
-        }
-      }).catch(() => {
-        return false;
-      });
+        }).
+        catch(() => {
+          return false;
+        });
     }
   };
 
@@ -194,9 +202,7 @@ export default function TopPage() {
               <Search/>
               <Slider data={slideData}/>
             </Grid>
-
           </Container>
-
         </div>
 
         {/* News */}
@@ -208,47 +214,47 @@ export default function TopPage() {
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            {articles?.length > 0 && articles?.map((article) => (
-              <Grid
-                key={article.id}
-                container={true}
-                justifyContent='space-between'
-                direction='row'
-                alignItems='center'
-                spacing={isDesktop ? 4 : 2}
-                className={classes.news}
-              >
+            {articles?.length > 0 &&
+              articles?.map((article) => (
                 <Grid
-                  item={true}
-                  xs={12}
-                  sm={6}
-                  lg={5}
+                  key={article.id}
+                  container={true}
+                  justifyContent='space-between'
+                  direction='row'
+                  alignItems='center'
+                  spacing={isDesktop ? 4 : 2}
+                  className={classes.news}
                 >
-                  <Link href={`articles/${article.id}`}>
-                    <Image
-                      src={article.image_url ?? '/logo.png'}
-                      alt='article'
-                      layout='intrinsic'
-                      width={364}
-                      height={208}
-                      objectFit={article.image_url ? 'cover' : 'contain'}
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={6}
+                    lg={5}
+                  >
+                    <Link href={`articles/${article.id}`}>
+                      <Image
+                        src={article.image_url ?? '/logo.png'}
+                        alt='article'
+                        layout='intrinsic'
+                        width={364}
+                        height={208}
+                        objectFit={article.image_url ? 'cover' : 'contain'}
+                      />
+                    </Link>
+                  </Grid>
+                  <Grid
+                    item={true}
+                    xs={12}
+                    sm={6}
+                    lg={7}
+                  >
+                    <Article
+                      key={`article-${article.id}`}
+                      data={article}
                     />
-                  </Link>
+                  </Grid>
                 </Grid>
-                <Grid
-                  item={true}
-                  xs={12}
-                  sm={6}
-                  lg={7}
-                >
-                  <Article
-                    key={`article-${article.id}`}
-                    data={article}
-                  />
-                </Grid>
-              </Grid>
-            ))
-            }
+              ))}
           </ContentBlock>
         )}
 
@@ -318,10 +324,45 @@ export default function TopPage() {
                 ))}
               </Grid>
             </CategoryBlock>
-          </div>) : null
-        }
+          </div>
+        ) : null}
 
         {food_and_beverage?.length ? (
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='ライフスタイル'
+              categoryLink='lifestyle'
+              bgColor='#FAF6EF'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
+              padding='2rem 0 4rem 0'
+            >
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {lifestyle.length && lifestyle.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </CategoryBlock>
+          </div>
+        ) : null}
+
+        {lifestyle?.length ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='食品・飲料'
@@ -352,43 +393,8 @@ export default function TopPage() {
                 ))}
               </Grid>
             </CategoryBlock>
-          </div>) : null
-        }
-
-        {lifestyle?.length ? (
-          <div className={classes.categoryBlock}>
-            <CategoryBlock
-              category='ライフスタイル'
-              categoryLink='lifestyle'
-              bgColor='#FAF6EF'
-              bgImage='/img/noise.png'
-              bgRepeat='repeat'
-              mixBlendMode='multiply'
-              padding='2rem 0 4rem 0'
-            >
-              <Grid
-                container={true}
-                spacing={3}
-              >
-                {lifestyle.map((item) => (
-                  <Grid
-                    key={item.id}
-                    item={true}
-                    sm={4}
-                    xs={6}
-                    className={classes.product}
-                  >
-                    <ProductWidget
-                      data={item}
-                      border={'borderNone'}
-                      heart={true}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </CategoryBlock>
-          </div>) : null
-        }
+          </div>
+        ) : null}
 
         {/* Ads */}
         <div className={classes.advertisements}>

@@ -31,8 +31,8 @@ async function getOrders(payload) {
   const DEFAULT_PER_PAGE = 10;
   const cleanPayload = clean(payload);
   const activeParam = {
-    per_page: DEFAULT_PER_PAGE,
-    page: 1,
+    per_page: payload.per_page || DEFAULT_PER_PAGE,
+    page: payload.page || 1,
   };
   if (payload?.page) {
     activeParam.page = parseInt(payload.page, 10);

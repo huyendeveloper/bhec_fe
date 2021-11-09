@@ -126,7 +126,6 @@ const linkProps = [
 
 const SearchPage = ({query}) => {
   const {category, tag, keyword, page} = query;
-  const [currentPage, setCurrentPage] = useState(page);
   const router = useRouter();
   const classes = useStyles();
   const [pagination, setPagination] = useState(null);
@@ -138,10 +137,9 @@ const SearchPage = ({query}) => {
       // return an anonymous clean up function
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, tag, currentPage, keyword]);
+  }, [category, tag, keyword, page]);
 
   const changePage = async (e, pageNumber) => {
-    setCurrentPage(pageNumber);
     router.push({
       pathname: '/search-page',
       query: clean({category, tag, keyword, page: pageNumber}),
@@ -152,7 +150,7 @@ const SearchPage = ({query}) => {
     const searchResult = await Product.getProducts(query);
     if (searchResult && searchResult?.products) {
       const productList = searchResult?.products;
-      setPagination(searchResult?.pagination);
+      setPagination({...pagination, current: searchResult.page, number_of_page: searchResult.pages});
       setProducts(productList);
     }
   };
