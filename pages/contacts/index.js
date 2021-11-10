@@ -131,6 +131,16 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.white.main,
     },
   },
+  description: {
+    display: 'inline-block',
+    width: '21rem',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden !important',
+    textOverflow: 'ellipsis',
+    [theme.breakpoints.down('xs')]: {
+      width: '10rem',
+    },
+  },
 }));
 
 const headCells = ['受付番号', '種別', '日時', 'お問い合わせ内容'];
@@ -205,7 +215,7 @@ const Contacts = () => {
                         </TableCell>
                         <TableCell>{contact?.contact_category?.name}</TableCell>
                         <TableCell>{moment(contact?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
-                        <TableCell>{contact?.description}</TableCell>
+                        <TableCell><span className={classes.description}>{contact?.description}</span></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
