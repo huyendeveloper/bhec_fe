@@ -214,47 +214,46 @@ export default function TopPage() {
             bgRepeat='repeat'
             mixBlendMode='multiply'
           >
-            {articles?.length > 0 &&
-              articles?.map((article) => (
+            {articles?.map((article) => (
+              <Grid
+                key={article.id}
+                container={true}
+                justifyContent='space-between'
+                direction='row'
+                alignItems='center'
+                spacing={isDesktop ? 4 : 2}
+                className={classes.news}
+              >
                 <Grid
-                  key={article.id}
-                  container={true}
-                  justifyContent='space-between'
-                  direction='row'
-                  alignItems='center'
-                  spacing={isDesktop ? 4 : 2}
-                  className={classes.news}
+                  item={true}
+                  xs={12}
+                  sm={6}
+                  lg={5}
                 >
-                  <Grid
-                    item={true}
-                    xs={12}
-                    sm={6}
-                    lg={5}
-                  >
-                    <Link href={`articles/${article.id}`}>
-                      <Image
-                        src={article.image_url ?? '/logo.png'}
-                        alt='article'
-                        layout='intrinsic'
-                        width={364}
-                        height={208}
-                        objectFit={article.image_url ? 'cover' : 'contain'}
-                      />
-                    </Link>
-                  </Grid>
-                  <Grid
-                    item={true}
-                    xs={12}
-                    sm={6}
-                    lg={7}
-                  >
-                    <Article
-                      key={`article-${article.id}`}
-                      data={article}
+                  <Link href={`articles/${article.id}`}>
+                    <Image
+                      src={article.image_url ?? '/logo.png'}
+                      alt='article'
+                      layout='intrinsic'
+                      width={364}
+                      height={208}
+                      objectFit={article.image_url ? 'cover' : 'contain'}
                     />
-                  </Grid>
+                  </Link>
                 </Grid>
-              ))}
+                <Grid
+                  item={true}
+                  xs={12}
+                  sm={6}
+                  lg={7}
+                >
+                  <Article
+                    key={`article-${article.id}`}
+                    data={article}
+                  />
+                </Grid>
+              </Grid>
+            ))}
           </ContentBlock>
         )}
 
@@ -327,7 +326,7 @@ export default function TopPage() {
           </div>
         ) : null}
 
-        {food_and_beverage?.length ? (
+        {lifestyle?.length ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='ライフスタイル'
@@ -362,7 +361,7 @@ export default function TopPage() {
           </div>
         ) : null}
 
-        {lifestyle?.length ? (
+        {food_and_beverage?.length ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='食品・飲料'
