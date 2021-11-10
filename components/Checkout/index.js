@@ -136,12 +136,22 @@ const Checkout = () => {
     if ((order?.addressShipping || order?.address) && cart?.items) {
       getTotalCost();
     }
-    if (!(order?.addressShipping || order?.address) && !cart?.items) {
-      setBill({...bill, total_shipping_fee: 0});
+    if (!(order?.addressShipping || order?.address) || !cart?.items) {
+      const total_shipping_fee = 0;
+      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0);
+      setBill({...bill, net_amount, total_shipping_fee});
     }
   }, [order?.addressShipping, order?.address, cart]);
 
   React.useEffect(() => {
+    if ((order?.addressShipping || order?.address) && cart?.items) {
+      getTotalCost();
+    }
+    if (!(order?.addressShipping || order?.address) || !cart?.items) {
+      const total_shipping_fee = 0;
+      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0);
+      setBill({...bill, net_amount, total_shipping_fee});
+    }
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
     }

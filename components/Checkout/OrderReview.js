@@ -82,7 +82,7 @@ const OrderReview = ({isReadonly}) => {
               >
                 <div>{'商品合計'}</div>
 
-                <b>{formatNumber(net_amount || cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0), 'currency')}</b>
+                <b>{formatNumber(net_amount, 'currency')}</b>
               </div>
 
               <div
@@ -118,7 +118,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {formatNumber(((net_amount || cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
+                  {formatNumber(net_amount, 'currency')}
                 </h1>
               </div>
             </div>
