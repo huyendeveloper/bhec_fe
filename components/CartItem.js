@@ -9,6 +9,16 @@ import {QuantityBox} from '~/components';
 import {format as formatNumber} from '~/lib/number';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.down('xs')]: {
+      '& .errorMessage': {
+        color: '#ba2636',
+        display: 'flex !important',
+        marginBottom: '0.5rem',
+        alignItems: 'center',
+      },
+    },
+  },
   cart: {
     paddingBottom: '1rem',
     '& .blockFirst': {
@@ -82,7 +92,19 @@ const useStyles = makeStyles((theme) => ({
           lineHeight: '1.5rem',
         },
       },
-      '& .quantity': {
+      '& .quantity>div': {
+        height: '2.25rem',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        [theme.breakpoints.down('xs')]: {
+          height: '100%',
+        },
+      },
+      '& .quantity .errorMessage': {
+        [theme.breakpoints.down('xs')]: {
+          display: 'none !important',
+        },
       },
       '& .delete': {
         color: theme.palette.red.main,
@@ -112,12 +134,11 @@ const useStyles = makeStyles((theme) => ({
 const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const product = item.productDetail;
 
   return (
-    <>
+    <div className={classes.root}>
       <Grid
         key={product?.id}
         container={true}
@@ -203,9 +224,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
                 maximum_quantity={product?.maximum_quantity}
                 quantity={product?.quantity}
                 defaultValue={item.quantity}
-                handleChange={(event) => handleChangeQuantity(event, product?.id)}
-                width={'6.413rem'}
-                height={isTablet ? '2rem' : '2.5rem'}
+                handleChange={(newQuantity) => handleChangeQuantity(newQuantity, product?.id)}
               />
             </div>
           </Box>
@@ -223,7 +242,23 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           </Box>
         </Grid>
       </Grid>
-    </>
+      {!item?.enoughStock && product?.maximum_quantity &&
+        <div
+          style={{display: 'none'}}
+          className={'errorMessage'}
+        >
+          {`この商品は${product?.maximum_quantity}個以上まとめて注文できません。`}
+        </div>
+      }
+      {!item?.enoughStock && !product?.maximum_quantity &&
+        <div
+          style={{display: 'none'}}
+          className={'errorMessage'}
+        >
+          {`この商品は${product?.quantity}個以上まとめて注文できません。`}
+        </div>
+      }
+    </div>
   );
 };
 export default CartItem;

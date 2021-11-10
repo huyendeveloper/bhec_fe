@@ -1,4 +1,4 @@
-import {atom} from 'recoil';
+import {atom, selector} from 'recoil';
 
 import persistAtom from './persistAtom';
 
@@ -29,4 +29,20 @@ export const billState = atom({
     total_shipping_fee: 0,
   },
   effects_UNSTABLE: [persistAtom],
+});
+
+export const disableOrderState = selector({
+  key: 'disableOrderState',
+  get: ({get}) => {
+    let canOrder = true;
+    const {items} = get(cartState);
+
+    items.forEach((x) => {
+      if (!x.enoughStock) {
+        canOrder = false;
+      }
+    });
+
+    return !canOrder;
+  },
 });

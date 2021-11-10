@@ -32,6 +32,15 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputBase-root': {
       background: theme.palette.white.main,
     },
+    '& .errorMessage': {
+      [theme.breakpoints.down('xs')]: {
+        color: '#ba2636',
+        display: 'flex !important',
+        marginBottom: '0.5rem',
+        alignItems: 'center',
+        width: '100%',
+      },
+    },
   },
   centerCell: {
     display: 'flex',
@@ -101,29 +110,28 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   selectBox: {
+    height: '2.25rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
     marginBottom: '0.5rem',
+    '& .errorMessage': {
+      [theme.breakpoints.down('xs')]: {
+        display: 'none !important',
+      },
+    },
+    '& div:last-child>div:first-child': {
+      height: '3rem',
+      paddingTop: '0.4rem',
+    },
     [theme.breakpoints.down('sm')]: {
       marginBottom: '0.125rem',
     },
-    '& .MuiInputBase-root': {
-      width: '4.813rem',
-      margin: 'auto',
-      background: theme.palette.white.main,
-      [theme.breakpoints.down('md')]: {
-        height: '2rem',
-      },
+    [theme.breakpoints.down('xs')]: {
+      height: '100%',
     },
-    '& input[type=number]': {
-      '&::-webkit-inner-spin-button,::-webkit-outer-spin-button': {
-        appearance: 'none',
-      },
-    },
-    '& input': {
-      color: '#8a8a8a !important',
-      padding: 'auto',
-    },
-    '& select': {
-      border: 'none !important',
+    '& .MuiInputBase-input': {
+      width: '100%',
     },
   },
   selectHour: {
@@ -184,16 +192,18 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [cart, setCart] = useRecoilState(cartState);
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const product = data.productDetail;
+  const maximumQuantity = product?.maximum_quantity > product?.quantity ? product?.quantity : (product?.maximum_quantity || product?.quantity);
 
-  const handleChangeQuantity = (event) => {
-    const newQuantity = parseInt(event.target.value, 10);
+  const handleChangeQuantity = (newQuantity) => {
     if (newQuantity === 0) {
       handleDelete();
     } else {
       const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
       setCart(
         produce((draft) => {
-          draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
+          draft.items[itemIdx].quantity = parseInt(newQuantity, 10);
+          draft.items[itemIdx].enoughStock = parseInt(newQuantity, 10) <= maximumQuantity;
         }),
       );
     }
@@ -365,6 +375,23 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             </IconButton>
           </Grid>
         )}
+
+        {!data?.enoughStock && product?.maximum_quantity &&
+          <div
+            style={{display: 'none'}}
+            className={'errorMessage'}
+          >
+            {`この商品は${maximumQuantity}個以上まとめて注文できません。`}
+          </div>
+        }
+        {!data?.enoughStock && !product?.maximum_quantity &&
+          <div
+            style={{display: 'none'}}
+            className={'errorMessage'}
+          >
+            {`この商品は${maximumQuantity}個以上まとめて注文できません。`}
+          </div>
+        }
 
         <Grid
           item={true}

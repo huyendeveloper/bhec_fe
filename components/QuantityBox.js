@@ -1,80 +1,111 @@
 import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {NativeSelect} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import {ConnectForm} from '.';
 
+import {isInteger} from '~/lib/number';
+
 const useStyles = makeStyles((theme) => ({
-  bordered: {
-    '& .selectQuantity': {
-      width: '4.813rem',
-      height: '3rem !important',
-      [theme.breakpoints.down('sm')]: {
-        height: '2rem !important',
-      },
-      '&::before, &::after': {
-        display: 'none',
-      },
-      '& select': {
-        border: `1px solid ${theme.styledForm.formControl.borderColor}`,
-        borderRadius: '4px !important',
-        fontSize: '0.875rem',
-        background: 'url("/img/icons/dropdown-icon.png") right 1rem center no-repeat',
-        backgroundColor: theme.palette.white.main,
-        height: '-webkit-fill-available',
-        paddingLeft: '1rem',
-        [theme.breakpoints.down('xs')]: {
-          padding: '6px 32px 5px 13px',
-          fontSize: '0.813rem',
-        },
-      },
+  root: {
+    '& .errorMessage': {
+      color: '#ba2636',
+      display: 'flex',
+      marginTop: '5px',
+      alignItems: 'center',
+      marginBottom: '0',
     },
-    '& .MuiNativeSelect-icon': {
-      display: 'none',
+  },
+  numberInput: {
+    display: 'flex',
+    '& button': {
+      outline: 'none',
+      backgroundColor: theme.palette.yellow.main,
+      border: 'none',
+      width: '1.5rem',
+      height: '1.5rem',
+      cursor: 'pointer',
+      borderRadius: '50%',
+      color: 'white',
+      fontWeight: '700',
+      padding: '0',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  },
+  quantity: {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'transparent !important',
+    },
+    '& input': {
+      fontWeight: 'bold',
+      textAlign: 'center',
+      height: '1.5rem !important',
+      width: '3rem',
+      padding: '0 !important',
+      backgroundColor: 'transparent !important',
+    },
+    '& input::-webkit-inner-spin-button, input::-webkit-outer-spin-button': {
+      appearance: 'none',
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      border: 'none',
+      height: '1.5rem',
+      width: '3rem',
+      padding: '0',
     },
   },
 }));
 
-const quantityOption = (quantity) => {
-  const arrQuantity = [];
-  for (let i = 1; i <= quantity; i++) {
-    arrQuantity.push({name: i, value: i});
-  }
-  return arrQuantity;
-};
-
-const QuantityBox = ({name, maximum_quantity, quantity, defaultValue, handleChange, disabled, width, height}) => {
+const QuantityBox = ({name, maximum_quantity, quantity, defaultValue, handleChange, disabled}) => {
   const classes = useStyles();
 
-  const maximumQuantity = maximum_quantity > quantity ? quantity : maximum_quantity || 10;
+  const maximumQuantity = maximum_quantity > quantity ? quantity : (maximum_quantity || quantity);
+
+  const value = Number(defaultValue) || 0;
 
   return (
     <ConnectForm>
       {/* eslint-disable-next-line no-unused-vars */}
       {({control}) => {
         return (
-          <div className={classes.bordered}>
-            <NativeSelect
-              className={'selectQuantity'}
-              name={name}
-              inputProps={{'aria-label': name}}
-              defaultValue={defaultValue}
-              onChange={(e) => {
-                handleChange(e);
-                if (Number(e.target.value) === 0) {
-                  e.target.value = defaultValue;
-                }
-              }}
-              disabled={disabled}
-              style={{width, height}}
-            >
-              {quantityOption(maximumQuantity).map((item, index) => (
-                <option
-                  key={String(index)}
-                  value={item.value}
-                >{item.name}</option>
-              ))}
-            </NativeSelect>
+          <div className={classes.root}>
+            <div className={classes.numberInput}>
+              <button
+                type={'button'}
+                onClick={() => handleChange(value - 1 < 1 ? 1 : value - 1)}
+              >
+                <RemoveIcon/>
+              </button>
+              <TextField
+                variant='outlined'
+                name={name}
+                className={classes.quantity}
+                value={defaultValue}
+                disabled={disabled}
+                onChange={(e) => {
+                  const newQuantity = e.target.value;
+                  if (isInteger(newQuantity) && (!newQuantity || newQuantity > 0)) {
+                    handleChange(newQuantity ? Number(newQuantity) : '');
+                  }
+                }}
+              />
+              <button
+                type={'button'}
+                onClick={() => handleChange(value + 1 > maximumQuantity ? maximumQuantity : value + 1)}
+              >
+                <AddIcon/>
+              </button>
+            </div>
+            {defaultValue > maximumQuantity && maximum_quantity &&
+              <div className={'errorMessage'}>{`この商品は${maximum_quantity}個以上まとめて注文できません。`}</div>
+            }
+            {defaultValue > maximumQuantity && !maximum_quantity &&
+              <div className={'errorMessage'}>{`この商品は${quantity}個以上まとめて注文できません。`}</div>
+            }
           </div>
         );
       }}
@@ -89,8 +120,6 @@ QuantityBox.propTypes = {
   defaultValue: PropTypes.number,
   handleChange: PropTypes.func,
   disabled: PropTypes.bool,
-  width: PropTypes.string,
-  height: PropTypes.string,
 };
 
 QuantityBox.defaultProps = {

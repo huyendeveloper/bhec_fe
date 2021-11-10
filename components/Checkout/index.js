@@ -18,7 +18,7 @@ import OrderReview from './OrderReview';
 
 import FormKombini from '~/components/Checkout/FormKombini';
 import {OrderService} from '~/services';
-import {billState, cartState} from '~/store/cartState';
+import {billState, cartState, disableOrderState} from '~/store/cartState';
 import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
@@ -56,6 +56,7 @@ const Checkout = () => {
   const cart = useRecoilValue(cartState);
   const [bill, setBill] = useRecoilState(billState);
   const setLoading = useSetRecoilState(loadingState);
+  const disableOrder = useRecoilValue(disableOrderState);
 
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving checkout
@@ -219,6 +220,7 @@ const Checkout = () => {
                   type='submit'
                   onClick={validate}
                   style={isMobile ? {width: '14rem', padding: '0'} : {}}
+                  disabled={disableOrder}
                 >
                   {'確認画面へ'}
                 </Button>
