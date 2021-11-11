@@ -1,6 +1,6 @@
-import {Container, Grid, Typography, Icon, Snackbar} from '@material-ui/core';
+import {Container, Grid, Typography, Icon, Snackbar, useMediaQuery} from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import {useSetRecoilState, useRecoilState} from 'recoil';
 import {useRouter} from 'next/router';
@@ -153,6 +153,10 @@ function PaymentMethod() {
 
   const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useRecoilState(userState);
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const widthBtn = isMobile ? '224px' : (isTablet ? '224px' : '364px');
 
   useEffect(() => {
     if (user?.isAuthenticated) {
@@ -292,6 +296,7 @@ function PaymentMethod() {
               style={{width: '80%'}}
               onSubmit={createPaymentSuccess}
               dataUpdate={dataUpdate}
+              widthBtn={widthBtn}
             />
           )}
           {openDeletePopup && (

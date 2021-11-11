@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   categoryBlock: {
-    margin: theme.spacing(4, 0),
     [theme.breakpoints.down('sm')]: {
       marginBottom: '0',
     },

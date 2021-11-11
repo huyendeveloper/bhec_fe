@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import React, {useState} from 'react';
-import {makeStyles, withStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import {Typography, TextField, Grid, Dialog, IconButton} from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
@@ -94,8 +94,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '3rem',
     display: 'flex',
     [theme.breakpoints.down('sm')]: {
-      marginTop: 0,
       justifyContent: 'flex-end',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '0',
     },
   },
 
@@ -204,17 +206,13 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const PaymentPopup = ({open, onClose, onSubmit}) => {
+const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
   const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
   const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const user = useRecoilValue(userState);
-  const theme = useTheme();
-  const isTablet = theme.breakpoints.down('sm');
-  const isMobile = theme.breakpoints.down('sm');
   const setLoading = useSetRecoilState(loadingState);
-
   const handleSubmitClick = async (data) => {
     setLoading(true);
     const body = {
@@ -436,8 +434,9 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                 >
                   <Grid
                     item={true}
-                    xs={12}
+                    sm={4}
                     md={4}
+                    xs={4}
                     className={classes.divPayment}
                   >
                     <label
@@ -478,8 +477,9 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                   </Grid>
                   <Grid
                     item={true}
-                    xs={12}
+                    sm={4}
                     md={4}
+                    xs={8}
                     className={classes.divPayment}
                   >
                     <label
@@ -521,8 +521,9 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                   </Grid>
                   <Grid
                     item={true}
-                    xs={12}
+                    sm={4}
                     md={4}
+                    xs={12}
                     className={classes.gridNote}
                   >
                     <span
@@ -555,7 +556,7 @@ const PaymentPopup = ({open, onClose, onSubmit}) => {
                     customColor='red'
                     customSize='small'
                     onClick={handleSubmit(handleSubmitClick)}
-                    customStyle={{borderRadius: '45px', width: isMobile ? 224 : (isTablet ? 224 : 364)}}
+                    customStyle={{borderRadius: '45px', width: widthBtn}}
                     // eslint-disable-next-line
                   >
                     {'保存する'}
@@ -579,5 +580,6 @@ PaymentPopup.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   onSubmit: PropTypes.func,
+  widthBtn: PropTypes.string,
 };
 export default PaymentPopup;
