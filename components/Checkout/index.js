@@ -201,7 +201,7 @@ const Checkout = () => {
                 item={true}
                 sm={6}
                 xs={12}
-                style={{justifyContent: 'center', display: 'flex'}}
+                style={{justifyContent: 'flex-end', display: 'flex'}}
               >
                 <Button
                   variant='pill'
@@ -221,7 +221,6 @@ const Checkout = () => {
                 item={true}
                 sm={6}
                 xs={12}
-                style={{justifyContent: 'center', display: 'flex'}}
               >
                 <Button
                   variant='pill'
