@@ -309,7 +309,6 @@ export default function Cart() {
 
         {loaded && cart.items?.length > 0 && (
           <>
-
             <Grid
               container={true}
               spacing={3}
