@@ -1,19 +1,18 @@
-import {Avatar, Box, Container, Grid, makeStyles, Typography} from '@material-ui/core';
-import React from 'react';
-import {useRecoilValue, useRecoilState} from 'recoil';
-import {useRouter} from 'next/router';
+import {Avatar, Box, Container, Grid, makeStyles, Typography, useTheme} from '@material-ui/core';
 import clsx from 'clsx';
-import Swal from 'sweetalert2';
+import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
+import React from 'react';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import Swal from 'sweetalert2';
 
+import {Button} from '..';
 import CategoryBlock from '../CategoryBlock';
 import {ProductWidget} from '../Widgets';
 
-import {Button} from '..';
-
+import {SellerService} from '~/services';
 import {productState} from '~/store/productState';
 import {userState} from '~/store/userState';
-import {SellerService} from '~/services';
 
 const SellerInstance = new SellerService();
 
@@ -57,8 +56,16 @@ const useStyles = makeStyles((theme) => ({
     '& .action': {
       display: 'flex',
       justifyContent: 'flex-end',
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
       '& button:first-child': {
-        marginRight: '0',
+        width: '10.625rem',
+        height: '2.5rem',
+        padding: '0',
+        [theme.breakpoints.down('xs')]: {
+          width: '100%',
+        },
       },
     },
   },
@@ -119,9 +126,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   actions: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     display: 'flex',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     [theme.breakpoints.down('xs')]: {
       marginTop: '0.5rem',
     },
@@ -131,13 +138,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.white.main,
     fontWeight: 'bold',
     fontSize: '0.8125rem',
-    padding: '0 2.5rem',
-    height: '40px',
+    width: '10.625rem',
+    height: '2.5rem',
     '&:hover': {
       backgroundColor: theme.btnFollow.backgroundColor,
     },
     [theme.breakpoints.down('xs')]: {
       padding: '0 2rem',
+      width: '100%',
     },
   },
   isFollowing: {
@@ -152,11 +160,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SellerInfo = ({getDetailProduct}) => {
+  const theme = useTheme();
   const classes = useStyles();
   const product = useRecoilValue(productState);
   const sellerInfo = product?.sellerInfo;
   const router = useRouter();
   const [user] = useRecoilState(userState);
+  const isTablet = theme.breakpoints.down('sm');
 
   const goToDetailSeller = () => {
     router.push(`/seller/${sellerInfo.id}`);
@@ -257,7 +267,7 @@ const SellerInfo = ({getDetailProduct}) => {
               </Button> */}
               <Grid
                 container={true}
-                spacing={3}
+                spacing={isTablet ? 2 : 3}
               >
                 <Grid
                   item={true}
