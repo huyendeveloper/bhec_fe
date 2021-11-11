@@ -291,7 +291,7 @@ export default function TopPage() {
         </div>
 
         {/* Product by category*/}
-        {traditional_craft?.length ? (
+        {traditional_craft?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               title='オススメ商品'
@@ -326,7 +326,7 @@ export default function TopPage() {
           </div>
         ) : null}
 
-        {lifestyle?.length ? (
+        {lifestyle?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='ライフスタイル'
@@ -341,7 +341,7 @@ export default function TopPage() {
                 container={true}
                 spacing={3}
               >
-                {lifestyle.length && lifestyle.map((item) => (
+                {lifestyle.map((item) => (
                   <Grid
                     key={item.id}
                     item={true}
@@ -361,7 +361,7 @@ export default function TopPage() {
           </div>
         ) : null}
 
-        {food_and_beverage?.length ? (
+        {food_and_beverage?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               category='食品・飲料'
