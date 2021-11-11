@@ -54,6 +54,7 @@ const FormShipping = ({isReadonly}) => {
     if (user?.addresses) {
       const addressDefault = user.addresses.find((item) => item.is_default === 1);
       if (addressDefault?.id) {
+        setOrder({...order, addressShipping: String(addressDefault?.id)});
         return String(addressDefault?.id);
       }
     }

@@ -5,7 +5,7 @@ import {useSession} from 'next-auth/client';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import Swal from 'sweetalert2';
 
 import {get, groupBy, map} from 'lodash';
@@ -13,7 +13,7 @@ import {get, groupBy, map} from 'lodash';
 import {Button, CartItem, ContentBlock, ProductSwiper} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {CartService} from '~/services';
-import {cartState} from '~/store/cartState';
+import {cartState, disableOrderState} from '~/store/cartState';
 
 const CartServiceInstance = new CartService();
 
@@ -145,6 +145,7 @@ export default function Cart() {
 
   const [cart, setCart] = useRecoilState(cartState);
   const [loaded, setLoaded] = useState(false);
+  const disableOrder = useRecoilValue(disableOrderState);
 
   const updateRemoteCart = async (items) => {
     const payload = [];
@@ -195,14 +196,15 @@ export default function Cart() {
     });
   };
 
-  const handleChangeQuantity = (event, productId) => {
-    const newQuantity = parseInt(event.target.value, 10);
+  const handleChangeQuantity = (newQuantity, productId) => {
     if (newQuantity === 0) {
       handleRemove(productId);
     } else {
       const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === productId);
       setCart(produce((draft) => {
-        draft.items[itemIdx].quantity = parseInt(event.target.value, 10);
+        const maximumQuantity = draft.items[itemIdx]?.productDetail?.maximum_quantity > draft.items[itemIdx]?.productDetail?.quantity ? draft.items[itemIdx]?.productDetail?.quantity : (draft.items[itemIdx]?.productDetail?.maximum_quantity || draft.items[itemIdx]?.productDetail?.quantity);
+        draft.items[itemIdx].quantity = parseInt(newQuantity, 10);
+        draft.items[itemIdx].enoughStock = parseInt(newQuantity, 10) <= maximumQuantity;
       }));
     }
   };
@@ -219,8 +221,12 @@ export default function Cart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, session]);
 
-  const sellerList = map(cart?.items ?? [], 'sellerInfo');
+  let sellerList = map(cart?.items ?? [], 'sellerInfo');
   const groupedCartItems = groupBy(cart?.items ?? [], 'sellerInfo.id');
+  sellerList = sellerList.filter((item, index, self) =>
+    index === self.findIndex((t) => (
+      t.id === item.id
+    )));
 
   /* eslint-disable max-lines */
   return (
@@ -342,6 +348,7 @@ export default function Cart() {
                   customColor='red'
                   customSize='extraLarge'
                   onClick={handleGoToOrderClick}
+                  disabled={disableOrder}
                 >
                   {'購入画面へすすむ'}
                 </Button>

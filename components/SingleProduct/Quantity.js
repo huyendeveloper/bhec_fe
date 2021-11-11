@@ -25,10 +25,10 @@ const Quantity = () => {
     }));
   }, []);
 
-  const handleQuantityChange = (event) => {
+  const handleQuantityChange = (newQuantity) => {
     setProduct((oldValue) => ({
       ...oldValue,
-      quantity: parseInt(event.target.value, 10),
+      quantity: newQuantity,
     }));
   };
 
@@ -43,20 +43,19 @@ const Quantity = () => {
               <TableCell
                 component='th'
                 scope='row'
+                style={{verticalAlign: 'top', paddingTop: '1.5rem'}}
               >
                 {'数量'}
               </TableCell>
               <TableCell align='left'>
-                {(product?.productDetail?.quantity > 0 && product?.productDetail?.maximum_quantity > 0) ? (
+                {product?.productDetail?.quantity > 0 ? (
                   <QuantityBox
                     name={'productQuantity'}
                     value={product?.quantity ?? 0}
                     maximum_quantity={product?.productDetail?.maximum_quantity}
                     quantity={product?.productDetail?.quantity}
                     handleChange={handleQuantityChange}
-                    defaultValue={1}
-                    width={'170px'}
-                    height={'40px'}
+                    defaultValue={product?.quantity}
                   />
                 ) : <Typography color={'secondary'}>{'在庫なし'}</Typography>}
               </TableCell>

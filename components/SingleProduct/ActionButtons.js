@@ -1,6 +1,6 @@
 import {Box} from '@material-ui/core';
 import Image from 'next/image';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import {makeStyles} from '@material-ui/core/styles';
 import Swal from 'sweetalert2';
@@ -44,6 +44,7 @@ const ActionButtons = ({isPreview}) => {
   const router = useRouter();
   const user = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
+  const [maximumQuantity, setMaximumQuantity] = useState(0);
 
   const isOutStock = !(product?.productDetail?.quantity > 0);
 
@@ -56,9 +57,11 @@ const ActionButtons = ({isPreview}) => {
       return false;
     }
 
+    const enoughStock = product?.quantity <= maximumQuantity;
+
     if (cart.items?.length === 0) {
       setCart(produce((draft) => {
-        draft.items = [product];
+        draft.items = [{...product, enoughStock}];
         draft.seller = product.sellerInfo;
       }));
     } else if (cart.items?.length > 0) {
@@ -75,10 +78,11 @@ const ActionButtons = ({isPreview}) => {
       if (isExisting >= 0) {
         setCart(produce((draft) => {
           draft.items[isExisting].quantity += parseInt(product.quantity, 10);
+          draft.items[isExisting].enoughStock = (draft.items[isExisting].quantity + parseInt(product.quantity, 10)) <= maximumQuantity;
         }));
       } else {
         setCart(produce((draft) => {
-          draft.items.push(product);
+          draft.items.push({...product, enoughStock});
         }));
       }
     }
@@ -142,6 +146,10 @@ const ActionButtons = ({isPreview}) => {
     }
   };
 
+  useEffect(() => {
+    setMaximumQuantity(product?.productDetail?.maximum_quantity > product?.productDetail?.quantity ? product?.productDetail?.quantity : (product?.productDetail?.maximum_quantity || product?.productDetail?.quantity));
+  }, [product]);
+
   return (
     <div className={classes.root}>
       <Box
@@ -160,7 +168,7 @@ const ActionButtons = ({isPreview}) => {
               alt={'cart'}
             />}
           onClick={handleAddToCartClick}
-          disabled={isPreview ? false : isOutStock}
+          disabled={(isPreview ? false : isOutStock) || (product?.quantity > maximumQuantity)}
         >
           {'カートに入れる'}
         </Button>
