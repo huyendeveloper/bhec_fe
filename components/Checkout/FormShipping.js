@@ -58,6 +58,7 @@ const FormShipping = ({isReadonly}) => {
         return String(addressDefault?.id);
       }
     }
+    setOrder({...order, addressShipping: null});
     return '';
   };
 
