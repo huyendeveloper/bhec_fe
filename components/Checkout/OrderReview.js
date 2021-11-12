@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
   calculatedBill: {
     margin: '1.938rem 0',
+    fontSize: '1rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '0.875rem',
+    },
     '& a': {
       fontSize: '1rem',
       color: theme.palette.gray.dark,
