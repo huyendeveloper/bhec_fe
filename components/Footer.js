@@ -196,10 +196,14 @@ const Footer = (props) => {
 
   const fetchCategories = async () => {
     const response = await ProductServiceInstance.getCategories();
-    if (response?.categories) {
+    if (response?.categories?.length) {
       const categories = response.categories;
+      const convertCategories = [...categories];
+      const temp = convertCategories[0];
+      convertCategories[0] = convertCategories[1];
+      convertCategories[1] = temp;
       const links = [];
-      categories.forEach((category) => {
+      convertCategories.forEach((category) => {
         const subCategories = category.child_categories ?? [];
         const linkChild = [];
         // eslint-disable-next-line max-nested-callbacks

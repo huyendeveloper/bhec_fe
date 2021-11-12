@@ -219,8 +219,12 @@ const Search = ({query = {}}) => {
   const getListCategory = async () => {
     const result = await Product.getCategories();
     let res = [];
-    if (result?.categories) {
-      setListCategory(result.categories);
+    if (result?.categories?.length) {
+      const convertCategories = [...result?.categories];
+      const temp = convertCategories[0];
+      convertCategories[0] = convertCategories[1];
+      convertCategories[1] = temp;
+      setListCategory(convertCategories);
       res = result.categories.reduce((newRes, item) => {
         return [...newRes, omit(item, ['child_categories']), ...item.child_categories];
       }, []);

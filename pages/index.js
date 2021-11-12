@@ -290,6 +290,40 @@ export default function TopPage() {
         </div>
 
         {/* Product by category*/}
+        {food_and_beverage?.length > 0 ? (
+          <div className={classes.categoryBlock}>
+            <CategoryBlock
+              category='食品・飲料'
+              categoryLink='food_and_beverage'
+              bgColor='#FAF6EF'
+              bgImage='/img/noise.png'
+              bgRepeat='repeat'
+              mixBlendMode='multiply'
+            >
+              <Grid
+                container={true}
+                spacing={3}
+              >
+                {food_and_beverage.map((item) => (
+                  <Grid
+                    key={item.id}
+                    item={true}
+                    sm={4}
+                    xs={6}
+                    className={classes.product}
+                  >
+                    <ProductWidget
+                      data={item}
+                      border={'borderNone'}
+                      heart={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </CategoryBlock>
+          </div>
+        ) : null}
+
         {traditional_craft?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
@@ -341,40 +375,6 @@ export default function TopPage() {
                 spacing={3}
               >
                 {lifestyle.map((item) => (
-                  <Grid
-                    key={item.id}
-                    item={true}
-                    sm={4}
-                    xs={6}
-                    className={classes.product}
-                  >
-                    <ProductWidget
-                      data={item}
-                      border={'borderNone'}
-                      heart={true}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </CategoryBlock>
-          </div>
-        ) : null}
-
-        {food_and_beverage?.length > 0 ? (
-          <div className={classes.categoryBlock}>
-            <CategoryBlock
-              category='食品・飲料'
-              categoryLink='food_and_beverage'
-              bgColor='#FAF6EF'
-              bgImage='/img/noise.png'
-              bgRepeat='repeat'
-              mixBlendMode='multiply'
-            >
-              <Grid
-                container={true}
-                spacing={3}
-              >
-                {food_and_beverage.map((item) => (
                   <Grid
                     key={item.id}
                     item={true}
