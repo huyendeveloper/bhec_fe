@@ -10,12 +10,13 @@ import {format as formatNumber} from '~/lib/number';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    [theme.breakpoints.down('xs')]: {
-      '& .errorMessage': {
-        color: '#ba2636',
-        display: 'flex !important',
-        marginBottom: '0.5rem',
-        alignItems: 'center',
+    '& .errorMessage': {
+      color: '#ba2636',
+      marginBottom: '0.5rem',
+      alignItems: 'center',
+      textAlign: 'right',
+      [theme.breakpoints.down('xs')]: {
+        textAlign: 'left',
       },
     },
   },
@@ -102,12 +103,13 @@ const useStyles = makeStyles((theme) => ({
         },
       },
       '& .quantity .errorMessage': {
-        [theme.breakpoints.down('xs')]: {
-          display: 'none !important',
-        },
+        display: 'none !important',
       },
       '& .delete': {
         color: theme.palette.red.main,
+        '& button': {
+          padding: '0',
+        },
       },
     },
   },
@@ -212,6 +214,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           <Box
             component='div'
             textAlign={'center'}
+            className={classes.quantity}
           >
             {isMobile ? null : (
               <div className={'label labelTablet'}>
@@ -244,7 +247,6 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
       </Grid>
       {!item?.enoughStock && product?.maximum_quantity &&
         <div
-          style={{display: 'none'}}
           className={'errorMessage'}
         >
           {`この商品は${product?.maximum_quantity}個以上まとめて注文できません。`}
@@ -252,7 +254,6 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
       }
       {!item?.enoughStock && !product?.maximum_quantity &&
         <div
-          style={{display: 'none'}}
           className={'errorMessage'}
         >
           {`この商品は${product?.quantity}個以上まとめて注文できません。`}

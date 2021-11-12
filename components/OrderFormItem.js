@@ -33,12 +33,13 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.white.main,
     },
     '& .errorMessage': {
+      color: '#ba2636',
+      marginBottom: '0.5rem',
+      alignItems: 'center',
+      width: '100%',
+      textAlign: 'right',
       [theme.breakpoints.down('xs')]: {
-        color: '#ba2636',
-        display: 'flex !important',
-        marginBottom: '0.5rem',
-        alignItems: 'center',
-        width: '100%',
+        textAlign: 'left',
       },
     },
   },
@@ -54,17 +55,20 @@ const useStyles = makeStyles((theme) => ({
   deleteBtn: {
     justifyContent: 'center',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flexDirection: 'column',
     '& .MuiIconButton-label': {
       color: theme.palette.red.main,
+    },
+    '& button': {
+      padding: '0',
     },
   },
   productName: {
     fontWeight: 'bold',
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    width: '58%',
+    width: '70%',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.875rem',
       lineHeight: '1.313rem',
@@ -115,10 +119,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     marginBottom: '0.5rem',
+    fontSize: '1rem',
     '& .errorMessage': {
-      [theme.breakpoints.down('xs')]: {
-        display: 'none !important',
-      },
+      display: 'none !important',
     },
     '& div:last-child>div:first-child': {
       height: '3rem',
@@ -132,6 +135,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiInputBase-input': {
       width: '100%',
+      fontSize: '1rem !important',
     },
   },
   selectHour: {
@@ -202,8 +206,8 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === data.productDetail.id);
       setCart(
         produce((draft) => {
-          draft.items[itemIdx].quantity = parseInt(newQuantity, 10);
-          draft.items[itemIdx].enoughStock = parseInt(newQuantity, 10) <= maximumQuantity;
+          draft.items[itemIdx].quantity = newQuantity;
+          draft.items[itemIdx].enoughStock = newQuantity <= maximumQuantity;
         }),
       );
     }
@@ -378,7 +382,6 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
 
         {!data?.enoughStock && product?.maximum_quantity &&
           <div
-            style={{display: 'none'}}
             className={'errorMessage'}
           >
             {`この商品は${maximumQuantity}個以上まとめて注文できません。`}
@@ -386,7 +389,6 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
         }
         {!data?.enoughStock && !product?.maximum_quantity &&
           <div
-            style={{display: 'none'}}
             className={'errorMessage'}
           >
             {`この商品は${maximumQuantity}個以上まとめて注文できません。`}

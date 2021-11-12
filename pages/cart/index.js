@@ -203,8 +203,8 @@ export default function Cart() {
       const itemIdx = cart.items.findIndex((item) => item.productDetail?.id === productId);
       setCart(produce((draft) => {
         const maximumQuantity = draft.items[itemIdx]?.productDetail?.maximum_quantity > draft.items[itemIdx]?.productDetail?.quantity ? draft.items[itemIdx]?.productDetail?.quantity : (draft.items[itemIdx]?.productDetail?.maximum_quantity || draft.items[itemIdx]?.productDetail?.quantity);
-        draft.items[itemIdx].quantity = parseInt(newQuantity, 10);
-        draft.items[itemIdx].enoughStock = parseInt(newQuantity, 10) <= maximumQuantity;
+        draft.items[itemIdx].quantity = newQuantity;
+        draft.items[itemIdx].enoughStock = newQuantity <= maximumQuantity;
       }));
     }
   };
