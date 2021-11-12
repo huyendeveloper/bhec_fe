@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: '0px',
     '& img': {
-      objectFit: 'cover !important',
       borderRadius: '0.25rem !important',
     },
   },
@@ -87,12 +86,23 @@ const ProductGallery = () => {
               alt='banner top'
               width='558'
               height='368'
-              objectFit='contain'
+              objectFit='cover'
               // eslint-disable-next-line no-undefined
               layout={isTablet ? 'responsive' : undefined}
             />
           </SwiperSlide>
         ))}
+        {images?.length === 0 &&
+          <Image
+            src={'/logo.png'}
+            alt='banner top'
+            width='558'
+            height='368'
+            // eslint-disable-next-line no-undefined
+            layout={isTablet ? 'responsive' : undefined}
+            className={classes.bgImg}
+          />
+        }
       </Swiper>
       <Swiper
         onSwiper={setThumbsSwiper}
@@ -112,7 +122,7 @@ const ProductGallery = () => {
               layout='responsive'
               width='99'
               height='64'
-              objectFit='contain'
+              objectFit='cover'
             />
           </SwiperSlide>
         ))}
