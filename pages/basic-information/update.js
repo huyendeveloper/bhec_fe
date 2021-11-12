@@ -569,7 +569,7 @@ export default function BasicInformationUpdate() {
                                   variant='inline'
                                   format='yyyy/MM/dd'
                                   id='dob'
-                                  label='YYYY/MM/DD'
+                                  label='生年月日'
                                   disableOpenPicker={true}
                                   InputLabelProps={{shrink: false}}
                                   value={value}
