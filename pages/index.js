@@ -290,12 +290,12 @@ export default function TopPage() {
         </div>
 
         {/* Product by category*/}
-        {traditional_craft?.length > 0 ? (
+        {food_and_beverage?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
               title='オススメ商品'
-              category='伝統工芸品'
-              categoryLink='traditional_craft'
+              category='食品・飲料'
+              categoryLink='food_and_beverage'
               bgColor='#FAF6EF'
               bgImage='/img/noise.png'
               bgRepeat='repeat'
@@ -305,7 +305,7 @@ export default function TopPage() {
                 container={true}
                 spacing={3}
               >
-                {traditional_craft.map((item) => (
+                {food_and_beverage.map((item) => (
                   <Grid
                     key={item.id}
                     item={true}
@@ -325,11 +325,11 @@ export default function TopPage() {
           </div>
         ) : null}
 
-        {food_and_beverage?.length > 0 ? (
+        {traditional_craft?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
-              category='食品・飲料'
-              categoryLink='food_and_beverage'
+              category='伝統工芸品'
+              categoryLink='traditional_craft'
               bgColor='#FAF6EF'
               bgImage='/img/noise.png'
               bgRepeat='repeat'
@@ -339,7 +339,7 @@ export default function TopPage() {
                 container={true}
                 spacing={3}
               >
-                {food_and_beverage.map((item) => (
+                {traditional_craft.map((item) => (
                   <Grid
                     key={item.id}
                     item={true}
