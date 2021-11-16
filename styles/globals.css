@@ -54,6 +54,10 @@ div.swal2-container {
   border: 1px solid #333333 !important;
 }
 
+.swal2-container.swal2-backdrop-show {
+  background: transparent !important;
+}
+
 img {
   max-width: 100%;
 }

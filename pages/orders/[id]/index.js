@@ -174,7 +174,7 @@ const OrdersDetail = ({id}) => {
       reverseButtons: true,
       cancelButtonText: '戻る',
       confirmButtonText: '注文をキャンセル',
-      backdrop: false,
+      backdrop: true,
       customClass: {
         container: 'swal2-warning',
       },

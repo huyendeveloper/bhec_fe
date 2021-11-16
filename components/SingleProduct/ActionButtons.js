@@ -134,7 +134,7 @@ const ActionButtons = ({isPreview}) => {
         reverseButtons: true,
         cancelButtonText: '閉じる',
         confirmButtonText: '登録・ログインへ',
-        backdrop: false,
+        backdrop: true,
         customClass: {
           container: 'swal2-warning',
         },
