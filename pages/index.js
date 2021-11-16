@@ -293,6 +293,7 @@ export default function TopPage() {
         {food_and_beverage?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
+              title='オススメ商品'
               category='食品・飲料'
               categoryLink='food_and_beverage'
               bgColor='#FAF6EF'
@@ -327,7 +328,6 @@ export default function TopPage() {
         {traditional_craft?.length > 0 ? (
           <div className={classes.categoryBlock}>
             <CategoryBlock
-              title='オススメ商品'
               category='伝統工芸品'
               categoryLink='traditional_craft'
               bgColor='#FAF6EF'
