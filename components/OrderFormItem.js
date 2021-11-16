@@ -29,18 +29,17 @@ import {cartState} from '~/store/cartState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    marginBottom: '1rem',
     '& .MuiInputBase-root': {
       background: theme.palette.white.main,
     },
     '& .errorMessage': {
       color: '#ba2636',
-      marginBottom: '0.5rem',
+      marginBottom: '1.5rem',
+      marginTop: '-1rem',
       alignItems: 'center',
       width: '100%',
       textAlign: 'right',
-      [theme.breakpoints.down('xs')]: {
-        textAlign: 'left',
-      },
     },
   },
   centerCell: {
@@ -57,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'flex-end',
     flexDirection: 'column',
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '-1rem',
+    },
     '& .MuiIconButton-label': {
       color: theme.palette.red.main,
     },
@@ -281,7 +283,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           md={9}
           sm={8}
           xs={7}
-          style={isMobile ? {marginBottom: '2rem', marginLeft: '0.75rem'} : null}
+          style={isMobile ? {marginBottom: '2rem', paddingLeft: '0.75rem'} : null}
         >
           <Grid
             container={true}
@@ -368,7 +370,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
             item={true}
             md={1}
             sm={1}
-            xs={1}
+            xs={2}
             className={classes.deleteBtn}
           >
             <IconButton
@@ -380,7 +382,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
           </Grid>
         )}
 
-        {!data?.enoughStock && product?.maximum_quantity &&
+        {!data?.enoughStock && product?.maximum_quantity > 0 &&
           <div
             className={'errorMessage'}
           >

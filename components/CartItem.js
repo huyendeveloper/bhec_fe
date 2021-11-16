@@ -15,9 +15,6 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '0.5rem',
       alignItems: 'center',
       textAlign: 'right',
-      [theme.breakpoints.down('xs')]: {
-        textAlign: 'left',
-      },
     },
   },
   cart: {
@@ -245,7 +242,7 @@ const CartItem = ({item, handleChangeQuantity, handleRemove}) => {
           </Box>
         </Grid>
       </Grid>
-      {!item?.enoughStock && product?.maximum_quantity &&
+      {!item?.enoughStock && product?.maximum_quantity > 0 &&
         <div
           className={'errorMessage'}
         >
