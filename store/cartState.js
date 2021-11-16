@@ -38,7 +38,7 @@ export const disableOrderState = selector({
     const {items} = get(cartState);
 
     items.forEach((x) => {
-      if (!x.enoughStock || !x.quantity) {
+      if (!x.enoughStock || !x.quantity || x.quantity === 0) {
         canOrder = false;
       }
     });

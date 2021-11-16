@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      '& svg': {
+        width: '1.25rem',
+        height: '1.25rem',
+      },
     },
   },
   quantity: {
@@ -100,7 +104,7 @@ const QuantityBox = ({name, maximum_quantity, quantity, defaultValue, handleChan
                 <AddIcon/>
               </button>
             </div>
-            {defaultValue > maximumQuantity && maximum_quantity &&
+            {defaultValue > maximumQuantity && maximum_quantity > 0 &&
               <div className={'errorMessage'}>{`この商品は${maximum_quantity}個以上まとめて注文できません。`}</div>
             }
             {defaultValue > maximumQuantity && !maximum_quantity &&
