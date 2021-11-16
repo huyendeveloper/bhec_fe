@@ -108,18 +108,31 @@ const ConfirmCheckout = () => {
   const [loaded, setLoaded] = useState(false);
 
   const fetchAddressData = async () => {
-    const res = order?.addressShipping ? await CommonService.getAddress(order?.addressShipping) : null;
-    if (res?.address) {
-      setAddressData(res.address);
+    if (user?.isAuthenticated) {
+      const res = order?.addressShipping ? await CommonService.getAddress(order?.addressShipping) : null;
+      if (res?.address) {
+        setAddressData(res.address);
+      }
+    } else {
+      const address = user?.addresses?.find((x) => x.id === order?.addressShipping);
+      setAddressData(address);
     }
   };
 
   const fetchCardData = async () => {
-    const res = order?.creditCard ? await Payment.getDetailCard(order?.creditCard) : null;
-    setCardData(res.card);
+    if (user?.isAuthenticated) {
+      const res = order?.creditCard ? await Payment.getDetailCard(order?.creditCard) : null;
+      setCardData(res.card);
+    } else {
+      const card = user?.cards?.find((x) => x.id === order?.creditCard);
+      setCardData(card);
+    }
   };
 
   useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(true);
+    }
     fetchAddressData();
     if (parseInt(order?.payment_method, 10) === 1) {
       fetchCardData();
@@ -268,19 +281,27 @@ const ConfirmCheckout = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (user?.isAuthenticated) {
-      setIsAuthenticated(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <FormProvider {...methods}>
       <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
         <>
           {!isAuthenticated && (
-            <FormSignup isReadonly={true}/>
+            <div className={classes.infoBlock}>
+              <Typography
+                component='h3'
+                className={classes.infoBlockTitle}
+              >
+                {'会員登録情報'}
+              </Typography>
+              <div className={classes.infoBlockContent}>
+                <Typography component='p'>
+                  <span>{`連絡先メールアドレス： ${order?.email ?? ''}`}</span>
+                </Typography>
+                <Typography component='p'>
+                  <span>{`ニックネーム： ${order?.nickname ?? ''}`}</span>
+                </Typography>
+              </div>
+            </div>
           )}
 
           <div className={classes.infoBlock}>
