@@ -263,7 +263,7 @@ const Seller = () => {
         reverseButtons: true,
         cancelButtonText: '閉じる',
         confirmButtonText: 'ログイン画面へ',
-        backdrop: false,
+        backdrop: true,
         customClass: {
           container: 'swal2-warning-1',
         },

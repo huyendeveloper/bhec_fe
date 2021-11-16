@@ -232,7 +232,7 @@ const OrderFormItem = ({data, control, errors, disabled, defaultNote}) => {
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
       confirmButtonText: '削除',
-      backdrop: false,
+      backdrop: true,
       customClass: {
         container: 'swal2-warning',
       },

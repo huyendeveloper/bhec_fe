@@ -219,8 +219,8 @@ const DeliveryInfo = () => {
       showCancelButton: true,
       reverseButtons: true,
       cancelButtonText: 'キャンセル',
-      confirmButtonText: 'ボタン',
-      backdrop: false,
+      confirmButtonText: '削除',
+      backdrop: true,
       customClass: {
         container: 'swal2-warning',
       },
