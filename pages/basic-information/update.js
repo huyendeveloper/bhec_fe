@@ -184,6 +184,8 @@ export default function BasicInformationUpdate() {
         }
       }
       setValue('province_id', res?.province?.id || 1);
+      setValue('phone_no', '');
+      setValue('zipcode', '');
     }
   };
 
@@ -821,7 +823,7 @@ export default function BasicInformationUpdate() {
                             <Controller
                               name='phone_no'
                               control={control}
-                              defaultValue=''
+                              defaultValue={''}
                               rules={{
                                 required: rules.required,
                                 pattern: rules.isPhoneNumber,
