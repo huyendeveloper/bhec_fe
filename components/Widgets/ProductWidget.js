@@ -226,7 +226,7 @@ const ProductWidget = ({variant, data, heart, border, widthMedia, loadListFavour
             className={clsx(product.image_urls?.length > 0 ? null : classes.bgImg)}
             image={product.image_urls?.length > 0 ? get(product, 'image_urls.0') : '/logo.png'}
             title={product.name}
-            style={{objectFit: product.image_urls?.length > 0 ? 'cover' : 'contain'}}
+            style={{objectFit: product.image_urls?.length > 0 ? 'cover' : 'scale-down'}}
           />
         </CardActionArea>
         <CardContent>
