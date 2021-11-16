@@ -122,7 +122,7 @@ const OrderReview = ({isReadonly}) => {
                 <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
                 <h1 className={classes.total}>
-                  {formatNumber(net_amount, 'currency')}
+                  {formatNumber((net_amount + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
                 </h1>
               </div>
             </div>
