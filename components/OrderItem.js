@@ -157,7 +157,7 @@ const OrderItem = ({item, status}) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const product = item?.product;
-  const thumbnail = get(product, 'image_urls.0', 'logo.png');
+  const thumbnail = get(product, 'image_urls.0', '/logo.png');
   const [delivereStatus, setDelivereStatus] = useState(1);
 
   useEffect(() => {

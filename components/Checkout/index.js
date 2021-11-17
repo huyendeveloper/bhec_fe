@@ -135,10 +135,9 @@ const Checkout = () => {
   useEffect(() => {
     if ((order?.addressShipping || order?.address) && cart?.items) {
       getTotalCost();
-    }
-    if (!(order?.addressShipping || order?.address) || !cart?.items) {
+    } else {
       const total_shipping_fee = 0;
-      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0);
+      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee);
       setBill({...bill, net_amount, total_shipping_fee});
     }
   }, [order?.addressShipping, order?.address, cart]);
@@ -149,7 +148,7 @@ const Checkout = () => {
     }
     if (!(order?.addressShipping || order?.address) || !cart?.items) {
       const total_shipping_fee = 0;
-      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee) - (order?.discount ?? 0);
+      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee);
       setBill({...bill, net_amount, total_shipping_fee});
     }
     if (user?.isAuthenticated) {
@@ -180,7 +179,7 @@ const Checkout = () => {
             <FormKombini/>
           )}
 
-          {isAuthenticated && <FormCoupon/>}
+          <FormCoupon/>
 
           <FormNote/>
 

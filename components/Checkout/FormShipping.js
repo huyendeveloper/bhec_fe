@@ -51,15 +51,18 @@ const FormShipping = ({isReadonly}) => {
   const [order, setOrder] = useRecoilState(orderState);
 
   const setDefaultAddressShipping = () => {
-    if (user?.addresses) {
-      const addressDefault = user.addresses.find((item) => item.is_default === 1);
-      if (addressDefault?.id) {
-        setOrder({...order, addressShipping: String(addressDefault?.id)});
-        return String(addressDefault?.id);
+    if (user?.isAuthenticated) {
+      if (user?.addresses) {
+        const addressDefault = user.addresses.find((item) => item.is_default === 1);
+        if (addressDefault?.id) {
+          setOrder({...order, addressShipping: String(addressDefault?.id)});
+          return String(addressDefault?.id);
+        }
       }
+      setOrder({...order, addressShipping: null});
+      return '';
     }
-    setOrder({...order, addressShipping: null});
-    return '';
+    return order?.address?.id;
   };
 
   const handleSubmitDeliveryForm = async (address) => {
