@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
+import moment from 'moment';
 
 import {AlertMessageForSection, Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
@@ -185,6 +186,15 @@ const OrdersDetail = ({id}) => {
     });
   };
 
+  const formatDate = (date) => {
+    if (!date) {
+      return null;
+    }
+    moment.locale('ja');
+    const objectDate = moment(date) ? moment(date).toObject() : {};
+    return objectDate.years ? `${objectDate.years}/${objectDate.months}/${objectDate.years} ${objectDate.hours + 2}:${objectDate.minutes}` : null;
+  };
+
   return (
     <DefaultLayout title={'注文詳細'}>
       {isAuthenticated && order && (
@@ -229,7 +239,7 @@ const OrdersDetail = ({id}) => {
                 sm={9}
                 xs={8}
               >
-                {order?.created_at}
+                {formatDate(order?.created_at)}
               </Grid>
             </div>
 

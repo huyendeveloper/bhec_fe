@@ -22,7 +22,6 @@ import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {OrderService} from '~/services';
 import {userState} from '~/store/userState';
-
 const useStyles = makeStyles((theme) => ({
   containerTable: {
     '& th, td': {
@@ -166,6 +165,15 @@ const Orders = () => {
     setCountPages(response.pages ?? 0);
   };
 
+  const formatDate = (date) => {
+    if (!date) {
+      return null;
+    }
+    moment.locale('ja');
+    const objectDate = moment(date) ? moment(date).toObject() : {};
+    return objectDate.years ? `${objectDate.years}/${objectDate.months}/${objectDate.years} ${objectDate.hours + 2}:${objectDate.minutes}` : null;
+  };
+
   return (
     <DefaultLayout title={'注文一覧'}>
       {isAuthenticated && (
@@ -194,7 +202,7 @@ const Orders = () => {
                             <a className={classes.orderLink}>{order?.order_number}</a>
                           </Link>
                         </TableCell>
-                        <TableCell>{moment(order?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                        <TableCell>{formatDate(order?.created_at)}</TableCell>
                         <TableCell>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</TableCell>
                         <TableCell>
                           {orderConstants.paymentMethods?.find((p) => p.id === order.payment_method)?.label}
