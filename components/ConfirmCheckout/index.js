@@ -10,8 +10,6 @@ import {find, get} from 'lodash';
 import Button from '../Button';
 import {AlertMessageForSection, StyledForm} from '..';
 
-import FormSignup from '../Checkout/FormSignup';
-
 import OrderFormItem from '../OrderFormItem';
 
 import {loadingState} from '~/store/loadingState';
