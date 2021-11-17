@@ -157,7 +157,8 @@ const SellerWidget = ({variant, data, reload}) => {
           component='img'
           alt={seller.name}
           className={clsx(classes.bgImg, seller.avatar_url ? '' : classes.noImg)}
-          image={seller.avatar_url ?? '/logo.png'}
+          // eslint-disable-next-line no-negated-condition
+          image={(seller?.avatar_url !== '') ? seller?.avatar_url : '/logo.png'}
           title={seller.name}
           onClick={goToDetailSeller}
         />
