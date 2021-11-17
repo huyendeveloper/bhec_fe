@@ -168,7 +168,7 @@ const ActionButtons = ({isPreview}) => {
               alt={'cart'}
             />}
           onClick={handleAddToCartClick}
-          disabled={(isPreview ? false : isOutStock) || (product?.quantity > maximumQuantity)}
+          disabled={(isPreview ? false : isOutStock) || !product?.quantity || (product?.quantity > maximumQuantity)}
         >
           {'カートに入れる'}
         </Button>
