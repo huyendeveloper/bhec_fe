@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import {makeStyles} from '@material-ui/core/styles';
-import moment from 'moment';
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -22,6 +21,7 @@ import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {OrderService} from '~/services';
 import {userState} from '~/store/userState';
+import {formatDate} from '~/lib/date';
 const useStyles = makeStyles((theme) => ({
   containerTable: {
     '& th, td': {
@@ -163,15 +163,6 @@ const Orders = () => {
     setOrders(response?.orders);
     setCurrentPage(response.page ?? 0);
     setCountPages(response.pages ?? 0);
-  };
-
-  const formatDate = (date) => {
-    if (!date) {
-      return null;
-    }
-    moment.locale('ja');
-    const objectDate = moment(date) ? moment(date).toObject() : {};
-    return objectDate.years ? `${objectDate.years}/${objectDate.months}/${objectDate.years} ${objectDate.hours + 2}:${objectDate.minutes}` : null;
   };
 
   return (

@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import {makeStyles} from '@material-ui/core/styles';
-import moment from 'moment';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -22,7 +21,7 @@ import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContactService} from '~/services';
 import {userState} from '~/store/userState';
-
+import {formatDate} from '~/lib/date';
 const ContactCommon = new ContactService();
 
 const useStyles = makeStyles((theme) => ({
@@ -214,7 +213,7 @@ const Contacts = () => {
                           </Link>
                         </TableCell>
                         <TableCell>{contact?.contact_category?.name}</TableCell>
-                        <TableCell>{moment(contact?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                        <TableCell>{formatDate(contact?.created_at)}</TableCell>
                         <TableCell><span className={classes.description}>{contact?.description}</span></TableCell>
                       </TableRow>
                     ))}

@@ -6,7 +6,7 @@ import {useRouter} from 'next/router';
 import {signOut} from 'next-auth/client';
 import Image from 'next/image';
 
-import {format} from '~/lib/date';
+import {formatDate} from '~/lib/date';
 import {ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ContactService} from '~/services';
@@ -146,7 +146,7 @@ const Contacts = () => {
                       component='p'
                       className={classes.createdDate}
                     >
-                      {format(contact?.created_at, 'dateTime1')}
+                      {formatDate(contact?.created_at)}
                     </Typography>
                   )}
                   <Typography component='p'>

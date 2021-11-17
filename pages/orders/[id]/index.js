@@ -8,12 +8,12 @@ import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
-import moment from 'moment';
 
 import {AlertMessageForSection, Button, ContentBlock, OrderItem} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
+import {formatDate} from '~/lib/date';
 import {OrderService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
@@ -184,15 +184,6 @@ const OrdersDetail = ({id}) => {
         cancelOrder();
       }
     });
-  };
-
-  const formatDate = (date) => {
-    if (!date) {
-      return null;
-    }
-    moment.locale('ja');
-    const objectDate = moment(date) ? moment(date).toObject() : {};
-    return objectDate.years ? `${objectDate.years}/${objectDate.months}/${objectDate.years} ${objectDate.hours + 2}:${objectDate.minutes}` : null;
   };
 
   return (
