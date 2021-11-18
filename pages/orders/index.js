@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import {makeStyles} from '@material-ui/core/styles';
-import moment from 'moment';
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -22,7 +21,7 @@ import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
 import {OrderService} from '~/services';
 import {userState} from '~/store/userState';
-
+import {formatDate} from '~/lib/date';
 const useStyles = makeStyles((theme) => ({
   containerTable: {
     '& th, td': {
@@ -194,7 +193,7 @@ const Orders = () => {
                             <a className={classes.orderLink}>{order?.order_number}</a>
                           </Link>
                         </TableCell>
-                        <TableCell>{moment(order?.created_at).format('YYYY/MM/DD HH:mm')}</TableCell>
+                        <TableCell>{formatDate(order?.created_at)}</TableCell>
                         <TableCell>{`¥${formatNumber(parseInt(order?.total_amount, 10))}`}</TableCell>
                         <TableCell>
                           {orderConstants.paymentMethods?.find((p) => p.id === order.payment_method)?.label}

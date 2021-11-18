@@ -13,6 +13,7 @@ import {AlertMessageForSection, Button, ContentBlock, OrderItem} from '~/compone
 import {DefaultLayout} from '~/components/Layouts';
 import {order as orderConstants} from '~/constants';
 import {format as formatNumber} from '~/lib/number';
+import {formatDate} from '~/lib/date';
 import {OrderService} from '~/services';
 import {loadingState} from '~/store/loadingState';
 import {userState} from '~/store/userState';
@@ -229,7 +230,7 @@ const OrdersDetail = ({id}) => {
                 sm={9}
                 xs={8}
               >
-                {order?.created_at}
+                {formatDate(order?.created_at)}
               </Grid>
             </div>
 
