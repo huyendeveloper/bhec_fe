@@ -4,7 +4,7 @@ import {signOut} from 'next-auth/client';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
-import {useForm, Controller} from 'react-hook-form';
+import {Controller} from 'react-hook-form';
 import moment from 'moment';
 
 import {AlertMessageForSection, BlockForm, Button, ConnectForm} from '~/components';
@@ -14,6 +14,7 @@ import {billState} from '~/store/cartState';
 import {orderState} from '~/store/orderState';
 import {userState} from '~/store/userState';
 import {getErrorMessage} from '~/lib/getErrorMessage';
+import {loadingState} from '~/store/loadingState';
 
 const AuthServiceInstance = new AuthService();
 
@@ -90,18 +91,17 @@ const FormCoupon = () => {
   const router = useRouter();
   const classes = useStyles();
   const [alerts, setAlerts] = useState(null);
-  const [coupons, setCoupons] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [couponCode, setCouponCode] = useState(false);
   const [order, setOrder] = useRecoilState(orderState);
   const {net_amount, total_shipping_fee} = useRecoilValue(billState);
-  const setUser = useSetRecoilState(userState);
-  const {
-    getValues,
-  } = useForm({criteriaMode: 'all'});
+  const [user, setUser] = useRecoilState(userState);
+  const setLoading = useSetRecoilState(loadingState);
+  const [code, setCode] = useState('');
+
   const handleChange = (e) => {
     if (e) {
-      const coupon = coupons?.find((item) => item.coupon.code === e.target.value);
+      const coupon = user?.coupons?.find((item) => item.coupon.code === e.target.value);
       const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
       setOrder({...order, coupon_code: e.target.value, discount});
     } else {
@@ -124,16 +124,16 @@ const FormCoupon = () => {
     return value;
   };
 
-  const addCoupon = async (code) => {
+  const addCoupon = async (newCode) => {
     // add coupon
     const {userCoupon, error} = await CouponService.addCoupons({
-      coupon_code: code,
+      coupon_code: newCode,
     });
 
     if (error) {
       await fetchUserInfo();
       if (error === httpStatus.UN_AUTHORIZED) {
-        requestLogin();
+        // requestLogin();
       }
       if (error.errorCode) {
         setAlerts({
@@ -142,7 +142,10 @@ const FormCoupon = () => {
         });
       }
     } else {
-      setCoupons([...coupons, userCoupon]);
+      setUser(produce((draft) => {
+        draft.coupons = draft.coupons ?? [];
+        draft.coupons.push(userCoupon);
+      }));
       setAlerts({
         type: 'success',
         message: 'クーポンが適用されました。',
@@ -150,9 +153,8 @@ const FormCoupon = () => {
     }
   };
 
-  const handleCheckCoupon = async (code) => {
-    // validate
-    const isExistCoupon = coupons.find((item) => item.coupon.code === code);
+  const handleCheckCoupon = async () => {
+    const isExistCoupon = user?.coupons?.find((item) => item.coupon.code === code);
     if (isExistCoupon) {
       setAlerts({
         type: 'error',
@@ -165,7 +167,14 @@ const FormCoupon = () => {
       const {coupon} = res.data;
 
       if (coupon) {
-        await addCoupon(code);
+        if (user?.isAuthenticated) {
+          await addCoupon(code);
+        } else {
+          setUser(produce((draft) => {
+            draft.coupons = draft.coupons ?? [];
+            draft.coupons.push(res.data);
+          }));
+        }
       }
 
       if (!coupon) {
@@ -186,7 +195,7 @@ const FormCoupon = () => {
   const fetchUserInfo = async () => {
     const response = await AuthServiceInstance.getInfoUser();
     if (!response?.user) {
-      return requestLogin();
+      // return requestLogin();
     }
 
     setUser(
@@ -199,7 +208,9 @@ const FormCoupon = () => {
   };
 
   const requestLogin = () => {
-    setCoupons([]);
+    setUser(produce((draft) => {
+      draft.coupons = [];
+    }));
     setUser({});
     signOut({redirect: false});
     router.push({
@@ -208,22 +219,28 @@ const FormCoupon = () => {
   };
 
   const fetchCoupons = async () => {
-    const {userCoupons, error} = await CouponService.getCouponsActive();
-    if (error) {
-      await fetchUserInfo();
-      if (error === httpStatus.UN_AUTHORIZED) {
-        requestLogin();
+    setLoading(true);
+    if (user?.isAuthenticated) {
+      const {userCoupons, error} = await CouponService.getCouponsActive();
+      if (error) {
+        await fetchUserInfo();
+        if (error === httpStatus.UN_AUTHORIZED) {
+          requestLogin();
+        }
+      } else {
+        setUser(produce((draft) => {
+          draft.coupons = userCoupons;
+        }));
       }
-    } else {
-      setCoupons([...userCoupons]);
     }
+    setLoading(false);
   };
   useEffect(() => {
-    const coupon = coupons?.find((item) => item.coupon.code === order?.coupon_code);
+    const coupon = user?.coupons?.find((item) => item.coupon.code === order?.coupon_code);
     setCouponCode(coupon?.coupon?.code);
     const discount = coupon ? (coupon.coupon.coupon_type === 1 ? calDiscountByPercent(coupon.coupon.value) : calDiscountNotByPercent(coupon.coupon.value)) : 0;
     setOrder({...order, discount});
-  }, [coupons]);
+  }, [user?.coupons]);
 
   useEffect(() => {
     fetchCoupons().finally(() => {
@@ -251,7 +268,7 @@ const FormCoupon = () => {
             title={'クーポン利用'}
             id={'coupon'}
           >
-            {loaded && coupons && coupons?.length > 0 &&
+            {loaded && user?.coupons && user?.coupons?.length > 0 &&
             <>
               <Controller
                 name={'coupon_code'}
@@ -263,7 +280,7 @@ const FormCoupon = () => {
                     value={couponCode}
                     className={classes.radioGroup}
                   >
-                    {coupons?.map((item) => (
+                    {user?.coupons?.map((item) => (
                       <FormControlLabel
                         key={item?.coupon?.code}
                         value={item?.coupon?.code}
@@ -296,7 +313,10 @@ const FormCoupon = () => {
                     className={classes.input}
                     name={name}
                     value={value}
-                    onChange={onChange}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                      onChange(e);
+                    }}
                     placeholder='クーポンコード入力'
                     inputProps={{'aria-label': 'search'}}
                   />
@@ -308,7 +328,7 @@ const FormCoupon = () => {
                 type='button'
                 size='large'
                 className={classes.btnApply}
-                onClick={() => handleCheckCoupon(getValues('couponCode'))}
+                onClick={handleCheckCoupon}
               >
                 {'適用'}
               </Button>
