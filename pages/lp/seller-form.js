@@ -752,7 +752,7 @@ export default function SellerForm() {
                             htmlFor='ward'
                             className='formControlLabel'
                           >
-                            {'番地・建物名 (全角でご入力ください。) '}
+                            {'番地（全角でご入力ください。) '}
                             <span className='formControlRequired'>{'*'}</span>
                           </label>
                           <Controller
@@ -763,7 +763,7 @@ export default function SellerForm() {
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='ward'
-                                label='番地・建物名'
+                                label='番地'
                                 variant='outlined'
                                 error={Boolean(errors.ward)}
                                 InputLabelProps={{shrink: false}}
@@ -777,6 +777,37 @@ export default function SellerForm() {
                           <ErrorMessageWidget
                             errors={errors}
                             name='ward'
+                          />
+                        </Grid>
+                        {/*END TOWN*/}
+
+                        {/*TOWN*/}
+                        <Grid
+                          item={true}
+                          xs={12}
+                        >
+                          <label
+                            htmlFor='address_line_2'
+                            className='formControlLabel'
+                          >
+                            {'建物名・部屋番号 '}
+                          </label>
+                          <Controller
+                            name='address_line_2'
+                            control={control}
+                            defaultValue=''
+                            render={({field: {name, value, ref, onChange}}) => (
+                              <TextField
+                                id='address_line_2'
+                                label='建物名・部屋番号'
+                                variant='outlined'
+                                InputLabelProps={{shrink: false}}
+                                name={name}
+                                value={value}
+                                inputRef={ref}
+                                onChange={onChange}
+                              />
+                            )}
                           />
                         </Grid>
                         {/*END TOWN*/}
