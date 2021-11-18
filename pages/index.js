@@ -110,6 +110,7 @@ export default function TopPage() {
     const lstProduct1 = await ProductServiceInstance.getProducts({
       category: 'traditional_craft',
       limit: '4',
+      uniq_by_seller: true,
     });
     setTraditionalCraft(lstProduct1?.products?.length ? lstProduct1.products : []);
 
@@ -117,6 +118,7 @@ export default function TopPage() {
     const lstProduct2 = await ProductServiceInstance.getProducts({
       category: 'food_and_beverage',
       limit: '4',
+      uniq_by_seller: true,
     });
     setFoodAndBeverage(lstProduct2?.products?.length ? lstProduct2.products : []);
 
@@ -124,6 +126,7 @@ export default function TopPage() {
     const lstProduct3 = await ProductServiceInstance.getProducts({
       category: 'lifestyle',
       limit: '4',
+      uniq_by_seller: true,
     });
     setLifestyle(lstProduct3?.products?.length ? lstProduct3.products : []);
 

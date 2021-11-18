@@ -407,7 +407,7 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          {...getCardNumberProps({onChange, type: 'password'})}
+                          {...getCardNumberProps({onChange})}
                           placeholder={'カード番号'}
                         />
                       )}
