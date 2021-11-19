@@ -298,6 +298,15 @@ const Search = ({query = {}}) => {
     toggleCategory(!isExpandedCategory);
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      onSearch();
+      return false;
+    }
+    return false;
+  };
+
   return (
     <>
       <Paper
@@ -359,6 +368,7 @@ const Search = ({query = {}}) => {
               className={classes.inputSearch}
               value={keywordSearch}
               onChange={(e) => setKeywordSearch(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
           </div>
         </div>
