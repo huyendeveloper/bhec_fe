@@ -210,7 +210,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
           </Typography>
           {data.contact_category_id !== '5' &&
             <Typography component='p'>
-              <span>{'問い合わせ内容：'}</span>
+              <span style={{minWidth: '8rem'}}>{'問い合わせ内容：'}</span>
               {data.description ? data.description : ''}
             </Typography>
           }
@@ -248,7 +248,7 @@ const ContactFormConfirmations = ({data, onBackStep, listProduct, listContactCat
                       {data[`product_code${index}`] ? data[`product_code${index}`] : ''}
                     </Typography>
                     <Typography component='p'>
-                      <span>{'問い合わせ内容：'}</span>
+                      <span style={{minWidth: '8rem'}}>{'問い合わせ内容：'}</span>
                       {data[`description${index}`] ? data[`description${index}`] : ''}
                     </Typography>
                     {data[`productImages${index}`] && data[`productImages${index}`].length && <div className={classes.infoBlock}>
