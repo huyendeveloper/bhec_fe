@@ -184,8 +184,6 @@ export default function BasicInformationUpdate() {
         }
       }
       setValue('province_id', res?.province?.id || 1);
-      setValue('phone_no', '');
-      setValue('zipcode', '');
     }
   };
 
