@@ -772,7 +772,7 @@ export default function BasicInformationUpdate() {
                               htmlFor='office_room'
                               className='formControlLabel'
                             >
-                              {'番地・建物名 (全角でご入力ください。) '}
+                              {'番地（全角でご入力ください。)'}
                               <span className='formControlRequired'>{'*'}</span>
                             </label>
                             <Controller
@@ -787,7 +787,7 @@ export default function BasicInformationUpdate() {
                                   error={Boolean(errors.office_room)}
                                   InputLabelProps={{shrink: false}}
                                   name={name}
-                                  label='番地・建物名'
+                                  label='番地'
                                   value={value}
                                   inputRef={ref}
                                   onChange={onChange}
@@ -805,6 +805,36 @@ export default function BasicInformationUpdate() {
                                   >{`${message}`}</p>
                                 )) : null;
                               }}
+                            />
+                          </Grid>
+                          <Grid
+                            item={true}
+                            xs={12}
+                            sm={6}
+                            md={6}
+                          >
+                            <label
+                              htmlFor='address_line_2'
+                              className='formControlLabel'
+                            >
+                              {'建物名・部屋番号'}
+                            </label>
+                            <Controller
+                              name='address_line_2'
+                              control={control}
+                              defaultValue=''
+                              render={({field: {name, value, ref, onChange}}) => (
+                                <TextField
+                                  id='address_line_2'
+                                  variant='outlined'
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  label='建物名・部屋番号'
+                                  value={value}
+                                  inputRef={ref}
+                                  onChange={onChange}
+                                />
+                              )}
                             />
                           </Grid>
                           <Grid

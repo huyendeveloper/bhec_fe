@@ -314,7 +314,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       htmlFor='address'
                       className='formControlLabel'
                     >
-                      {'番地・建物名 (全角でご入力ください。) '}
+                      {'番地（全角でご入力ください。) '}
                       <span className='formControlRequired'>{'*'}</span>
                     </label>
                     <Controller
@@ -331,7 +331,7 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                       render={({field: {name, value, ref, onChange}}) => (
                         <TextField
                           id='address'
-                          label='番地・建物名'
+                          label='番地'
                           variant='outlined'
                           error={Boolean(errors.city)}
                           InputLabelProps={{shrink: false}}
@@ -345,6 +345,37 @@ const DeliveryForm = ({defaultValues, onSubmit, onClose}) => {
                     <ErrorMessageWidget
                       errors={errors}
                       name='address'
+                    />
+                  </Grid>
+                  {/*END ADDRESS DETAIL*/}
+                  {/*ADDRESS DETAIL*/}
+                  <Grid
+                    item={true}
+                    xs={12}
+                    md={12}
+                  >
+                    <label
+                      htmlFor='address_line_2'
+                      className='formControlLabel'
+                    >
+                      {'建物名・部屋番号'}
+                    </label>
+                    <Controller
+                      name='address_line_2'
+                      control={control}
+                      defaultValue={''}
+                      render={({field: {name, value, ref, onChange}}) => (
+                        <TextField
+                          id='address_line_2'
+                          label='建物名・部屋番号'
+                          variant='outlined'
+                          InputLabelProps={{shrink: false}}
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                          inputRef={ref}
+                        />
+                      )}
                     />
                   </Grid>
                   {/*END ADDRESS DETAIL*/}
