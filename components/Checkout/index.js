@@ -145,12 +145,11 @@ const Checkout = () => {
   React.useEffect(() => {
     if ((order?.addressShipping || order?.address) && cart?.items) {
       getTotalCost();
+      return;
     }
-    if (!(order?.addressShipping || order?.address) || !cart?.items) {
-      const total_shipping_fee = 0;
-      const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee);
-      setBill({...bill, net_amount, total_shipping_fee});
-    }
+    const total_shipping_fee = 0;
+    const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee);
+    setBill({...bill, net_amount, total_shipping_fee});
     if (user?.isAuthenticated) {
       setIsAuthenticated(true);
     }
