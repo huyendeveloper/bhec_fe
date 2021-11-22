@@ -50,7 +50,6 @@ const Checkout = () => {
   const user = useRecoilValue(userState);
   const [order, setOrder] = useRecoilState(orderState);
   const [alerts, setAlerts] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
   const cart = useRecoilValue(cartState);
@@ -113,13 +112,13 @@ const Checkout = () => {
     let payload = {
       products,
     };
-    if (isAuthenticated) {
+    if (user?.isAuthenticated) {
       payload = {
         ...payload,
         address_id: order?.addressShipping,
       };
     }
-    if (!isAuthenticated) {
+    if (!user?.isAuthenticated) {
       payload = {
         ...payload,
         address: order?.address,
@@ -142,7 +141,7 @@ const Checkout = () => {
     }
   }, [order?.addressShipping, order?.address, cart]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if ((order?.addressShipping || order?.address) && cart?.items) {
       getTotalCost();
       return;
@@ -150,9 +149,6 @@ const Checkout = () => {
     const total_shipping_fee = 0;
     const net_amount = ((cart?.items?.reduce((total, item) => total + (parseInt(item.productDetail.price, 10) * item.quantity), 0)) + total_shipping_fee);
     setBill({...bill, net_amount, total_shipping_fee});
-    if (user?.isAuthenticated) {
-      setIsAuthenticated(true);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -160,7 +156,7 @@ const Checkout = () => {
     <FormProvider {...methods}>
       <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
         <>
-          {!isAuthenticated && (
+          {user?.isAuthenticated ? null : (
             <FormSignup/>
           )}
 
