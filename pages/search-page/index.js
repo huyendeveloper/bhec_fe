@@ -4,13 +4,14 @@ import {Pagination} from '@material-ui/lab';
 import {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
+import {useSetRecoilState} from 'recoil';
 
 import {ContentBlock, Search} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
 import {ProductWidget, TopBannerWidget} from '~/components/Widgets';
 import {clean} from '~/lib/object';
 import {ProductService} from '~/services';
-
+import {loadingState} from '~/store/loadingState';
 const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +111,14 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '-1rem',
     },
   },
+  description: {
+    fontSize: '1rem',
+    lineHeight: '2rem',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: theme.palette.black4.main,
+    marginBottom: '3rem',
+  },
 }));
 
 const linkProps = [
@@ -130,6 +139,7 @@ const SearchPage = ({query}) => {
   const classes = useStyles();
   const [pagination, setPagination] = useState(null);
   const [products, setProducts] = useState([]);
+  const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
     fetchData();
@@ -147,11 +157,15 @@ const SearchPage = ({query}) => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     const searchResult = await Product.getProducts(query);
     if (searchResult && searchResult?.products) {
+      setLoading(false);
       const productList = searchResult?.products;
       setPagination({...pagination, current: searchResult.page, number_of_page: searchResult.pages});
       setProducts(productList);
+    } else {
+      setLoading(false);
     }
   };
 
@@ -191,52 +205,65 @@ const SearchPage = ({query}) => {
           title={'検索結果一覧'}
           bgColor='transparent'
         >
-          <Grid
-            container={true}
-            spacing={3}
-            className={classes.products}
-          >
-            {products.length > 0 && products.map((product) => (
-              <Grid
-                key={`product${product.id}`}
-                item={true}
-                sm={4}
-                xs={6}
-                className={classes.product}
-              >
-                <ProductWidget
-                  data={product}
-                  border={'borderNone'}
-                  heart={true}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {
+            products.length > 0 ? (
+              <>
+                <Grid
+                  container={true}
+                  spacing={3}
+                  className={classes.products}
+                >
+                  {products.map((product) => (
+                    <Grid
+                      key={`product${product.id}`}
+                      item={true}
+                      sm={4}
+                      xs={6}
+                      className={classes.product}
+                    >
+                      <ProductWidget
+                        data={product}
+                        border={'borderNone'}
+                        heart={true}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
 
-          <Grid
-            item={true}
-            xs={12}
-            md={12}
-          >
-            {products.length > 0 && pagination?.number_of_page > 0 &&
-              <Pagination
-                count={pagination.number_of_page}
-                variant={'outlined'}
-                color={'primary'}
-                size={'large'}
-                defaultPage={1}
-                onChange={changePage}
-                className={classes.pagination}
-              />
-            }
-            <TopBannerWidget
-              variant='titleBanner'
-              imgSrc='/img/banner-favorite1.png'
-              imgWidth={1140}
-              imgHeight={192}
-              imgAlt='Seller Form'
-            />
-          </Grid>
+                <Grid
+                  item={true}
+                  xs={12}
+                  md={12}
+                >
+                  {products.length > 0 && pagination?.number_of_page > 0 &&
+                    <Pagination
+                      count={pagination.number_of_page}
+                      variant={'outlined'}
+                      color={'primary'}
+                      size={'large'}
+                      defaultPage={1}
+                      onChange={changePage}
+                      className={classes.pagination}
+                    />
+                  }
+                </Grid>
+              </>
+            ) : (
+              <Typography
+                component='p'
+                className={classes.description}
+              >
+                {'折り返しご連絡させて頂きますので、今しばらくお待ちくださいますよう、お願いいたします。'}
+              </Typography>
+            )
+          }
+          <TopBannerWidget
+            variant='titleBanner'
+            imgSrc='/img/banner-favorite1.png'
+            imgWidth={1140}
+            imgHeight={192}
+            imgAlt='Seller Form'
+          />
         </ContentBlock>
       </div>
     </DefaultLayout>
