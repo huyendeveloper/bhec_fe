@@ -238,6 +238,7 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
         await authorizeCard(card);
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: '入力したカード情報をご確認ください。',

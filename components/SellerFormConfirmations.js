@@ -88,6 +88,18 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
           component='h3'
           className={classes.infoBlockTitle}
         >
+          {'代理店コード'}
+        </Typography>
+
+        <div className={classes.infoBlockContent}>
+          {data.agency_code ? data.agency_code : ''}
+        </div>
+      </div>
+      <div className={classes.infoBlock}>
+        <Typography
+          component='h3'
+          className={classes.infoBlockTitle}
+        >
           {'代表者情報'}
         </Typography>
 
@@ -116,7 +128,7 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
           component='h3'
           className={classes.infoBlockTitle}
         >
-          {'代表者情報'}
+          {'事業者情報'}
         </Typography>
 
         <div className={classes.infoBlockContent}>
