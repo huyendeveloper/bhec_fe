@@ -170,7 +170,11 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const isExpired = coupon?.coupon?.expiration_time ? moment(coupon?.coupon?.expiration_time).isBefore(new Date()) : null;
+  let isExpired = coupon?.coupon?.expiration_time ? moment(coupon?.coupon?.expiration_time).isBefore(new Date()) : null;
+
+  if (coupon?.used_times > 0) {
+    isExpired = true;
+  }
 
   const onSubmit = () => handleSubmit(coupon);
 

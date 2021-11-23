@@ -812,18 +812,18 @@ export default function BasicInformationUpdate() {
                             md={6}
                           >
                             <label
-                              htmlFor='address_line_2'
+                              htmlFor='apartment_number'
                               className='formControlLabel'
                             >
                               {'建物名・部屋番号'}
                             </label>
                             <Controller
-                              name='address_line_2'
+                              name='apartment_number'
                               control={control}
                               defaultValue=''
                               render={({field: {name, value, ref, onChange}}) => (
                                 <TextField
-                                  id='address_line_2'
+                                  id='apartment_number'
                                   variant='outlined'
                                   InputLabelProps={{shrink: false}}
                                   name={name}
