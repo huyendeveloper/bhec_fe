@@ -253,7 +253,7 @@ const SearchPage = ({query}) => {
                 component='p'
                 className={classes.description}
               >
-                {'折り返しご連絡させて頂きますので、今しばらくお待ちくださいますよう、お願いいたします。'}
+                {'検索結果はありません。'}
               </Typography>
             )
           }
