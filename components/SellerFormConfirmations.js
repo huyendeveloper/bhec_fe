@@ -7,7 +7,7 @@ import {Box, CircularProgress} from '@material-ui/core';
 
 import React, {useState} from 'react';
 
-import {prefectures, genders} from '~/constants';
+import {genders} from '~/constants';
 import {Button, AlertMessageForSection} from '~/components';
 
 import {CommonService} from '~/services';
@@ -60,8 +60,6 @@ const useStyles = makeStyles((theme) => ({
 const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
-  const index = prefectures.findIndex((prefecture) => prefecture.value === Number.parseInt(data.city, 10));
-  const selected = index && index > 0 ? prefectures[index] : null;
   const [alerts, setAlerts] = useState(null);
 
   const handleSubmitForm = async () => {
@@ -147,7 +145,22 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
                   {data.zipcode} <br/>
                 </>
               ) : null}
-              {data.office_room ? (
+              {data.province && data.city && data.ward ? (
+                <>
+                  {data.province} {data.city} {data.ward}<br/>
+                </>
+              ) : null}
+              {data.address_line_2 ? (
+                <>
+                  {data.address_line_2} <br/>
+                </>
+              ) : null}
+              {data.phone_no ? (
+                <>
+                  {data.phone_no} <br/>
+                </>
+              ) : null}
+              {/* {data.office_room ? (
                 <>
                   {data.office_room} <br/>
                 </>
@@ -161,12 +174,7 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
                 <>
                   {data.district + ', ' + selected.label} <br/>
                 </>
-              ) : null}
-              {data.phone_no ? (
-                <>
-                  {data.phone_no} <br/>
-                </>
-              ) : null}
+              ) : null} */}
             </span>
           </Typography>
           <Typography component='p'>
