@@ -150,6 +150,7 @@ export default function SellerForm() {
       ...data,
       dob: data.dob ? formatDate(new Date(data.dob), 'yyyy/MM/dd') : '',
       time_sell: data.time_sell ? formatDate(new Date(data.time_sell), 'yyyy/MM/dd') : '',
+      province: prefectures.find((item) => item.id === parseInt(data.province_id, 10)).name,
     };
     setFormData(payload);
     handleNext();
@@ -373,7 +374,6 @@ export default function SellerForm() {
                             name='agency_code'
                             control={control}
                             defaultValue=''
-                            rules={{required: '必須項目です。'}}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='agency_code'
