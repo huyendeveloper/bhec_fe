@@ -342,6 +342,61 @@ export default function SellerForm() {
                   utils={DateFnsUtils}
                   locale={jaLocale}
                 >
+                  <div className='formBlock'>
+                    <div className='formBlockHeader'>
+                      <Typography
+                        component='h3'
+                        className='formBlockTitle'
+                      >
+                        {'代理店コード'}
+                      </Typography>
+                      <Typography
+                        component='p'
+                        className='formBlockDesc'
+                      >
+                        {'代理店コードをお持ちの方のみご入力ください。'}
+                      </Typography>
+                    </div>
+
+                    <div className='formBlockControls'>
+                      <Grid
+                        container={true}
+                        spacing={3}
+                      >
+                        {/*agency_code*/}
+                        <Grid
+                          item={true}
+                          xs={12}
+                          md={6}
+                        >
+                          <Controller
+                            name='agency_code'
+                            control={control}
+                            defaultValue=''
+                            rules={{required: '必須項目です。'}}
+                            render={({field: {name, value, ref, onChange}}) => (
+                              <TextField
+                                id='agency_code'
+                                label='代理店コード'
+                                variant='outlined'
+                                error={Boolean(errors.name)}
+                                InputLabelProps={{shrink: false}}
+                                name={name}
+                                value={value}
+                                onChange={onChange}
+                                inputRef={ref}
+                              />
+                            )}
+                          />
+                          <ErrorMessageWidget
+                            errors={errors}
+                            name='agency_code'
+                          />
+                        </Grid>
+                        {/*END agency_code*/}
+                      </Grid>
+                    </div>
+                  </div>
                   {/*FIRST BLOCK*/}
                   <div className='formBlock'>
                     <div className='formBlockHeader'>

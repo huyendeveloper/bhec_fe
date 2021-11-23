@@ -238,6 +238,7 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
         await authorizeCard(card);
       }
     } else {
+      setLoading(false);
       setAlerts({
         type: 'error',
         message: '入力したカード情報をご確認ください。',
@@ -409,6 +410,9 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
                           onChange={onChange}
                           {...getCardNumberProps({onChange})}
                           placeholder={'カード番号'}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.slice(0, 19);
+                          }}
                         />
                       )}
                     />
