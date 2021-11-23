@@ -85,6 +85,13 @@ const useStyles = makeStyles((theme) => ({
   createdDate: {
     marginBottom: '0.688rem',
   },
+  titleDescription: {
+    fontSize: '0.875rem',
+    lineHeight: '1.4rem',
+    color: theme.palette.black3.main,
+    fontWeight: '700',
+    minWidth: '7rem',
+  },
 }));
 
 const Contacts = () => {
@@ -163,7 +170,7 @@ const Contacts = () => {
                   </Typography>
                   {contact?.contact_category_id === 5 ? (
                     <Typography component='p'>
-                      <span className={classes.title}>{'問い合わせ内容：'}</span>
+                      <span className={classes.titleDescription}>{'問い合わせ内容：'}</span>
                       {contact?.description}
                     </Typography>
                   ) : null}
@@ -195,7 +202,7 @@ const Contacts = () => {
                                 {product.product_code}
                               </Typography>
                               <Typography component='p'>
-                                <span className={classes.title}>{'問い合わせ内容：'}</span>
+                                <span className={classes.titleDescription}>{'問い合わせ内容：'}</span>
                                 {product.description}
                               </Typography>
                               {product.image_urls.length && (
