@@ -22,7 +22,10 @@ const SnsWidget = () => {
   const imgSize = isTablet ? 48 : 44;
   return (
     <div className={classes.root}>
-      <Link href={'https://www.facebook.com/oshinagaki.store'}>
+      <Link
+        target='_blank'
+        href={'https://www.facebook.com/oshinagaki.store'}
+      >
         <Image
           src={'/img/icons/facebook.png'}
           width={imgSize}
@@ -30,7 +33,10 @@ const SnsWidget = () => {
           alt={'Facebook Fanpage'}
         />
       </Link>
-      <Link href={'https://twitter.com/OshinagakiStore'}>
+      <Link
+        target='_blank'
+        href={'https://twitter.com/OshinagakiStore'}
+      >
         <Image
           src={'/img/icons/twitter.png'}
           width={imgSize}
@@ -38,7 +44,10 @@ const SnsWidget = () => {
           alt={'Twitter'}
         />
       </Link>
-      <Link href={'https://www.instagram.com/oshinagaki_store/'}>
+      <Link
+        target='_blank'
+        href={'https://www.instagram.com/oshinagaki_store/'}
+      >
         <Image
           src={'/img/icons/instagram.png'}
           width={imgSize}
