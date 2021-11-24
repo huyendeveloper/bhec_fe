@@ -250,13 +250,12 @@ const OrdersDetail = ({id}) => {
               >
                 {order.address?.name}
                 <br/>
-                {order.address?.zipcode}
+                {`〒${order.address?.zipcode}`}
                 <br/>
-                {order.address?.city}
-                {order.address?.address}
+                {order.address?.province?.name}{order.address?.city}{order.address?.address}
                 <br/>
-                {order.address?.company_name}&nbsp;&nbsp;{order.address?.department}
-                <br/>
+                {order.address?.department}
+                {order.address?.department && <br/>}
                 {order.address?.tel}
               </Grid>
             </div>
