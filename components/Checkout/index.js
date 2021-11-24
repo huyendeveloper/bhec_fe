@@ -156,7 +156,7 @@ const Checkout = () => {
     <FormProvider {...methods}>
       <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
         <>
-          {user?.isAuthenticated ? null : (
+          {user?.isAuthenticated && user?.isAuthenticated === false && (
             <FormSignup/>
           )}
 
