@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.gray.light,
     border: '1px solid ' + theme.palette.white.main,
     minHeight: '6rem',
+    [theme.breakpoints.down('xs')]: {
+      minHeight: '5.5rem',
+    },
     '&:hover': {
       background: theme.palette.white.main,
       border: '1px solid ' + theme.palette.orange.light,
@@ -32,9 +35,18 @@ const useStyles = makeStyles((theme) => ({
       height: '3rem',
       marginRight: '1rem',
       background: theme.palette.yellow.main,
+      [theme.breakpoints.down('xs')]: {
+        width: '2.5rem',
+        height: '2.5rem',
+        marginRight: '0.75rem',
+      },
       '& img': {
         width: '1.75rem',
         height: '1.75rem',
+        [theme.breakpoints.down('xs')]: {
+          width: '1.438rem',
+          height: '1.438rem',
+        },
       },
     },
   },
