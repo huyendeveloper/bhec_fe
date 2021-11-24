@@ -379,7 +379,6 @@ export default function SellerForm() {
                                 id='agency_code'
                                 label='代理店コード'
                                 variant='outlined'
-                                error={Boolean(errors.name)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
                                 value={value}
@@ -387,10 +386,6 @@ export default function SellerForm() {
                                 inputRef={ref}
                               />
                             )}
-                          />
-                          <ErrorMessageWidget
-                            errors={errors}
-                            name='agency_code'
                           />
                         </Grid>
                         {/*END agency_code*/}
