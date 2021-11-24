@@ -150,9 +150,9 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
                   {data.province} {data.city} {data.ward}<br/>
                 </>
               ) : null}
-              {data.address_line_2 ? (
+              {data.apartment_number ? (
                 <>
-                  {data.address_line_2} <br/>
+                  {data.apartment_number} <br/>
                 </>
               ) : null}
               {data.phone_no ? (
