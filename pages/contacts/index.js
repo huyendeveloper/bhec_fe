@@ -215,11 +215,9 @@ const Contacts = () => {
                         <TableCell>{contact?.contact_category?.name}</TableCell>
                         <TableCell>{formatDate(contact?.created_at)}</TableCell>
                         <TableCell>
-                          {contact?.contact_category_id === 5 ?
-                            <Link href={`/contacts/${contact?.id}`}>
-                              <a className={classes.orderLink}>{'問い合わせ詳細'}</a>
-                            </Link> :
-                            <span className={classes.description}>{contact?.description}</span>
+                          {contact?.contact_category_id === 5 ? <Link href={`/contacts/${contact?.id}`}>
+                            <a className={classes.orderLink}>{'問い合わせ詳細'}</a>
+                          </Link> : <span className={classes.description}>{contact?.description}</span>
                           }
                         </TableCell>
                       </TableRow>

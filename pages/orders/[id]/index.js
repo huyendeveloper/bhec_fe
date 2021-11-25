@@ -254,8 +254,8 @@ const OrdersDetail = ({id}) => {
                 <br/>
                 {order.address?.province?.name}{order.address?.city}{order.address?.address}
                 <br/>
-                {order.address?.department}
-                {order.address?.department && <br/>}
+                {order.address?.apartment_number}
+                {order.address?.apartment_number && <br/>}
                 {order.address?.tel}
               </Grid>
             </div>
