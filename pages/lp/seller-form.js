@@ -374,12 +374,18 @@ export default function SellerForm() {
                             name='agency_code'
                             control={control}
                             defaultValue=''
+                            rules={{
+                              pattern: {
+                                value: /[A-Z]{2}-[0-9]{6}/,
+                                message: '有効な代理店コードを入力してください。',
+                              },
+                            }}
                             render={({field: {name, value, ref, onChange}}) => (
                               <TextField
                                 id='agency_code'
                                 label='代理店コード'
                                 variant='outlined'
-                                error={Boolean(errors.name)}
+                                error={Boolean(errors.agency_code)}
                                 InputLabelProps={{shrink: false}}
                                 name={name}
                                 value={value}

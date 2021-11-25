@@ -1,3 +1,4 @@
+
 import {Box, Grid, Icon} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import React, {useState, useEffect} from 'react';
@@ -291,8 +292,8 @@ const DeliveryInfo = () => {
                         >
                           {adr.name} <br/>
                           {`〒${adr.zipcode}`} <br/>
-                          {`${adr?.province?.name}${adr.city}`} <br/>
-                          {adr.address} <br/>
+                          {`${adr?.province?.name}${adr.city}${adr.address}`} <br/>
+                          {adr.department} <br/>
                           {adr.tel}
                         </Box>
                       </Grid>
