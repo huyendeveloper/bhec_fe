@@ -22,6 +22,11 @@ const useStyles = makeStyles((theme) => ({
     border: '0.063rem solid ' + theme.border.default,
     boxShadow: '0 0.125rem 0.25rem ' + theme.notifications.boxShadow,
     borderRadius: '0.5rem',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      padding: '1rem 0.75rem 1rem 1rem',
+      height: '27rem',
+    },
     '&::-webkit-scrollbar': {
       width: '0.375rem',
       backgroundColor: 'transparent',
@@ -69,6 +74,12 @@ const useStyles = makeStyles((theme) => ({
   badge: {
     '& .MuiBadge-badge': {
       padding: '0',
+    },
+  },
+  notifications: {
+    [theme.breakpoints.down('xs')]: {
+      width: 'calc(100% - 32px)',
+      transform: 'translate3d(16px, 287px, 0)',
     },
   },
 }));
@@ -160,6 +171,7 @@ const Notifications = () => {
         anchorEl={anchorEl}
         placement={'top-end'}
         transition={true}
+        className={classes.notifications}
       >
         {({TransitionProps}) => (
           <Fade {...TransitionProps}>
