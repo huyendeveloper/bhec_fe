@@ -338,7 +338,7 @@ export default function BasicInformation() {
                       {user?.name} <br/>
                       {`〒${user?.zipcode}`} <br/>
                       {province?.name}{user?.city}{user?.office_room}<br/>
-                      {user?.apartment_number} <br/>
+                      {user?.apartment_number} {user?.apartment_number && <br/>}
                       {user?.phone_no}
                     </>
                   ) : (

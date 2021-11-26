@@ -293,7 +293,7 @@ const DeliveryInfo = () => {
                           {adr.name} <br/>
                           {`〒${adr.zipcode}`} <br/>
                           {`${adr?.province?.name}${adr.city}${adr.address}`} <br/>
-                          {adr.department} <br/>
+                          {adr?.apartment_number} {adr?.apartment_number && <br/>}
                           {adr.tel}
                         </Box>
                       </Grid>
