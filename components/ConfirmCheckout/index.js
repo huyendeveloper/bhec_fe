@@ -192,7 +192,7 @@ const ConfirmCheckout = () => {
     };
 
     const shippingAddress = user.addresses?.find((a) => a.id === order?.addressShipping);
-    const card = user.cards?.find((c) => c.id === order?.creditCard);
+    const card = user?.cards?.find((c) => String(c.id) === order?.creditCard);
 
     if (!user?.isAuthenticated) {
       orderDetails = {
@@ -226,6 +226,7 @@ const ConfirmCheckout = () => {
             card_type: card?.card_type,
             cvc_code: card?.cvc_code,
           },
+          token: card?.token,
         };
       }
     }
@@ -263,10 +264,11 @@ const ConfirmCheckout = () => {
       }
       setCart({items: [], seller: null});
       setOrder({
-        id: result?.order?.id,
-        payment_method: result?.order?.payment_method,
-        order_number: result?.order?.order_number,
+        id: result?.orders[0]?.id,
+        payment_method: result?.orders[0]?.payment_method,
+        order_number: result?.orders[0]?.order_number,
         kombini_info: result?.kombini_info,
+        mstatus: result?.credit_card_info?.mstatus,
       });
 
       router.push('/order-form/successded');

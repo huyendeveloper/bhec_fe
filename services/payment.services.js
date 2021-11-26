@@ -1,4 +1,5 @@
 import {api} from '~/lib/api';
+import {axios} from '~/modules/axios';
 
 const parserError = (errors) => {
   return errors[0].message.
@@ -46,5 +47,15 @@ export default class PaymentService {
     }
     return data;
   }
-}
 
+  async registerPayment(data) {
+    return axios.post(
+      `${process.env.VERITRANS_TOKEN_SERVER_ENDPOINT}`,
+      {...data},
+    ).then((response) => {
+      return response;
+    }).catch((error) => {
+      return error.response;
+    });
+  }
+}

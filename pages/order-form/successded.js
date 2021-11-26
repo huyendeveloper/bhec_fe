@@ -116,7 +116,7 @@ export default function OrderForm() {
             className={classes.thanks}
           >{'ご購入ありがとうございます。'}</Typography>
 
-          {order?.order_number &&
+          {order?.order_number && order?.mstatus === 'success' &&
             <Typography
               variant={'h5'}
               className={classes.thanks}
