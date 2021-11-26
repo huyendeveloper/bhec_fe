@@ -56,6 +56,7 @@ const Checkout = () => {
   const [bill, setBill] = useRecoilState(billState);
   const setLoading = useSetRecoilState(loadingState);
   const disableOrder = useRecoilValue(disableOrderState);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // eslint-disable-next-line no-warning-comments
   // TODO: confirm user before leaving checkout
@@ -142,6 +143,9 @@ const Checkout = () => {
   }, [order?.addressShipping, order?.address, cart]);
 
   useEffect(() => {
+    if (user?.isAuthenticated) {
+      setIsAuthenticated(true);
+    }
     if ((order?.addressShipping || order?.address) && cart?.items) {
       getTotalCost();
       return;
@@ -156,9 +160,9 @@ const Checkout = () => {
     <FormProvider {...methods}>
       <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
         <>
-          {user?.isAuthenticated && user?.isAuthenticated === false && (
+          {!isAuthenticated &&
             <FormSignup/>
-          )}
+          }
 
           <FormShipping/>
 

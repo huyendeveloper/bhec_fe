@@ -19,10 +19,8 @@ import {nanoid} from 'nanoid';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 
 import Button from '~/components/Button';
-
 import {httpStatus} from '~/constants';
 import {PaymentService} from '~/services';
-const Payment = new PaymentService();
 import {checkCreditCardType} from '~/shared/module';
 import {AlertMessageForSection, StyledForm} from '~/components';
 import {registerPayment} from '~/pages/payment-method';
@@ -30,6 +28,8 @@ import {rules} from '~/lib/validator';
 import {userState} from '~/store/userState';
 import {loadingState} from '~/store/loadingState';
 import {isHalfWidth} from '~/lib/text';
+
+const Payment = new PaymentService();
 
 const useStyles = makeStyles((theme) => ({
   root: {
