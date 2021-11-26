@@ -97,10 +97,14 @@ export default function TopPage() {
   const slideData = [
     {
       id: 1,
-      img: '/img/slider/slider.png',
+      img: '/img/slider/おしながきバナー2.jpg',
     },
     {
       id: 2,
+      img: '/img/slider/slider.png',
+    },
+    {
+      id: 3,
       img: '/img/video-banner.png',
     },
   ];
