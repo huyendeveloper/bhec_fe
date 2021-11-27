@@ -101,7 +101,7 @@ export default class AuthService {
   }
 
   async updateEmailUser(payload) {
-    const [data, errors] = await api.post('/users/change_email', payload);
+    const [, errors, data] = await api.post('/users/change_email', payload);
     if (errors.length) {
       return parserError(errors);
     }

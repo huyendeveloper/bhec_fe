@@ -215,7 +215,7 @@ export default function BasicInformationUpdate() {
         new_email: data.email,
       };
       const resUpdateEmail = await Auth.updateEmailUser(bodyUpdateEmail);
-      if (resUpdateEmail) {
+      if (resUpdateEmail?.data?.success) {
         setAlerts({
           type: 'success',
           message: `メールアドレス変更が受付されました。${data.email}に確認メールが送信されました。`,
