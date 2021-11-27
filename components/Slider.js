@@ -6,22 +6,11 @@ import 'react-multi-carousel/lib/styles.css';
 import {makeStyles} from '@material-ui/core/styles';
 import {Icon} from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     position: 'relative', //borderRadius: '1rem',
     '& div.react-multi-carousel-list': {
       position: 'unset',
-      height: '36rem',
-
-      [theme.breakpoints.down('md')]: {
-        height: '30rem',
-      },
-      [theme.breakpoints.down('sm')]: {
-        height: '24rem',
-      },
-      [theme.breakpoints.down('xs')]: {
-        height: '13rem',
-      },
 
       '& .arrow': {
         position: 'absolute',
@@ -56,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
       },
       '& .react-multi-carousel-item div': {
         borderRadius: '4px',
+      },
+      '& .react-multi-carousel-dot-list': {
+        bottom: '-2rem',
       },
     },
   },
@@ -124,8 +116,8 @@ const Slider = ({data}) => {
               src={slider.img}
               alt='banner top'
               layout='responsive'
-              width='1366'
-              height='600'
+              width='1600'
+              height='900'
             />
           )) : null}
         </Carousel>

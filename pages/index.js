@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '2rem',
     paddingBottom: '1rem',
   },
+  sliderWrapper: {
+    margin: '2rem auto',
+  },
   news: {
     [theme.breakpoints.up('lg')]: {
       padding: '0rem 6.063rem',
@@ -97,7 +100,7 @@ export default function TopPage() {
   const slideData = [
     {
       id: 1,
-      img: '/img/slider/おしながきバナー2.jpg',
+      img: '/img/slider/oshinagaki-banner-2.jpg',
     },
     {
       id: 2,
@@ -206,7 +209,9 @@ export default function TopPage() {
               lg={12}
             >
               <Search/>
-              <Slider data={slideData}/>
+              <div className={classes.sliderWrapper}>
+                <Slider data={slideData}/>
+              </div>
             </Grid>
           </Container>
         </div>
