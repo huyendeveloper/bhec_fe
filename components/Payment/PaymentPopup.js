@@ -210,7 +210,7 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
   const [alerts, setAlerts] = useState(null);
   const classes = useStyles();
   const {control, handleSubmit, formState: {errors}, reset} = useForm({criteriaMode: 'all', defaultValues: {}});
-  const {getCardNumberProps, getExpiryDateProps, getCVCProps} = usePaymentInputs();
+  const {getExpiryDateProps, getCVCProps} = usePaymentInputs();
   const user = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
   const handleSubmitClick = async (data) => {
@@ -408,10 +408,12 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
                           name={name}
                           value={value}
                           onChange={onChange}
-                          {...getCardNumberProps({onChange})}
                           placeholder={'カード番号'}
                           onInput={(e) => {
                             e.target.value = e.target.value.slice(0, 19);
+                          }}
+                          onKeyPress={(e) => {
+                            e.target.value = e.target.value.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ');
                           }}
                         />
                       )}
