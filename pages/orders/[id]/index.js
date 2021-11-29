@@ -323,7 +323,7 @@ const OrdersDetail = ({id}) => {
                   <br/>
                   {formatNumber(order?.shipping_fee ?? 0, 'currency')}
                   <br/>
-                  {order?.shipping_fee > 0 ? formatNumber(order?.discount ?? 0, 'currency') : '割引無し'}
+                  {order?.shipping_fee > 0 ? ((order?.discount > 0) ? '-' : '') + formatNumber(order?.discount ?? 0, 'currency') : '割引無し'}
                   <br/>
                 </div>
                 <h4>{formatNumber(order?.total_amount ?? 0, 'currency')}</h4>
