@@ -117,7 +117,7 @@ const Slider = ({data}) => {
               alt='banner top'
               layout='responsive'
               width='1600'
-              height='900'
+              height='1200'
             />
           )) : null}
         </Carousel>
