@@ -43,6 +43,7 @@ const errorMessage = [
   {code: 2306, message: 'クーポンの利用期限が切れました。'},
   {code: 2400, message: '予期しないエラーが発生しました。'}, // Exception, system error
   {code: 2401, message: '該当のクーポンは既に登録されています。'}, // Coupon Code is already existed
+  {code: 2309, message: '入力されたクーポンはまだ利用できません。'},
 ];
 
 export default errorMessage;
