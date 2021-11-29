@@ -21,6 +21,15 @@ const useStyles = makeStyles((theme) => ({
   orderSuccess: {
     textAlign: 'center',
   },
+  payFail: {
+    color: '#54C0C0',
+    margin: '0 0 2.75rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      margin: '1.5rem 0',
+    },
+  },
   thanks: {
     fontWeight: 'bold',
     lineHeight: '2.25rem',
@@ -116,11 +125,17 @@ export default function OrderForm() {
             className={classes.thanks}
           >{'ご購入ありがとうございます。'}</Typography>
 
-          {order?.order_number && order?.mstatus === 'success' &&
+          {order?.order_number &&
             <Typography
               variant={'h5'}
               className={classes.thanks}
             >{`注文番号: ${order?.order_number}` || ''}</Typography>
+          }
+          {order?.mstatus === 'failure' &&
+            <Typography
+              variant={'h5'}
+              className={classes.payFail}
+            >{'決済処理に失敗しました。お支払い情報のご確認のうえ、管理者へご連絡ください。'}</Typography>
           }
 
           <div className={classes.buttons}>
