@@ -1,10 +1,12 @@
-import {Divider, Grid, makeStyles, Typography} from '@material-ui/core';
+import {Divider, Grid, makeStyles, Typography, Dialog} from '@material-ui/core';
 import router from 'next/router';
 
 import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
-
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import {find, get} from 'lodash';
 
 import Button from '../Button';
@@ -23,6 +25,11 @@ import {order as orderConstants} from '~/constants';
 const Payment = new PaymentService();
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    '& .MuiTypography-body1': {
+      fontSize: '0.875rem',
+    },
+  },
   button: {
     display: 'flex',
     justifyContent: 'center',
@@ -104,6 +111,8 @@ const ConfirmCheckout = () => {
   const [cardData, setCardData] = useState(null);
   const {net_amount, total_shipping_fee} = useRecoilValue(billState);
   const [loaded, setLoaded] = useState(false);
+  const [formUnionPay, setFormUnionPay] = useState('');
+  const [messageWaitPayment, setMessageWaitPayment] = useState('');
 
   const fetchAddressData = async () => {
     if (user?.isAuthenticated) {
@@ -164,6 +173,14 @@ const ConfirmCheckout = () => {
   //     router.events.off('beforeHistoryChange', handleRouteChange);
   //   };
   // }, [isReadonly]);
+  useEffect(() => {
+    if (document.querySelector('#pay_form')) {
+      setMessageWaitPayment('自動的にUnionPayの決済画面に切り替わります。しばらくお待ちください。');
+      setTimeout(() => {
+        document.querySelector('#pay_form').submit();
+      }, 5000);
+    }
+  }, [formUnionPay]);
 
   const handleConfirmClick = (data) => {
     setOrder({...data, coupon_code: order?.coupon_code || '', discount: order?.discount || 0});
@@ -255,272 +272,312 @@ const ConfirmCheckout = () => {
         phone_no: order?.phone_no,
       };
     }
-
     const result = await OrderService.createOrder(orderDetails);
-    if (result?.orders && result?.orders?.length) {
-      if (!user?.isAuthenticated) {
-        // remove temporarily addresses, cards
-        setUser({});
+    if (result?.union_info) {
+      if (result?.union_info?.mstatus === 'success') {
+        setFormUnionPay(result?.union_info?.entry_form || '');
+      } else {
+        setAlerts({
+          type: 'error',
+          message: result?.union_info?.merr_msg,
+        });
       }
-      setCart({items: [], seller: null});
-      setOrder({
-        id: result?.orders[0]?.id,
-        payment_method: result?.orders[0]?.payment_method,
-        order_number: result?.orders[0]?.order_number,
-        kombini_info: result?.kombini_info,
-        mstatus: result?.credit_card_info?.mstatus,
-      });
-
-      router.push('/order-form/successded');
+      setLoading(false);
     } else {
-      setAlerts({
-        type: 'error',
-        message: result,
-      });
+      if (result?.orders && result?.orders?.length) {
+        if (!user?.isAuthenticated) {
+          // remove temporarily addresses, cards
+          setUser({});
+        }
+        setCart({items: [], seller: null});
+        setOrder({
+          id: result?.orders[0]?.id,
+          payment_method: result?.orders[0]?.payment_method,
+          order_number: result?.orders[0]?.order_number,
+          kombini_info: result?.kombini_info,
+          mstatus: result?.credit_card_info?.mstatus,
+        });
+        router.push('/order-form/successded');
+      } else {
+        setAlerts({
+          type: 'error',
+          message: result,
+        });
+      }
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const handleClose = () => {
+    setMessageWaitPayment('');
   };
 
   return (
-    <FormProvider {...methods}>
-      <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
-        <>
-          {!isAuthenticated && (
+    <div className={classes.root}>
+      <FormProvider {...methods}>
+        <StyledForm onSubmit={handleSubmit(handleConfirmClick)}>
+          <>
+            {!isAuthenticated && (
+              <div className={classes.infoBlock}>
+                <Typography
+                  component='h3'
+                  className={classes.infoBlockTitle}
+                >
+                  {'会員登録情報'}
+                </Typography>
+                <div className={classes.infoBlockContent}>
+                  <Typography component='p'>
+                    <span>{`連絡先メールアドレス： ${order?.email ?? ''}`}</span>
+                  </Typography>
+                  <Typography component='p'>
+                    <span>{`ニックネーム： ${order?.nickname ?? ''}`}</span>
+                  </Typography>
+                </div>
+              </div>
+            )}
+
             <div className={classes.infoBlock}>
               <Typography
                 component='h3'
                 className={classes.infoBlockTitle}
               >
-                {'会員登録情報'}
+                {'お届け先の住所'}
               </Typography>
+
               <div className={classes.infoBlockContent}>
                 <Typography component='p'>
-                  <span>{`連絡先メールアドレス： ${order?.email ?? ''}`}</span>
+                  <span>{`郵便番号： ${addressData?.zipcode ?? ''}`}</span>
                 </Typography>
                 <Typography component='p'>
-                  <span>{`ニックネーム： ${order?.nickname ?? ''}`}</span>
+                  <span>{`都道府県： ${addressData?.province?.name ?? ''}`}</span>
+                </Typography>
+                <Typography component='p'>
+                  <span>{`住所： ${addressData?.city ?? ''}${addressData?.address ?? ''}`}</span>
+                </Typography>
+                <Typography component='p'>
+                  <span>{`受取人氏名： ${addressData?.name ?? ''}様`}</span>
                 </Typography>
               </div>
             </div>
-          )}
-
-          <div className={classes.infoBlock}>
-            <Typography
-              component='h3'
-              className={classes.infoBlockTitle}
-            >
-              {'お届け先の住所'}
-            </Typography>
-
-            <div className={classes.infoBlockContent}>
-              <Typography component='p'>
-                <span>{`郵便番号： ${addressData?.zipcode ?? ''}`}</span>
-              </Typography>
-              <Typography component='p'>
-                <span>{`都道府県： ${addressData?.province?.name ?? ''}`}</span>
-              </Typography>
-              <Typography component='p'>
-                <span>{`住所： ${addressData?.city ?? ''}${addressData?.address ?? ''}`}</span>
-              </Typography>
-              <Typography component='p'>
-                <span>{`受取人氏名： ${addressData?.name ?? ''}様`}</span>
-              </Typography>
-            </div>
-          </div>
-          <div className={classes.infoBlock}>
-            <Typography
-              component='h3'
-              className={classes.infoBlockTitle}
-            >
-              {'お支払い方法'}
-            </Typography>
-
-            <div className={classes.infoBlockContent}>
-              <Typography>
-                {parseInt(order?.payment_method, 10) === 1 && <Typography>{'クレジットカード払い'}</Typography>}
-                {parseInt(order?.payment_method, 10) === 2 && <Typography>{'銀聯カード（UnionPay）払い'}</Typography>}
-                {parseInt(order?.payment_method, 10) === 3 && <Typography>{'コンビニ払い'}</Typography>}
-              </Typography>
-            </div>
-          </div>
-
-          {cardData && parseInt(order?.payment_method, 10) === 1 &&
             <div className={classes.infoBlock}>
               <Typography
                 component='h3'
                 className={classes.infoBlockTitle}
               >
-                {'お支払いクレジットカード'}
+                {'お支払い方法'}
               </Typography>
 
               <div className={classes.infoBlockContent}>
-                <Typography component='p'>
-                  <span>{`${cardData?.card_type ?? ''} ${cardData?.holder_name ?? ''} ${cardData?.req_number ?? ''}`}</span>
+                <Typography>
+                  {parseInt(order?.payment_method, 10) === 1 && <Typography>{'クレジットカード払い'}</Typography>}
+                  {parseInt(order?.payment_method, 10) === 2 && <Typography>{'銀聯カード（UnionPay）払い'}</Typography>}
+                  {parseInt(order?.payment_method, 10) === 3 && <Typography>{'コンビニ払い'}</Typography>}
                 </Typography>
               </div>
             </div>
-          }
 
-          {parseInt(order?.payment_method, 10) === 3 &&
+            {cardData && parseInt(order?.payment_method, 10) === 1 &&
+              <div className={classes.infoBlock}>
+                <Typography
+                  component='h3'
+                  className={classes.infoBlockTitle}
+                >
+                  {'お支払いクレジットカード'}
+                </Typography>
+
+                <div className={classes.infoBlockContent}>
+                  <Typography component='p'>
+                    <span>{`${cardData?.card_type ?? ''} ${cardData?.holder_name ?? ''} ${cardData?.req_number ?? ''}`}</span>
+                  </Typography>
+                </div>
+              </div>
+            }
+
+            {parseInt(order?.payment_method, 10) === 3 &&
+              <div className={classes.infoBlock}>
+                <Typography
+                  component='h3'
+                  className={classes.infoBlockTitle}
+                >
+                  {'コンビニでのお支払い'}
+                </Typography>
+
+                <div className={classes.infoBlockContent}>
+                  <Typography component='p'>
+                    <span>{`支払先コンビニ： ${get(find(orderConstants.kombiniPayment, ['value', order.service_option_type]), 'label', '')}`}</span>
+                  </Typography>
+                  <Typography component='p'>
+                    <span>{`支払者電話番号： ${get(order, 'phone_no', '')}`}</span>
+                  </Typography>
+                </div>
+              </div>
+            }
+
+            {/*<FormCoupon isReadonly={true}/>*/}
+
+            {order?.note?.length > 0 && (
+              <div className={classes.infoBlock}>
+                <Typography
+                  component='h3'
+                  className={classes.infoBlockTitle}
+                >
+                  {'特記事項'}
+                </Typography>
+
+                <div className={classes.infoBlockContent}>
+                  <Typography component='p'>
+                    <span>{order?.note ?? ''}</span>
+                  </Typography>
+                </div>
+              </div>
+            )}
+
             <div className={classes.infoBlock}>
               <Typography
                 component='h3'
                 className={classes.infoBlockTitle}
               >
-                {'コンビニでのお支払い'}
+                {'注文内容'}
               </Typography>
 
               <div className={classes.infoBlockContent}>
-                <Typography component='p'>
-                  <span>{`支払先コンビニ： ${get(find(orderConstants.kombiniPayment, ['value', order.service_option_type]), 'label', '')}`}</span>
-                </Typography>
-                <Typography component='p'>
-                  <span>{`支払者電話番号： ${get(order, 'phone_no', '')}`}</span>
-                </Typography>
+                {loaded && cart.items?.map((item, index) => (
+                  <OrderFormItem
+                    key={item.productDetail?.id}
+                    data={item}
+                    disabled={true}
+                    index={index}
+                    defaultNote={item.note}
+                  />
+                ))}
               </div>
             </div>
-          }
 
-          {/*<FormCoupon isReadonly={true}/>*/}
+            <Divider/>
 
-          {order?.note?.length > 0 && (
-            <div className={classes.infoBlock}>
-              <Typography
-                component='h3'
-                className={classes.infoBlockTitle}
+            {loaded &&
+            <div className={classes.calculatedBill}>
+              <div
+                className={classes.row}
               >
-                {'特記事項'}
-              </Typography>
+                <div>{'商品合計'}</div>
 
-              <div className={classes.infoBlockContent}>
-                <Typography component='p'>
-                  <span>{order?.note ?? ''}</span>
-                </Typography>
+                <b>{formatNumber(net_amount, 'currency')}</b>
+              </div>
+
+              <div
+                className={classes.row}
+              >
+                <div>{'送料合計'}</div>
+
+                <b>{formatNumber(total_shipping_fee, 'currency')}</b>
+              </div>
+
+              <div
+                className={classes.row}
+              >
+                <div>
+                  {'クーポン '}
+                  {/*{isMobile ? <br/> : null}*/}
+                </div>
+                <b>{`${(order?.discount > 0) ? '-' : ''}${formatNumber((order?.discount ?? 0), 'currency')}`}</b>
               </div>
             </div>
-          )}
+            }
 
-          <div className={classes.infoBlock}>
-            <Typography
-              component='h3'
-              className={classes.infoBlockTitle}
-            >
-              {'注文内容'}
-            </Typography>
+            <Divider/>
 
-            <div className={classes.infoBlockContent}>
-              {loaded && cart.items?.map((item, index) => (
-                <OrderFormItem
-                  key={item.productDetail?.id}
-                  data={item}
-                  disabled={true}
-                  index={index}
-                  defaultNote={item.note}
-                />
-              ))}
-            </div>
-          </div>
+            <div className={classes.totalRow}>
+              <div
+                className={classes.row}
+              >
+                <h3 style={{margin: '0'}}>{'決済金額'}</h3>
 
-          <Divider/>
-
-          {loaded &&
-          <div className={classes.calculatedBill}>
-            <div
-              className={classes.row}
-            >
-              <div>{'商品合計'}</div>
-
-              <b>{formatNumber(net_amount, 'currency')}</b>
-            </div>
-
-            <div
-              className={classes.row}
-            >
-              <div>{'送料合計'}</div>
-
-              <b>{formatNumber(total_shipping_fee, 'currency')}</b>
-            </div>
-
-            <div
-              className={classes.row}
-            >
-              <div>
-                {'クーポン '}
-                {/*{isMobile ? <br/> : null}*/}
+                {loaded &&
+                  <h1 className={classes.total}>
+                    {formatNumber((net_amount + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
+                  </h1>
+                }
               </div>
-              <b>{`${(order?.discount > 0) ? '-' : ''}${formatNumber((order?.discount ?? 0), 'currency')}`}</b>
             </div>
-          </div>
-          }
 
-          <Divider/>
-
-          <div className={classes.totalRow}>
             <div
               className={classes.row}
-            >
-              <h3 style={{margin: '0'}}>{'決済金額'}</h3>
-
-              {loaded &&
-                <h1 className={classes.total}>
-                  {formatNumber((net_amount + total_shipping_fee) - (order?.discount ?? 0), 'currency')}
-                </h1>
-              }
-            </div>
-          </div>
-
-          <div
-            className={classes.row}
-            style={{justifyContent: 'center'}}
-          >
-            <Grid
-              container={true}
-              spacing={3}
-              className={classes.buttons}
+              style={{justifyContent: 'center'}}
             >
               <Grid
-                item={true}
-                sm={6}
-                xs={12}
-                style={{justifyContent: 'flex-end', display: 'flex'}}
+                container={true}
+                spacing={3}
+                className={classes.buttons}
               >
-                <Button
-                  variant='pill'
-                  customColor='white'
-                  customBorder='bdBlack'
-                  customSize='extraLarge'
-                  onClick={() => {
-                    window.history.back();
-                  }}
+                <Grid
+                  item={true}
+                  sm={6}
+                  xs={12}
+                  style={{justifyContent: 'flex-end', display: 'flex'}}
                 >
-                  {'前のページへ戻る'}
-                </Button>
-              </Grid>
+                  <Button
+                    variant='pill'
+                    customColor='white'
+                    customBorder='bdBlack'
+                    customSize='extraLarge'
+                    onClick={() => {
+                      window.history.back();
+                    }}
+                  >
+                    {'前のページへ戻る'}
+                  </Button>
+                </Grid>
 
-              <Grid
-                item={true}
-                sm={6}
-                xs={12}
-              >
-                <Button
-                  variant='pill'
-                  customColor='red'
-                  customSize='extraLarge'
-                  onClick={handleSendOrderClick}
+                <Grid
+                  item={true}
+                  sm={6}
+                  xs={12}
                 >
-                  {'フォームを送信'}
-                </Button>
+                  <Button
+                    variant='pill'
+                    customColor='red'
+                    customSize='extraLarge'
+                    onClick={handleSendOrderClick}
+                  >
+                    {'フォームを送信'}
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </div>
-        </>
-      </StyledForm>
+            </div>
+          </>
+        </StyledForm>
 
-      <AlertMessageForSection
-        alert={alerts}
-        handleCloseAlert={() => setAlerts(null)}
+        <AlertMessageForSection
+          alert={alerts}
+          handleCloseAlert={() => setAlerts(null)}
+        />
+      </FormProvider>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: formUnionPay,
+        }}
       />
-    </FormProvider>
+      {messageWaitPayment &&
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='draggable-dialog-title'
+          classes={{
+            root: classes.root,
+          }}
+        >
+          <DialogTitle id='draggable-dialog-title'>
+            {'通知'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {messageWaitPayment}
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      }
+    </div>
   );
 };
 
