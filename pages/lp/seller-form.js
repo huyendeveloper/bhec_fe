@@ -227,14 +227,12 @@ export default function SellerForm() {
           className='formControlLabel'
         >
           {'電話番号 （代表者と異なる場合）'}
-          <span className='formControlRequired'>{'*'}</span>
         </label>
         <Controller
           name='other_phone'
           control={control}
           defaultValue=''
           rules={{
-            required: rules.required,
             pattern: rules.isPhoneNumber,
           }}
           render={({field: {name, value, ref, onChange}}) => (
@@ -273,14 +271,12 @@ export default function SellerForm() {
           className='formControlLabel'
         >
           {'メールアドレス '}
-          <span className='formControlRequired'>{'*'}</span>
         </label>
         <Controller
           name='other_email'
           control={control}
           defaultValue=''
           rules={{
-            required: '必須項目です。',
             pattern: {
               value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               message: 'メールアドレスが無効です。',
