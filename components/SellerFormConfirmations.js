@@ -61,11 +61,14 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const [alerts, setAlerts] = useState(null);
-
   const handleSubmitForm = async () => {
     setAlerts(null);
     setLoading(true);
-    const res = await CommonService.registerSeller(data);
+    const body = {
+      ...data,
+      express_delivery: data.express_delivery === 'others' ? data.express_delivery_others : data.express_delivery,
+    };
+    const res = await CommonService.registerSeller(body);
     if (res?.data) {
       setLoading(false);
       onNextStep();
@@ -183,7 +186,7 @@ const SellerFormConfirmations = ({data, onBackStep, onNextStep}) => {
           </Typography>
           <Typography component='p'>
             <span>{'ご利⽤予定の運送会社：'}</span>
-            {data.express_delivery ? data.express_delivery : ''}
+            {data.express_delivery === 'others' ? data.express_delivery_others : data.express_delivery || ''}
           </Typography>
         </div>
       </div>
