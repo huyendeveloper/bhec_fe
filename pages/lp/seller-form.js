@@ -66,6 +66,7 @@ export default function SellerForm() {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [iamDeputy, setIamDeputy] = useState(false);
+  const [showOther, setShowOther] = useState(false);
   const [productImages, setProductImages] = useState([]);
   const [isViewedTerms, setIsViewedTerms] = useState(false);
   const [isViewedPolicy, setIsViewedPolicy] = useState(false);
@@ -1018,17 +1019,52 @@ export default function SellerForm() {
                           <Controller
                             name='express_delivery'
                             control={control}
-                            defaultValue=''
-                            render={({field}) => (
-                              <TextField
-                                id='express_delivery'
-                                variant='outlined'
-                                label='ご利⽤予定の運送会社'
-                                InputLabelProps={{shrink: false}}
-                                {...field}
-                              />
+                            defaultValue='クロネコヤマト'
+                            render={({field: {value, onChange}}) => (
+                              <RadioGroup
+                                value={value}
+                                onChange={(e) => {
+                                  const valueChange = e.target.value;
+                                  setShowOther(valueChange === 'others');
+                                  onChange(valueChange);
+                                }}
+                              >
+                                <Box>
+                                  <FormControlLabel
+                                    value='クロネコヤマト'
+                                    control={<Radio/>}
+                                    label='クロネコヤマト'
+                                  />
+                                  <FormControlLabel
+                                    value='佐川急便'
+                                    control={<Radio/>}
+                                    label='佐川急便'
+                                  />
+                                  <FormControlLabel
+                                    value='others'
+                                    control={<Radio/>}
+                                    label='その他'
+                                  />
+                                </Box>
+                              </RadioGroup>
                             )}
                           />
+                          {showOther ?
+                            <Controller
+                              name='express_delivery_others'
+                              control={control}
+                              render={({field: {name, value, onChange}}) => (
+                                <TextField
+                                  id='express_delivery_others'
+                                  variant='outlined'
+                                  InputLabelProps={{shrink: false}}
+                                  name={name}
+                                  value={value}
+                                  onChange={onChange}
+                                />
+                              )}
+                            /> : null
+                          }
                         </Grid>
                         {/*END SHIPPING PROVIDER*/}
 
