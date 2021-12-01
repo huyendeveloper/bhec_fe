@@ -289,7 +289,7 @@ const FormCoupon = () => {
                             onClick={handleSelectedCoupon}
                             checked={couponCode === item?.coupon?.code}
                           />}
-                        label={`${item?.coupon?.title} ${item?.coupon?.value}${item?.coupon?.coupon_type === 1 ? '%' : '円'}（${moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
+                        label={`${item?.coupon?.title} ${item?.coupon?.value}${item?.coupon?.coupon_type === 1 ? '%' : '円'}（${item?.coupon?.is_indefinite_period ? '利用期限なし' : moment(item?.coupon?.expiration_time).format('YYYY年MM月DD日まで')}）`}
                         className={'labelRadioBtn'}
                       />
                     ))}
