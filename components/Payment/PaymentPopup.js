@@ -412,6 +412,9 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
                           onInput={(e) => {
                             e.target.value = e.target.value.slice(0, 19);
                           }}
+                          onPaste={(e) => {
+                            e.target.value = e.clipboardData.getData('Text').replace(/\W/gi, '').replace(/(.{4})/g, '$1 ');
+                          }}
                           onKeyPress={(e) => {
                             e.target.value = e.target.value.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ');
                           }}
