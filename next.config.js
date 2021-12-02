@@ -17,7 +17,7 @@ const moduleExports = {
   },
 
   images: {
-    domains: process.env.IMAGE_DOMAIN_NAME.split(','),
+    domains: process.env.IMAGE_DOMAIN_NAME ? process.env.IMAGE_DOMAIN_NAME.split(',') : '',
   },
 };
 
