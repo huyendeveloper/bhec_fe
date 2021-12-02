@@ -8,7 +8,7 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import {Rating} from '@material-ui/lab';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import Swal from 'sweetalert2';
 import {useRouter} from 'next/router';
 
@@ -18,6 +18,7 @@ import 'swiper/swiper.min.css';
 import {ProductWidget} from '~/components/Widgets';
 import {SellerService, ProductService} from '~/services';
 import {userState} from '~/store/userState';
+import {loadingState} from '~/store/loadingState';
 const ProductServiceInstance = new ProductService();
 const SellerInstance = new SellerService();
 
@@ -234,6 +235,7 @@ const Seller = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [countPages, setCountPages] = useState(0);
   const router = useRouter();
+  const setLoading = useSetRecoilState(loadingState);
 
   const changePage = (e, pageNumber) => {
     getListRelatedProduct(sellerId, {page: pageNumber});
@@ -276,14 +278,14 @@ const Seller = () => {
   };
 
   const getSellerInfo = async () => {
+    setLoading(true);
     const {id} = router.query;
     if (id) {
       setSellerId(id);
       const response = await SellerInstance.getSellerDetail(id);
       if (!response?.seller?.id) {
-        return {
-          notFound: true,
-        };
+        setLoading(false);
+        router.push('/404');
       }
 
       getListRelatedProduct(response?.seller?.id, {});
@@ -345,6 +347,7 @@ const Seller = () => {
         ReactDOM.render(<ProductSwiperSeller items={products}/>, document.getElementById(`js-shorcode-${i}`));
       }
     }
+    setLoading(false);
   };
 
   const getListRelatedProduct = async (id, query) => {
