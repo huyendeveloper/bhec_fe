@@ -295,7 +295,7 @@ const ConfirmCheckout = () => {
           payment_method: result?.orders[0]?.payment_method,
           order_number: result?.orders[0]?.order_number,
           kombini_info: result?.kombini_info,
-          mstatus: result?.credit_card_info?.mstatus,
+          mstatus: result?.credit_card_info?.mstatus || result?.union_info?.mstatus || result?.kombini_info?.mstatus,
         });
         router.push('/order-form/successded');
       } else {
