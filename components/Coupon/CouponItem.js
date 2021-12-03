@@ -170,7 +170,7 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
   const isTablet = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-  let isExpired = (coupon?.coupon?.expiration_time || !coupon?.coupon?.is_indefinite_period) ? moment(coupon?.coupon?.expiration_time).isBefore(new Date()) : false;
+  let isExpired = coupon?.coupon?.is_indefinite_period ? false : moment(coupon?.coupon?.expiration_time).isBefore(new Date());
 
   if (coupon?.used_times > 0) {
     isExpired = true;
@@ -227,7 +227,7 @@ const CouponItem = ({coupon, handleSubmit, haveBottomBorder}) => {
                   component='p'
                   className={classes.expiryDate}
                 >
-                  {(coupon.coupon?.expiration_time && !coupon?.coupon?.is_indefinite_period) ? (moment(coupon.coupon?.expiration_time).format('YYYY年MM月DD日') + 'まで') : '利用期限なし'}
+                  {coupon?.coupon?.is_indefinite_period ? '利用期限なし' : (moment(coupon.coupon?.expiration_time).format('YYYY年MM月DD日') + 'まで')}
                 </Typography>
               </div>
               <div className={`${classes.usabitityContainer} ${isExpired && classes.expiredCoupon}`}>
