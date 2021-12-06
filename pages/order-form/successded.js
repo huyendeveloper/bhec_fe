@@ -7,6 +7,7 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {useRecoilValue} from 'recoil';
 import {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
 import {Button, ContentBlock} from '~/components';
 import {DefaultLayout} from '~/components/Layouts';
@@ -84,7 +85,15 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line no-warning-comments
 // TODO: get recommended products via API
 
-export default function OrderForm() {
+export async function getServerSideProps({query}) {
+  return {
+    props: {
+      mstatus: query?.mstatus || null,
+    },
+  };
+}
+
+export default function OrderForm({mstatus}) {
   const classes = useStyles();
   const user = useRecoilValue(userState);
   const router = useRouter();
@@ -131,13 +140,13 @@ export default function OrderForm() {
               className={classes.thanks}
             >{`注文番号: ${order?.order_number}` || ''}</Typography>
           }
-          {order?.mstatus === 'success' &&
+          {(mstatus || order?.mstatus) === 'success' &&
             <Typography
               variant={'h5'}
               className={classes.paymentMessage}
             >{'お支払いは成功しました。'}</Typography>
           }
-          {order?.mstatus === 'failure' &&
+          {(mstatus || order?.mstatus) === 'failure' &&
             <Typography
               variant={'h5'}
               className={classes.paymentMessage}
@@ -229,3 +238,7 @@ export default function OrderForm() {
     </DefaultLayout>
   );
 }
+
+OrderForm.propTypes = {
+  mstatus: PropTypes.string,
+};
