@@ -229,6 +229,8 @@ const PaymentPopup = ({open, onClose, onSubmit, widthBtn}) => {
         expiration_date: data.card_expire.replace(/\s/g, ''),
         holder_name: data.card_name,
         req_number: res.data.req_card_number,
+        card_number: data.card_number.replace(/\s/g, ''),
+        security_code: data.security_code,
         card_type: checkCreditCardType(data.card_number.replace(/\s/g, '')),
       };
 

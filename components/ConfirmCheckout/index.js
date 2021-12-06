@@ -21,6 +21,7 @@ import {billState, cartState} from '~/store/cartState';
 import {CommonService, OrderService, PaymentService} from '~/services';
 import {format as formatNumber} from '~/lib/number';
 import {order as orderConstants} from '~/constants';
+import {registerPayment} from '~/pages/payment-method';
 
 const Payment = new PaymentService();
 
@@ -234,6 +235,14 @@ const ConfirmCheckout = () => {
       };
       if (parseInt(order?.payment_method, 10) === 1) {
         // creditcard payment
+        const body = {
+          card_number: card.card_number,
+          token_api_key: process.env.VERITRANS_TOKEN_API,
+          lang: 'en',
+          security_code: card.security_code,
+          card_expire: card.expiration_date,
+        };
+        const res = await registerPayment(body);
         orderDetails = {
           ...orderDetails,
           card: {
@@ -243,7 +252,7 @@ const ConfirmCheckout = () => {
             card_type: card?.card_type,
             cvc_code: card?.cvc_code,
           },
-          token: card?.token,
+          token: res?.data?.token,
         };
       }
     }
