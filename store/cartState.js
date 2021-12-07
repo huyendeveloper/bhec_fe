@@ -14,7 +14,7 @@ export const cartState = atom({
     // reset if cart empty
     ({resetSelf, onSet}) => {
       onSet((newValue) => {
-        if (!newValue.items?.length) {
+        if (!newValue?.items?.length) {
           resetSelf();
         }
       });

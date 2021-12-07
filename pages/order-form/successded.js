@@ -5,7 +5,7 @@ import {
 import {makeStyles} from '@material-ui/core/styles';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useRecoilState} from 'recoil';
 import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,7 @@ import {AdsWidget, ProductWidget} from '~/components/Widgets';
 import {userState} from '~/store/userState';
 import {ProductService} from '~/services';
 import {orderState} from '~/store/orderState';
-
+import {cartState} from '~/store/cartState';
 const Product = new ProductService();
 
 const useStyles = makeStyles((theme) => ({
@@ -99,6 +99,7 @@ export default function OrderForm({mstatus}) {
   const router = useRouter();
   const [recommendProducts, setRecommendProducts] = useState([]);
   const order = useRecoilValue(orderState);
+  const [, setCart] = useRecoilState(cartState);
 
   const getListRecommendProducts = async () => {
     const query = {
@@ -114,6 +115,12 @@ export default function OrderForm({mstatus}) {
   useEffect(() => {
     getListRecommendProducts();
   }, []);
+
+  useEffect(() => {
+    if ((mstatus || order?.mstatus) === 'failure') {
+      setCart({items: [], seller: null});
+    }
+  }, [mstatus, order?.mstatus]);
 
   return (
     <DefaultLayout title='ご注文完了'>
