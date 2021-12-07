@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   paymentMessage: {
     color: '#54C0C0',
     margin: '0 0 2.75rem',
+    fontWeight: 'bold',
     [theme.breakpoints.down('md')]: {
       fontSize: '1rem',
       lineHeight: '1.5rem',
