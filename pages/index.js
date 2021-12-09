@@ -82,6 +82,30 @@ const useStyles = makeStyles((theme) => ({
       padding: 'initial',
     },
   },
+  vacation: {
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    lineHeight: '21px',
+    color: theme.palette.black.default,
+    fontSize: '0.875rem',
+    margin: '4rem 0',
+    padding: '1.5rem',
+    border: `1px solid ${theme.palette.red.main}`,
+    borderRadius: '0.25rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.813rem',
+      margin: '2rem 0',
+    },
+  },
+  block: {
+    marginBottom: '1.5rem',
+    '&:last-child': {
+      marginBottom: '0',
+    },
+  },
+  timeVacation: {
+    color: theme.palette.red.main,
+  },
 }));
 
 export default function TopPage() {
@@ -209,6 +233,20 @@ export default function TopPage() {
               lg={12}
             >
               <Search/>
+              <div className={classes.vacation}>
+                <div className={classes.block}>
+                  {'平素は格別のご高配を賜り、誠にありがとうございます。'} <br/>
+                  {'年末年始の休業期間について、以下のとおりお知らせいたします。'}<br/>
+                  {'ご不便をおかけいたしますが、何卒ご了承いただきますようお願い申し上げます。'}<br/>
+                </div>
+                <div className={classes.block}>
+                  <div className={classes.timeVacation}>{'休業期間：2021年12月29日（水曜）～2022年1月3日（月曜）'}</div>
+                </div>
+                <div className={classes.block}>
+                  {'※ホームページからのお問い合わせにつきましては、'} <br/>
+                  {'2022年1月4日（火曜）以降順次回答をさせていただきます。'}<br/>
+                </div>
+              </div>
               <div className={classes.sliderWrapper}>
                 <Slider data={slideData}/>
               </div>
