@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    gap: '1rem',
   },
   btnToOrderList: {
     marginRight: '1rem',
@@ -335,15 +336,6 @@ const OrdersDetail = ({id}) => {
                 xs={4}
                 className={classes.buttons}
               >
-                {parseInt(order?.invoice_flag ?? 0, 10) === 1 && (
-                  <Button
-                    className={clsx(classes.button, classes.whiteButton)}
-                    onClick={exportOrder}
-                  >
-                    {'領収書発行'}
-                  </Button>
-                )}
-
                 {parseInt(order?.status ?? 0, 10) === 1 && (
                   <Button
                     className={clsx(classes.button, classes.whiteButton)}
