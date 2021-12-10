@@ -88,13 +88,15 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '21px',
     color: theme.palette.black.default,
     fontSize: '0.875rem',
-    margin: '4rem 0',
+    margin: '4rem auto',
     padding: '1.5rem',
     border: `1px solid ${theme.palette.red.main}`,
     borderRadius: '0.25rem',
+    textAlign: 'center',
+    maxWidth: '42rem',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.813rem',
-      margin: '2rem 0',
+      margin: '2rem auto',
     },
   },
   block: {
